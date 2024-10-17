@@ -1,11 +1,12 @@
-import React, { ButtonHTMLAttributes, ReactNode } from "react";
-import { ButtonSize, ButtonVariant } from "../../utils/types";
+import React, { ButtonHTMLAttributes, ReactNode } from 'react'
+import { ButtonSize, ButtonVariant } from '../../utils/types'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
-  variant?: ButtonVariant;
-  outlined?: boolean;
-  size?: ButtonSize;
+  children: ReactNode
+  variant?: ButtonVariant
+  outlined?: boolean
+  size?: ButtonSize
+  className?: string
 }
 
 const getVariantOutlinedStyles = (
@@ -15,48 +16,49 @@ const getVariantOutlinedStyles = (
   switch (variant) {
     case ButtonVariant.Danger:
       return outlined
-        ? "text-red-500 bg-white border-red-500 border px-6"
-        : "bg-red-500 text-white px-6";
+        ? 'text-red-500 bg-white border-red-500 border px-6'
+        : 'bg-red-500 text-white px-6'
 
     default:
       return outlined
-        ? "text-primary-dark bg-white border-primary-dark border px-6"
-        : "bg-primary-dark text-white";
+        ? 'text-primary-dark bg-white border-primary-dark border px-6'
+        : 'bg-primary-dark text-white'
   }
-};
+}
 
 const getSizeStyles = (size: ButtonSize) => {
   switch (size) {
     case ButtonSize.Small:
-      return "px-4 py-2";
+      return 'px-4 py-1'
     case ButtonSize.Large:
-      return "px-7 py-4 text-xl w-full";
+      return 'px-7 py-3 text-xl w-full'
 
     default:
-      return "px-4 py-3";
+      return 'px-4 py-2'
   }
-};
+}
 
 const Button = ({
   children,
   variant = ButtonVariant.Primary,
   outlined = false,
   size = ButtonSize.Medium,
-  type = "button",
+  type = 'button',
   onClick,
+  className,
 }: ButtonProps) => {
-  const sizeStyles = getSizeStyles(size);
-  const valiantOutlinedStyles = getVariantOutlinedStyles(variant, outlined);
+  const sizeStyles = getSizeStyles(size)
+  const valiantOutlinedStyles = getVariantOutlinedStyles(variant, outlined)
 
   return (
     <button
       onClick={onClick}
-      className={`rounded-lg ${valiantOutlinedStyles} ${sizeStyles}`}
+      className={`rounded-lg ${valiantOutlinedStyles} ${sizeStyles} ${className}`}
       type={type}
     >
       {children}
     </button>
-  );
-};
+  )
+}
 
-export default Button;
+export default Button
