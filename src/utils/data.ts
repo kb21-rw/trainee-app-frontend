@@ -1,7 +1,6 @@
 import { MenuItemType } from "./types";
 
 export const adminMenu = [
-  { link: "/", title: "Overview" },
   { link: "/forms", title: "Forms" },
   { link: "/applicants", title: "Applicants" },
   { link: "/trainees", title: "Trainees" },
@@ -9,7 +8,7 @@ export const adminMenu = [
   { link: "/cohorts", title: "Cohorts" },
 ];
 export const coachMenu = [
-  { link: "/", title: "Overview" },
+  { link: "/overview", title: "Overview" },
   { link: "/trainees-results", title: "Trainee Results" },
   { link: "/my-trainees", title: "My trainees" },
 ];
