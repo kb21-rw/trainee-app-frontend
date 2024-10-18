@@ -48,7 +48,7 @@ const Login = () => {
       className="flex flex-col h-screen justify-center gap-5 md:gap-16  px-5 sm:px-10 md:p-0 max-w-xl mx-auto"
     >
       <div className="text-center">
-        <H1>Member login</H1>
+        <H1>Login</H1>
       </div>
       <div className="flex items-center justify-center">
       {isLoading && <Loader />}
