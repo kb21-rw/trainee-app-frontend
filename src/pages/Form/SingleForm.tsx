@@ -14,6 +14,7 @@ const SingleForm = () => {
   const { data, isFetching } = useGetFormQuery({ id, jwt });
   const name = data?.name;
   const description = data?.description || "";
+  const type = data?.type || "";
   const questions = data?.questionIds || [];
   const [activeQuestion, setActiveQuestion] = useState("");
 
@@ -32,6 +33,7 @@ const SingleForm = () => {
             name={name}
             description={description}
             id={id}
+            type={type}
             activeQuestion={activeQuestion}
             setActiveQuestion={setActiveQuestion}
           />
