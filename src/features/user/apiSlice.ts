@@ -398,6 +398,20 @@ getAllForms: builder.query({
       providesTags: ["applicantForm"],
     }),
 
+    getApplicationForm: builder.query({
+      query: (jwt) => {
+        return {
+          url: `/cohorts/application`,
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          }
+        };
+      },
+      providesTags: ["applicantForm"],
+    }),
+
+
     addApplicantResponse: builder.mutation({
       query: ({jwt, body}) => ({
         url: '/responses/application',
@@ -501,4 +515,5 @@ export const {
   useGetApplicantsQuery,
   useApplicantDecisionMutation,
   useGetAllCohortsQuery,
+  useGetApplicationFormQuery,
 } = usersApi;
