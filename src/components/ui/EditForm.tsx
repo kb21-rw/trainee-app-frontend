@@ -15,25 +15,26 @@ import Delete from "../../assets/DeleteIcon";
 import Loader from "./Loader";
 import { useNavigate } from "react-router-dom";
 import Alert from "./Alert";
-import { QuestionType } from "../../utils/types";
+import { FormType, QuestionType } from "../../utils/types";
 
 const FormSchema = yup
   .object({
     name: yup.string().required(),
     description: yup.string().required(),
   })
-  .required();
 
 const EditForm = ({
   name,
   description,
   id,
+  type,
   activeQuestion,
   setActiveQuestion,
 }: {
   name: string;
   description: string;
   id: string;
+  type: FormType;
   activeQuestion: string;
   setActiveQuestion: any;
 }) => {
@@ -50,7 +51,7 @@ const EditForm = ({
   const [editForm] = useEditFormMutation();
   const navigate = useNavigate();
   const onSubmit = async (data: any) => {
-    await editForm({ jwt: getJWT(), body: data, id });
+    await editForm({ jwt: getJWT(), body: {...data, type}, id });
   };
 
   const [deleteForm, { isLoading: isDeleteFormLoading }] =
@@ -65,9 +66,10 @@ const EditForm = ({
     await createQuestion({
       jwt: getJWT(),
       formId: id,
-      body: { title: `Question`, type: QuestionType.Text },
+      body: { prompt: `Question`, type: QuestionType.Text },
     });
   };
+
 
   return (
     <form className="flex gap-2 " onFocus={() => setActiveQuestion("title")}>
@@ -78,7 +80,7 @@ const EditForm = ({
       )}
       <div
         className={`p-8 custom-shadow border-t-[#673AB7] border-t-8  rounded-xl ${
-          activeQuestion === "title" && "border-l-8 border-l-[#4285F4]"
+          activeQuestion === "prompt" && "border-l-8 border-l-[#4285F4]"
         }  flex flex-col gap-8 flex-1`}
       >
         <input

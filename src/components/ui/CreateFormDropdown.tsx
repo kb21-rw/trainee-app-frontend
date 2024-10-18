@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { FormType } from "../../utils/types";
 import { menuItems } from "../../utils/data";
 
+type NextFormType = Exclude<FormType, "Application">;
+
 
 export default function CreateFormDropdown() {
     const navigate = useNavigate();
@@ -18,7 +20,7 @@ export default function CreateFormDropdown() {
   
 
 
-  const onClickAddForm = async (type: FormType) => {
+  const onClickAddForm = async (type: NextFormType) => {
     try {
       const nextFormTitle = getNextFormTitle(type);
   
@@ -71,7 +73,7 @@ export default function CreateFormDropdown() {
                   className={`group flex w-full items-center py-3 px-10 data-[focus]:bg-primary-dark data-[focus]:text-white ${
                     index === menuItems.length - 1 ? "border-none" : "border-b"
                   }`}
-                  onClick={() => onClickAddForm(item.type as FormType)}
+                  onClick={() => onClickAddForm(item.type as NextFormType)}
                 >
                   {item.label}
                 </button>

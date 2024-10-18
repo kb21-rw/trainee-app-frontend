@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import SearchInput from "../../components/ui/SearchInput";
 import {
   useGetAllFormsQuery,
+  useGetApplicationFormQuery
 } from "../../features/user/apiSlice";
 import FormCard from "../../components/ui/FormCard";
 import { IFormType } from "../../utils/types";
@@ -17,8 +18,22 @@ const AllForms = () => {
     jwt,
     searchString: searchQuery,
   });
+  const {data: applicationForm} = useGetApplicationFormQuery(jwt);
 
-  const forms=data?.forms;
+  console.log("application form ----", applicationForm)
+  
+  const parsedApplicationForm = {
+    _id: "6707a1241caed33cd7c941dc",
+    name: applicationForm?.name,
+    description: applicationForm?.description,
+    type: applicationForm?.type,
+    questions: applicationForm?.questions.length,
+    startDate: applicationForm?.startDate
+  }
+  const forms = data?.forms;
+
+
+  
 
   return (
     <div className="py-12">
@@ -35,7 +50,8 @@ const AllForms = () => {
           <NotFound type="Form" />
         </div>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 p-4 md:container mx-auto w-3/5 h-[750px] overflow-scroll">
+          {parsedApplicationForm && <FormCard form={parsedApplicationForm} />}
           {forms?.map((form: IFormType, index: number) => (
             <FormCard form={form} key={index} />
           ))}
