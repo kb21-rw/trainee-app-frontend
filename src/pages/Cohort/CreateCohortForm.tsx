@@ -99,6 +99,7 @@ function CreateCohortForm({ handleClose }: { handleClose: () => void }) {
                 onChange={(newValue: Dayjs | null) => {
                   onChange(newValue)
                 }}
+                disablePast
                 slotProps={{
                   textField: {
                     size: 'small',
