@@ -1,48 +1,83 @@
-import { Paper, Stack, Typography } from '@mui/material'
-import React, { useState } from 'react'
-import CohortTextField from './CohortTextField'
+import { InputLabel, Paper, Stack, TextField, Typography } from '@mui/material'
+import React from 'react'
 import Button from '../../components/ui/Button'
 import { ButtonSize, ButtonVariant } from '../../utils/types'
+import { Controller, UseFormRegister, useFieldArray } from 'react-hook-form'
 
-function Stages() {
-  const [stages, setStages] = useState<{ name: string; description: string }[]>(
-    [{ name: '', description: '' }]
-  )
+type StageProps = {
+  stagesNames?: { stageName: string; stageDescription: string }
+  control: any
+  register?: UseFormRegister<any>
+  errors: any
+}
+
+function Stages({ control, errors }: StageProps) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'stages',
+  })
 
   const addStage = () => {
-    setStages([...stages, { name: '', description: '' }])
+    append({ stageName: '', stageDescription: '' })
   }
 
-  const removeStage = () => {
-    if (stages.length > 1) {
-      setStages(stages.slice(0, -1))
+  //   const removeStage = (index: number) => {
+  //     remove(index)
+  //   }
+
+  const removeStage = (index: number) => {
+    if (fields.length > 1) {
+      remove(index)
     }
-  }
-
-  const handleStageChange = (index: number, field: string, value: string) => {
-    const newStages = [...stages]
-    newStages[index][field as keyof (typeof newStages)[number]] = value
-    setStages(newStages)
   }
 
   return (
     <>
       <Typography marginBlock={2}>Stages</Typography>
-      {stages.map((stage, index) => (
-        <Paper key={index} sx={{ p: 2, mb: 2, borderRadius: 2 }} elevation={5}>
-          <CohortTextField
-            label='Name'
-            placeholder={`Stage ${index + 1} Name`}
-            value={stage.name}
-            onChange={(e) => handleStageChange(index, 'name', e.target.value)}
+      {fields.map((field, index) => (
+        <Paper
+          key={field.id}
+          sx={{ p: 2, mb: 2, borderRadius: 2 }}
+          elevation={5}
+        >
+          <Controller
+            control={control}
+            name={`stages.${index}.stageName`}
+            render={({ field }) => (
+              <>
+                <InputLabel shrink htmlFor='bootstrap-input'>
+                  Name
+                </InputLabel>
+                <TextField
+                  sx={{ paddingBlockEnd: 2 }}
+                  error={!!errors.stages?.[index]?.stageName}
+                  helperText={errors.stages?.[index]?.stageName?.message}
+                  {...field}
+                  size='small'
+                  fullWidth
+                  placeholder={`Stage ${index + 1} Name`}
+                />
+              </>
+            )}
           />
-          <CohortTextField
-            label='Description'
-            value={stage.description}
-            placeholder={`Stage ${index + 1} Description`}
-            onChange={(e) =>
-              handleStageChange(index, 'description', e.target.value)
-            }
+          <Controller
+            control={control}
+            name={`stages.${index}.stageDescription`}
+            render={({ field }) => (
+              <>
+                <InputLabel shrink htmlFor='bootstrap-input'>
+                  Description
+                </InputLabel>
+                <TextField
+                  error={!!errors.stages?.[index]?.stageDescription}
+                  helperText={errors.stages?.[index]?.stageDescription?.message}
+                  {...field}
+                  size='small'
+                  fullWidth
+                  placeholder={`Stage ${index + 1} Description`}
+                />
+              </>
+            )}
           />
         </Paper>
       ))}
@@ -55,8 +90,8 @@ function Stages() {
         <Button
           size={ButtonSize.Small}
           variant={ButtonVariant.Danger}
-          onClick={removeStage}
-          disabled={stages.length === 1}
+          onClick={() => removeStage(fields.length - 1)}
+          disabled={fields.length === 1}
         >
           Remove Stage
         </Button>

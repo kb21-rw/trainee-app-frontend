@@ -32,7 +32,7 @@ function CreateCohortModal() {
         aria-describedby='modal-modal-description'
         sx={{ paddingInline: 10 }}
       >
-        <Box sx={{ ...style, maxHeight: '80vh', overflow: 'auto' }}>
+        <Box sx={{ ...style, maxBlockSize: '80vh', overflowY: 'auto' }}>
           <Typography
             id='modal-modal-title'
             variant='h5'
@@ -41,7 +41,7 @@ function CreateCohortModal() {
           >
             Create a new Cohort
           </Typography>
-          <CreateCohortForm />
+          <CreateCohortForm handleClose={handleClose} />
         </Box>
       </Modal>
     </>
