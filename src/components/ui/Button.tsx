@@ -6,7 +6,6 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant
   outlined?: boolean
   size?: ButtonSize
-  className?: string
 }
 
 const getVariantOutlinedStyles = (
@@ -45,7 +44,6 @@ const Button = ({
   size = ButtonSize.Medium,
   type = 'button',
   onClick,
-  className,
 }: ButtonProps) => {
   const sizeStyles = getSizeStyles(size)
   const valiantOutlinedStyles = getVariantOutlinedStyles(variant, outlined)
@@ -53,7 +51,7 @@ const Button = ({
   return (
     <button
       onClick={onClick}
-      className={`rounded-lg ${valiantOutlinedStyles} ${sizeStyles} ${className}`}
+      className={`rounded-lg ${valiantOutlinedStyles} ${sizeStyles}`}
       type={type}
     >
       {children}

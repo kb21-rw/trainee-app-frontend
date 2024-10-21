@@ -4,11 +4,11 @@ import Button from '../../components/ui/Button'
 
 const ActionButtons = () => {
   return (
-    <div className='flex items-center justify-center space-x-2 w-full h-full'>
-      <Button size={ButtonSize.Small} outlined className='text-xs'>
+    <div className='flex items-center justify-center text-xs space-x-2 w-full h-full'>
+      <Button size={ButtonSize.Small} outlined>
         View
       </Button>
-      <Button size={ButtonSize.Small} outlined className='text-xs'>
+      <Button size={ButtonSize.Small} outlined>
         Edit
       </Button>
     </div>

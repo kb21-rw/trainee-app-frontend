@@ -13,8 +13,8 @@ function SearchBar() {
         width: 400,
         border: '1px solid #b4bacb',
         borderRadius: '8px',
-        paddingBlock: '2px',
-        paddingInlineEnd: '2px',
+        paddingBlock: '4px',
+        paddingInlineEnd: '4px',
       }}
     >
       <InputBase
