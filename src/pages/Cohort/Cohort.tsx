@@ -11,7 +11,7 @@ import {
   customizeDataGridStyles,
   TCohort,
   TCohortWithId,
-} from './constant'
+} from './cohortColumns'
 
 const Cohort = () => {
   const jwt: string = getJWT()
