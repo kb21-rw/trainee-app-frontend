@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const api_url = import.meta.env.VITE_API_URL;
+const api_url = import.meta.env.VITE_BACKEND_DEPLOYMENT_URL ?? import.meta.env.VITE_API_URL;
 
 export const usersApi: any = createApi({
   reducerPath: "usersApi",
@@ -175,7 +175,6 @@ export const usersApi: any = createApi({
         return {
           url: `/auth/applicant/verify?userId=${userId}`,
           method: "PATCH",
-          
         };
       },
     }),
