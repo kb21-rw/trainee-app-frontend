@@ -121,10 +121,10 @@ function CreateCohortForm({ handleClose }: { handleClose: () => void }) {
         errors={errors}
       />
       <Stack
-        justifySelf='center'
-        direction='row'
+        paddingBlock={5}
+        paddingInline={17}
+        justifyItems='center'
         justifyContent='center'
-        marginBlockStart={4}
       >
         <Button type='submit' size={ButtonSize.Small}>
           Submit
