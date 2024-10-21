@@ -1,4 +1,3 @@
-
 /* eslint-disable no-unused-vars */
 export interface IFormType {
   _id: string;
@@ -120,7 +119,11 @@ export interface Cohort {
   forms: number;
 }
 
-export type FormType = "Applicant" | "Trainee" | "Application";
+export enum FormType {
+  Applicant = "Applicant",
+  Trainee = "Trainee",
+  Application = "Application",
+}
 
 export interface MenuItemType {
   label: string;
