@@ -22,14 +22,14 @@ const AllForms = () => {
   const { data: applicationForm } = useGetApplicationFormQuery(jwt);
 
   const parsedApplicationForm = {
-    _id: "6707a1241caed33cd7c941dc",
+    _id: applicationForm?._id,
     name: applicationForm?.name,
     description: applicationForm?.description,
     type: applicationForm?.type,
     questions: applicationForm?.questions.length,
     startDate: applicationForm?.startDate,
   };
-  const forms = data?.forms;
+  const forms = data?.forms
 
   return (
     <div className="py-12">
