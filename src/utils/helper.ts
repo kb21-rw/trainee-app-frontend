@@ -161,7 +161,7 @@ export const getCohorts = (data: Cohort[], dataItems: string[]) => {
  * @returns {string} - A string in the format: `"<Type> Form created at - <Formatted Time>"`.
  */
 
-export const getNextFormTitle = (type: "Applicant" | "Trainee") => {
+export const CreateNextFormTitle = (type: "Applicant" | "Trainee") => {
   const currentDate = new Date();
   const formatter = new Intl.DateTimeFormat("en-US", {
     hour: "numeric",
