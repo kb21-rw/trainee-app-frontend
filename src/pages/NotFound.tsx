@@ -2,32 +2,10 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
 import { ButtonSize } from "../utils/types";
-import { useGetProfileQuery } from "../features/user/apiSlice";
-import { getJWT } from "../utils/helper";
 
 const NotFound = () => {
   const navigate = useNavigate();
-  const jwt = getJWT();
-  const {data: profile} = useGetProfileQuery(jwt);
-  const role = profile?.role;
 
-  
-  const navigateBasedOnRole = (role: string) => { 
-    switch (role) {
-      case "Admin":
-        navigate("/forms");
-        break;
-      case "Coach":
-        navigate("/overview");
-        break;
-      case "Applicant" || "Prospect":
-        navigate("/home");
-        break;
-      default:
-        navigate("/login");
-        break;
-    }
-  }
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
@@ -38,7 +16,7 @@ const NotFound = () => {
           className="w-full"
         />
        <div className="md:w-1/2">
-       <Button size={ButtonSize.Large} onClick={() => navigateBasedOnRole(role)}>
+       <Button size={ButtonSize.Large} onClick={() => navigate(-1)}>
           <span>Go Back</span>
        </Button>
        </div>
