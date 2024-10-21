@@ -6,47 +6,60 @@ import EditForm from "../../components/ui/EditForm";
 import Back from "../../assets/BackIcon";
 import QuestionCard from "../../components/ui/QuestionCard";
 import { getJWT } from "../../utils/helper";
+import { Question } from "../../utils/types";
 
 const SingleForm = () => {
   const navigate = useNavigate();
-  const id = useParams().id || "";
-  const jwt:string = getJWT()
-  const { data, isFetching } = useGetFormQuery({ id, jwt });
-  const name = data?.name;
-  const description = data?.description || "";
-  const questions = data?.questionIds || [];
-  const [activeQuestion, setActiveQuestion] = useState("");
+  const { id } = useParams<{ id: string }>();
+  const jwt: string = getJWT();
+  const { data, isFetching, error } = useGetFormQuery({ id: id || "", jwt });
+
+  const [activeQuestion, setActiveQuestion] = useState<string>("");
+
+  if (isFetching) {
+    return (
+      <div className="h-[50vh] flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="h-[50vh] flex items-center justify-center">
+        <p>Failed to load form details. Please try again later.</p>
+      </div>
+    );
+  }
+
+  const { name, description, type, questionIds: questions = [] } = data;
 
   return (
     <div className="py-12 max-w-5xl mx-auto">
       <button onClick={() => navigate("/forms")}>
         <Back />
       </button>
-      {isFetching ? (
-        <div className="h-[50vh] flex items-center justify-center">
-          <Loader />
-        </div>
-      ) : (
+
+      <div className="flex flex-col gap-4">
+        <EditForm
+          name={name}
+          description={description}
+          id={id || ""}
+          type={type}
+          activeQuestion={activeQuestion}
+          setActiveQuestion={setActiveQuestion}
+        />
         <div className="flex flex-col gap-4">
-          <EditForm
-            name={name}
-            description={description}
-            id={id}
-            activeQuestion={activeQuestion}
-            setActiveQuestion={setActiveQuestion}
-          />
-          <div className="flex flex-col gap-4">
-            {questions?.map((question: any) => (
-              <QuestionCard
-                activeQuestion={activeQuestion}
-                setActiveQuestion={setActiveQuestion}
-                key={question._id}
-                question={question}
-              />
-            ))}
-          </div>
+          {questions.map((question: Question) => (
+            <QuestionCard
+              key={question._id}
+              activeQuestion={activeQuestion}
+              setActiveQuestion={setActiveQuestion}
+              question={question}
+            />
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 };

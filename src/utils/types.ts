@@ -119,7 +119,11 @@ export interface Cohort {
   forms: number;
 }
 
-export type FormType = "Applicant" | "Trainee";
+export enum FormType {
+  Applicant = "Applicant",
+  Trainee = "Trainee",
+  Application = "Application",
+}
 
 export interface MenuItemType {
   label: string;

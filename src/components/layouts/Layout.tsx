@@ -22,7 +22,7 @@ const Layout = () => {
 
   return (
     <div className="min-h-screen flex flex-col justify-center font-lato px-1 md:px-16 py-4 max-w-[1920px] md:mx-auto overflow-x-hidden">
-      <nav className="flex items-center justify-between gap-20 py-6 bg-white border-b-2 border-b-gray-200 shadow-b">
+      <nav className="flex items-center justify-between gap-20 py-6 bg-white border-b-2 shadow-b fixed top-0 w-full pr-20">
         <div className="flex items-center gap-10">
           {menu.map((element, index) => (
             <NavLink
