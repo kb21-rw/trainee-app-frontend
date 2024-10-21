@@ -12,7 +12,7 @@ const SingleForm = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const jwt: string = getJWT();
-  const { data, isFetching, error } = useGetFormQuery({ id:id || "", jwt });
+  const { data, isFetching, error } = useGetFormQuery({ id: id || "", jwt });
 
   const [activeQuestion, setActiveQuestion] = useState<string>("");
 
