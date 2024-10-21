@@ -20,8 +20,6 @@ const AllForms = () => {
   });
   const {data: applicationForm} = useGetApplicationFormQuery(jwt);
 
-  console.log("application form ----", applicationForm)
-  
   const parsedApplicationForm = {
     _id: "6707a1241caed33cd7c941dc",
     name: applicationForm?.name,
