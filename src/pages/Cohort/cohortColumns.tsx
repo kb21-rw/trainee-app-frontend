@@ -40,7 +40,7 @@ export const columns: GridColDef<TCohortWithId>[] = [
     headerClassName: 'header-background',
   },
   {
-    field: 'trainees',
+    field: 'applicants',
     headerName: 'Current participants',
     type: 'number',
     flex: 1,

@@ -7,12 +7,14 @@ import { ButtonSize } from '../../utils/types'
 import CohortTextField from './CohortTextField'
 import Stages from './Stages'
 import { z } from 'zod'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import dayjs, { Dayjs } from 'dayjs'
+import { useCreateCohortMutation } from '../../features/user/apiSlice'
+import { getJWT } from '../../utils/helper'
 
 const schema = z.object({
-  names: z.string().min(1, 'Name is required'),
+  name: z.string().min(1, 'Name is required'),
   description: z.string().min(1, 'Description is required'),
   trainingStartDate: z
     .custom((value) => dayjs.isDayjs(value) || value instanceof Date, {
@@ -30,12 +32,21 @@ const schema = z.object({
 })
 
 const FORM_NAME = {
-  names: 'names',
+  name: 'name',
   description: 'description',
   trainingStartDate: 'trainingStartDate',
   stages: { stageName: 'stageName', stageDescription: 'stageDescription' },
 } as const
+
+type TCohortFormValues = {
+  name: string
+  description: string
+  trainingStartDate: Dayjs | null
+  stages: { stageName: string; stageDescription: string }[]
+}
+
 function CreateCohortForm({ handleClose }: { handleClose: () => void }) {
+  const [cohort, { error }] = useCreateCohortMutation()
   const {
     register,
     control,
@@ -45,17 +56,33 @@ function CreateCohortForm({ handleClose }: { handleClose: () => void }) {
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      names: '',
+      name: '',
       description: '',
       trainingStartDate: null,
       stages: [{ stageName: '', stageDescription: '' }],
     },
   })
 
-  const onSubmit = async (data: any) => {
-    // Call your API endpoint with the form data
-    handleClose()
-    console.log(data, '------------------')
+  const jwt = getJWT()
+
+  const onSubmit: SubmitHandler<TCohortFormValues> = async (data) => {
+    try {
+      await cohort({
+        jwt,
+        body: {
+          ...data,
+          stages: data.stages.map((stage) => {
+            return {
+              name: stage.stageName,
+              description: stage.stageDescription,
+            }
+          }),
+        },
+      })
+      handleClose()
+    } catch {
+      console.error('An error occurred while creating cohort', error)
+    }
   }
 
   return (
@@ -71,7 +98,7 @@ function CreateCohortForm({ handleClose }: { handleClose: () => void }) {
       })}
     >
       <CohortTextField
-        name={FORM_NAME.names}
+        name={FORM_NAME.name}
         control={control}
         register={register}
         errors={errors}
