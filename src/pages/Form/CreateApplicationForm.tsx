@@ -8,6 +8,7 @@ import { ApplicationFormType } from "../../utils/types";
 import { useApplicationForm } from "../../utils/hooks/useApplicationForm";
 import { FormInputsSection } from "../../components/ui/FormInputsSection";
 import { StagesSection } from "../../components/ui/StagesSection";
+import { useNavigate } from "react-router-dom";
 import { useCreateFormMutation } from "../../features/user/apiSlice";
 import FormDateInputs from "../../components/ui/FormDateInput";
 
@@ -31,6 +32,8 @@ const CreateApplicationForm = () => {
     removeStage,
   } = useApplicationForm();
 
+  const navigate = useNavigate();
+
 
   const onSubmit = async (data: ApplicationFormType) => {
     const requestBody = {
@@ -50,6 +53,11 @@ const CreateApplicationForm = () => {
   const errorMessage: string =
     errors?.endDate?.message || error?.data?.errorMessage;
 
+
+    if (isSuccess) {
+      navigate("/forms");
+    }
+    
   return (
     <>
       {errorMessage && (

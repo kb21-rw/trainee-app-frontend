@@ -72,7 +72,7 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
           <div className="flex items-center gap-4">
             <input
               {...register("prompt")}
-              className={`text-3xl flex-1 h-16  ${
+              className={`text-2xl flex-1 h-16  ${
                 activeQuestion === _id && "bg-white"
               } focus:border-b-2 border-blue-400 outline-none py-1 px-0.5`}
             />
