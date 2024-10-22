@@ -1,0 +1,12 @@
+.merged-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  font-weight: bold;
+}
+
+.subheader {
+  font-size: 12px;
+  font-weight: normal;
+}
