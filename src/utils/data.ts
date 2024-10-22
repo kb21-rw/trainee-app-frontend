@@ -1,4 +1,4 @@
-import { MenuItemType } from "./types";
+import { FormType, MenuItemType } from "./types";
 
 export const adminMenu = [
   { link: "/forms", title: "Forms" },
@@ -16,8 +16,8 @@ export const coachMenu = [
 export const applicantMenu = [{ link: "/home", title: "Home" }];
 
 export const menuItems: MenuItemType[] = [
-  { label: "Create a new Trainee form", type: "Trainee" },
-  { label: "Create a new Applicant form", type: "Applicant" },
+  { label: "Create a new form for Trainees", type: FormType.Trainee },
+  { label: "Create a new form for Applicants", type: FormType.Applicant },
   {
     label: "Create a new Application form",
     link: "/forms/create/application-form",

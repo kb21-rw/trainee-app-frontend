@@ -2,35 +2,34 @@ import React from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
-import { getJWT, getNextFormTitle } from "../../utils/helper";
-import {
-  useCreateFormMutation,
-} from "../../features/user/apiSlice";
+import { getJWT, CreateNextFormTitle } from "../../utils/helper";
+import { useCreateFormMutation } from "../../features/user/apiSlice";
 import { useNavigate } from "react-router-dom";
 import { FormType } from "../../utils/types";
 import { menuItems } from "../../utils/data";
+import { useGetApplicationFormQuery } from "../../features/user/apiSlice";
 
+type NextFormType = Exclude<FormType, FormType.Application>;
 
 export default function CreateFormDropdown() {
-    const navigate = useNavigate();
-    const jwt: string = getJWT();
-    const [createForm] = useCreateFormMutation();
-  
+  const navigate = useNavigate();
+  const jwt: string = getJWT();
+  const [createForm] = useCreateFormMutation();
+  const {data: applicationForm} = useGetApplicationFormQuery(jwt);
 
-
-  const onClickAddForm = async (type: FormType) => {
+  const onClickAddForm = async (type: NextFormType) => {
     try {
-      const nextFormTitle = getNextFormTitle(type);
-  
+      const nextFormTitle = CreateNextFormTitle(type);
+
       let requestBody: object = { name: nextFormTitle, type };
-  
+
       const { data: formData } = await createForm({
         jwt,
         body: requestBody,
       });
-  
+
       const id = formData?._id;
-  
+
       if (id) {
         navigate(`/forms/${id}`);
       } else {
@@ -40,7 +39,6 @@ export default function CreateFormDropdown() {
       console.error("Error creating form:", error);
     }
   };
-
 
   return (
     <div>
@@ -58,20 +56,22 @@ export default function CreateFormDropdown() {
           {menuItems.map((item, index) => (
             <MenuItem key={index}>
               {item.link ? (
+               !applicationForm && item.link === "/forms/create/application-form" ? (
                 <Link
-                  to={item.link}
-                  className={`group flex w-full items-center py-3 px-10 data-[focus]:bg-primary-dark data-[focus]:text-white ${
-                    index === menuItems.length - 1 ? "border-none" : "border-b"
-                  }`}
-                >
-                  {item.label}
-                </Link>
+                to={item.link}
+                className={`group flex w-full items-center py-3 px-5 data-[focus]:bg-primary-dark data-[focus]:text-white ${
+                  index === menuItems.length - 1 ? "border-none" : "border-b"
+                }`}
+              >
+                {item.label}
+              </Link>
+               ) : <span className="hidden"></span>
               ) : (
                 <button
-                  className={`group flex w-full items-center py-3 px-10 data-[focus]:bg-primary-dark data-[focus]:text-white ${
+                  className={`group flex w-full items-center py-3 px-5 data-[focus]:bg-primary-dark data-[focus]:text-white ${
                     index === menuItems.length - 1 ? "border-none" : "border-b"
                   }`}
-                  onClick={() => onClickAddForm(item.type as FormType)}
+                  onClick={() => onClickAddForm(item.type as NextFormType)}
                 >
                   {item.label}
                 </button>

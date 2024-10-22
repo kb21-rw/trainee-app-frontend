@@ -15,7 +15,7 @@ import { getJWT } from "../../utils/helper";
 import { QuestionType } from "../../utils/types";
 
 const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
-  const { title, type, options, _id } = question;
+  const { prompt, type, options, _id } = question;
   const {
     register,
     handleSubmit,
@@ -25,7 +25,7 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
     formState: { isDirty },
   } = useForm({
     defaultValues: {
-      title,
+      prompt,
       type,
       options,
     },
@@ -70,8 +70,7 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
         <div className="w-full justify-between gap-4- cursor-pointer">
           <div className="flex items-center gap-4">
             <input
-              defaultValue={title}
-              {...register("title")}
+              {...register("prompt")}
               className={`text-3xl flex-1 h-16  ${
                 activeQuestion === _id && "bg-white"
               } focus:border-b-2 border-blue-400 outline-none py-1 px-0.5`}
@@ -149,14 +148,13 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
           className="flex items-center gap-2"
         >
           <Delete />
-          <span>Delete</span>
         </button>
       </div>
       {
       showDeleteModal &&
         <DeleteModal
           title="a question"
-          name={title}
+          name={prompt}
           closePopup={() => setShowDeleteModal(false)}
           onDelete={() => handleDeleteQuestion(_id)}
         />
