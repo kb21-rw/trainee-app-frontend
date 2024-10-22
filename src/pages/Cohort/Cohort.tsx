@@ -1,4 +1,3 @@
-import React from 'react'
 import { getJWT } from '../../utils/helper'
 import { useGetAllCohortsQuery } from '../../features/user/apiSlice'
 import { DataGrid } from '@mui/x-data-grid'

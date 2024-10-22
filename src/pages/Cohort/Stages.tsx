@@ -1,5 +1,4 @@
 import { InputLabel, Paper, Stack, TextField, Typography } from '@mui/material'
-import React from 'react'
 import Button from '../../components/ui/Button'
 import { ButtonSize, ButtonVariant } from '../../utils/types'
 import { Controller, UseFormRegister, useFieldArray } from 'react-hook-form'
@@ -20,10 +19,6 @@ function Stages({ control, errors }: StageProps) {
   const addStage = () => {
     append({ stageName: '', stageDescription: '' })
   }
-
-  //   const removeStage = (index: number) => {
-  //     remove(index)
-  //   }
 
   const removeStage = (index: number) => {
     if (fields.length > 1) {

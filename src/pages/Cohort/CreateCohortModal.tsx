@@ -1,5 +1,5 @@
 import { Box, Modal, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Button from '../../components/ui/Button'
 import { ButtonSize } from '../../utils/types'
 import CreateCohortForm from './CreateCohortForm'

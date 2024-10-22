@@ -1,4 +1,3 @@
-import React from 'react'
 import { ButtonSize } from '../../utils/types'
 import Button from '../../components/ui/Button'
 import { Box, InputBase } from '@mui/material'
