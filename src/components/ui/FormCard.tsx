@@ -27,7 +27,7 @@ const FormCard = ({ form }: { form: IFormType }) => {
   return (
     <div className="p-8 custom-shadow flex items-center justify-between rounded-xl">
       {isDeleteFormLoading && (
-        <div className="absolute inset-0 h-full w-full">
+        <div className="absolute inset-0 h-full w-full flex items-center justify-center">
           <Loader />
         </div>
       )}

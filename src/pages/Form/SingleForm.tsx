@@ -35,7 +35,7 @@ const SingleForm = () => {
   const { name, description, type, questionIds: questions = [] } = data;
 
   return (
-    <div className="py-12 max-w-5xl mx-auto">
+    <div className="py-12 max-w-5xl mx-auto mt-10">
       <button onClick={() => navigate("/forms")}>
         <Back />
       </button>

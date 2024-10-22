@@ -41,8 +41,9 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
   };
 
   const changeOptionsHandler = (value: string, index: number) => {
-    currentOptions[index] = value;
-    setValue("options", currentOptions, { shouldDirty: true });
+    const updatedOptions = [...currentOptions];
+    updatedOptions[index] = value;
+    setValue("options", updatedOptions, { shouldDirty: true });
   };
 
   const onSubmit = async (data: any) => {
@@ -78,7 +79,8 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
             <select className="p-2" {...register("type")} value={selectedType}>
               {[
                 { label: "Text", value: QuestionType.Text },
-                { label: "Single Select", value: QuestionType.SingleSelect },
+                { label: "Single choice", value: QuestionType.SingleSelect },
+                { label: "Multiple choice", value: QuestionType.MultiSelect },
               ].map(
                 (
                   currentType: { label: string; value: string },
@@ -91,7 +93,7 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
               )}
             </select>
           </div>
-          {selectedType === QuestionType.SingleSelect && (
+          {(selectedType === QuestionType.SingleSelect || selectedType === QuestionType.MultiSelect) && (
             <div>
               <ol className="w-full my-4">
                 {currentOptions.map((option: string, index: number) => (
@@ -121,8 +123,9 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
               {currentOptions.length > 0 && (
                 <button
                   onClick={() => {
-                    currentOptions.pop();
-                    setValue("options", currentOptions, { shouldDirty: true });
+                    const updatedOptions = [...currentOptions]
+                    updatedOptions.pop();
+                    setValue("options", updatedOptions, { shouldDirty: true });
                   }}
                 >
                   <RemoveIcon />
