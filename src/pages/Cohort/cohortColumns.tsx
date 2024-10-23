@@ -1,4 +1,3 @@
-import React from 'react'
 import { GridColDef } from '@mui/x-data-grid'
 import ActionButtons from './ActionButtons'
 
@@ -41,7 +40,7 @@ export const columns: GridColDef<TCohortWithId>[] = [
     headerClassName: 'header-background',
   },
   {
-    field: 'trainees',
+    field: 'applicants',
     headerName: 'Current participants',
     type: 'number',
     flex: 1,
