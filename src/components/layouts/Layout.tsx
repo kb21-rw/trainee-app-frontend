@@ -21,8 +21,8 @@ const Layout = () => {
     [];
 
   return (
-    <div className="min-h-screen flex flex-col justify-center font-lato px-1 md:px-16 py-4 max-w-[1920px] md:mx-auto overflow-x-hidden">
-      <nav className="flex items-center justify-between gap-20 py-6 bg-white border-b-2 shadow-b fixed top-0 w-full pr-20">
+    <main className="max-h-screen font-lato max-w-[1920px] md:mx-auto overflow-x-hidden">
+      <nav className="sticky top-0 flex items-center justify-between gap-20 py-6 px-1 md:px-16 bg-white border-b-2 shadow-b pr-20">
         <div className="flex items-center gap-10">
           {menu.map((element, index) => (
             <NavLink
@@ -63,11 +63,11 @@ const Layout = () => {
           </button>
         </div>
       </nav>
-      <div className="flex-1">
+      <div className="flex-1 px-1 md:px-16">
         <Outlet />
       </div>
       <Footer />
-    </div>
+    </main>
   );
 };
 

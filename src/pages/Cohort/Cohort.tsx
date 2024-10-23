@@ -1,9 +1,6 @@
-import React from 'react'
 import { getJWT } from '../../utils/helper'
 import { useGetAllCohortsQuery } from '../../features/user/apiSlice'
 import { DataGrid } from '@mui/x-data-grid'
-import { ButtonSize } from '../../utils/types'
-import Button from '../../components/ui/Button'
 import CohortSkeleton from './CohortSkeleton'
 import SearchBar from './SearchBar'
 import {
@@ -12,6 +9,7 @@ import {
   TCohort,
   TCohortWithId,
 } from './cohortColumns'
+import CreateCohortModal from './CreateCohortModal'
 
 const Cohort = () => {
   const jwt: string = getJWT()
@@ -31,7 +29,7 @@ const Cohort = () => {
     <div className='mt-10'>
       <div className='flex justify-between mb-10'>
         <SearchBar />
-        <Button size={ButtonSize.Small}>Create cohort</Button>
+        <CreateCohortModal />
       </div>
       <DataGrid
         rows={modifiedArray}
