@@ -46,7 +46,7 @@ const AllForms = () => {
           <NotFound type="Form" />
         </div>
       ) : (
-        <div className="flex flex-col gap-4 p-4 md:container mx-auto w-3/5 h-[750px] overflow-scroll">
+        <div className="flex flex-col gap-4 py-4 px-[1px] md:container mx-auto w-3/5 h-[750px] overflow-scroll">
           {applicationForm && parsedApplicationForm ? (
             <FormCard form={parsedApplicationForm} />
           ) : (
