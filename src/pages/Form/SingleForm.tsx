@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import { useGetFormQuery } from "../../features/user/apiSlice";
 import Loader from "../../components/ui/Loader";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import EditForm from "../../components/ui/EditForm";
-import Back from "../../assets/BackIcon";
 import QuestionCard from "../../components/ui/QuestionCard";
 import { getJWT } from "../../utils/helper";
 import { Question } from "../../utils/types";
 
 const SingleForm = () => {
-  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const jwt: string = getJWT();
   const { data, isFetching, error } = useGetFormQuery({ id: id || "", jwt });
@@ -35,10 +33,7 @@ const SingleForm = () => {
   const { name, description, type, questionIds: questions = [] } = data;
 
   return (
-    <div className="py-12 max-w-5xl mx-auto mt-10">
-      <button onClick={() => navigate("/forms")}>
-        <Back />
-      </button>
+    <div className="py-12 max-w-5xl mx-auto">
 
       <div className="flex flex-col gap-4">
         <EditForm
