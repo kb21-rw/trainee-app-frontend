@@ -1,22 +1,20 @@
+/* eslint-disable no-unused-vars */
+
 import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useGetMyApplicationQuery } from "../../features/user/apiSlice";
 import Loader from "../../components/ui/Loader";
 import { ApplicationFormResponse } from "../../utils/types";
-import ReviewFormModal from "../../components/modals/ReviewFormModal";
-import ApplicantSuccessModal from "../../components/modals/ApplicationSuccess";
-import { useAddApplicantResponseMutation } from "../../features/user/apiSlice";
 import { getJWT } from "../../utils/helper";
 import ApplicationFormComponent from "../../components/ui/ApplicationFormComponent";
 
 const ApplicationForm = () => {
-  const [reviewData, setReviewData] = useState<ApplicationFormResponse[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSubmissionSuccessful, setIsSubmissionSuccessful] = useState(false);
-
+  const  location = useLocation();
+  const [formData, setFormData] = useState(location?.state || {})
   const jwt: string = getJWT();
+  const navigate = useNavigate();
+
   const { data, isFetching } = useGetMyApplicationQuery(jwt);
-  const [addApplicantResponse, { isSuccess }] =
-    useAddApplicantResponseMutation();
 
   const formTitle = data?.name;
   const formQuestions = data?.questions ?? [];
@@ -29,23 +27,7 @@ const ApplicationForm = () => {
       }),
     );
 
-    console.log(formData);
-    setReviewData(responses);
-    setIsModalOpen(true);
-  };
-
-  const handleConfirm = async () => {
-    try {
-      await addApplicantResponse({ jwt, body: reviewData, action: "submit" });
-      if (isSuccess) setIsSubmissionSuccessful(true);
-    } catch (error: any) {
-      throw new Error("Error submitting form", error);
-    }
-  };
-
-  const handleEdit = () => {
-    setReviewData([]);
-    setIsModalOpen(false);
+    navigate('/preview', {state: {formQuestions, responses, formTitle, formData}})
   };
 
   if (isFetching)
@@ -56,34 +38,18 @@ const ApplicationForm = () => {
     );
 
   return (
-    <div className="mt-5 flex items-center justify-center py-6 px-4 sm:py-12 sm:px-6 lg:px-8 border h-screen">
-      <div className="w-full md:max-w-3xl bg-white rounded-lg shadow-lg border border-green-500">
-        <div className="border-t-[#673AB7] border-t-8 rounded-xl w-full p-2 sm:p-4 "></div>
-        <div className="px-4 py-4 sm:px-8 sm:py-6 border border-red-500">
+    <div className="flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <div className="w-full py-4 flex flex-col items-center md:w-1/2">
+        <div className="md:w-4/5 border rounded-xl">
+        <div className="border-t-[#673AB7] border-t-8 rounded-xl p-2 sm:p-4 w-full"></div>
           <ApplicationFormComponent
             formTitle={formTitle}
             formQuestions={formQuestions}
             handleFormSubmit={handleFormSubmit}
+            initialFormData={formData}
           />
         </div>
       </div>
-
-      {isModalOpen && (
-        <ReviewFormModal
-          title="Confirm Submission"
-          closePopup={() => setIsModalOpen(false)}
-          formQuestions={formQuestions}
-          responses={reviewData}
-          setReviewData={setReviewData}
-          handleConfirm={handleConfirm}
-          handleEdit={handleEdit}
-        />
-      )}
-      {isSubmissionSuccessful && (
-        <ApplicantSuccessModal
-          closePopup={() => setIsSubmissionSuccessful(false)}
-        />
-      )}
     </div>
   );
 };

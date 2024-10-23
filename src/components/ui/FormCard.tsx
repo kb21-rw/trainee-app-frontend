@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { H2, H6, H7 } from "./Typography";
 import { IFormType } from "../../utils/types";
 import Delete from "../../assets/DeleteIcon";

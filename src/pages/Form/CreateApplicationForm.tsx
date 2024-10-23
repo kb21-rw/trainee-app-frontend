@@ -1,16 +1,13 @@
-import React, { useState } from "react";
-import { H1 } from "../../components/ui/Typography";
+import { useState } from "react";
 import SuccessCheckMarkIcon from "../../assets/SuccessCheckMarkIcon";
 import CheckMarkIcon from "../../assets/CheckMarkIcon";
-import AddIcon from "../../assets/AddIcon";
-import DeleteIcon from "../../assets/DeleteIcon";
 import { ApplicationFormType } from "../../utils/types";
 import { useApplicationForm } from "../../utils/hooks/useApplicationForm";
 import { FormInputsSection } from "../../components/ui/FormInputsSection";
 import { StagesSection } from "../../components/ui/StagesSection";
-import { useNavigate } from "react-router-dom";
 import { useCreateFormMutation } from "../../features/user/apiSlice";
 import FormDateInputs from "../../components/ui/FormDateInput";
+import useNavigateAfterSuccess from "../../utils/hooks/useNavigateAfterSuccess";
 
 import moment from "moment";
 
@@ -32,9 +29,6 @@ const CreateApplicationForm = () => {
     removeStage,
   } = useApplicationForm();
 
-  const navigate = useNavigate();
-
-
   const onSubmit = async (data: ApplicationFormType) => {
     const requestBody = {
       name: data.title,
@@ -53,10 +47,7 @@ const CreateApplicationForm = () => {
   const errorMessage: string =
     errors?.endDate?.message || error?.data?.errorMessage;
 
-
-    if (isSuccess) {
-      navigate("/forms");
-    }
+  useNavigateAfterSuccess("/forms", isSuccess);
     
   return (
     <>
@@ -67,14 +58,9 @@ const CreateApplicationForm = () => {
       )}
       {isSuccess && (
         <div className="flex items-center justify-center">
-          <Alert type="success">Form created successfully</Alert>
+          <Alert type="success">Form created successfully...</Alert>
         </div>
       )}
-      <H1>
-        <div className="text-center py-3">
-          <span>Application Form </span>
-        </div>
-      </H1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         onFocus={() => setActiveInput("title")}
@@ -109,15 +95,6 @@ const CreateApplicationForm = () => {
           ) : (
             <CheckMarkIcon />
           )}
-          <button type="button" onClick={addNewStage}>
-            <AddIcon />
-          </button>
-          <button
-            type="button"
-            onClick={() => removeStage(currentStages.length - 1)}
-          >
-            <DeleteIcon />
-          </button>
         </div>
       </form>
     </>
