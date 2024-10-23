@@ -1,142 +1,167 @@
 /* eslint-disable no-unused-vars */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import FormInput from "../../components/ui/FormInput";
-import Button from "../../components/ui/Button";
-import { ButtonVariant, Question, QuestionType } from "../../utils/types";
+import {
+  TextField,
+  Radio,
+  Checkbox,
+  FormControlLabel,
+  RadioGroup,
+  FormGroup,
+  Typography,
+  Box,
+} from "@mui/material";
+import { Question, QuestionType } from "../../utils/types";
+import Button from "./Button";
 
 interface FormComponentProps {
   formTitle: string;
   formQuestions: Question[];
+  initialFormData?: any;
   handleFormSubmit: (formData: any) => void;
 }
 
 const FormComponent: React.FC<FormComponentProps> = ({
   formTitle,
   formQuestions,
+  initialFormData,
   handleFormSubmit,
 }) => {
-  const { handleSubmit, register, control } = useForm();
+  const { handleSubmit, control, setValue } = useForm({
+    defaultValues: initialFormData,
+  });
+
+  useEffect(() => {
+    if (initialFormData) {
+      Object.keys(initialFormData).forEach((key) => {
+        setValue(key, initialFormData[key]);
+      });
+    }
+  }, [initialFormData, setValue]);
 
   return (
-    <form
-      className="space-y-8 mt-6 p-6 bg-white shadow-md rounded-lg max-w-3xl mx-auto"
+    <Box
+      component="form"
       onSubmit={handleSubmit(handleFormSubmit)}
+      sx={{
+        p: 2,
+        bgcolor: "background.paper",
+        borderRadius: 2,
+        maxWidth: "3xl",
+        mx: "auto",
+      }}
     >
-      <div className="border-b border-gray-300 pb-4 mb-6">
-        <h2 className="text-3xl font-bold text-gray-900 text-center">
+      <Box
+        sx={{
+          borderBottom: 1,
+          borderColor: "divider",
+          pb: { xs: 2, md: 4 },
+          mb: { xs: 2, md: 4 },
+          textAlign: "center",
+        }}
+      >
+        <Typography
+          variant="h4"
+          component="h2"
+          fontWeight="bold"
+          sx={{
+            fontSize: { xs: "1.5rem", md: "2rem" },
+            lineHeight: { xs: "1.8rem", md: "2.4rem" },
+          }}
+        >
           {formTitle}
-        </h2>
-      </div>
+        </Typography>
+      </Box>
 
       {formQuestions.map((question: Question, index: number) => (
-        <div key={index} className="space-y-4">
-          <label className="block text-lg font-semibold text-gray-800">
+        <Box key={index} sx={{ mb: 4 }}>
+          <Typography variant="h6" component="label" sx={{ display: "block" }}>
             {index + 1}. {question.prompt}
-          </label>
+          </Typography>
 
           {question.type === QuestionType.Text && (
-            <FormInput
-              {...register(`responses[${index}].questionId`, {
-                value: question._id,
-              })}
-              {...register(`responses[${index}].answer`, { required: true })}
-              className="border border-gray-300 rounded-md p-3 w-full text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            <Controller
+              name={`responses[${index}].answer`}
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField {...field} fullWidth variant="standard" />
+              )}
             />
           )}
 
           {question.type === QuestionType.SingleSelect && (
-            <div className="space-y-3">
-              {question.options?.map((option: string, optionIndex: number) => (
-                <div key={optionIndex} className="flex items-center">
-                  <input
-                    type="radio"
-                    id={`option_${index}_${optionIndex}`}
-                    {...register(`responses[${index}].questionId`, {
-                      value: question._id,
-                    })}
-                    {...register(`responses[${index}].answer`, {
-                      required: true,
-                    })}
-                    value={option}
-                    className="h-4 w-4 text-indigo-600 focus:ring-primary border-gray-300"
-                  />
-                  <label
-                    htmlFor={`option_${index}_${optionIndex}`}
-                    className="ml-3 text-sm font-medium text-gray-700"
-                  >
-                    {option}
-                  </label>
-                </div>
-              ))}
-            </div>
+            <Controller
+              name={`responses[${index}].answer`}
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <RadioGroup {...field}>
+                  {question.options?.map(
+                    (option: string, optionIndex: number) => (
+                      <FormControlLabel
+                        key={optionIndex}
+                        value={option}
+                        control={<Radio />}
+                        label={option}
+                      />
+                    ),
+                  )}
+                </RadioGroup>
+              )}
+            />
           )}
 
           {question.type === QuestionType.MultiSelect && (
-            <div className="space-y-3">
-              <Controller
-                name={`responses[${index}].answer`}
-                control={control}
-                defaultValue={[]}
-                render={({ field }) => (
-                  <>
-                    {question.options?.map((option: string, optionIndex: number) => (
-                      <div key={optionIndex} className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id={`option_${index}_${optionIndex}`}
-                          value={option}
-                          onChange={(e) => {
-                            const newValue = e.target.checked
-                              ? [...field.value, option]
-                              : field.value.filter(
-                                  (item: string) => item !== option
-                                );
-                            field.onChange(newValue);
-                          }}
-                          checked={field.value.includes(option)}
-                          className="h-4 w-4 text-indigo-600 rounded focus:ring-primary border-gray-300"
-                        />
-                        <label
-                          htmlFor={`option_${index}_${optionIndex}`}
-                          className="ml-3 text-sm font-medium text-gray-700"
-                        >
-                          {option}
-                        </label>
-                      </div>
-                    ))}
-                  </>
-                )}
-              />
-              <input
-                type="hidden"
-                {...register(`responses[${index}].questionId`, {
-                  value: question._id,
-                })}
-              />
-            </div>
+            <Controller
+              name={`responses[${index}].answer`}
+              control={control}
+              defaultValue={[]}
+              render={({ field }) => (
+                <FormGroup>
+                  {question.options?.map(
+                    (option: string, optionIndex: number) => (
+                      <FormControlLabel
+                        key={optionIndex}
+                        control={
+                          <Checkbox
+                            checked={field.value.includes(option)}
+                            onChange={(e) => {
+                              const newValue = e.target.checked
+                                ? [...field.value, option]
+                                : field.value.filter(
+                                    (item: string) => item !== option,
+                                  );
+                              field.onChange(newValue);
+                            }}
+                          />
+                        }
+                        label={option}
+                      />
+                    ),
+                  )}
+                </FormGroup>
+              )}
+            />
           )}
-        </div>
+
+          <Controller
+            name={`responses[${index}].questionId`}
+            control={control}
+            defaultValue={question._id}
+            render={({ field }) => <input type="hidden" {...field} />}
+          />
+        </Box>
       ))}
 
-      <div className="flex flex-col sm:flex-row justify-end sm:space-x-4 space-y-3 sm:space-y-0 mt-6">
-        <Button
-          outlined
-          type="button"
-          className="w-full sm:w-auto"
-        >
-          Save Draft
-        </Button>
-        <Button
-          variant={ButtonVariant.Primary}
-          type="submit"
-          className="w-full sm:w-auto"
-        >
-          Review and Submit
-        </Button>
-      </div>
-    </form>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 4, gap: 2 }}>
+        <Button outlined>Save Draft</Button>
+        <Button type="submit">Review and Submit</Button>
+      </Box>
+    </Box>
   );
 };
 
