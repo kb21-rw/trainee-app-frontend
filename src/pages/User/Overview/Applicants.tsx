@@ -1,5 +1,7 @@
 import { DataGrid } from '@mui/x-data-grid'
 import React from 'react'
+import ActionButtons from '../../Cohort/ActionButtons'
+import { ButtonVariant } from '../../../utils/types'
 // import { useGetApplicantsQuery } from "../../features/user/apiSlice";
 // import { getApplicants, getJWT } from "../../utils/helper";
 // import UserTableHeader from "../../components/ui/UserTableHeader";
@@ -121,58 +123,11 @@ import React from 'react'
 //   );
 // };
 // import { makeStyles } from '@mui/styles'
-const styles = {
-  '& .MuiDataGrid-cell': {
-    border: '1px solid black',
-    borderTop: '2px solid black',
-  },
-  '& .MuiDataGrid-row': {
-    borderBottom: '1px solid black',
-  },
-  '& .MuiDataGrid-columnHeaders': {
-    borderTop: '2px solid black',
-    borderBottom: '2px solid black',
-  },
-  '& .MuiDataGrid-columnHeader': {
-    borderRight: '1px solid black',
-    borderTop: '2px solid black',
-  },
-  '& .MuiDataGrid-columnHeader:first-child': {
-    borderLeft: '2px solid black',
-  },
-  '& .MuiDataGrid-columnHeader:last-child': {
-    borderRight: '2px solid black',
-  },
-  '& .MuiDataGrid-cell:first-child': {
-    borderLeft: '2px solid black',
-  },
-  '& .MuiDataGrid-cell:last-child': {
-    borderRight: '2px solid black',
-  },
-  '.MuiPaper-root-MuiDrawer-paper': {
-    border: 0,
-  },
-  '.MuiDataGrid-footerContainer': {
-    border: 0,
-  },
-  '.MuiDataGrid-root': {
-    border: 0,
-  },
-  '.MuiDataGrid-row': {
-    border: 0,
-  },
-  '.MuiDataGrid-column': {
-    border: 0,
-  },
-  '.MuiDataGrid': {
-    border: 0,
-  },
-}
 
 const columns = [
-  { field: 'name', headerName: 'Name', width: 150 },
-  { field: 'coach', headerName: 'Coach', width: 150 },
-  { field: 'stage', headerName: 'Stage', width: 100 },
+  { field: 'name', headerName: 'Name', width: 300 },
+  { field: 'coach', headerName: 'Coach', width: 300 },
+  { field: 'stage', headerName: 'Stage', width: 300 },
   {
     field: 'jsSubmission',
     headerName:
@@ -195,6 +150,21 @@ const columns = [
     headerName:
       'How is the trainee familiar with flex, grid and positioning in CSS',
     width: 300,
+  },
+  {
+    field: 'actions',
+    headerName: 'Actions',
+    width: 350,
+    renderCell: () => (
+      <ActionButtons
+        outlined={false}
+        variant={{
+          leftbtn: ButtonVariant.Danger,
+          rightbtn: ButtonVariant.Primary,
+        }}
+        buttonNames={{ leftName: 'Reject', rightName: 'Accept' }}
+      />
+    ),
   },
 ]
 
@@ -235,13 +205,32 @@ const columnGroupingModel = [
 ]
 const Applicants = () => {
   return (
-    <div className='mt-24'>
+    <div className='mt-32'>
       <DataGrid
         rows={rows}
         columns={columns}
         columnGroupingModel={columnGroupingModel}
-        // sx={{ ...styles, border: 0 }}
-        sx={styles}
+        sx={{
+          border: 'none',
+          '& .MuiDataGrid-cell': {
+            borderInlineEnd: '1px solid black',
+            borderBlockEnd: '1px solid black',
+          },
+          '& .MuiDataGrid-columnHeaders': {
+            borderBlockEnd: '1px solid black',
+          },
+          '& .MuiDataGrid-columnHeader': {
+            borderInlineEnd: '1px solid black',
+            borderBlockEnd: '1px solid black',
+          },
+          '& .MuiDataGrid-columnHeader--filledGroup': {
+            borderBlockStart: '1px solid black',
+          },
+          '& .MuiDataGrid-columnHeader--emptyGroup': {
+            '.MuiDataGrid-columnHeader--last': {},
+            borderBlockEnd: '1px solid black',
+          },
+        }}
         hideFooter={true}
       />
     </div>

@@ -68,7 +68,9 @@ export const columns: GridColDef<TCohortWithId>[] = [
     headerAlign: 'center',
     headerClassName: 'header-background',
     renderCell: () => {
-      return <ActionButtons />
+      return (
+        <ActionButtons buttonNames={{ leftName: 'View', rightName: 'Edit' }} />
+      )
     },
   },
 ]
