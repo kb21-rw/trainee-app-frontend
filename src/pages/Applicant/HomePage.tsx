@@ -4,23 +4,26 @@ import {
   ApplicationFormStatus,
   ButtonSize,
   ButtonVariant,
+  UserRole,
 } from "../../utils/types";
 import Button from "../../components/ui/Button";
 import CohortInfo from "../../components/ui/CohortInfo";
 import ApplicationStatus from "../../components/ui/ApplicationStatus";
-import { deadLineExceededInfo, noOpenApplicationInfo } from "../../utils/data";
-import { useGetMyApplicationQuery } from "../../features/user/apiSlice";
+import { deadLineExceededInfo, noOpenApplicationInfo, userAppliedInfo } from "../../utils/data";
+import { useGetMyApplicationQuery, useGetProfileQuery } from "../../features/user/apiSlice";
 import { applicationStatusHandler, getJWT } from "../../utils/helper";
 import Loader from "../../components/ui/Loader";
 
 const HomePage = () => {
   const jwt: string = getJWT();
   const { data: applicationForm, isLoading } = useGetMyApplicationQuery(jwt);
+  const {data: profile } = useGetProfileQuery(jwt);
 
   const { status } = applicationStatusHandler(applicationForm);
+  const role = profile.role
 
   return (
-    <div className="flex flex-col items-center justify-center mt-5 md:mt-20">
+    <div className="flex flex-col items-center justify-center mt-5 md:mt-20 space-y-10 p-5">
       <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-4 text-center">
         {"Welcome to The GYM's Application Portal"}
       </h1>
@@ -70,12 +73,20 @@ const HomePage = () => {
           buttonText={deadLineExceededInfo.buttonText}
         />
       )}
-      {status === ApplicationFormStatus.NO_APPLICATION && (
+      {(status === ApplicationFormStatus.NO_APPLICATION && role === UserRole.Prospect) && (
         <ApplicationStatus
           heading={noOpenApplicationInfo.heading}
           description={noOpenApplicationInfo.description}
           buttonLink={noOpenApplicationInfo.buttonLink}
           buttonText={noOpenApplicationInfo.buttonText}
+        />
+      )}
+       {role === UserRole.Applicant && (
+        <ApplicationStatus
+          heading={userAppliedInfo.heading}
+          description={userAppliedInfo.description}
+          buttonLink={userAppliedInfo.buttonLink}
+          buttonText={userAppliedInfo.buttonText}
         />
       )}
     </div>
