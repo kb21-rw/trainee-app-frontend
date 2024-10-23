@@ -20,7 +20,7 @@ const FormDateInputs: React.FC<DateSectionProps> = ({ control, errors }) => {
         defaultValue={null}
         render={({ field, ...props }) => (
           <DatePicker
-            disablePast
+            minDate={moment().add(1, "day")}
             value={field.value ? moment(field.value) : null}
             onChange={(date) => {
               field.onChange(date);
@@ -38,13 +38,17 @@ const FormDateInputs: React.FC<DateSectionProps> = ({ control, errors }) => {
       <div className="relative">
         {renderDatePicker("startDate", "Application open date")}
         {errors.startDate && (
-          <p className="text-red-400 text-sm absolute">{errors.startDate.message}</p>
+          <p className="text-red-400 text-sm absolute">
+            {errors.startDate.message}
+          </p>
         )}
       </div>
       <div className="relative">
         {renderDatePicker("endDate", "Application close date")}
         {errors.endDate && (
-          <p className="text-red-400 text-sm absolute">{errors.endDate.message}</p>
+          <p className="text-red-400 text-sm absolute">
+            {errors.endDate.message}
+          </p>
         )}
       </div>
     </div>
