@@ -31,6 +31,7 @@ import SavedApplication from "./pages/Applicant/SavedApplication";
 import Applicants from "./pages/User/Applicants";
 import CreateApplicationForm from "./pages/Form/CreateApplicationForm";
 import PrivateRoute from "./components/PrivateRoute";
+import PreviewApplicationPage from "./pages/Applicant/PreviewApplicationPage";
 
 export default function App() {
 
@@ -59,6 +60,7 @@ export default function App() {
             <Route element={<PrivateRoute allowedRoles={["Prospect", "Applicant"]} />}>
               <Route path="/apply" element={<ApplicationForm />} />
               <Route path="/saved-application" element={<SavedApplication />} />
+              <Route path="/preview" element={<PreviewApplicationPage/>}/>
               <Route path="/home" element={<HomePage />} />
             </Route>
   
