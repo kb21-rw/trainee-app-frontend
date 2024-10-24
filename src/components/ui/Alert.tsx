@@ -1,29 +1,34 @@
-import React, { ReactNode, useState, useEffect } from "react";
+import classNames from "classnames";
+import React, { ReactNode, useEffect } from "react";
 
 const Alert = ({
   children,
   type,
-  displayDuration = 3000,
+  displayDuration = 5000,
+  open,
+  onClose,
 }: {
   children: ReactNode;
   type: "error" | "success";
   displayDuration?: number;
+  open: boolean;
+  onClose: () => void;
 }) => {
-  const [isAlertVisible, setIsAlertVisible] = useState(true);
-
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsAlertVisible(false);
+      onClose();
     }, displayDuration);
     return () => clearTimeout(timer);
-  }, [displayDuration]);
+  }, [displayDuration, onClose]);
 
   return (
-    isAlertVisible && (
+    open && (
       <div
-        className={`w-alert-width py-2 flex justify-center items-center rounded-lg absolute top-14 border-green-600 ${
-          type === "error" && "bg-error-light text-error-dark"
-        } ${type === "success" && "bg-green-300 text-white"}`}
+        className={classNames(
+          "w-alert-width py-2 flex justify-center items-center rounded-lg absolute top-24 left-1/2 -translate-x-1/2 border-green-600",
+          { "bg-error-light text-error-dark": type === "error" },
+          { "bg-green-300 text-white": type === "success" }
+        )}
       >
         {children}
       </div>
