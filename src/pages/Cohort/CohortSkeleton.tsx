@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, Skeleton, Stack } from '@mui/material'
 
 function CohortSkeleton() {
   return (
-    <Card sx={{ blockSize: '100%' }}>
+    <Card sx={{ blockSize: '100%' }} className='mt-10'>
       <CardHeader
         title={
           <Stack
