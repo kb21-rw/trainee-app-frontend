@@ -154,27 +154,6 @@ export const getCohorts = (data: Cohort[], dataItems: string[]) => {
 };
 
 /**
- * Generates a formatted string indicating the type of form and the time it was created.
- *
- * @param {string} type - A string representing the type of form ("Applicant" or "Trainee").
- *
- * @returns {string} - A string in the format: `"<Type> Form created at - <Formatted Time>"`.
- */
-
-export const CreateNextFormTitle = (type: "Applicant" | "Trainee") => {
-  const currentDate = new Date();
-  const formatter = new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  });
-  const formattedTime = formatter.format(currentDate);
-
-  return `${type} Form created at - ${formattedTime}`;
-};
-
-/**
  * Determines the current status of an application based on the provided dates.
  *
  * This function checks whether an application is open, if its deadline has passed, or if there is no active application.
