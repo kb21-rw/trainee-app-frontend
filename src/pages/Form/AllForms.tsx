@@ -33,6 +33,12 @@ const AllForms = () => {
 
   return (
     <div className="py-12">
+      {!isFetching && (
+        <div className="flex justify-between items-center my-5">
+          <SearchInput setSearchQuery={setSearchQuery} />
+          <CreateFormDropdown />
+        </div>
+      )}
       {isFetching ? (
         <FormsSkeleton />
       ) : forms?.length === 0 && !applicationForm ? (
@@ -40,30 +46,24 @@ const AllForms = () => {
           <NotFound type="Form" />
         </div>
       ) : (
-        <>
-          <div className="flex justify-between items-center my-5">
-            <SearchInput setSearchQuery={setSearchQuery} />
-            <CreateFormDropdown />
-          </div>
-          <div className="flex flex-col gap-4 py-4 px-[1px] md:container mx-auto w-3/5 h-[750px] overflow-scroll">
-            {applicationForm && parsedApplicationForm ? (
-              <FormCard form={parsedApplicationForm} />
-            ) : (
-              <div className="flex items-center space-x-1 text-lg rounded-md custom-shadow bg-white p-2">
-                <span>Create a new</span>
-                <Link
-                  to="/forms/create/application-form"
-                  className="text-primary-dark"
-                >
-                  application form
-                </Link>
-              </div>
-            )}
-            {forms?.map((form: IFormType, index: number) => (
-              <FormCard form={form} key={index} />
-            ))}
-          </div>
-        </>
+        <div className="flex flex-col gap-4 py-4 px-[1px] md:container mx-auto w-3/5 h-[750px] overflow-scroll">
+          {applicationForm && parsedApplicationForm ? (
+            <FormCard form={parsedApplicationForm} />
+          ) : (
+            <div className="flex items-center space-x-1 text-lg rounded-md custom-shadow bg-white p-2">
+              <span>Create a new</span>
+              <Link
+                to="/forms/create/application-form"
+                className="text-primary-dark"
+              >
+                application form
+              </Link>
+            </div>
+          )}
+          {forms?.map((form: IFormType, index: number) => (
+            <FormCard form={form} key={index} />
+          ))}
+        </div>
       )}
     </div>
   );
