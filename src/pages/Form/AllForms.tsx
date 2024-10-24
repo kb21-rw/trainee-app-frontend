@@ -41,7 +41,7 @@ const AllForms = () => {
         <div className="h-[50vh] flex items-center justify-center">
           <Loader />
         </div>
-      ) : forms?.length === 0 ? (
+      ) : (forms?.length === 0 && !applicationForm)? (
         <div className="flex w-screen h-[50vh]">
           <NotFound type="Form" />
         </div>

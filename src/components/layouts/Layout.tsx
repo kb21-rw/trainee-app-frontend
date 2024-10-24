@@ -21,7 +21,7 @@ const Layout = () => {
     [];
 
   return (
-    <main className="max-h-screen font-lato max-w-[1920px] md:mx-auto overflow-x-hidden">
+    <main className="max-h-screen font-lato max-w-[1920px] md:mx-auto overflow-x-hidden h-screen flex flex-col">
       <nav className="sticky top-0 flex items-center justify-between gap-20 py-6 px-1 md:px-16 bg-white border-b-2 shadow-b pr-20">
         <div className="flex items-center gap-10">
           {menu.map((element, index) => (

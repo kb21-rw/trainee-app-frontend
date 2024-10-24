@@ -96,3 +96,11 @@ export const deadLineExceededInfo = {
   buttonText: "Join waiting list",
   buttonLink: "forms.google.com",
 };
+
+export const userAppliedInfo = {
+  heading: "Application Submitted 🎉",
+  description:
+    "Your application has been submitted, we will review it and get back to you soon via email. Thanks for applying!",
+  buttonText: "View your submitted application",
+  buttonLink: "forms.google.com",
+};
