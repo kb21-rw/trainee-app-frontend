@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 /* eslint-disable no-unused-vars */
 export interface IFormType {
   _id: string;
@@ -160,3 +162,13 @@ export type ApplicationForm = {
   startDate: string | Date;
   endDate: string | Date;
 };
+
+export interface IAlert {
+  open: boolean;
+  type: "error" | "success";
+  children: ReactNode;
+  displayDuration?: number;
+  onClose: () => void;
+}
+
+export type AlertData = Pick<IAlert, "type" | "displayDuration" | "children">;

@@ -1,9 +1,14 @@
-import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { H1 } from "../../components/ui/Typography";
 import Button from "../../components/ui/Button";
 import { useVerifyApplicantMutation } from "../../features/user/apiSlice";
 import Loader from "../../components/ui/Loader";
+import { AlertData } from "../../utils/types";
+
+const loginAlertData: AlertData = {
+  children: "Your email has been successfully verified!",
+  type: "success",
+};
 
 const ApplicantVerification = () => {
   const [verifyApplicant, { isLoading, error }] = useVerifyApplicantMutation();
@@ -14,13 +19,13 @@ const ApplicantVerification = () => {
   const handleVerification = async () => {
     try {
       if (!userId) {
-        throw new Error("User ID not found in query parameters");
+        throw new Error("Use the link in your email please");
       }
 
-      const { data } = await verifyApplicant(userId );
+      const { data } = await verifyApplicant(userId);
 
       if (data?.userId) {
-        navigate("/login");
+        navigate(`/login?alertData=${JSON.stringify(loginAlertData)}`);
       } else {
         throw new Error("Verification failed");
       }
