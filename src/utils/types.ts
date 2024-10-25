@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 /* eslint-disable no-unused-vars */
 export interface IFormType {
   _id: string;
@@ -46,7 +48,7 @@ export interface Option {
 
 export interface Question {
   _id?: string;
-  title: string;
+  prompt: string;
   responses: Response[];
   options: string[];
   type: QuestionType;
@@ -61,7 +63,7 @@ export interface Form {
 
 export interface ApplicationFormResponse {
   questionId: string;
-  answer: string | string[];
+  answer: string[];
 }
 
 export enum ButtonVariant {
@@ -140,10 +142,10 @@ export interface ApplicationFormType {
 }
 
 export enum ApplicationFormStatus {
-  OPEN = 'Open',
-  CLOSED = 'Closed',
-  DEADLINE_PASSED = 'DeadlinePassed',
-  NO_APPLICATION = 'NoApplication',
+  OPEN = "Open",
+  CLOSED = "Closed",
+  DEADLINE_PASSED = "DeadlinePassed",
+  NO_APPLICATION = "NoApplication",
 }
 
 export type ApplicationStatus = {
@@ -160,3 +162,13 @@ export type ApplicationForm = {
   startDate: string | Date;
   endDate: string | Date;
 };
+
+export interface IAlert {
+  open: boolean;
+  type: "error" | "success";
+  children: ReactNode;
+  displayDuration?: number;
+  onClose: () => void;
+}
+
+export type AlertData = Pick<IAlert, "type" | "displayDuration" | "children">;

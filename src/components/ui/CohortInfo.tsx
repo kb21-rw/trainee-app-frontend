@@ -20,7 +20,7 @@ const CohortInfo: React.FC<CohortInfoProps> = ({
   return (
     <>
       <div className="text-center flex items-center flex-col md:space-y-10 px-4 sm:px-0 w-full md:mt-5">
-        <p className="text-gray-600 mb-4 sm:mb-8 flex flex-col text-sm sm:text-base space-y-3">
+        <p className="text-gray-600 mb-4 sm:mb-8 flex flex-col text-sm sm:text-base">
           <span>
             Apply for our various training programs and enhance your skills.
           </span>

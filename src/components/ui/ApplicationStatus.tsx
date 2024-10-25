@@ -16,7 +16,7 @@ const ApplicationStatus: React.FC<ApplicationStatusProps> = ({
   return (
     <>
       <div className="text-center flex items-center flex-col">
-        <h1 className="text-2xl font-medium text-gray-600 mb-8 text-center">
+        <h1 className="text-2xl font-medium text-gray-600 text-center">
           {heading}
         </h1>
       </div>

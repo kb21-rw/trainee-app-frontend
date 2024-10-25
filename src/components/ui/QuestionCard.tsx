@@ -41,8 +41,9 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
   };
 
   const changeOptionsHandler = (value: string, index: number) => {
-    currentOptions[index] = value;
-    setValue("options", currentOptions, { shouldDirty: true });
+    const updatedOptions = [...currentOptions];
+    updatedOptions[index] = value;
+    setValue("options", updatedOptions, { shouldDirty: true });
   };
 
   const onSubmit = async (data: any) => {
@@ -71,14 +72,15 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
           <div className="flex items-center gap-4">
             <input
               {...register("prompt")}
-              className={`text-3xl flex-1 h-16  ${
+              className={`text-2xl flex-1 h-16  ${
                 activeQuestion === _id && "bg-white"
               } focus:border-b-2 border-blue-400 outline-none py-1 px-0.5`}
             />
             <select className="p-2" {...register("type")} value={selectedType}>
               {[
                 { label: "Text", value: QuestionType.Text },
-                { label: "Single Select", value: QuestionType.SingleSelect },
+                { label: "Single choice", value: QuestionType.SingleSelect },
+                { label: "Multiple choice", value: QuestionType.MultiSelect },
               ].map(
                 (
                   currentType: { label: string; value: string },
@@ -91,7 +93,7 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
               )}
             </select>
           </div>
-          {selectedType === QuestionType.SingleSelect && (
+          {(selectedType === QuestionType.SingleSelect || selectedType === QuestionType.MultiSelect) && (
             <div>
               <ol className="w-full my-4">
                 {currentOptions.map((option: string, index: number) => (
@@ -121,8 +123,9 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
               {currentOptions.length > 0 && (
                 <button
                   onClick={() => {
-                    currentOptions.pop();
-                    setValue("options", currentOptions, { shouldDirty: true });
+                    const updatedOptions = [...currentOptions]
+                    updatedOptions.pop();
+                    setValue("options", updatedOptions, { shouldDirty: true });
                   }}
                 >
                   <RemoveIcon />

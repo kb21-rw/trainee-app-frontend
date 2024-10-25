@@ -1,13 +1,13 @@
-import React from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
-import { getJWT, CreateNextFormTitle } from "../../utils/helper";
+import { getJWT } from "../../utils/helper";
 import { useCreateFormMutation } from "../../features/user/apiSlice";
 import { useNavigate } from "react-router-dom";
 import { FormType } from "../../utils/types";
 import { menuItems } from "../../utils/data";
 import { useGetApplicationFormQuery } from "../../features/user/apiSlice";
+import classNames from "classnames";
 
 type NextFormType = Exclude<FormType, FormType.Application>;
 
@@ -15,11 +15,11 @@ export default function CreateFormDropdown() {
   const navigate = useNavigate();
   const jwt: string = getJWT();
   const [createForm] = useCreateFormMutation();
-  const {data: applicationForm} = useGetApplicationFormQuery(jwt);
+  const { data: applicationForm } = useGetApplicationFormQuery(jwt);
 
   const onClickAddForm = async (type: NextFormType) => {
     try {
-      const nextFormTitle = CreateNextFormTitle(type);
+      const nextFormTitle = `${type} form name...`;
 
       let requestBody: object = { name: nextFormTitle, type };
 
@@ -56,21 +56,28 @@ export default function CreateFormDropdown() {
           {menuItems.map((item, index) => (
             <MenuItem key={index}>
               {item.link ? (
-               !applicationForm && item.link === "/forms/create/application-form" ? (
-                <Link
-                to={item.link}
-                className={`group flex w-full items-center py-3 px-5 data-[focus]:bg-primary-dark data-[focus]:text-white ${
-                  index === menuItems.length - 1 ? "border-none" : "border-b"
-                }`}
-              >
-                {item.label}
-              </Link>
-               ) : <span className="hidden"></span>
+                !applicationForm &&
+                item.link === "/forms/create/application-form" ? (
+                  <Link
+                    to={item.link}
+                    className={`group flex w-full items-center py-3 px-5 data-[focus]:bg-primary-dark data-[focus]:text-white ${
+                      index === menuItems.length - 1
+                        ? "border-none"
+                        : "border-b"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <span className="hidden"></span>
+                )
               ) : (
                 <button
-                  className={`group flex w-full items-center py-3 px-5 data-[focus]:bg-primary-dark data-[focus]:text-white ${
-                    index === menuItems.length - 1 ? "border-none" : "border-b"
-                  }`}
+                  className={classNames(
+                    "group flex w-full items-center py-3 px-5 data-[focus]:bg-primary-dark data-[focus]:text-white",
+                    { "border-none": index === menuItems.length - 1 },
+                    { "border-b": !(index === menuItems.length - 1) }
+                  )}
                   onClick={() => onClickAddForm(item.type as NextFormType)}
                 >
                   {item.label}

@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const api_url = import.meta.env.VITE_BACKEND_DEPLOYMENT_URL ?? import.meta.env.VITE_API_URL;
+const api_url = import.meta.env.VITE_API_URL;
 
 export const usersApi: any = createApi({
   reducerPath: "usersApi",
@@ -412,8 +412,8 @@ getAllForms: builder.query({
 
 
     addApplicantResponse: builder.mutation({
-      query: ({jwt, body}) => ({
-        url: '/responses/application',
+      query: ({jwt, body, action}) => ({
+        url: `/responses/apply?action=${action}`,
         method: "POST",
         headers: {
           Authorization: `Bearer ${jwt}`,
