@@ -14,32 +14,23 @@ import { getJWT } from "../../utils/helper";
 const Profile = () => {
   const [updateProfile, { isLoading, isSuccess, error }] =
     useUpdateProfileMutation();
-  const jwt:string = getJWT()
+  const jwt: string = getJWT();
   const { data } = useGetProfileQuery(jwt);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const onSubmit = async (data: {
     email?: string;
     name?: string;
     password?: string;
   }) => {
-    const profileData: { email?: string; name?: string; password?: string } =
-      {};
-    if (data.email) {
-      profileData.email = data.email;
-    }
-
-    if (data.name) {
-      profileData.name = data.name;
-    }
-
-    if (data.password) {
-      profileData.password = data.password;
-    }
-
+    const profileData: { email?: string; name?: string; password?: string } = {};
+    if (data.email) profileData.email = data.email;
+    if (data.name) profileData.name = data.name;
+    if (data.password) profileData.password = data.password;
     await updateProfile({ jwt, profileData });
   };
 
@@ -48,50 +39,67 @@ const Profile = () => {
     errors.email?.message ||
     errors.password?.message ||
     error?.data?.errorMessage;
+
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="h-full flex flex-col justify-center gap-5 md:gap-16 items-center px-5 sm:px-10 md:p-0 md:w-2/3 lg:w-2/5 mx-auto"
-    >
-      {isLoading && <Loader />}
-      {isSuccess && <Alert type="success">Profile update successfully</Alert>}
-      {errorMessage && <Alert type="error">{errorMessage}</Alert>}
-      <div className="w-2/3 ml-auto">
-        <H1>Profile settings</H1>
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl custom-shadow">
+        <div>
+          <H1>
+            Profile Settings
+          </H1>
+        </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
+          {isLoading && <Loader />}
+          {isSuccess && (
+            <Alert type="success">
+              Profile updated successfully
+            </Alert>
+          )}
+          {errorMessage && (
+            <Alert type="error">
+              {errorMessage}
+            </Alert>
+          )}
+          <div className="rounded-md shadow-sm space-y-3">
+            <InputField
+              name="name"
+              type="text"
+              label="Name"
+              placeholder="Your Name"
+              defaultValue={data?.name}
+              register={register}
+              styles="rounded-t-md"
+            />
+            <InputField
+              name="email"
+              type="email"
+              label="Email"
+              placeholder="your.email@example.com"
+              disabled
+              defaultValue={data?.email}
+              register={register}
+              styles="rounded-none border-t-0"
+            />
+            <InputField
+              name="password"
+              type="password"
+              label="Password"
+              placeholder="New Password"
+              register={register}
+              styles="rounded-b-md border-t-0"
+            />
+          </div>
+          <div>
+            <Button
+              type="submit"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Save Changes
+            </Button>
+          </div>
+        </form>
       </div>
-      <div className="space-y-3 md:space-y-6 lg:space-y-10 w-full">
-        <InputField
-          styles="!flex justify-between"
-          name="name"
-          type="text"
-          label="Name"
-          placeholder=""
-          defaultValue={data?.name}
-          register={register}
-        />
-        <InputField
-          styles="!flex justify-between"
-          name="email"
-          type="email"
-          label="Email"
-          placeholder=""
-          disabled
-          defaultValue={data?.email}
-          register={register}
-        />
-        <InputField
-          styles="!flex justify-between"
-          name="password"
-          type="password"
-          label="Password"
-          placeholder="password"
-          register={register}
-        />
-      </div>
-      <div className="w-2/3 ml-auto">
-        <Button type="submit">Save</Button>
-      </div>
-    </form>
+    </div>
   );
 };
 
