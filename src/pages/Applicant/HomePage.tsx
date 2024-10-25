@@ -35,8 +35,8 @@ const HomePage = () => {
       {status === ApplicationFormStatus.OPEN && (
         <div className="md:container md:mx-auto px-6 flex flex-col items-center justify-center">
           <CohortInfo
-            cohortTitle="The Gym Cohort 5 2025"
-            applicationDeadline="4th October 2024"
+            cohortTitle="The Gym Cohort 2025"
+            applicationDeadline="4th November 2024"
             trainingStartDate="22nd November 2024"
             programBenefits={[
               {
