@@ -14,6 +14,7 @@ const InputField = ({
   options,
   errorMessage,
   errors,
+  disabled = false,
 }: {
   label: string;
   type: string;
@@ -25,6 +26,7 @@ const InputField = ({
   options?: any;
   errorMessage?: any;
   errors?: FieldErrors;
+  disabled?: boolean;
 }) => {
   const [show, setShow] = useState<boolean>(false);
   const passwordIcon = () => {
@@ -49,6 +51,7 @@ const InputField = ({
           className="placeholder:text-lg outline-none border-none h-full flex-1"
           placeholder={placeholder}
           defaultValue={defaultValue}
+          disabled={disabled}
           {...(register && { ...register(name, options) })}
         />
         {(fieldErrorMessage || errorMessage) && (

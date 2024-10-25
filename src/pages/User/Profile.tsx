@@ -75,6 +75,7 @@ const Profile = () => {
           type="email"
           label="Email"
           placeholder=""
+          disabled
           defaultValue={data?.email}
           register={register}
         />
