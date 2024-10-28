@@ -3,7 +3,7 @@ import ModalLayout from "./ModalLayout";
 import InputField from "../ui/InputField";
 import Button from "../ui/Button";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useCreateCohortMutation } from "../../features/user/apiSlice";
+import { useCreateCohortMutation } from "../../features/user/backendApi";
 import Loader from "../ui/Loader";
 import Alert from "../ui/Alert";
 import useAutoCloseModal from "../../utils/hooks/useAutoCloseModal";

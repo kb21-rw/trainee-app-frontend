@@ -6,7 +6,7 @@ import InputField from "../../components/ui/InputField";
 import Button from "../../components/ui/Button";
 import Alert from "../../components/ui/Alert";
 import { useForm } from "react-hook-form";
-import { useResetPasswordMutation } from "../../features/user/apiSlice";
+import { useResetPasswordMutation } from "../../features/user/backendApi";
 import { ButtonSize } from "../../utils/types";
 
 const ResetPassword = () => {

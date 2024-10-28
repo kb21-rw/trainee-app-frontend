@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAddApplicantResponseMutation } from "../../features/user/apiSlice";
+import { useAddApplicantResponseMutation } from "../../features/user/backendApi";
 import { getJWT } from "../../utils/helper";
 import { Question, QuestionType } from "../../utils/types";
 import Button from "../../components/ui/Button";

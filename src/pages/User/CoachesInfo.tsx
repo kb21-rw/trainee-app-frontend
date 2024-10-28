@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useGetAllCoachesQuery } from "../../features/user/apiSlice";
-import { useDeleteCoachMutation } from "../../features/user/apiSlice";
+import { useGetAllCoachesQuery } from "../../features/user/backendApi";
+import { useDeleteCoachMutation } from "../../features/user/backendApi";
 import AddingCoachModal from "../../components/modals/AddingCoach";
 import UserTable from "../../components/ui/UserTable";
 import EditCoach from "../../components/modals/EditCoach";

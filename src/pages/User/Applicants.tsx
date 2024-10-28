@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useGetApplicantsQuery } from "../../features/user/apiSlice";
+import { useGetApplicantsQuery } from "../../features/user/backendApi";
 import { getApplicants, getJWT } from "../../utils/helper";
 import UserTableHeader from "../../components/ui/UserTableHeader";
 import {

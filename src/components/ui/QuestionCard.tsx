@@ -4,7 +4,7 @@ import Delete from "../../assets/DeleteIcon";
 import {
   useDeleteQuestionMutation,
   useEditQuestionMutation,
-} from "../../features/user/apiSlice";
+} from "../../features/user/backendApi";
 import SuccessCheckMark from "../../assets/SuccessCheckMarkIcon";
 import { useForm } from "react-hook-form";
 import AddIcon from "../../assets/AddIcon";

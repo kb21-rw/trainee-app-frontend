@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useGetTraineesForCoachQuery } from "../../features/user/apiSlice";
+import { useGetTraineesForCoachQuery } from "../../features/user/backendApi";
 import UserTable from "../../components/ui/UserTable";
 import UserTableHeader from "../../components/ui/UserTableHeader";
 import { getJWT, getTraineesForCoach } from "../../utils/helper";

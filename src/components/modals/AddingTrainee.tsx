@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import {
   useCreateTraineeMutation,
   useGetAllCoachesQuery,
-} from "../../features/user/apiSlice";
+} from "../../features/user/backendApi";
 import Loader from "../ui/Loader";
 import Alert from "../ui/Alert";
 import useAutoCloseModal from "../../utils/hooks/useAutoCloseModal";

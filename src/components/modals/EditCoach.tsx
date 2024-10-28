@@ -1,5 +1,5 @@
 import React from "react";
-import { useEditCoachMutation } from "../../features/user/apiSlice";
+import { useEditCoachMutation } from "../../features/user/backendApi";
 import { useForm } from "react-hook-form";
 import ModalLayout from "./ModalLayout";
 import Alert from "../ui/Alert";

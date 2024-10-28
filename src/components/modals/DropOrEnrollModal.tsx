@@ -5,7 +5,7 @@ import InputField from "../ui/InputField";
 import Button from "../ui/Button";
 import { ApplicantDecision, ButtonVariant } from "../../utils/types";
 import TextArea from "../ui/TextArea";
-import { useApplicantDecisionMutation } from "../../features/user/apiSlice";
+import { useApplicantDecisionMutation } from "../../features/user/backendApi";
 import Loader from "../ui/Loader";
 import Alert from "../ui/Alert";
 import useAutoCloseModal from "../../utils/hooks/useAutoCloseModal";

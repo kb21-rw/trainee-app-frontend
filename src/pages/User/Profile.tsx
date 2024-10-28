@@ -7,7 +7,7 @@ import Alert from "../../components/ui/Alert";
 import {
   useGetProfileQuery,
   useUpdateProfileMutation,
-} from "../../features/user/apiSlice";
+} from "../../features/user/backendApi";
 import { useForm } from "react-hook-form";
 import { getJWT } from "../../utils/helper";
 

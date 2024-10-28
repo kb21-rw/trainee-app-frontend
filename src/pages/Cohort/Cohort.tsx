@@ -1,5 +1,5 @@
 import { getJWT } from '../../utils/helper'
-import { useGetAllCohortsQuery } from '../../features/user/apiSlice'
+import { useGetAllCohortsQuery } from '../../features/user/backendApi'
 import { DataGrid } from '@mui/x-data-grid'
 import CohortSkeleton from './CohortSkeleton'
 import SearchBar from './SearchBar'

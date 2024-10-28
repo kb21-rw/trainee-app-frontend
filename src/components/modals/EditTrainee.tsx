@@ -2,7 +2,7 @@ import React from "react";
 import {
   useEditTraineeMutation,
   useGetAllCoachesQuery,
-} from "../../features/user/apiSlice";
+} from "../../features/user/backendApi";
 import { useForm } from "react-hook-form";
 import ModalLayout from "./ModalLayout";
 import Alert from "../ui/Alert";

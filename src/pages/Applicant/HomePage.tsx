@@ -10,7 +10,7 @@ import Button from "../../components/ui/Button";
 import CohortInfo from "../../components/ui/CohortInfo";
 import ApplicationStatus from "../../components/ui/ApplicationStatus";
 import { deadLineExceededInfo, noOpenApplicationInfo, userAppliedInfo } from "../../utils/data";
-import { useGetMyApplicationQuery, useGetProfileQuery } from "../../features/user/apiSlice";
+import { useGetMyApplicationQuery, useGetProfileQuery } from "../../features/user/backendApi";
 import { applicationStatusHandler, getJWT } from "../../utils/helper";
 import Loader from "../../components/ui/Loader";
 

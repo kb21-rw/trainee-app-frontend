@@ -10,7 +10,7 @@ import { z } from "zod";
 import { Controller, useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs, { Dayjs } from "dayjs";
-import { useCreateCohortMutation } from "../../features/user/apiSlice";
+import { useCreateCohortMutation } from "../../features/user/backendApi";
 import { getJWT } from "../../utils/helper";
 
 const schema = z.object({
