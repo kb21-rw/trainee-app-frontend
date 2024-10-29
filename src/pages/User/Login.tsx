@@ -62,12 +62,17 @@ const Login = () => {
 
   if (error) {
     const { message } = getErrorInfo(error);
-    dispatch(
-      showAlert({
-        message,
-        type: "error",
-        displayDuration: 5000,
-      })
+    // Debounce the State Update
+    setTimeout(
+      () =>
+        dispatch(
+          showAlert({
+            message,
+            type: "error",
+            displayDuration: 5000,
+          })
+        ),
+      0
     );
   }
 
