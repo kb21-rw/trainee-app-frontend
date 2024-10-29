@@ -11,6 +11,7 @@ import { ButtonSize, UserRole } from "../../utils/types";
 import { useGetProfileQuery } from "../../features/user/backendApi";
 import { useDispatch } from "react-redux";
 import { showAlert } from "../../features/user/alertSlice";
+import { getErrorInfo } from "../../utils/helper";
 
 interface LoginFormValuesProps {
   email: string;
@@ -34,25 +35,9 @@ const Login = () => {
   );
 
   const onSubmit: SubmitHandler<LoginFormValuesProps> = async (data) => {
-    try {
-      const result = await login(data);
-
-      if (result?.error) {
-        dispatch(
-          showAlert({
-            message: result.error.data.errorMessage,
-            type: "error",
-            displayDuration: 5000,
-          })
-        );
-        return;
-      }
-
-      if (result?.data?.accessToken) {
-        cookies.set("jwt", result.data.accessToken, { maxAge: 1800 });
-      }
-    } catch (error) {
-      console.error("Error during login", error);
+    const result = await login(data);
+    if (result?.data?.accessToken) {
+      cookies.set("jwt", result.data.accessToken, { maxAge: 1800 });
     }
   };
 
@@ -76,7 +61,14 @@ const Login = () => {
   }, [isProfileLoading, user, navigateBasedOnRole]);
 
   if (error) {
-    throw error;
+    const { message } = getErrorInfo(error);
+    dispatch(
+      showAlert({
+        message,
+        type: "error",
+        displayDuration: 5000,
+      })
+    );
   }
 
   if (isProfileLoading)

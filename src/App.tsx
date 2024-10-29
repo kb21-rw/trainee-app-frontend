@@ -8,7 +8,6 @@ import Error from "./components/Error";
 import ProtectedLayout from "./components/layouts/ProtectedLayout";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/User/Login";
-import React from "react";
 import Profile from "./pages/User/Profile";
 import TraineesInfo from "./pages/User/TraineesInfo";
 import CoachesInfo from "./pages/User/CoachesInfo";

@@ -58,12 +58,12 @@ export const getCoaches = (data: any[], dataItems: string[]) => {
   const currentUserName = currentUser.name;
 
   const filteredCoachesData = data?.filter(
-    (coachData) => coachData.name !== currentUserName,
+    (coachData) => coachData.name !== currentUserName
   );
 
   const coachesData = filteredCoachesData?.map(
     (coachData: any) =>
-      dataItems?.map((dataItem: string) => coachData[dataItem]),
+      dataItems?.map((dataItem: string) => coachData[dataItem])
   );
 
   return coachesData;
@@ -87,8 +87,8 @@ export const getTraineesForCoach = (data: any, dataItems: string[]) => {
           ? traineeData?.coach?.name
           : dataItem === "coachId"
           ? traineeData?.coach?._id
-          : traineeData[dataItem],
-      ),
+          : traineeData[dataItem]
+      )
   );
   return traineesData;
 };
@@ -111,18 +111,18 @@ export const getTrainees = (data: any, dataItems: string[]) => {
           ? traineeData?.coach?.name || "No coach assigned"
           : dataItem === "coachId"
           ? traineeData?.coach?._id || ""
-          : traineeData[dataItem],
-      ),
+          : traineeData[dataItem]
+      )
   );
   return traineesData;
 };
 
 export const getApplicants = (
   data: ApplicantDetails[],
-  dataItems: string[],
+  dataItems: string[]
 ) => {
   return data?.map((item: any) =>
-    dataItems.map((key) => item[key as keyof ApplicantDetails]),
+    dataItems.map((key) => item[key as keyof ApplicantDetails])
   );
 };
 
@@ -149,7 +149,7 @@ export const getJWT = () => {
 
 export const getCohorts = (data: Cohort[], dataItems: string[]) => {
   return data?.map((item: any) =>
-    dataItems.map((key) => item[key as keyof Cohort]),
+    dataItems.map((key) => item[key as keyof Cohort])
   );
 };
 
@@ -173,7 +173,7 @@ export const getCohorts = (data: Cohort[], dataItems: string[]) => {
  */
 
 export const applicationStatusHandler = (
-  application: ApplicationForm | undefined,
+  application: ApplicationForm | undefined
 ): ApplicationStatus => {
   const currentDate = dayjs();
 
@@ -215,5 +215,29 @@ export const applicationStatusHandler = (
   return {
     isOpen: false,
     status: ApplicationFormStatus.NO_APPLICATION,
+  };
+};
+
+/**
+ * getErrorInfo extracts error details
+ *
+ * @param {any} error
+ * @returns {{type: string, message: string}}
+ *   - type
+ *   - message
+ */
+
+export const getErrorInfo = (error: any): { type: string; message: string } => {
+  if (!error?.data) {
+    throw { type: error.status, message: error.error.split(":")[1] };
+  }
+
+  if (error?.data?.type === "ServerError") {
+    throw { type: "ServerError", message: error.data.errorMessage };
+  }
+
+  return {
+    type: error.data?.type || "Unknown",
+    message: error.data?.errorMessage || "Unknown error occurred!",
   };
 };
