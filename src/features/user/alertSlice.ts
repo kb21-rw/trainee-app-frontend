@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AlertType } from "../../utils/types";
 
 export interface AlertState {
   isVisible: boolean;
   message: string;
-  type: "success" | "error" | null;
+  type: AlertType | null;
   displayDuration?: number;
 }
 
