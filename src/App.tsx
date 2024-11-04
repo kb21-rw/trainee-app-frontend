@@ -22,7 +22,7 @@ import ApplicantSignup from "./pages/Applicant/ApplicantSignup";
 import ApplicantVerification from "./pages/Applicant/ApplicantVerification";
 import ApplicationForm from "./pages/Applicant/ApplicationForm";
 import ThankYouNote from "./pages/Applicant/ThankYouNote";
-import Cohort from "./pages/Cohort/Cohort";
+import Cohorts from "./pages/Cohort/Cohorts";
 import HomePage from "./pages/Applicant/HomePage";
 import SavedApplication from "./pages/Applicant/SavedApplication";
 import Applicants from "./pages/User/Applicants";
@@ -49,7 +49,7 @@ export default function App() {
                   element={<CreateApplicationForm />}
                 />
                 <Route path="/coaches" element={<CoachesInfo />} />
-                <Route path="/cohorts" element={<Cohort />} />
+                <Route path="/cohorts" element={<Cohorts />} />
                 <Route path="/applicants" element={<Applicants />} />
                 <Route path="/trainees" element={<TraineesInfo />} />
               </Route>

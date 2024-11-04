@@ -7,7 +7,7 @@ import { H1 } from "../../components/ui/Typography";
 import Button from "../../components/ui/Button";
 import InputField from "../../components/ui/InputField";
 import Loader from "../../components/ui/Loader";
-import { ButtonSize, UserRole } from "../../utils/types";
+import { AlertType, ButtonSize, UserRole } from "../../utils/types";
 import { useGetProfileQuery } from "../../features/user/backendApi";
 import { useDispatch } from "react-redux";
 import { showAlert } from "../../features/user/alertSlice";
@@ -68,7 +68,7 @@ const Login = () => {
         dispatch(
           showAlert({
             message,
-            type: "error",
+            type: AlertType.Error,
             displayDuration: 5000,
           })
         ),

@@ -10,7 +10,6 @@ import { z } from "zod";
 import { Controller, useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs, { Dayjs } from "dayjs";
-import { useCreateCohortMutation } from "../../features/user/backendApi";
 import { getJWT } from "../../utils/helper";
 
 const schema = z.object({
@@ -45,8 +44,14 @@ type TCohortFormValues = {
   stages: { stageName: string; stageDescription: string }[];
 };
 
-function CreateCohortForm({ handleClose }: { handleClose: () => void }) {
-  const [cohort, { error }] = useCreateCohortMutation();
+function CreateCohortForm({
+  handleClose,
+  createCohort,
+}: {
+  handleClose: () => void;
+  // eslint-disable-next-line no-unused-vars
+  createCohort: (_data: { jwt: string; body: any }) => any;
+}) {
   const {
     register,
     control,
@@ -66,23 +71,19 @@ function CreateCohortForm({ handleClose }: { handleClose: () => void }) {
   const jwt = getJWT();
 
   const onSubmit: SubmitHandler<TCohortFormValues> = async (data) => {
-    try {
-      await cohort({
-        jwt,
-        body: {
-          ...data,
-          stages: data.stages.map((stage) => {
-            return {
-              name: stage.stageName,
-              description: stage.stageDescription,
-            };
-          }),
-        },
-      });
-      handleClose();
-    } catch {
-      console.error("An error occurred while creating cohort", error);
-    }
+    await createCohort({
+      jwt,
+      body: {
+        ...data,
+        stages: data.stages.map((stage) => {
+          return {
+            name: stage.stageName,
+            description: stage.stageDescription,
+          };
+        }),
+      },
+    });
+    handleClose();
   };
 
   return (
