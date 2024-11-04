@@ -8,9 +8,11 @@ import {
   useGetAllCoachesQuery,
 } from "../../features/user/backendApi";
 import Loader from "../ui/Loader";
-import Alert from "../ui/Alert";
 import useAutoCloseModal from "../../utils/hooks/useAutoCloseModal";
-import { UserRole } from "../../utils/types";
+import { AlertType, UserRole } from "../../utils/types";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import { getErrorInfo } from "../../utils/helper";
+import { useDispatch } from "react-redux";
 
 const AddingTraineeModal = ({
   closePopup,
@@ -22,11 +24,9 @@ const AddingTraineeModal = ({
   const [createTrainee, { isLoading, error, isSuccess }] =
     useCreateTraineeMutation();
   const coachesData = useGetAllCoachesQuery({ jwt, query: "" });
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const dispatch = useDispatch();
+  const { register, handleSubmit } = useForm();
+
   const onSubmit = async (data: any) => {
     if (!data?.coach) {
       delete data.coach;
@@ -40,10 +40,20 @@ const AddingTraineeModal = ({
 
   useAutoCloseModal(isSuccess, closePopup);
 
-  const errorMessage: any =
-    errors?.name?.message ||
-    errors?.email?.message ||
-    error?.data?.errorMessage;
+  if (error) {
+    const { message } = getErrorInfo(error);
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    });
+  }
+
+  if (isSuccess) {
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: "Trainee was added successfully!",
+    });
+  }
 
   return (
     <ModalLayout closePopup={closePopup} title="Add trainee">
@@ -51,10 +61,6 @@ const AddingTraineeModal = ({
         <div className="flex items-center justify-center">
           <Loader />
         </div>
-      )}
-      {errorMessage && <Alert type="error">{errorMessage}</Alert>}
-      {isSuccess && (
-        <Alert type="success">Trainee was added successfully</Alert>
       )}
       <form
         onSubmit={handleSubmit(onSubmit)}

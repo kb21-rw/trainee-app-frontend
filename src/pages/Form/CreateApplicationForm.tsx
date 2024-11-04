@@ -1,7 +1,7 @@
 import { useState } from "react";
 import SuccessCheckMarkIcon from "../../assets/SuccessCheckMarkIcon";
 import CheckMarkIcon from "../../assets/CheckMarkIcon";
-import { ApplicationFormType } from "../../utils/types";
+import { AlertType, ApplicationFormType } from "../../utils/types";
 import { useApplicationForm } from "../../utils/hooks/useApplicationForm";
 import { FormInputsSection } from "../../components/ui/FormInputsSection";
 import { StagesSection } from "../../components/ui/StagesSection";
@@ -11,12 +11,14 @@ import useNavigateAfterSuccess from "../../utils/hooks/useNavigateAfterSuccess";
 
 import moment from "moment";
 
-import { getJWT } from "../../utils/helper";
-import Alert from "../../components/ui/Alert";
+import { getErrorInfo, getJWT } from "../../utils/helper";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import { useDispatch } from "react-redux";
 
 const CreateApplicationForm = () => {
   const [activeInput, setActiveInput] = useState("");
   const [createForm, { error, isSuccess }] = useCreateFormMutation();
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -28,6 +30,8 @@ const CreateApplicationForm = () => {
     addNewStage,
     removeStage,
   } = useApplicationForm();
+
+  useNavigateAfterSuccess("/forms", isSuccess);
 
   const onSubmit = async (data: ApplicationFormType) => {
     const requestBody = {
@@ -44,60 +48,58 @@ const CreateApplicationForm = () => {
     });
   };
 
-  const errorMessage: string =
-    errors?.endDate?.message || error?.data?.errorMessage;
+  if (error) {
+    const { message } = getErrorInfo(error);
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    });
+  }
 
-  useNavigateAfterSuccess("/forms", isSuccess);
-    
+  if (isSuccess) {
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: "Form was created successfully!",
+    });
+  }
+
   return (
-    <>
-      {errorMessage && (
-        <div className="flex items-center justify-center">
-          <Alert type="error">{errorMessage}</Alert>
-        </div>
-      )}
-      {isSuccess && (
-        <div className="flex items-center justify-center">
-          <Alert type="success">Form created successfully...</Alert>
-        </div>
-      )}
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        onFocus={() => setActiveInput("title")}
-        className="w-full flex justify-center gap-5 mt-10"
-      >
-        <div className="w-4/5 px-4 space-y-5">
-          <FormInputsSection
-            register={register}
-            control={control}
-            errors={errors}
-            activeInput={activeInput}
-          />
-          <div className="border p-8 px-4 space-y-6 rounded-xl">
-            <div className="flex items-center gap-20">
-              <FormDateInputs control={control} errors={errors} />
-            </div>
-            <StagesSection
-              currentStages={currentStages}
-              addStagesHandler={addStagesHandler}
-              addNewStage={addNewStage}
-              removeStage={removeStage}
-              register={register}
-            />
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      onFocus={() => setActiveInput("title")}
+      className="w-full flex justify-center gap-5 mt-10"
+    >
+      <div className="w-4/5 px-4 space-y-5">
+        <FormInputsSection
+          register={register}
+          control={control}
+          errors={errors}
+          activeInput={activeInput}
+        />
+        <div className="border p-8 px-4 space-y-6 rounded-xl">
+          <div className="flex items-center gap-20">
+            <FormDateInputs control={control} errors={errors} />
           </div>
+          <StagesSection
+            currentStages={currentStages}
+            addStagesHandler={addStagesHandler}
+            addNewStage={addNewStage}
+            removeStage={removeStage}
+            register={register}
+          />
         </div>
+      </div>
 
-        <div className="flex flex-col gap-6 p-4 custom-shadow rounded-xl h-1/2">
-          {isDirty ? (
-            <button type="submit">
-              <SuccessCheckMarkIcon />
-            </button>
-          ) : (
-            <CheckMarkIcon />
-          )}
-        </div>
-      </form>
-    </>
+      <div className="flex flex-col gap-6 p-4 custom-shadow rounded-xl h-1/2">
+        {isDirty ? (
+          <button type="submit">
+            <SuccessCheckMarkIcon />
+          </button>
+        ) : (
+          <CheckMarkIcon />
+        )}
+      </div>
+    </form>
   );
 };
 

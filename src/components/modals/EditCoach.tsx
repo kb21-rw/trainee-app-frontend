@@ -1,12 +1,13 @@
-import React from "react";
 import { useEditCoachMutation } from "../../features/user/backendApi";
 import { useForm } from "react-hook-form";
 import ModalLayout from "./ModalLayout";
-import Alert from "../ui/Alert";
 import InputField from "../ui/InputField";
 import Button from "../ui/Button";
 import Loader from "../ui/Loader";
-import { UserRole } from "../../utils/types";
+import { AlertType, UserRole } from "../../utils/types";
+import { getErrorInfo } from "../../utils/helper";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import { useDispatch } from "react-redux";
 
 const EditCoachModal = ({
   closePopup,
@@ -17,26 +18,34 @@ const EditCoachModal = ({
   jwt: string;
   coachData: string[];
 }) => {
-  const roles = [UserRole.Admin, UserRole.Coach];
   const [editCoach, { isLoading, isSuccess, error }] = useEditCoachMutation();
+  const dispatch = useDispatch();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const roles = [UserRole.Admin, UserRole.Coach];
+
+  const { register, handleSubmit } = useForm();
+
   const onSubmit = async (data: any) => {
     await editCoach({ jwt, id: coachData[0], body: { ...data } });
   };
 
-  const errorMessage: any =
-    errors?.name?.message ||
-    errors?.email?.message ||
-    error?.data?.errorMessage;
+  if (error) {
+    const { message } = getErrorInfo(error);
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    });
+  }
+
+  if (isSuccess) {
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: "Coach was updated successfully",
+    });
+  }
+
   return (
     <ModalLayout closePopup={closePopup} title="Edit user">
-      {errorMessage && <Alert type="error">{errorMessage}</Alert>}
-      {isSuccess && <Alert type="success">Coach was updated succesfully</Alert>}
       {isLoading && (
         <div className="flex items-center justify-center">
           <Loader />

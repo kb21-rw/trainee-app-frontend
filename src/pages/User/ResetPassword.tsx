@@ -4,24 +4,37 @@ import { H1 } from "../../components/ui/Typography";
 import Loader from "../../components/ui/Loader";
 import InputField from "../../components/ui/InputField";
 import Button from "../../components/ui/Button";
-import Alert from "../../components/ui/Alert";
 import { useForm } from "react-hook-form";
 import { useResetPasswordMutation } from "../../features/user/backendApi";
-import { ButtonSize } from "../../utils/types";
+import { AlertType, ButtonSize } from "../../utils/types";
+import { getErrorInfo } from "../../utils/helper";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import { useDispatch } from "react-redux";
 
 const ResetPassword = () => {
   const [resetPassword, { isLoading, error, isSuccess }] =
     useResetPasswordMutation();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const dispatch = useDispatch();
+  const { register, handleSubmit } = useForm();
   const onSubmit = async (data: any) => {
     await resetPassword({ email: data.email });
   };
 
-  const errorMessage: any = errors.email?.message || error?.data?.errorMessage;
+  if (error) {
+    const { message } = getErrorInfo(error);
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    });
+  }
+
+  if (isSuccess) {
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: "Password was reset successfully!",
+    });
+  }
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -30,8 +43,6 @@ const ResetPassword = () => {
       <H1>Reset password</H1>
       {isLoading && <Loader />}
       <div className="space-y-3 md:space-y-6 lg:space-y-10 w-full">
-        {isSuccess && <Alert type="success">Password reset successful</Alert>}
-        {errorMessage && <Alert type="error">{errorMessage}</Alert>}
         <InputField
           name="email"
           type="email"
@@ -44,7 +55,9 @@ const ResetPassword = () => {
         />
       </div>
 
-      <Button size={ButtonSize.Large} type="submit">Reset</Button>
+      <Button size={ButtonSize.Large} type="submit">
+        Reset
+      </Button>
       <div className="">
         Back to{" "}
         <Link to="/login" className="text-primary-dark">
