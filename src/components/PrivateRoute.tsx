@@ -1,22 +1,25 @@
-import React from 'react';
-import {  Navigate, Outlet } from 'react-router-dom';
-import { useGetProfileQuery } from '../features/user/backendApi';
-import { getJWT } from '../utils/helper';
-import Loader from './ui/Loader';
+import React from "react";
+import { useSelector } from "react-redux";
+import { Navigate, Outlet } from "react-router-dom";
+import { RootState } from "../store";
+import { UserRole } from "../utils/types";
 
 interface PrivateRouteProps {
-  allowedRoles?: string[];
+  allowedRoles: UserRole[];
 }
 
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ allowedRoles  }) => {
-    const jwt: string = getJWT();
-    const {data, isLoading, isError} = useGetProfileQuery(jwt);
-    const userRole = data?.role;
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ allowedRoles }) => {
+  const userRole = useSelector((state: RootState) => state.user.role);
 
-    if(isLoading) return <div className='h-screen flex items-center justify-center'><Loader/></div>
-    if(isError) return <Navigate to="/login"/>
+  if (!userRole) {
+    return <Navigate to="/login" />;
+  }
 
-  return allowedRoles && userRole && allowedRoles.includes(userRole) ? (<Outlet/>) : <Navigate to="/not-found"/>
+  return allowedRoles.includes(userRole) ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/not-found" />
+  );
 };
 
 export default PrivateRoute;

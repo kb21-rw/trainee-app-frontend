@@ -1,7 +1,7 @@
 import { useState } from "react";
 import SuccessCheckMarkIcon from "../../assets/SuccessCheckMarkIcon";
 import CheckMarkIcon from "../../assets/CheckMarkIcon";
-import { AlertType, ApplicationFormType } from "../../utils/types";
+import { AlertType, ApplicationFormType, Cookie } from "../../utils/types";
 import { useApplicationForm } from "../../utils/hooks/useApplicationForm";
 import { FormInputsSection } from "../../components/ui/FormInputsSection";
 import { StagesSection } from "../../components/ui/StagesSection";
@@ -11,11 +11,13 @@ import useNavigateAfterSuccess from "../../utils/hooks/useNavigateAfterSuccess";
 
 import moment from "moment";
 
-import { getErrorInfo, getJWT } from "../../utils/helper";
+import { getErrorInfo } from "../../utils/helper";
 import { handleShowAlert } from "../../utils/handleShowAlert";
 import { useDispatch } from "react-redux";
+import { useCookies } from "react-cookie";
 
 const CreateApplicationForm = () => {
+  const [cookies] = useCookies([Cookie.jwt]);
   const [activeInput, setActiveInput] = useState("");
   const [createForm, { error, isSuccess }] = useCreateFormMutation();
   const dispatch = useDispatch();
@@ -43,7 +45,7 @@ const CreateApplicationForm = () => {
       stages: data.stages,
     };
     await createForm({
-      jwt: getJWT(),
+      jwt: cookies.jwt,
       body: requestBody,
     });
   };

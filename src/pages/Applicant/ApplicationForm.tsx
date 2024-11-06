@@ -4,17 +4,17 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useGetMyApplicationQuery } from "../../features/user/backendApi";
 import Loader from "../../components/ui/Loader";
-import { ApplicationFormResponse } from "../../utils/types";
-import { getJWT } from "../../utils/helper";
+import { ApplicationFormResponse, Cookie } from "../../utils/types";
 import ApplicationFormComponent from "../../components/ui/ApplicationFormComponent";
+import { useCookies } from "react-cookie";
 
 const ApplicationForm = () => {
   const  location = useLocation();
+  const [cookies] = useCookies([Cookie.jwt]);
   const [formData, setFormData] = useState(location?.state || {})
-  const jwt: string = getJWT();
   const navigate = useNavigate();
 
-  const { data, isFetching } = useGetMyApplicationQuery(jwt);
+  const { data, isFetching } = useGetMyApplicationQuery(cookies.jwt);
 
   const formTitle = data?.name;
   const formQuestions = data?.questions ?? [];

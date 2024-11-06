@@ -177,3 +177,7 @@ export enum AlertType {
 }
 
 export type AlertData = Pick<IAlert, "type" | "displayDuration" | "children">;
+
+export enum Cookie {
+  jwt = "jwt",
+}

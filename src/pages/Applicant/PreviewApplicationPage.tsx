@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAddApplicantResponseMutation } from "../../features/user/backendApi";
-import { getErrorInfo, getJWT } from "../../utils/helper";
-import { AlertType, Question, QuestionType } from "../../utils/types";
+import { getErrorInfo } from "../../utils/helper";
+import { AlertType, Cookie, Question, QuestionType } from "../../utils/types";
 import Button from "../../components/ui/Button";
 import {
   TextField,
@@ -14,8 +14,10 @@ import {
 import { useEffect } from "react";
 import { handleShowAlert } from "../../utils/handleShowAlert";
 import { useDispatch } from "react-redux";
+import { useCookies } from "react-cookie";
 
 const PreviewApplicationPage = () => {
+  const [cookies] = useCookies([Cookie.jwt]);
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
@@ -36,8 +38,11 @@ const PreviewApplicationPage = () => {
 
   const handleConfirm = async () => {
     try {
-      const jwt = getJWT();
-      await addApplicantResponse({ jwt, body: responses, action: "submit" });
+      await addApplicantResponse({
+        jwt: cookies.jwt,
+        body: responses,
+        action: "submit",
+      });
     } catch (error) {
       console.error("Error submitting form", error);
     }

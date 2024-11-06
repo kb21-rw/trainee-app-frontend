@@ -7,7 +7,7 @@ import AddingTraineeModal from "../../components/modals/AddingTrainee";
 import EditTrainee from "../../components/modals/EditTrainee";
 import UserTable from "../../components/ui/UserTable";
 import UserTableHeader from "../../components/ui/UserTableHeader";
-import { getJWT, getTrainees } from "../../utils/helper";
+import { getTrainees } from "../../utils/helper";
 import {
   usersPerPageValues,
   traineeTableDataItems,
@@ -17,14 +17,15 @@ import {
 import DeleteModal from "../../components/modals/DeleteModal";
 import Button from "../../components/ui/Button";
 import PlusIcon from "../../assets/PlusIcon";
-import { UserRole } from "../../utils/types";
+import { Cookie, UserRole } from "../../utils/types";
+import { useCookies } from "react-cookie";
 
 const TraineesInfo = () => {
-  const jwt: string = getJWT()
+  const [cookies] = useCookies([Cookie.jwt]);
   const [query, setQuery] = useState("");
   const [editTrainee, setEditTrainee] = useState<string[] | null>(null);
   const { data, isFetching: isGetAllTraineesLoading } = useGetAllTraineesQuery({
-    jwt,
+    jwt: cookies.jwt,
     query,
   });
   const [isAddingTrainee, setIsAddingTrainee] = useState(false);
@@ -37,7 +38,7 @@ const TraineesInfo = () => {
 
   const handleDeleteTrainee = async () => {
     if (traineeTobeDeletedId)
-      await deleteTrainee({ jwt, id: traineeTobeDeletedId });
+      await deleteTrainee({ jwt: cookies.jwt, id: traineeTobeDeletedId });
     setShowDeleteModal(false);
   };
 
@@ -90,13 +91,13 @@ const TraineesInfo = () => {
       )}
       {isAddingTrainee && (
         <AddingTraineeModal
-          jwt={jwt}
+          jwt={cookies.jwt}
           closePopup={() => setIsAddingTrainee(false)}
         />
       )}
       {editTrainee && (
         <EditTrainee
-          jwt={jwt}
+          jwt={cookies.jwt}
           closePopup={() => setEditTrainee(null)}
           traineeData={editTrainee}
           role={UserRole.Admin}

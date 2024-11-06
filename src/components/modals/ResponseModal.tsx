@@ -7,10 +7,11 @@ import { useAddResponseMutation } from "../../features/user/backendApi";
 import Loader from "../ui/Loader";
 import RadioOption from "../ui/RadioOption";
 import useAutoCloseModal from "../../utils/hooks/useAutoCloseModal";
-import { getErrorInfo, getJWT } from "../../utils/helper";
-import { AlertType, QuestionType } from "../../utils/types";
+import { getErrorInfo } from "../../utils/helper";
+import { AlertType, Cookie, QuestionType } from "../../utils/types";
 import { handleShowAlert } from "../../utils/handleShowAlert";
 import { useDispatch } from "react-redux";
+import { useCookies } from "react-cookie";
 
 const ResponseModal = ({
   closePopup,
@@ -40,6 +41,7 @@ const ResponseModal = ({
   // eslint-disable-next-line no-unused-vars
   handleCheckChange: (_value: string) => void;
 }) => {
+  const [cookies] = useCookies([Cookie.jwt]);
   const { register, handleSubmit } = useForm();
   const [addResponse, { isLoading, error, isSuccess }] =
     useAddResponseMutation();
@@ -50,12 +52,11 @@ const ResponseModal = ({
   };
 
   const onSubmit = async (data: any) => {
-    const jwt: string = getJWT();
     const responseBody = {
       ...data,
       ...(questionType === QuestionType.Text && { text: localCheckedOption }),
     };
-    await addResponse({ jwt, body: responseBody, questionId, userId });
+    await addResponse({ jwt: cookies.jwt, body: responseBody, questionId, userId });
   };
 
   useAutoCloseModal(isSuccess, closePopup);

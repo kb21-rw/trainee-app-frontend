@@ -5,7 +5,7 @@ import AddingCoachModal from "../../components/modals/AddingCoach";
 import UserTable from "../../components/ui/UserTable";
 import EditCoach from "../../components/modals/EditCoach";
 import UserTableHeader from "../../components/ui/UserTableHeader";
-import { getCoaches, getJWT } from "../../utils/helper";
+import { getCoaches } from "../../utils/helper";
 import {
   usersPerPageValues,
   coachTableSortingValues,
@@ -15,12 +15,17 @@ import {
 import DeleteModal from "../../components/modals/DeleteModal";
 import Button from "../../components/ui/Button";
 import PlusIcon from "../../assets/PlusIcon";
+import { Cookie } from "../../utils/types";
+import { useCookies } from "react-cookie";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 const CoachesInfo = () => {
-  const jwt:string = getJWT()
+  const [cookies] = useCookies([Cookie.jwt]);
+  const loggedInUser = useSelector((state: RootState) => state.user);
   const [query, setQuery] = useState("");
   const { data, isFetching: isGetAllCoachesLoading } = useGetAllCoachesQuery({
-    jwt,
+    jwt: cookies.jwt,
     query,
   });
   const [isAddingCoach, setIsAddingCoach] = useState(false);
@@ -33,11 +38,16 @@ const CoachesInfo = () => {
   );
 
   const handleDeleteCoach = async () => {
-    if (coachTobeDeletedId) await deleteCoach({ jwt, id: coachTobeDeletedId });
+    if (coachTobeDeletedId)
+      await deleteCoach({ jwt: cookies.jwt, id: coachTobeDeletedId });
     setShowDeleteModal(false);
   };
 
-  const coachesList: string[][] = getCoaches(data, coachTableDataItems);
+  const coachesList: string[][] = getCoaches(
+    data,
+    coachTableDataItems,
+    loggedInUser
+  );
 
   const coachTobeDeleted = coachesList?.find(
     (coach) => coach[0] == coachTobeDeletedId
@@ -86,13 +96,13 @@ const CoachesInfo = () => {
       )}
       {isAddingCoach && (
         <AddingCoachModal
-          jwt={jwt}
+          jwt={cookies.jwt}
           closePopup={() => setIsAddingCoach(false)}
         />
       )}
       {editCoachData && (
         <EditCoach
-          jwt={jwt}
+          jwt={cookies.jwt}
           closePopup={() => setEditCoachData(null)}
           coachData={editCoachData}
         />

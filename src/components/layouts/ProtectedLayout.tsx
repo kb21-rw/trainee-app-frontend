@@ -1,22 +1,21 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { adminMenu, applicantMenu, coachMenu } from "../../utils/data";
-import { useGetProfileQuery } from "../../features/user/backendApi";
-import { getJWT } from "../../utils/helper";
-import Cookies from "universal-cookie";
+
 import { UserRole } from "../../utils/types";
 import Footer from "../ui/Footer";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import useLogout from "../../utils/hooks/useLogout";
 
 const ProtectedLayout = () => {
-  const jwt: string = getJWT();
-  const cookies = new Cookies();
-  const navigate = useNavigate();
+  const loggedInUser = useSelector((state: RootState) => state.user);
+  const handleLogout = useLogout();
 
-  const { data } = useGetProfileQuery(jwt);
   const menu =
-    (data?.role === UserRole.Admin && adminMenu) ||
-    (data?.role === UserRole.Coach && coachMenu) ||
-    (data?.role === UserRole.Applicant && applicantMenu) ||
-    (data?.role === UserRole.Prospect && applicantMenu) ||
+    (loggedInUser.role === UserRole.Admin && adminMenu) ||
+    (loggedInUser.role === UserRole.Coach && coachMenu) ||
+    (loggedInUser.role === UserRole.Applicant && applicantMenu) ||
+    (loggedInUser.role === UserRole.Prospect && applicantMenu) ||
     [];
 
   return (
@@ -48,15 +47,12 @@ const ProtectedLayout = () => {
                 }`
               }
             >
-              {data?.name}
+              {loggedInUser?.name}
             </NavLink>
           }
           <button
             className="text-xl font-medium text-secondary-dark"
-            onClick={() => {
-              cookies.remove("jwt");
-              navigate("/login");
-            }}
+            onClick={handleLogout}
           >
             logout
           </button>

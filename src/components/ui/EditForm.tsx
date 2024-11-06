@@ -4,7 +4,6 @@ import AddIcon from "../../assets/AddIcon";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { getJWT } from "../../utils/helper";
 import {
   useCreateQuestionMutation,
   useDeleteFormMutation,
@@ -14,7 +13,8 @@ import SuccessCheckMark from "../../assets/SuccessCheckMarkIcon";
 import Delete from "../../assets/DeleteIcon";
 import Loader from "./Loader";
 import { useNavigate } from "react-router-dom";
-import { FormType, QuestionType } from "../../utils/types";
+import { Cookie, FormType, QuestionType } from "../../utils/types";
+import { useCookies } from "react-cookie";
 
 const FormSchema = yup.object({
   name: yup.string().required(),
@@ -36,6 +36,7 @@ const EditForm = ({
   activeQuestion: string;
   setActiveQuestion: any;
 }) => {
+  const [cookies] = useCookies([Cookie.jwt]);
   const {
     register,
     handleSubmit,
@@ -48,20 +49,20 @@ const EditForm = ({
   const [editForm] = useEditFormMutation();
   const navigate = useNavigate();
   const onSubmit = async (data: any) => {
-    await editForm({ jwt: getJWT(), body: { ...data, type }, id });
+    await editForm({ jwt: cookies.jwt, body: { ...data, type }, id });
   };
 
   const [deleteForm, { isLoading: isDeleteFormLoading }] =
     useDeleteFormMutation();
   const handleDeleteForm = async () => {
-    await deleteForm({ jwt: getJWT(), id });
+    await deleteForm({ jwt: cookies.jwt, id });
     navigate(`/forms`);
   };
 
   const [createQuestion] = useCreateQuestionMutation();
   const onClickAddQuestion = async () => {
     await createQuestion({
-      jwt: getJWT(),
+      jwt: cookies.jwt,
       formId: id,
       body: { prompt: `Question`, type: QuestionType.Text },
     });

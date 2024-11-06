@@ -1,12 +1,12 @@
-import React from "react";
 import { useLoginMutation } from "../../features/user/backendApi";
 import { useForm } from "react-hook-form";
-import Cookies from "universal-cookie";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Loader from "../../components/ui/Loader";
 import { H1 } from "../../components/ui/Typography";
 import InputField from "../../components/ui/InputField";
 import Button from "../../components/ui/Button";
+import { useCookies } from "react-cookie";
+import { Cookie } from "../../utils/types";
 
 const ApplicantSignin = () => {
   const [login, { isLoading, error }] = useLoginMutation();
@@ -15,7 +15,7 @@ const ApplicantSignin = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const cookies = new Cookies();
+  const [, setCookie] = useCookies([Cookie.jwt]);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirectUrl = searchParams.get("redirectTo") || "/apply";
@@ -26,7 +26,7 @@ const ApplicantSignin = () => {
       password: userData.password,
     });
     if (result?.data?.accessToken) {
-      cookies.set("jwt", result.data.accessToken, { maxAge: 1800 });
+      setCookie(Cookie.jwt, result.data.accessToken, { maxAge: 1800 });
       return navigate(redirectUrl);
     }
   };
