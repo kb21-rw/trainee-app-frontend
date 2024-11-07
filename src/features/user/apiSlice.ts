@@ -439,9 +439,9 @@ getAllForms: builder.query({
     }),
     getApplicants: builder.query({
       query: (args) => {
-        const { jwt, query } = args;
+        const { jwt, cohortId } = args;
         return {
-          url: `/applicants${query}`,
+          url: `/cohorts/${cohortId}/overview`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
@@ -476,7 +476,7 @@ getAllForms: builder.query({
         };
       },
       providesTags: ["cohorts"],
-    })
+    }),
   }),
 });
 
