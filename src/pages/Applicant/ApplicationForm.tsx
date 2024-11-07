@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useGetMyApplicationQuery } from "../../features/user/apiSlice";
+import { useGetMyApplicationQuery } from "../../features/user/backendApi";
 import Loader from "../../components/ui/Loader";
 import { ApplicationFormResponse } from "../../utils/types";
 import { getJWT } from "../../utils/helper";

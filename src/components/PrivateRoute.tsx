@@ -1,6 +1,6 @@
 import React from 'react';
 import {  Navigate, Outlet } from 'react-router-dom';
-import { useGetProfileQuery } from '../features/user/apiSlice';
+import { useGetProfileQuery } from '../features/user/backendApi';
 import { getJWT } from '../utils/helper';
 import Loader from './ui/Loader';
 

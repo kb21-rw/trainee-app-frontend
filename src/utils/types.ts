@@ -171,4 +171,9 @@ export interface IAlert {
   onClose: () => void;
 }
 
+export enum AlertType {
+  Error = "Error",
+  Success = "Success",
+}
+
 export type AlertData = Pick<IAlert, "type" | "displayDuration" | "children">;

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   useDeleteTraineeMutation,
   useGetAllTraineesQuery,
-} from "../../features/user/apiSlice";
+} from "../../features/user/backendApi";
 import AddingTraineeModal from "../../components/modals/AddingTrainee";
 import EditTrainee from "../../components/modals/EditTrainee";
 import UserTable from "../../components/ui/UserTable";

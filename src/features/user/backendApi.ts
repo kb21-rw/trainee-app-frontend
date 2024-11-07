@@ -2,8 +2,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const api_url = import.meta.env.VITE_API_URL;
 
-export const usersApi: any = createApi({
-  reducerPath: "usersApi",
+export const backendApi: any = createApi({
+  reducerPath: "backendApi",
   baseQuery: fetchBaseQuery({ baseUrl: api_url }),
   tagTypes: [
     "coaches",
@@ -515,4 +515,4 @@ export const {
   useApplicantDecisionMutation,
   useGetAllCohortsQuery,
   useGetApplicationFormQuery,
-} = usersApi;
+} = backendApi;

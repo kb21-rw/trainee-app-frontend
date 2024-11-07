@@ -1,5 +1,5 @@
 import React from "react";
-import { useSignupMutation } from "../../features/user/apiSlice";
+import { useSignupMutation } from "../../features/user/backendApi";
 import { useForm } from "react-hook-form";
 import Cookies from "universal-cookie";
 import { Link, useNavigate } from "react-router-dom";

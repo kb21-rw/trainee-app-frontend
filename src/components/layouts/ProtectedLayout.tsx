@@ -1,13 +1,12 @@
-import React from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { adminMenu, applicantMenu, coachMenu } from "../../utils/data";
-import { useGetProfileQuery } from "../../features/user/apiSlice";
+import { useGetProfileQuery } from "../../features/user/backendApi";
 import { getJWT } from "../../utils/helper";
 import Cookies from "universal-cookie";
 import { UserRole } from "../../utils/types";
 import Footer from "../ui/Footer";
 
-const Layout = () => {
+const ProtectedLayout = () => {
   const jwt: string = getJWT();
   const cookies = new Cookies();
   const navigate = useNavigate();
@@ -71,4 +70,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default ProtectedLayout;

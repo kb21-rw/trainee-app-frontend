@@ -9,7 +9,7 @@ import {
 } from "../../../@/components/ui/table";
 import { Question, Response, Form, QuestionType } from "../../utils/types";
 
-import { useGetOverviewForCoachQuery } from "../../features/user/apiSlice";
+import { useGetOverviewForCoachQuery } from "../../features/user/backendApi";
 import Loader from "../../components/ui/Loader";
 import { getJWT } from "../../utils/helper";
 import ResponseModal from "../../components/modals/ResponseModal";

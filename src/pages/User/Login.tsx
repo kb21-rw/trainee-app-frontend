@@ -1,14 +1,17 @@
 import React, { useCallback, useEffect } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
-import { useLoginMutation } from "../../features/user/apiSlice";
-import { useForm, SubmitHandler} from "react-hook-form";
+import { useLoginMutation } from "../../features/user/backendApi";
+import { useForm, SubmitHandler } from "react-hook-form";
 import Cookies from "universal-cookie";
 import { H1 } from "../../components/ui/Typography";
 import Button from "../../components/ui/Button";
 import InputField from "../../components/ui/InputField";
 import Loader from "../../components/ui/Loader";
-import { ButtonSize, UserRole } from "../../utils/types";
-import { useGetProfileQuery } from "../../features/user/apiSlice";  
+import { AlertType, ButtonSize, UserRole } from "../../utils/types";
+import { useGetProfileQuery } from "../../features/user/backendApi";
+import { useDispatch } from "react-redux";
+import { showAlert } from "../../features/user/alertSlice";
+import { getErrorInfo } from "../../utils/helper";
 
 interface LoginFormValuesProps {
   email: string;
@@ -16,40 +19,40 @@ interface LoginFormValuesProps {
 }
 
 const Login = () => {
+  const dispatch = useDispatch();
   const [login, { isLoading, error }] = useLoginMutation();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm <LoginFormValuesProps>();
+  } = useForm<LoginFormValuesProps>();
   const cookies = new Cookies();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   let redirectUrl = searchParams.get("redirectTo") || "/";
-  const { data: user, isLoading: isProfileLoading} = useGetProfileQuery(
-    cookies.get("jwt"),
+  const { data: user, isLoading: isProfileLoading } = useGetProfileQuery(
+    cookies.get("jwt")
   );
-  const onSubmit: SubmitHandler<LoginFormValuesProps> = async (data) => {
-    try {
-      const result = await login(data);
 
-      if (result?.data?.accessToken) {
-        cookies.set("jwt", result.data.accessToken, { maxAge: 1800 });
-      }
-    } catch (error) {
-      console.error("Error during login", error);
+  const onSubmit: SubmitHandler<LoginFormValuesProps> = async (data) => {
+    const result = await login(data);
+    if (result?.data?.accessToken) {
+      cookies.set("jwt", result.data.accessToken, { maxAge: 1800 });
     }
   };
 
-  const navigateBasedOnRole = useCallback((role: string) => {
-    const roleRoutes = {
-      [UserRole.Admin]: "/forms",
-      [UserRole.Coach]: "/overview",
-      [UserRole.Applicant]: "/home",
-      [UserRole.Prospect]: "/home",
-    };
-    navigate(roleRoutes[role as keyof typeof roleRoutes] || redirectUrl);
-  }, [navigate, redirectUrl]);
+  const navigateBasedOnRole = useCallback(
+    (role: string) => {
+      const roleRoutes = {
+        [UserRole.Admin]: "/forms",
+        [UserRole.Coach]: "/overview",
+        [UserRole.Applicant]: "/home",
+        [UserRole.Prospect]: "/home",
+      };
+      navigate(roleRoutes[role as keyof typeof roleRoutes] || redirectUrl);
+    },
+    [navigate, redirectUrl]
+  );
 
   useEffect(() => {
     if (!isProfileLoading && user?.role) {
@@ -57,8 +60,21 @@ const Login = () => {
     }
   }, [isProfileLoading, user, navigateBasedOnRole]);
 
-  const errorMessage: any =
-    errors.email?.message || errors.password?.message || error?.data?.errorMessage || error?.user?.errorMessage;
+  if (error) {
+    const { message } = getErrorInfo(error);
+    // Debounce the State Update
+    setTimeout(
+      () =>
+        dispatch(
+          showAlert({
+            message,
+            type: AlertType.Error,
+            displayDuration: 5000,
+          })
+        ),
+      0
+    );
+  }
 
   if (isProfileLoading)
     return (
@@ -76,14 +92,12 @@ const Login = () => {
         <H1>Login</H1>
       </div>
       <div className="space-y-3 md:space-y-6 lg:space-y-10 w-full">
-        {isLoading && <div className="flex items-center justify-center">
-          <Loader />
-         </div>}
-        {errorMessage && (
-          <div className="py-2 bg-error-light text-error-dark flex justify-center items-center rounded-lg">
-            {errorMessage}
+        {isLoading && (
+          <div className="flex items-center justify-center">
+            <Loader />
           </div>
         )}
+
         <InputField
           name="email"
           type="email"

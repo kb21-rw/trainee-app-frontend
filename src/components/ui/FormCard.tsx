@@ -3,7 +3,7 @@ import { H2, H6, H7 } from "./Typography";
 import { IFormType } from "../../utils/types";
 import Delete from "../../assets/DeleteIcon";
 import Edit from "../../assets/EditIcon";
-import { useDeleteFormMutation } from "../../features/user/apiSlice";
+import { useDeleteFormMutation } from "../../features/user/backendApi";
 import { useNavigate } from "react-router-dom";
 import View from "../../assets/ViewIcon";
 import Loader from "./Loader";

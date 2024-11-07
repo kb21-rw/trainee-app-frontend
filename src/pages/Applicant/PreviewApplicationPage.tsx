@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAddApplicantResponseMutation } from "../../features/user/apiSlice";
-import { getJWT } from "../../utils/helper";
-import { Question, QuestionType } from "../../utils/types";
+import { useAddApplicantResponseMutation } from "../../features/user/backendApi";
+import { getErrorInfo, getJWT } from "../../utils/helper";
+import { AlertType, Question, QuestionType } from "../../utils/types";
 import Button from "../../components/ui/Button";
 import {
   TextField,
@@ -11,10 +11,12 @@ import {
   RadioGroup,
   FormGroup,
 } from "@mui/material";
-import Alert from "../../components/ui/Alert";
 import { useEffect } from "react";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import { useDispatch } from "react-redux";
 
 const PreviewApplicationPage = () => {
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const { formQuestions, responses, formData, formTitle } =
@@ -22,15 +24,15 @@ const PreviewApplicationPage = () => {
   const [addApplicantResponse, { isSuccess, error }] =
     useAddApplicantResponseMutation();
 
-    useEffect(() => {
-      if (isSuccess) {
-        const timer = setTimeout(() => {
-          window.location.href = "/home";
-        }, 3000);
-    
-        return () => clearTimeout(timer);
-      }
-    }, [isSuccess]);
+  useEffect(() => {
+    if (isSuccess) {
+      const timer = setTimeout(() => {
+        window.location.href = "/home";
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isSuccess]);
 
   const handleConfirm = async () => {
     try {
@@ -45,16 +47,23 @@ const PreviewApplicationPage = () => {
     navigate("/apply", { state: formData });
   };
 
-  const errorMessage = error ? error.data.errorMessage : null;
+  if (error) {
+    const { message } = getErrorInfo(error);
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    });
+  }
+
+  if (isSuccess) {
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: "Successfully Applied, Redirecting to home page...",
+    });
+  }
 
   return (
     <div className="md:flex items-center justify-center py-5">
-      {isSuccess && (
-        <Alert type="success">
-          Successfully Applied, Redirecting to home page...
-        </Alert>
-      )}
-      {errorMessage && <Alert type="error">{errorMessage}</Alert>}
       <div className="flex flex-col items-center justify-center p-5 custom-shadow border-t-[#673AB7] border-t-8 rounded-xl w-full md:w-2/5">
         <div className="p-4">
           <h1 className="font-bold text-xl">{formTitle}</h1>
@@ -87,7 +96,7 @@ const PreviewApplicationPage = () => {
                         label={option}
                         disabled
                       />
-                    ),
+                    )
                   )}
                 </RadioGroup>
               )}
@@ -106,7 +115,7 @@ const PreviewApplicationPage = () => {
                         label={option}
                         disabled
                       />
-                    ),
+                    )
                   )}
                 </FormGroup>
               )}

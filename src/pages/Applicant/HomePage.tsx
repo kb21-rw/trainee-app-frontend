@@ -10,7 +10,7 @@ import Button from "../../components/ui/Button";
 import CohortInfo from "../../components/ui/CohortInfo";
 import ApplicationStatus from "../../components/ui/ApplicationStatus";
 import { deadLineExceededInfo, noOpenApplicationInfo, userAppliedInfo } from "../../utils/data";
-import { useGetMyApplicationQuery, useGetProfileQuery } from "../../features/user/apiSlice";
+import { useGetMyApplicationQuery, useGetProfileQuery } from "../../features/user/backendApi";
 import { applicationStatusHandler, getJWT } from "../../utils/helper";
 import Loader from "../../components/ui/Loader";
 
@@ -35,8 +35,8 @@ const HomePage = () => {
       {status === ApplicationFormStatus.OPEN && (
         <div className="md:container md:mx-auto px-6 flex flex-col items-center justify-center">
           <CohortInfo
-            cohortTitle="The Gym Cohort 5 2025"
-            applicationDeadline="4th October 2024"
+            cohortTitle="The Gym Cohort 2025"
+            applicationDeadline="4th November 2024"
             trainingStartDate="22nd November 2024"
             programBenefits={[
               {

@@ -9,19 +9,17 @@ import {
   useCreateQuestionMutation,
   useDeleteFormMutation,
   useEditFormMutation,
-} from "../../features/user/apiSlice";
+} from "../../features/user/backendApi";
 import SuccessCheckMark from "../../assets/SuccessCheckMarkIcon";
 import Delete from "../../assets/DeleteIcon";
 import Loader from "./Loader";
 import { useNavigate } from "react-router-dom";
-import Alert from "./Alert";
 import { FormType, QuestionType } from "../../utils/types";
 
-const FormSchema = yup
-  .object({
-    name: yup.string().required(),
-    description: yup.string().required(),
-  })
+const FormSchema = yup.object({
+  name: yup.string().required(),
+  description: yup.string().required(),
+});
 
 const EditForm = ({
   name,
@@ -41,17 +39,16 @@ const EditForm = ({
   const {
     register,
     handleSubmit,
-    formState: { isDirty, errors },
+    formState: { isDirty },
   } = useForm({
     defaultValues: { name, description },
     resolver: yupResolver(FormSchema),
   });
 
- 
   const [editForm] = useEditFormMutation();
   const navigate = useNavigate();
   const onSubmit = async (data: any) => {
-    await editForm({ jwt: getJWT(), body: {...data, type}, id });
+    await editForm({ jwt: getJWT(), body: { ...data, type }, id });
   };
 
   const [deleteForm, { isLoading: isDeleteFormLoading }] =
@@ -69,7 +66,6 @@ const EditForm = ({
       body: { prompt: `Question`, type: QuestionType.Text },
     });
   };
-
 
   return (
     <form className="flex gap-2 " onFocus={() => setActiveQuestion("title")}>
@@ -95,12 +91,6 @@ const EditForm = ({
           defaultValue={description}
           {...register("description")}
         />
-        {errors.description && (
-          <Alert type="error">Description shouldn&#39;t be empty</Alert>
-        )}
-        {errors.name && (
-          <Alert type="error">Title shouldn&#39;t be empty</Alert>
-        )}
       </div>
       <div className="flex flex-col justify-between gap-6 p-4 custom-shadow rounded-xl">
         {isDirty ? (
