@@ -76,7 +76,7 @@ const EditForm = ({
         </div>
       )}
       <div
-        className={`p-8 custom-shadow border-t-[#673AB7] border-t-8  rounded-xl ${
+        className={`p-8 custom-shadow border-primary-dark border-t-8  rounded-xl ${
           activeQuestion === "prompt" && "border-l-8 border-l-[#4285F4]"
         }  flex flex-col gap-8 flex-1`}
       >
