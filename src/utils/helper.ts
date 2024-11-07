@@ -1,7 +1,6 @@
 import Cookies from "universal-cookie";
 import jwtDecode from "jwt-decode";
 import {
-  ApplicantDetails,
   ApplicationForm,
   ApplicationFormStatus,
   ApplicationStatus,
@@ -115,15 +114,6 @@ export const getTrainees = (data: any, dataItems: string[]) => {
       ),
   );
   return traineesData;
-};
-
-export const getApplicants = (
-  data: ApplicantDetails[],
-  dataItems: string[],
-) => {
-  return data?.map((item: any) =>
-    dataItems.map((key) => item[key as keyof ApplicantDetails]),
-  );
 };
 
 /**

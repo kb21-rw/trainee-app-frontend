@@ -111,6 +111,7 @@ export enum ApplicantDecision {
   Rejected = "Rejected",
 }
 export interface Cohort {
+  _id: string;
   name: string;
   description: string;
   isActive: boolean;
