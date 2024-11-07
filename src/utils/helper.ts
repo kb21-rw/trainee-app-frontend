@@ -1,15 +1,15 @@
-import Cookies from "universal-cookie";
-import jwtDecode from "jwt-decode";
 import {
   ApplicantDetails,
   ApplicationForm,
   ApplicationFormStatus,
   ApplicationStatus,
+  UserRole,
 } from "./types";
 import { Cohort } from "./types";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import { UserState } from "../features/user/userSlice";
 
 /**
  * extend dayjs to use necessary plugins
@@ -17,30 +17,6 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 
 dayjs.extend(isBetween);
 dayjs.extend(advancedFormat);
-
-/**
- * Retrieves the logged-in user's information from a JWT token stored in cookies.
- *
- * @returns {Object|undefined} The user information extracted from the JWT token, or `undefined` if no token is found.
- *  - The user information contains:
- * - The name of the user
- * - The email address of the user
- * - The role of the user
- * - The ID of the user
- *
- */
-
-export const getLoggedInUser = () => {
-  const token = getJWT();
-
-  if (!token) return;
-
-  const decoded = JSON.parse(JSON.stringify(jwtDecode(token)));
-
-  const user = decoded.user || decoded;
-
-  return user;
-};
 
 /**
  * Structures an array of data into a two-dimensional array containing information for each coach.
@@ -53,10 +29,12 @@ export const getLoggedInUser = () => {
  *   - The coach's role
  */
 
-export const getCoaches = (data: any[], dataItems: string[]) => {
-  const currentUser = getLoggedInUser();
+export const getCoaches = (
+  data: any[],
+  dataItems: string[],
+  currentUser: UserState
+): Array<Array<string>> => {
   const currentUserName = currentUser.name;
-
   const filteredCoachesData = data?.filter(
     (coachData) => coachData.name !== currentUserName
   );
@@ -124,17 +102,6 @@ export const getApplicants = (
   return data?.map((item: any) =>
     dataItems.map((key) => item[key as keyof ApplicantDetails])
   );
-};
-
-/**
- * retrieve the JWT token.
- *
- * @returns {string} - The JWT token.
- */
-
-export const getJWT = () => {
-  const cookies = new Cookies();
-  return cookies.get("jwt");
 };
 
 /**
@@ -228,6 +195,7 @@ export const applicationStatusHandler = (
  */
 
 export const getErrorInfo = (error: any): { type: string; message: string } => {
+  console.log(error);
   if (!error?.data) {
     throw { type: error.status, message: error.error.split(":")[1] };
   }
@@ -240,4 +208,22 @@ export const getErrorInfo = (error: any): { type: string; message: string } => {
     type: error.data?.type || "Unknown",
     message: error.data?.errorMessage || "Unknown error occurred!",
   };
+};
+
+/**
+ * getRoleBasedHomepageURL returns a homepage url based on role provided
+ *
+ * @param {UserRole} role
+ * a role of a user
+ */
+
+export const getRoleBasedHomepageURL = (role: UserRole) => {
+  switch (role) {
+    case UserRole.Admin:
+      return "/";
+    case UserRole.Coach:
+      return "/overview";
+    default:
+      return "/home";
+  }
 };

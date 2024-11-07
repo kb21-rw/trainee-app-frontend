@@ -8,17 +8,18 @@ import {
   useUpdateProfileMutation,
 } from "../../features/user/backendApi";
 import { useForm } from "react-hook-form";
-import { getErrorInfo, getJWT } from "../../utils/helper";
+import { getErrorInfo } from "../../utils/helper";
 import { handleShowAlert } from "../../utils/handleShowAlert";
-import { AlertType } from "../../utils/types";
+import { AlertType, Cookie } from "../../utils/types";
 import { useDispatch } from "react-redux";
+import { useCookies } from "react-cookie";
 
 const Profile = () => {
+  const [cookies] = useCookies([Cookie.jwt]);
   const [updateProfile, { isLoading, isSuccess, error }] =
     useUpdateProfileMutation();
   const dispatch = useDispatch();
-  const jwt: string = getJWT();
-  const { data } = useGetProfileQuery(jwt);
+  const { data } = useGetProfileQuery(cookies.jwt);
   const { register, handleSubmit } = useForm();
 
   const onSubmit = async (data: {
@@ -31,7 +32,7 @@ const Profile = () => {
     if (data.email) profileData.email = data.email;
     if (data.name) profileData.name = data.name;
     if (data.password) profileData.password = data.password;
-    await updateProfile({ jwt, profileData });
+    await updateProfile({ jwt: cookies.jwt, profileData });
   };
 
   if (error) {

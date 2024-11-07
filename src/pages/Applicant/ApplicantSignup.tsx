@@ -1,13 +1,13 @@
 import React from "react";
 import { useSignupMutation } from "../../features/user/backendApi";
 import { useForm } from "react-hook-form";
-import Cookies from "universal-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import InputField from "../../components/ui/InputField";
 import Button from "../../components/ui/Button";
 import { H2 } from "../../components/ui/Typography";
 import Loader from "../../components/ui/Loader";
-import { ButtonSize } from "../../utils/types";
+import { ButtonSize, Cookie } from "../../utils/types";
+import { useCookies } from "react-cookie";
 
 const ApplicantSignup = () => {
   const [signup, { isLoading, error }] = useSignupMutation();
@@ -17,8 +17,7 @@ const ApplicantSignup = () => {
     watch,
     formState: { errors },
   } = useForm();
-
-  const cookies = new Cookies();
+  const [, setCookie] = useCookies([Cookie.jwt]);
   const navigate = useNavigate();
 
   const password = watch("password");
@@ -30,7 +29,7 @@ const ApplicantSignup = () => {
       password: userData.password,
     });
     if (result.data.userId) {
-      cookies.set("jwt", result.data.userId, { maxAge: 1800 });
+      setCookie(Cookie.jwt, result.data.userId, { maxAge: 1800 });
       return navigate("/signup/thank-you");
     }
   };

@@ -5,21 +5,21 @@ import {
   useGetApplicationFormQuery,
 } from "../../features/user/backendApi";
 import FormCard from "../../components/ui/FormCard";
-import { IFormType } from "../../utils/types";
+import { Cookie, IFormType } from "../../utils/types";
 import NotFound from "../../components/ui/NotFound";
-import { getJWT } from "../../utils/helper";
 import CreateFormDropdown from "../../components/ui/CreateFormDropdown";
 import { Link } from "react-router-dom";
 import FormsSkeleton from "./FormsSkeleton";
+import { useCookies } from "react-cookie";
 
 const AllForms = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const jwt: string = getJWT();
+  const [cookies] = useCookies([Cookie.jwt]);
   const { data, isFetching } = useGetAllFormsQuery({
-    jwt,
+    jwt: cookies.jwt,
     searchString: searchQuery,
   });
-  const { data: applicationForm } = useGetApplicationFormQuery(jwt);
+  const { data: applicationForm } = useGetApplicationFormQuery(cookies.jwt);
 
   const parsedApplicationForm = {
     _id: applicationForm?._id,

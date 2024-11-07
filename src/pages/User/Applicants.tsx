@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useGetApplicantsQuery } from "../../features/user/backendApi";
-import { getApplicants, getJWT } from "../../utils/helper";
+import { getApplicants } from "../../utils/helper";
 import UserTableHeader from "../../components/ui/UserTableHeader";
 import {
   applicantTableDataItems,
@@ -11,14 +11,13 @@ import {
 import UserTable from "../../components/ui/UserTable";
 import DropOrEnrollModal from "../../components/modals/DropOrEnrollModal";
 import { AiOutlineWarning } from "react-icons/ai";
-import { ApplicantDecision } from "../../utils/types";
+import { ApplicantDecision, Cookie } from "../../utils/types";
+import { useCookies } from "react-cookie";
 
 const Applicants = () => {
-  const jwt: string = getJWT();
+  const [cookies] = useCookies([Cookie.jwt]);
   const [query, setQuery] = useState("");
-  const [decideForUserId, setDecideForUserId] = useState<string | null>(
-    null,
-  );
+  const [decideForUserId, setDecideForUserId] = useState<string | null>(null);
   const [isRejectUserModalOpen, setIsRejectUserModalOpen] =
     useState<boolean>(false);
   const [isAcceptUserModalOpen, setIsAcceptUserModalOpen] =
@@ -28,7 +27,7 @@ const Applicants = () => {
     isFetching: isGettingAllApplicantsLoading,
     isError,
   } = useGetApplicantsQuery({
-    jwt,
+    jwt: cookies.jwt,
     query,
   });
 
@@ -36,17 +35,15 @@ const Applicants = () => {
 
   const applicantList = getApplicants(
     applicantsData?.[0],
-    applicantTableDataItems,
+    applicantTableDataItems
   );
 
   const userDecision = applicantList?.find(
-    (user) => user[0] == decideForUserId,
+    (user) => user[0] == decideForUserId
   );
-
 
   const userName = userDecision ? userDecision[2] : "";
   const userEmail = userDecision ? userDecision[3] : "";
-
 
   if (isError) {
     return (
@@ -105,7 +102,7 @@ const Applicants = () => {
           userEmail={userEmail}
           decideForUserId={decideForUserId}
           decision={ApplicantDecision.Rejected}
-          jwt={jwt}
+          jwt={cookies.jwt}
         />
       )}
       {isAcceptUserModalOpen && (
@@ -115,7 +112,7 @@ const Applicants = () => {
           userEmail={userEmail}
           decideForUserId={decideForUserId}
           decision={ApplicantDecision.Accepted}
-          jwt={jwt}
+          jwt={cookies.jwt}
         />
       )}
     </div>

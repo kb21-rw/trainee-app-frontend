@@ -7,16 +7,23 @@ import {
   TableHeader,
   TableRow,
 } from "../../../@/components/ui/table";
-import { Question, Response, Form, QuestionType } from "../../utils/types";
+import {
+  Question,
+  Response,
+  Form,
+  QuestionType,
+  Cookie,
+} from "../../utils/types";
 
 import { useGetOverviewForCoachQuery } from "../../features/user/backendApi";
 import Loader from "../../components/ui/Loader";
-import { getJWT } from "../../utils/helper";
 import ResponseModal from "../../components/modals/ResponseModal";
+import { useCookies } from "react-cookie";
 const TraineeResults = () => {
-  const jwt:string = getJWT()
-  const { data, isLoading, isError } = useGetOverviewForCoachQuery({ jwt });
-  
+  const [cookies] = useCookies([Cookie.jwt]);
+  const { data, isLoading, isError } = useGetOverviewForCoachQuery({
+    jwt: cookies.jwt,
+  });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState({
@@ -55,8 +62,10 @@ const TraineeResults = () => {
 
   data.forEach((form: Form) => {
     form.questions.forEach((question: Question) => {
-      const questionType = question.options.length > 0 ? QuestionType.SingleSelect
-       : QuestionType.Text;
+      const questionType =
+        question.options.length > 0
+          ? QuestionType.SingleSelect
+          : QuestionType.Text;
       question.responses.forEach((response: Response) => {
         if (response.user) {
           if (!traineeMap.has(response.user._id)) {
@@ -110,7 +119,7 @@ const TraineeResults = () => {
                   scope="col"
                   className="border border-black px-6 py-3 text-left text-sm font-extrabold uppercase tracking-wider max-w-md overflow-auto whitespace-nowrap"
                 >
-                  {question.title}
+                  {question.prompt}
                 </TableHead>
               ))
             )}
@@ -131,16 +140,22 @@ const TraineeResults = () => {
                       setIsModalOpen(true);
                       setModalData({
                         formTitle: form.title,
-                        question: question.title,
+                        question: question.prompt,
                         questionId: question._id ?? "",
                         response:
                           trainee.responses[`${form._id}-${question._id}`],
                         userId: trainee.id,
                         type: trainee.type,
                         questionType:
-                          question.options.length > 0 ? QuestionType.SingleSelect : QuestionType.Text,
+                          question.options.length > 0
+                            ? QuestionType.SingleSelect
+                            : QuestionType.Text,
                         options: question.options,
-                        checkedOption: trainee.responses[`${form._id}-${question._id}`] ? trainee.responses[`${form._id}-${question._id}`]: "",
+                        checkedOption: trainee.responses[
+                          `${form._id}-${question._id}`
+                        ]
+                          ? trainee.responses[`${form._id}-${question._id}`]
+                          : "",
                       });
                     }}
                   >
@@ -165,7 +180,9 @@ const TraineeResults = () => {
           questionType={modalData.questionType}
           options={modalData.options}
           checkedOption={modalData.checkedOption}
-          handleCheckChange={(value: string) => setModalData({ ...modalData, checkedOption: value })}
+          handleCheckChange={(value: string) =>
+            setModalData({ ...modalData, checkedOption: value })
+          }
         />
       )}
     </div>

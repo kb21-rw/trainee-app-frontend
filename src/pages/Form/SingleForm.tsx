@@ -4,13 +4,16 @@ import Loader from "../../components/ui/Loader";
 import { useParams } from "react-router-dom";
 import EditForm from "../../components/ui/EditForm";
 import QuestionCard from "../../components/ui/QuestionCard";
-import { getJWT } from "../../utils/helper";
-import { Question } from "../../utils/types";
+import { Cookie, Question } from "../../utils/types";
+import { useCookies } from "react-cookie";
 
 const SingleForm = () => {
+  const [cookies] = useCookies([Cookie.jwt]);
   const { id } = useParams<{ id: string }>();
-  const jwt: string = getJWT();
-  const { data, isFetching, error } = useGetFormQuery({ id: id || "", jwt });
+  const { data, isFetching, error } = useGetFormQuery({
+    id: id || "",
+    jwt: cookies.jwt,
+  });
 
   const [activeQuestion, setActiveQuestion] = useState<string>("");
 
@@ -34,7 +37,6 @@ const SingleForm = () => {
 
   return (
     <div className="py-12 max-w-5xl mx-auto">
-
       <div className="flex flex-col gap-4">
         <EditForm
           name={name}

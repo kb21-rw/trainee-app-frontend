@@ -12,13 +12,14 @@ import {
   TCohortWithId,
 } from "./cohortColumns";
 import Button from "../../components/ui/Button";
-import { AlertType, ButtonSize } from "../../utils/types";
+import { AlertType, ButtonSize, Cookie } from "../../utils/types";
 import CreateCohortForm from "./CreateCohortForm";
 import { Box, Modal, Typography } from "@mui/material";
 import { useState } from "react";
 import { handleShowAlert } from "../../utils/handleShowAlert";
 import { useDispatch } from "react-redux";
-import { getErrorInfo, getJWT } from "../../utils/helper";
+import { getErrorInfo } from "../../utils/helper";
+import { useCookies } from "react-cookie";
 
 const style = {
   position: "absolute" as "absolute",
@@ -33,9 +34,9 @@ const style = {
 };
 
 export default function Cohorts() {
-  const jwt: string = getJWT();
+  const [cookies] = useCookies([Cookie.jwt]);
   const [createCohort, { error, isSuccess }] = useCreateCohortMutation();
-  const { data, isFetching } = useGetAllCohortsQuery({ jwt });
+  const { data, isFetching } = useGetAllCohortsQuery({ jwt: cookies.jwt });
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
 

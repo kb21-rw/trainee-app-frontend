@@ -1,21 +1,22 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
-import { getJWT } from "../../utils/helper";
 import { useCreateFormMutation } from "../../features/user/backendApi";
 import { useNavigate } from "react-router-dom";
-import { FormType } from "../../utils/types";
+import { Cookie, FormType } from "../../utils/types";
 import { menuItems } from "../../utils/data";
 import { useGetApplicationFormQuery } from "../../features/user/backendApi";
 import classNames from "classnames";
+import { useCookies } from "react-cookie";
 
 type NextFormType = Exclude<FormType, FormType.Application>;
 
 export default function CreateFormDropdown() {
   const navigate = useNavigate();
-  const jwt: string = getJWT();
+  const [cookies] = useCookies([Cookie.jwt]);
+
   const [createForm] = useCreateFormMutation();
-  const { data: applicationForm } = useGetApplicationFormQuery(jwt);
+  const { data: applicationForm } = useGetApplicationFormQuery(cookies.jwt);
 
   const onClickAddForm = async (type: NextFormType) => {
     try {
@@ -24,7 +25,7 @@ export default function CreateFormDropdown() {
       let requestBody: object = { name: nextFormTitle, type };
 
       const { data: formData } = await createForm({
-        jwt,
+        jwt: cookies.jwt,
         body: requestBody,
       });
 

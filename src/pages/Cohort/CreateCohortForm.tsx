@@ -3,14 +3,14 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import Button from "../../components/ui/Button";
-import { ButtonSize } from "../../utils/types";
+import { ButtonSize, Cookie } from "../../utils/types";
 import CohortTextField from "./CohortTextField";
 import Stages from "./Stages";
 import { z } from "zod";
 import { Controller, useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs, { Dayjs } from "dayjs";
-import { getJWT } from "../../utils/helper";
+import { useCookies } from "react-cookie";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -52,6 +52,7 @@ function CreateCohortForm({
   // eslint-disable-next-line no-unused-vars
   createCohort: (_data: { jwt: string; body: any }) => any;
 }) {
+  const [cookies] = useCookies([Cookie.jwt]);
   const {
     register,
     control,
@@ -68,11 +69,9 @@ function CreateCohortForm({
     },
   });
 
-  const jwt = getJWT();
-
   const onSubmit: SubmitHandler<TCohortFormValues> = async (data) => {
     await createCohort({
-      jwt,
+      jwt: cookies.jwt,
       body: {
         ...data,
         stages: data.stages.map((stage) => {
