@@ -1,7 +1,8 @@
 import { DataGrid } from '@mui/x-data-grid'
 import React from 'react'
-import ActionButtons from '../../Cohort/ActionButtons'
-import { ButtonVariant } from '../../../utils/types'
+import { generateDynamicColumnGroupingModel } from './generateDynamicColumnGrouping'
+
+import { columns, dynamicGroupData, rows } from './Columns'
 // import { useGetApplicantsQuery } from "../../features/user/apiSlice";
 // import { getApplicants, getJWT } from "../../utils/helper";
 // import UserTableHeader from "../../components/ui/UserTableHeader";
@@ -124,86 +125,11 @@ import { ButtonVariant } from '../../../utils/types'
 // };
 // import { makeStyles } from '@mui/styles'
 
-const columns = [
-  { field: 'name', headerName: 'Name', width: 300 },
-  { field: 'coach', headerName: 'Coach', width: 300 },
-  { field: 'stage', headerName: 'Stage', width: 300 },
-  {
-    field: 'jsSubmission',
-    headerName:
-      'How has the trainee been submitting the challenges they have...',
-    width: 300,
-  },
-  {
-    field: 'jsEffort',
-    headerName: 'On what topics does the trainee need to put effort into ?',
-    width: 300,
-  },
-  {
-    field: 'cssRate',
-    headerName:
-      'On the rate of 20, how can you rate this trainee in using CSS?',
-    width: 250,
-  },
-  {
-    field: 'cssFamiliarity',
-    headerName:
-      'How is the trainee familiar with flex, grid and positioning in CSS',
-    width: 300,
-  },
-  {
-    field: 'actions',
-    headerName: 'Actions',
-    width: 350,
-    renderCell: () => (
-      <ActionButtons
-        outlined={false}
-        variant={{
-          leftbtn: ButtonVariant.Danger,
-          rightbtn: ButtonVariant.Primary,
-        }}
-        buttonNames={{ leftName: 'Reject', rightName: 'Accept' }}
-      />
-    ),
-  },
-]
-
-const rows = [
-  {
-    id: 1,
-    name: 'Bosco Karenzi',
-    coach: 'David Gusenga',
-    stage: 'Stage 1',
-    jsSubmission: 'Good job',
-    jsEffort: 'JavaScript fundamentals',
-    cssRate: '15',
-    cssFamiliarity: 'Familiar with flex and grid',
-  },
-  {
-    id: 2,
-    name: 'Baptiste Irakoze',
-    coach: 'Junior Migisha',
-    stage: 'Stage 1',
-    jsSubmission: 'No response',
-    jsEffort: 'No response',
-    cssRate: 'No response',
-    cssFamiliarity: 'No response',
-  },
-]
-
-const columnGroupingModel = [
-  {
-    groupId: 'javascriptGate',
-    headerName: 'JavaScript Gate',
-    children: [{ field: 'jsSubmission' }, { field: 'jsEffort' }],
-  },
-  {
-    groupId: 'cssGate',
-    headerName: 'CSS Gate',
-    children: [{ field: 'cssRate' }, { field: 'cssFamiliarity' }],
-  },
-]
 const Applicants = () => {
+  const columnGroupingModel = generateDynamicColumnGroupingModel(
+    dynamicGroupData,
+    columns
+  )
   return (
     <div className='mt-32'>
       <DataGrid
@@ -215,9 +141,12 @@ const Applicants = () => {
           '& .MuiDataGrid-cell': {
             borderInlineEnd: '1px solid black',
             borderBlockEnd: '1px solid black',
+            borderTop: '0px',
           },
           '& .MuiDataGrid-columnHeaders': {
             borderBlockEnd: '1px solid black',
+            fontSize: '18px',
+            fontWeight: '900',
           },
           '& .MuiDataGrid-columnHeader': {
             borderInlineEnd: '1px solid black',
@@ -226,10 +155,13 @@ const Applicants = () => {
           '& .MuiDataGrid-columnHeader--filledGroup': {
             borderBlockStart: '1px solid black',
           },
-          '& .MuiDataGrid-columnHeader--emptyGroup': {
-            '.MuiDataGrid-columnHeader--last': {},
-            borderBlockEnd: '1px solid black',
+          '& .MuiDataGrid-virtualScroller': {
+            borderInlineStart: '1px solid black',
           },
+          '& .MuiDataGrid-columnHeader--filledGroup .MuiDataGrid-columnHeaderTitleContainer':
+            {
+              borderWidth: '0px',
+            },
         }}
         hideFooter={true}
       />
