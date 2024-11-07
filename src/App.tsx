@@ -28,7 +28,7 @@ import ThankYouNote from "./pages/Applicant/ThankYouNote";
 import Cohort from "./pages/Cohort/Cohort";
 import HomePage from "./pages/Applicant/HomePage";
 import SavedApplication from "./pages/Applicant/SavedApplication";
-import Applicants from "./pages/User/Applicants";
+import Applicants from "./pages/Overview/Applicants";
 import CreateApplicationForm from "./pages/Form/CreateApplicationForm";
 import PrivateRoute from "./components/PrivateRoute";
 import PreviewApplicationPage from "./pages/Applicant/PreviewApplicationPage";
