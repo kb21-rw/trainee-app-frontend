@@ -52,6 +52,7 @@ export interface Question {
   responses: Response[];
   options: string[];
   type: QuestionType;
+  required: boolean
 }
 
 export interface Form {

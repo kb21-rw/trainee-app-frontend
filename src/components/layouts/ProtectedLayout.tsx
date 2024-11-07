@@ -19,8 +19,8 @@ const ProtectedLayout = () => {
     [];
 
   return (
-    <main className="max-h-screen font-lato max-w-[1920px] md:mx-auto overflow-x-hidden h-screen flex flex-col">
-      <nav className="sticky top-0 flex items-center justify-between gap-20 py-6 px-1 md:px-16 bg-white border-b-2 shadow-b pr-20">
+    <>
+      <nav className="sticky top-0 flex items-center justify-between gap-20 py-6 px-4 md:px-16 bg-white border-b-2 shadow-b z-50">
         <div className="flex items-center gap-10">
           {menu.map((element, index) => (
             <NavLink
@@ -58,11 +58,11 @@ const ProtectedLayout = () => {
           </button>
         </div>
       </nav>
-      <div className="flex-1 px-1 md:px-16">
+      <div className="flex-1 px-4 md:px-16">
         <Outlet />
       </div>
       <Footer />
-    </main>
+    </>
   );
 };
 

@@ -45,9 +45,9 @@ export default function GlobalLayout() {
   }
 
   return (
-    <>
+    <main className="max-h-screen font-lato max-w-[1920px] md:mx-auto overflow-x-hidden h-screen flex flex-col">
       {alert.isVisible && <Alert />}
       <Outlet />
-    </>
+    </main>
   );
 }
