@@ -16,7 +16,7 @@ import {
   userAppliedInfo,
 } from "../../utils/data";
 import { useGetMyApplicationQuery } from "../../features/user/backendApi";
-import { applicationStatusHandler } from "../../utils/helper";
+import { applicationStatusHandler, getFormattedDate } from "../../utils/helper";
 import Loader from "../../components/ui/Loader";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -44,9 +44,11 @@ const HomePage = () => {
       {status === ApplicationFormStatus.OPEN && (
         <div className="md:container md:mx-auto px-6 flex flex-col items-center justify-center">
           <CohortInfo
-            cohortTitle="The Gym Cohort 2025"
-            applicationDeadline="4th November 2024"
-            trainingStartDate="22nd November 2024"
+            cohortTitle={applicationForm.name}
+            applicationDeadline={getFormattedDate(applicationForm.endDate)}
+            trainingStartDate={getFormattedDate(
+              applicationForm.trainingStartDate
+            )}
             programBenefits={[
               {
                 title: "Hands-On Projects",

@@ -227,3 +227,14 @@ export const getRoleBasedHomepageURL = (role: UserRole) => {
       return "/home";
   }
 };
+
+/**
+ * getFormattedDate returns a DD MMMM YYYY formatted date
+ *
+ * @param {string} date
+ * a string date
+ */
+
+export const getFormattedDate = (date: string) => {
+  return dayjs(date).format("DD MMMM YYYY");
+};
