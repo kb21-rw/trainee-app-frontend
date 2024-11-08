@@ -20,7 +20,7 @@ const ProtectedLayout = () => {
 
   return (
     <>
-      <nav className="sticky top-0 flex items-center justify-between gap-20 py-6 px-4 md:px-16 bg-white border-b-2 shadow-b z-50">
+      <nav className="sticky top-0 flex items-center justify-between gap-20 py-6 px-4 md:px-16 bg-white border-b-2 shadow-b z-40">
         <div className="flex items-center gap-10">
           {menu.map((element, index) => (
             <NavLink
