@@ -1,37 +1,40 @@
-import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useGetMyApplicationQuery } from "../../features/user/backendApi";
-import Loader from "../../components/ui/Loader";
-import { Cookie, QuestionType } from "../../utils/types";
-import { useCookies } from "react-cookie";
 import {
-  Box,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  Radio,
-  RadioGroup,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
+  useAddApplicantResponseMutation,
+  useGetMyApplicationQuery,
+} from "../../features/user/backendApi";
+import Loader from "../../components/ui/Loader";
+import { AlertType, Cookie, QuestionType } from "../../utils/types";
+import { useCookies } from "react-cookie";
+import { Box, Typography } from "@mui/material";
+import { useForm } from "react-hook-form";
 import Button from "../../components/ui/Button";
-import { getFormattedDate } from "../../utils/helper";
+import {
+  convertFormQuestionsToObject,
+  getErrorInfo,
+  getFormattedDate,
+} from "../../utils/helper";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import ApplicationFormQuestion from "../../components/ui/ApplicatonFormQuestion";
 
 const ApplicationForm = () => {
   const location = useLocation();
   const [cookies] = useCookies([Cookie.jwt]);
-  const [formData] = useState(location?.state || {});
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { data, isFetching } = useGetMyApplicationQuery(cookies.jwt);
+  const [saveApplicantResponse, { error }] = useAddApplicantResponseMutation();
   const {
     handleSubmit,
+    getValues,
     control,
-    formState: { errors },
+    reset,
+    formState: { isDirty, errors, dirtyFields },
   } = useForm({
-    defaultValues: formData,
+    values: location?.state,
   });
-
-  const { data, isFetching } = useGetMyApplicationQuery(cookies.jwt);
 
   const formTitle = data?.name;
   const formDeadline = data?.endDate;
@@ -49,6 +52,48 @@ const ApplicationForm = () => {
       state: { formQuestions, responses, formTitle, formDeadline, formData },
     });
   };
+
+  const handleSave = async () => {
+    const userResponses = Object.entries(
+      getValues() as { [key: string]: string | string[] }
+    );
+
+    const modifiedResponses = userResponses.filter(
+      (response: [string, string | string[]]) => dirtyFields[response[0]]
+    );
+    const responses = modifiedResponses.map(
+      (response: [string, string | string[]]) => ({
+        questionId: response[0],
+        answer: response[1],
+      })
+    );
+
+    const result = await saveApplicantResponse({
+      jwt: cookies.jwt,
+      body: responses,
+      action: "save",
+    });
+
+    const formQuestions = convertFormQuestionsToObject(result.data.questions);
+    reset(formQuestions, { keepDirty: false });
+
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: "Successfully saved your progress",
+    });
+  };
+
+  useEffect(() => {
+    if (data) {
+      const formQuestions = convertFormQuestionsToObject(data.questions);
+      reset(formQuestions, { keepDirty: false });
+    }
+  }, [reset, data]);
+
+  if (error) {
+    const { message } = getErrorInfo(error);
+    handleShowAlert(dispatch, { type: AlertType.Error, message });
+  }
 
   if (isFetching)
     return (
@@ -127,6 +172,7 @@ const ApplicationForm = () => {
                 <Typography
                   variant="h6"
                   component="label"
+                  htmlFor={question._id}
                   sx={{
                     display: "block",
                     color: errors[question._id] ? "#f87171" : "inherit",
@@ -136,88 +182,10 @@ const ApplicationForm = () => {
                   {question.required && <span className="text-red-400">*</span>}
                 </Typography>
 
-                {question.type === QuestionType.Text && (
-                  <Controller
-                    name={question._id}
-                    control={control}
-                    defaultValue=""
-                    rules={{ required: question.required }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        variant="standard"
-                        error={Boolean(errors[question._id])}
-                      />
-                    )}
-                  />
-                )}
-
-                {question.type === QuestionType.SingleSelect && (
-                  <Controller
-                    name={question._id}
-                    control={control}
-                    defaultValue=""
-                    rules={{ required: question.required }}
-                    render={({ field }) => (
-                      <RadioGroup {...field}>
-                        {question.options?.map(
-                          (option: string, optionIndex: number) => (
-                            <FormControlLabel
-                              key={optionIndex}
-                              value={option}
-                              control={<Radio />}
-                              label={option}
-                            />
-                          )
-                        )}
-                      </RadioGroup>
-                    )}
-                  />
-                )}
-
-                {question.type === QuestionType.MultiSelect && (
-                  <Controller
-                    name={question._id}
-                    control={control}
-                    defaultValue={[]}
-                    rules={{ required: question.required }}
-                    render={({ field }) => (
-                      <FormGroup>
-                        {question.options?.map(
-                          (option: string, optionIndex: number) => (
-                            <FormControlLabel
-                              key={optionIndex}
-                              control={
-                                <Checkbox
-                                  checked={field.value.includes(option)}
-                                  onChange={(e) => {
-                                    const newValue = e.target.checked
-                                      ? [...field.value, option]
-                                      : field.value.filter(
-                                          (item: string) => item !== option
-                                        );
-                                    field.onChange(newValue);
-                                  }}
-                                />
-                              }
-                              label={option}
-                            />
-                          )
-                        )}
-                      </FormGroup>
-                    )}
-                  />
-                )}
-
-                <div className="">
-                  <Controller
-                    name={question._id}
-                    control={control}
-                    defaultValue={question._id}
-                    render={({ field }) => <input type="hidden" {...field} />}
-                  />
-                </div>
+                <ApplicationFormQuestion
+                  question={question}
+                  control={control}
+                />
               </Box>
             )
           )}
@@ -225,7 +193,9 @@ const ApplicationForm = () => {
           <Box
             sx={{ display: "flex", justifyContent: "center", mt: 4, gap: 2 }}
           >
-            <Button outlined>Save Draft</Button>
+            <Button outlined onClick={handleSave} disabled={!isDirty}>
+              Save Draft
+            </Button>
             <Button type="submit">Review and Submit</Button>
           </Box>
         </Box>
