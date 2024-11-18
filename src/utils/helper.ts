@@ -3,6 +3,7 @@ import {
   ApplicationForm,
   ApplicationFormStatus,
   ApplicationStatus,
+  QuestionType,
   UserRole,
 } from "./types";
 import { Cohort } from "./types";
@@ -237,4 +238,25 @@ export const getRoleBasedHomepageURL = (role: UserRole) => {
 
 export const getFormattedDate = (date: string) => {
   return dayjs(date).format("DD MMMM YYYY");
+};
+
+/**
+ * convertFormQuestionsToObject returns an object where questionIds are keys and responses are values
+ *
+ * @param {{ _id: string; response: string; type: QuestionType }[]} questions
+ * an array of questions
+ */
+
+export const convertFormQuestionsToObject = (
+  questions: { _id: string; response: string; type: QuestionType }[]
+) => {
+  return questions.reduce(
+    (formQuestions: { [key: string]: string | string[] }, question) => ({
+      ...formQuestions,
+      [question._id]:
+        question.response ??
+        (question.type === QuestionType.MultiSelect ? [] : ""),
+    }),
+    {}
+  );
 };
