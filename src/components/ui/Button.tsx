@@ -43,6 +43,7 @@ const Button = ({
   outlined = false,
   size = ButtonSize.Medium,
   type = 'button',
+  disabled,
   onClick,
 }: ButtonProps) => {
   const sizeStyles = getSizeStyles(size)
@@ -53,6 +54,7 @@ const Button = ({
       onClick={onClick}
       className={`rounded-lg ${valiantOutlinedStyles} ${sizeStyles}`}
       type={type}
+      disabled={disabled}
     >
       {children}
     </button>
