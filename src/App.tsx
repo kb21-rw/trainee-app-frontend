@@ -32,6 +32,7 @@ import Applicants from "./pages/User/Applicants";
 import CreateApplicationForm from "./pages/Form/CreateApplicationForm";
 import PrivateRoute from "./components/PrivateRoute";
 import PreviewApplicationPage from "./pages/Applicant/PreviewApplicationPage";
+import LoginSignup from "./pages/auth/LoginSignup";
 
 export default function App() {
 
@@ -72,6 +73,7 @@ export default function App() {
   
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<ApplicantSignup />} />
+        <Route path="/auth" element={<LoginSignup />} />
         <Route path="/signup/thank-you" element={<ThankYouNote />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify" element={<ApplicantVerification />} />
