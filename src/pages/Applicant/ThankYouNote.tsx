@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const ThankYouNote: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleLogin = () => navigate("/login");
+  const handleLogin = () => navigate("/auth");
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-primary-dark/10">

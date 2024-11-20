@@ -60,7 +60,7 @@ const ResetPassword = () => {
       </Button>
       <div className="">
         Back to{" "}
-        <Link to="/login" className="text-primary-dark">
+        <Link to="/auth" className="text-primary-dark">
           login ?
         </Link>
       </div>

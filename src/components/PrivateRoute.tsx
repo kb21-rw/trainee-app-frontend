@@ -12,7 +12,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ allowedRoles }) => {
   const userRole = useSelector((state: RootState) => state.user.role);
 
   if (!userRole) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/auth" />;
   }
 
   return allowedRoles.includes(userRole) ? (

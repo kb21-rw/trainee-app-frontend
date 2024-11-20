@@ -25,7 +25,7 @@ const ApplicantVerification = () => {
       const { data } = await verifyApplicant(userId);
 
       if (data?.userId) {
-        navigate(`/login?alertData=${JSON.stringify(loginAlertData)}`);
+        navigate(`/auth?alertData=${JSON.stringify(loginAlertData)}`);
       } else {
         throw new Error("Verification failed");
       }

@@ -52,7 +52,7 @@ export interface Question {
   responses: Response[];
   options: string[];
   type: QuestionType;
-  required: boolean
+  required: boolean;
 }
 
 export interface Form {
@@ -181,4 +181,9 @@ export type AlertData = Pick<IAlert, "type" | "displayDuration" | "children">;
 
 export enum Cookie {
   jwt = "jwt",
+}
+
+export enum AuthPage {
+  Login = "Login",
+  Signup = "Signup",
 }
