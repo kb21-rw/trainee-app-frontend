@@ -55,9 +55,13 @@ export default function CreateFormDropdown() {
               item.link === "/forms/create/application-form" ? (
                 <Link
                   to={item.link}
-                  className={`group flex w-full items-center py-3 px-5 data-[focus]:bg-primary-dark data-[focus]:text-white ${
-                    index === menuItems.length - 1 ? "border-none" : "border-b"
-                  }`}
+                  className={classNames(
+                    "group flex w-full items-center py-3 px-5 data-[focus]:bg-primary-dark data-[focus]:text-white",
+                    {
+                      "border-none": index === menuItems.length - 1,
+                      "border-b": index !== menuItems.length - 1,
+                    },
+                  )}
                 >
                   {item.label}
                 </Link>
@@ -69,7 +73,7 @@ export default function CreateFormDropdown() {
                 className={classNames(
                   "group flex w-full items-center py-3 px-5 data-[focus]:bg-primary-dark data-[focus]:text-white",
                   { "border-none": index === menuItems.length - 1 },
-                  { "border-b": !(index === menuItems.length - 1) }
+                  { "border-b": !(index === menuItems.length - 1) },
                 )}
                 onClick={() => onClickAddForm(item.type as NextFormType)}
               >
