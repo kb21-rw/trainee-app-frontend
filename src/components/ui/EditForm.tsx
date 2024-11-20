@@ -15,6 +15,7 @@ import Loader from "./Loader";
 import { useNavigate } from "react-router-dom";
 import { Cookie, FormType, QuestionType } from "../../utils/types";
 import { useCookies } from "react-cookie";
+import classNames from "classnames";
 
 const FormSchema = yup.object({
   name: yup.string().required(),
@@ -76,9 +77,10 @@ const EditForm = ({
         </div>
       )}
       <div
-        className={`p-8 custom-shadow border-primary-dark border-t-8  rounded-xl ${
-          activeQuestion === "prompt" && "border-l-8 border-l-[#4285F4]"
-        }  flex flex-col gap-8 flex-1`}
+        className={classNames(
+          "p-8 custom-shadow border-primary-dark border-t-8  rounded-xl flex flex-col gap-8 flex-1",
+          { "border-l-8 border-l-primary-light": activeQuestion === "prompt" },
+        )}
       >
         <input
           placeholder="Enter title"

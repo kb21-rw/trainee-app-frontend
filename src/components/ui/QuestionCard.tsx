@@ -60,7 +60,7 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
     >
       <div
         className={`p-8 custom-shadow ${
-          activeQuestion === _id && "border-l-8 border-[#4285F4]"
+          activeQuestion === _id && "border-l-8 border-primary-light"
         } flex flex-1 items-center justify-between rounded-xl`}
       >
         {false && (
@@ -84,16 +84,17 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
               ].map(
                 (
                   currentType: { label: string; value: string },
-                  index: number
+                  index: number,
                 ) => (
                   <option key={index} value={currentType.value}>
                     {currentType.label}
                   </option>
-                )
+                ),
               )}
             </select>
           </div>
-          {(selectedType === QuestionType.SingleSelect || selectedType === QuestionType.MultiSelect) && (
+          {(selectedType === QuestionType.SingleSelect ||
+            selectedType === QuestionType.MultiSelect) && (
             <div>
               <ol className="w-full my-4">
                 {currentOptions.map((option: string, index: number) => (
@@ -114,7 +115,7 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
                   setValue(
                     "options",
                     [...currentOptions, `option ${currentOptions.length + 1}`],
-                    { shouldDirty: true }
+                    { shouldDirty: true },
                   )
                 }
               >
@@ -123,7 +124,7 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
               {currentOptions.length > 0 && (
                 <button
                   onClick={() => {
-                    const updatedOptions = [...currentOptions]
+                    const updatedOptions = [...currentOptions];
                     updatedOptions.pop();
                     setValue("options", updatedOptions, { shouldDirty: true });
                   }}
@@ -147,21 +148,20 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
           </div>
         ) : null}
         <button
-          onClick={()=>setShowDeleteModal(true)}
+          onClick={() => setShowDeleteModal(true)}
           className="flex items-center gap-2"
         >
           <Delete />
         </button>
       </div>
-      {
-      showDeleteModal &&
+      {showDeleteModal && (
         <DeleteModal
           title="a question"
           name={prompt}
           closePopup={() => setShowDeleteModal(false)}
           onDelete={() => handleDeleteQuestion(_id)}
         />
-      }
+      )}
     </div>
   );
 };
