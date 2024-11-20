@@ -2,14 +2,16 @@ import React from "react";
 import {
   useEditTraineeMutation,
   useGetAllCoachesQuery,
-} from "../../features/user/apiSlice";
+} from "../../features/user/backendApi";
 import { useForm } from "react-hook-form";
 import ModalLayout from "./ModalLayout";
-import Alert from "../ui/Alert";
 import InputField from "../ui/InputField";
 import Button from "../ui/Button";
 import Loader from "../ui/Loader";
-import { UserRole } from "../../utils/types";
+import { AlertType, UserRole } from "../../utils/types";
+import { getErrorInfo } from "../../utils/helper";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import { useDispatch } from "react-redux";
 
 const EditTraineeModal = ({
   closePopup,
@@ -20,35 +22,38 @@ const EditTraineeModal = ({
   closePopup: () => void;
   jwt: string;
   traineeData: string[];
-  role: UserRole.Admin
+  role: UserRole.Admin;
 }) => {
   const [editTrainee, { isLoading, error, isSuccess: isEditTraineeSuccess }] =
     useEditTraineeMutation();
   const query = "?coachesPerPage=100";
   const allCoaches = useGetAllCoachesQuery(
     { jwt, query },
-    { skip: role !== UserRole.Admin },
+    { skip: role !== UserRole.Admin }
   );
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const dispatch = useDispatch();
+  const { register, handleSubmit } = useForm();
   const onSubmit = async (data: any) => {
     await editTrainee({ jwt, id: traineeData[0], body: { ...data } });
   };
 
-  const errorMessage: any =
-    errors?.name?.message ||
-    errors?.email?.message ||
-    error?.data?.errorMessage;
+  if (error) {
+    const { message } = getErrorInfo(error);
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    });
+  }
+
+  if (isEditTraineeSuccess) {
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: "Trainee was updated successfully",
+    });
+  }
 
   return (
     <ModalLayout closePopup={closePopup} title="Edit trainee">
-      {errorMessage && <Alert type="error">{errorMessage}</Alert>}
-      {isEditTraineeSuccess && (
-        <Alert type="success">Trainee was updated succesfully</Alert>
-      )}
       {isLoading && (
         <div className="w-full flex justify-center items-center">
           <Loader />

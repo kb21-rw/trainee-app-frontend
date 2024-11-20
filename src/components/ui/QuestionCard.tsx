@@ -4,15 +4,15 @@ import Delete from "../../assets/DeleteIcon";
 import {
   useDeleteQuestionMutation,
   useEditQuestionMutation,
-} from "../../features/user/apiSlice";
+} from "../../features/user/backendApi";
 import SuccessCheckMark from "../../assets/SuccessCheckMarkIcon";
 import { useForm } from "react-hook-form";
 import AddIcon from "../../assets/AddIcon";
 import RemoveIcon from "../../assets/RemoveIcon";
 import Reset from "../../assets/ResetIcon";
 import DeleteModal from "../modals/DeleteModal";
-import { getJWT } from "../../utils/helper";
-import { QuestionType } from "../../utils/types";
+import { Cookie, QuestionType } from "../../utils/types";
+import { useCookies } from "react-cookie";
 
 const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
   const { prompt, type, options, _id } = question;
@@ -30,13 +30,13 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
       options,
     },
   });
-  const jwt:string = getJWT()
+  const [cookies] = useCookies([Cookie.jwt]);
   const [deleteQuestion] = useDeleteQuestionMutation();
   const [editQuestion] = useEditQuestionMutation();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleDeleteQuestion = async (_id: string) => {
-    await deleteQuestion({ jwt, id: _id });
+    await deleteQuestion({ jwt: cookies.jwt, id: _id });
     setShowDeleteModal(false);
   };
 
@@ -47,7 +47,7 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
   };
 
   const onSubmit = async (data: any) => {
-    await editQuestion({ jwt, body: data, id: _id });
+    await editQuestion({ jwt: cookies.jwt, body: data, id: _id });
   };
 
   const { type: selectedType } = watch();

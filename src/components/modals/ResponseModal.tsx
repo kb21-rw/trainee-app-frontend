@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ModalLayout from "./ModalLayout";
 import Button from "../ui/Button";
 import { useForm } from "react-hook-form";
-import Alert from "../ui/Alert";
 import TextArea from "../ui/TextArea";
-import { useAddResponseMutation } from "../../features/user/apiSlice";
+import { useAddResponseMutation } from "../../features/user/backendApi";
 import Loader from "../ui/Loader";
 import RadioOption from "../ui/RadioOption";
 import useAutoCloseModal from "../../utils/hooks/useAutoCloseModal";
-import { getJWT } from "../../utils/helper";
-import { QuestionType } from "../../utils/types";
+import { getErrorInfo } from "../../utils/helper";
+import { AlertType, Cookie, QuestionType } from "../../utils/types";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import { useDispatch } from "react-redux";
+import { useCookies } from "react-cookie";
 
 const ResponseModal = ({
   closePopup,
@@ -39,29 +41,23 @@ const ResponseModal = ({
   // eslint-disable-next-line no-unused-vars
   handleCheckChange: (_value: string) => void;
 }) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const [cookies] = useCookies([Cookie.jwt]);
+  const { register, handleSubmit } = useForm();
   const [addResponse, { isLoading, error, isSuccess }] =
     useAddResponseMutation();
+  const dispatch = useDispatch();
   const [localCheckedOption, setLocalCheckedOption] = useState(checkedOption);
   const handleRadioChange = (value: string) => {
     handleCheckChange(value);
   };
 
   const onSubmit = async (data: any) => {
-    const jwt: string = getJWT()
     const responseBody = {
       ...data,
       ...(questionType === QuestionType.Text && { text: localCheckedOption }),
     };
-    await addResponse({ jwt, body: responseBody, questionId, userId });
+    await addResponse({ jwt: cookies.jwt, body: responseBody, questionId, userId });
   };
-
-  const errorMessage =
-    errors.name?.message || errors.email?.message || error?.data?.errorMessage;
 
   useAutoCloseModal(isSuccess, closePopup);
 
@@ -69,16 +65,27 @@ const ResponseModal = ({
     setLocalCheckedOption(checkedOption);
   }, [checkedOption]);
 
+  if (error) {
+    const { message } = getErrorInfo(error);
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    });
+  }
+
+  if (isSuccess) {
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: "Response was added successfully",
+    });
+  }
+
   return (
     <ModalLayout closePopup={closePopup} title={title}>
       {isLoading && (
         <div className="flex items-center justify-center">
           <Loader />
         </div>
-      )}
-      {errorMessage && <Alert type="error">{errorMessage}</Alert>}
-      {isSuccess && (
-        <Alert type="success">Response was added succesfully</Alert>
       )}
       <form
         onSubmit={handleSubmit(onSubmit)}

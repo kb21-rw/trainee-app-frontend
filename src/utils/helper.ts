@@ -1,15 +1,16 @@
-import Cookies from "universal-cookie";
-import jwtDecode from "jwt-decode";
 import {
   ApplicantDetails,
   ApplicationForm,
   ApplicationFormStatus,
   ApplicationStatus,
+  QuestionType,
+  UserRole,
 } from "./types";
 import { Cohort } from "./types";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import { UserState } from "../features/user/userSlice";
 
 /**
  * extend dayjs to use necessary plugins
@@ -17,30 +18,6 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 
 dayjs.extend(isBetween);
 dayjs.extend(advancedFormat);
-
-/**
- * Retrieves the logged-in user's information from a JWT token stored in cookies.
- *
- * @returns {Object|undefined} The user information extracted from the JWT token, or `undefined` if no token is found.
- *  - The user information contains:
- * - The name of the user
- * - The email address of the user
- * - The role of the user
- * - The ID of the user
- *
- */
-
-export const getLoggedInUser = () => {
-  const token = getJWT();
-
-  if (!token) return;
-
-  const decoded = JSON.parse(JSON.stringify(jwtDecode(token)));
-
-  const user = decoded.user || decoded;
-
-  return user;
-};
 
 /**
  * Structures an array of data into a two-dimensional array containing information for each coach.
@@ -53,17 +30,19 @@ export const getLoggedInUser = () => {
  *   - The coach's role
  */
 
-export const getCoaches = (data: any[], dataItems: string[]) => {
-  const currentUser = getLoggedInUser();
+export const getCoaches = (
+  data: any[],
+  dataItems: string[],
+  currentUser: UserState
+): Array<Array<string>> => {
   const currentUserName = currentUser.name;
-
   const filteredCoachesData = data?.filter(
-    (coachData) => coachData.name !== currentUserName,
+    (coachData) => coachData.name !== currentUserName
   );
 
   const coachesData = filteredCoachesData?.map(
     (coachData: any) =>
-      dataItems?.map((dataItem: string) => coachData[dataItem]),
+      dataItems?.map((dataItem: string) => coachData[dataItem])
   );
 
   return coachesData;
@@ -87,8 +66,8 @@ export const getTraineesForCoach = (data: any, dataItems: string[]) => {
           ? traineeData?.coach?.name
           : dataItem === "coachId"
           ? traineeData?.coach?._id
-          : traineeData[dataItem],
-      ),
+          : traineeData[dataItem]
+      )
   );
   return traineesData;
 };
@@ -111,30 +90,19 @@ export const getTrainees = (data: any, dataItems: string[]) => {
           ? traineeData?.coach?.name || "No coach assigned"
           : dataItem === "coachId"
           ? traineeData?.coach?._id || ""
-          : traineeData[dataItem],
-      ),
+          : traineeData[dataItem]
+      )
   );
   return traineesData;
 };
 
 export const getApplicants = (
   data: ApplicantDetails[],
-  dataItems: string[],
+  dataItems: string[]
 ) => {
   return data?.map((item: any) =>
-    dataItems.map((key) => item[key as keyof ApplicantDetails]),
+    dataItems.map((key) => item[key as keyof ApplicantDetails])
   );
-};
-
-/**
- * retrieve the JWT token.
- *
- * @returns {string} - The JWT token.
- */
-
-export const getJWT = () => {
-  const cookies = new Cookies();
-  return cookies.get("jwt");
 };
 
 /**
@@ -149,7 +117,7 @@ export const getJWT = () => {
 
 export const getCohorts = (data: Cohort[], dataItems: string[]) => {
   return data?.map((item: any) =>
-    dataItems.map((key) => item[key as keyof Cohort]),
+    dataItems.map((key) => item[key as keyof Cohort])
   );
 };
 
@@ -173,7 +141,7 @@ export const getCohorts = (data: Cohort[], dataItems: string[]) => {
  */
 
 export const applicationStatusHandler = (
-  application: ApplicationForm | undefined,
+  application: ApplicationForm | undefined
 ): ApplicationStatus => {
   const currentDate = dayjs();
 
@@ -216,4 +184,79 @@ export const applicationStatusHandler = (
     isOpen: false,
     status: ApplicationFormStatus.NO_APPLICATION,
   };
+};
+
+/**
+ * getErrorInfo extracts error details
+ *
+ * @param {any} error
+ * @returns {{type: string, message: string}}
+ *   - type
+ *   - message
+ */
+
+export const getErrorInfo = (error: any): { type: string; message: string } => {
+  console.log(error);
+  if (!error?.data) {
+    throw { type: error.status, message: error.error.split(":")[1] };
+  }
+
+  if (error?.data?.type === "ServerError") {
+    throw { type: "ServerError", message: error.data.errorMessage };
+  }
+
+  return {
+    type: error.data?.type || "Unknown",
+    message: error.data?.errorMessage || "Unknown error occurred!",
+  };
+};
+
+/**
+ * getRoleBasedHomepageURL returns a homepage url based on role provided
+ *
+ * @param {UserRole} role
+ * a role of a user
+ */
+
+export const getRoleBasedHomepageURL = (role: UserRole) => {
+  switch (role) {
+    case UserRole.Admin:
+      return "/";
+    case UserRole.Coach:
+      return "/overview";
+    default:
+      return "/home";
+  }
+};
+
+/**
+ * getFormattedDate returns a DD MMMM YYYY formatted date
+ *
+ * @param {string} date
+ * a string date
+ */
+
+export const getFormattedDate = (date: string) => {
+  return dayjs(date).format("DD MMMM YYYY");
+};
+
+/**
+ * convertFormQuestionsToObject returns an object where questionIds are keys and responses are values
+ *
+ * @param {{ _id: string; response: string; type: QuestionType }[]} questions
+ * an array of questions
+ */
+
+export const convertFormQuestionsToObject = (
+  questions: { _id: string; response: string; type: QuestionType }[]
+) => {
+  return questions.reduce(
+    (formQuestions: { [key: string]: string | string[] }, question) => ({
+      ...formQuestions,
+      [question._id]:
+        question.response ??
+        (question.type === QuestionType.MultiSelect ? [] : ""),
+    }),
+    {}
+  );
 };

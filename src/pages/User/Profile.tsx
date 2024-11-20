@@ -3,63 +3,61 @@ import { H1 } from "../../components/ui/Typography";
 import Button from "../../components/ui/Button";
 import InputField from "../../components/ui/InputField";
 import Loader from "../../components/ui/Loader";
-import Alert from "../../components/ui/Alert";
 import {
   useGetProfileQuery,
   useUpdateProfileMutation,
-} from "../../features/user/apiSlice";
+} from "../../features/user/backendApi";
 import { useForm } from "react-hook-form";
-import { getJWT } from "../../utils/helper";
+import { getErrorInfo } from "../../utils/helper";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import { AlertType, Cookie } from "../../utils/types";
+import { useDispatch } from "react-redux";
+import { useCookies } from "react-cookie";
 
 const Profile = () => {
+  const [cookies] = useCookies([Cookie.jwt]);
   const [updateProfile, { isLoading, isSuccess, error }] =
     useUpdateProfileMutation();
-  const jwt: string = getJWT();
-  const { data } = useGetProfileQuery(jwt);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const dispatch = useDispatch();
+  const { data } = useGetProfileQuery(cookies.jwt);
+  const { register, handleSubmit } = useForm();
 
   const onSubmit = async (data: {
     email?: string;
     name?: string;
     password?: string;
   }) => {
-    const profileData: { email?: string; name?: string; password?: string } = {};
+    const profileData: { email?: string; name?: string; password?: string } =
+      {};
     if (data.email) profileData.email = data.email;
     if (data.name) profileData.name = data.name;
     if (data.password) profileData.password = data.password;
-    await updateProfile({ jwt, profileData });
+    await updateProfile({ jwt: cookies.jwt, profileData });
   };
 
-  const errorMessage: any =
-    errors.name?.message ||
-    errors.email?.message ||
-    errors.password?.message ||
-    error?.data?.errorMessage;
+  if (error) {
+    const { message } = getErrorInfo(error);
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    });
+  }
+
+  if (isSuccess) {
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: "Profile was updated successfully!",
+    });
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl custom-shadow">
         <div>
-          <H1>
-            Profile Settings
-          </H1>
+          <H1>Profile Settings</H1>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
           {isLoading && <Loader />}
-          {isSuccess && (
-            <Alert type="success">
-              Profile updated successfully
-            </Alert>
-          )}
-          {errorMessage && (
-            <Alert type="error">
-              {errorMessage}
-            </Alert>
-          )}
           <div className="rounded-md shadow-sm space-y-3">
             <InputField
               name="name"

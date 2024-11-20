@@ -52,6 +52,7 @@ export interface Question {
   responses: Response[];
   options: string[];
   type: QuestionType;
+  required: boolean
 }
 
 export interface Form {
@@ -171,4 +172,13 @@ export interface IAlert {
   onClose: () => void;
 }
 
+export enum AlertType {
+  Error = "Error",
+  Success = "Success",
+}
+
 export type AlertData = Pick<IAlert, "type" | "displayDuration" | "children">;
+
+export enum Cookie {
+  jwt = "jwt",
+}

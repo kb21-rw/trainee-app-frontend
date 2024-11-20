@@ -2,8 +2,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const api_url = import.meta.env.VITE_API_URL;
 
-export const usersApi: any = createApi({
-  reducerPath: "usersApi",
+export const backendApi: any = createApi({
+  reducerPath: "backendApi",
   baseQuery: fetchBaseQuery({ baseUrl: api_url }),
   tagTypes: [
     "coaches",
@@ -17,7 +17,8 @@ export const usersApi: any = createApi({
     "applicantForm",
     "applicantResponse",
     "cohorts",
-    "applicants"
+    "applicants",
+    "token",
   ],
   endpoints: (builder) => ({
     getAllTrainees: builder.query({
@@ -158,17 +159,17 @@ export const usersApi: any = createApi({
           body: { ...body },
         };
       },
-      invalidatesTags: ["profile"],
+      invalidatesTags: ["token"],
     }),
 
     signup: builder.mutation({
-      query: (body)=>{
+      query: (body) => {
         return {
           url: "auth/register/applicant",
           method: "POST",
-          body: {...body},
+          body: { ...body },
         };
-      }
+      },
     }),
     verifyApplicant: builder.mutation({
       query: (userId) => {
@@ -215,25 +216,24 @@ export const usersApi: any = createApi({
       invalidatesTags: ["profile"],
     }),
 
-getAllForms: builder.query({
-  query: (args) => {
-    const { jwt, searchString = "", cohort } = args;
-    let queryString = `searchString=${searchString}`;
-    if (cohort) {
-      queryString += `&cohort=${cohort}`;
-    }
+    getAllForms: builder.query({
+      query: (args) => {
+        const { jwt, searchString = "", cohort } = args;
+        let queryString = `searchString=${searchString}`;
+        if (cohort) {
+          queryString += `&cohort=${cohort}`;
+        }
 
-    return {
-      url: `/forms?${queryString}`,
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
+        return {
+          url: `/forms?${queryString}`,
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        };
       },
-    };
-  },
-  providesTags: ["forms"],
-}),
-
+      providesTags: ["forms"],
+    }),
 
     getForm: builder.query({
       query: (args) => {
@@ -391,7 +391,7 @@ getAllForms: builder.query({
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
-          }
+          },
         };
       },
       providesTags: ["applicantForm"],
@@ -404,15 +404,14 @@ getAllForms: builder.query({
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
-          }
+          },
         };
       },
       providesTags: ["applicantForm"],
     }),
 
-
     addApplicantResponse: builder.mutation({
-      query: ({jwt, body, action}) => ({
+      query: ({ jwt, body, action }) => ({
         url: `/responses/apply?action=${action}`,
         method: "POST",
         headers: {
@@ -452,21 +451,21 @@ getAllForms: builder.query({
     }),
     applicantDecision: builder.mutation({
       query: (args) => {
-        const { jwt, body} = args;
+        const { jwt, body } = args;
         return {
           url: `/cohorts/decision`,
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-          body: {...body}
-        }
+          body: { ...body },
+        };
       },
       invalidatesTags: ["applicants"],
     }),
     getAllCohorts: builder.query({
       query: (args) => {
-        const { jwt, query} = args;
+        const { jwt, query } = args;
         return {
           url: `/cohorts?${query}`,
           method: "GET",
@@ -476,7 +475,7 @@ getAllForms: builder.query({
         };
       },
       providesTags: ["cohorts"],
-    })
+    }),
   }),
 });
 
@@ -515,4 +514,4 @@ export const {
   useApplicantDecisionMutation,
   useGetAllCohortsQuery,
   useGetApplicationFormQuery,
-} = usersApi;
+} = backendApi;

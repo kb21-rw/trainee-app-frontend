@@ -1,14 +1,15 @@
-import React, { useCallback, useEffect } from "react";
-import { Link, useSearchParams, useNavigate } from "react-router-dom";
-import { useLoginMutation } from "../../features/user/apiSlice";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useLoginMutation } from "../../features/user/backendApi";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Cookies from "universal-cookie";
 import { H1 } from "../../components/ui/Typography";
 import Button from "../../components/ui/Button";
 import InputField from "../../components/ui/InputField";
 import Loader from "../../components/ui/Loader";
-import { ButtonSize, UserRole } from "../../utils/types";
-import { useGetProfileQuery } from "../../features/user/apiSlice";
+import { AlertType, ButtonSize, Cookie } from "../../utils/types";
+import { useDispatch } from "react-redux";
+import { getErrorInfo } from "../../utils/helper";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import { useCookies } from "react-cookie";
 
 interface LoginFormValuesProps {
   email: string;
@@ -16,62 +17,31 @@ interface LoginFormValuesProps {
 }
 
 const Login = () => {
-  const [login, { isLoading, error }] = useLoginMutation();
+  const [, setCookie] = useCookies([Cookie.jwt]);
+  const dispatch = useDispatch();
+  const [handleLogin, { isLoading, error: loginError }] = useLoginMutation();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormValuesProps>();
-  const cookies = new Cookies();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   let redirectUrl = searchParams.get("redirectTo") || "/";
-  const { data: user, isLoading: isProfileLoading } = useGetProfileQuery(
-    cookies.get("jwt"),
-  );
-  const onSubmit: SubmitHandler<LoginFormValuesProps> = async (data) => {
-    try {
-      const result = await login(data);
 
-      if (result?.data?.accessToken) {
-        cookies.set("jwt", result.data.accessToken, { maxAge: 1800 });
-      }
-    } catch (error) {
-      console.error("Error during login", error);
+  const onSubmit: SubmitHandler<LoginFormValuesProps> = async (data) => {
+    const result = await handleLogin(data);
+    const token = result?.data?.accessToken;
+    if (token) {
+      setCookie(Cookie.jwt, token);
+      navigate(redirectUrl);
     }
   };
 
-  const navigateBasedOnRole = useCallback(
-    (role: string) => {
-      const roleRoutes = {
-        [UserRole.Admin]: "/forms",
-        [UserRole.Coach]: "/overview",
-        [UserRole.Applicant]: "/home",
-        [UserRole.Prospect]: "/home",
-      };
-      navigate(roleRoutes[role as keyof typeof roleRoutes] || redirectUrl);
-    },
-    [navigate, redirectUrl],
-  );
-
-  useEffect(() => {
-    if (!isProfileLoading && user?.role) {
-      navigateBasedOnRole(user.role);
-    }
-  }, [isProfileLoading, user, navigateBasedOnRole]);
-
-  const errorMessage: any =
-    errors.email?.message ||
-    errors.password?.message ||
-    error?.data?.errorMessage ||
-    error?.user?.errorMessage;
-
-  if (isProfileLoading)
-    return (
-      <div className="h-screen flex items-center justify-center">
-        <Loader />
-      </div>
-    );
+  if (loginError) {
+    const { message } = getErrorInfo(loginError);
+    handleShowAlert(dispatch, { type: AlertType.Error, message });
+  }
 
   return (
     <form
@@ -81,17 +51,13 @@ const Login = () => {
       <div className="text-center">
         <H1>Login</H1>
       </div>
-      <div className="space-y-3 md:space-y-6 lg:space-y-10 w-full md:w-1/2">
+      <div className="space-y-3 md:space-y-6 lg:space-y-10 w-full">
         {isLoading && (
           <div className="flex items-center justify-center">
             <Loader />
           </div>
         )}
-        {errorMessage && (
-          <div className="py-2 bg-error-light text-error-dark flex justify-center items-center rounded-lg">
-            {errorMessage}
-          </div>
-        )}
+
         <InputField
           name="email"
           type="email"
