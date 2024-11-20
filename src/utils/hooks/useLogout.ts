@@ -13,7 +13,7 @@ export const useLogout = () => {
   const handleLogout = useCallback(() => {
     dispatch(logout());
     removeCookie(Cookie.jwt);
-    navigate("/login");
+    navigate("/auth");
   }, [dispatch, navigate, removeCookie]);
 
   return handleLogout;

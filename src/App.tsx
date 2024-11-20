@@ -7,18 +7,16 @@ import {
 import Error from "./components/Error";
 import ProtectedLayout from "./components/layouts/ProtectedLayout";
 import NotFound from "./pages/NotFound";
-import Login from "./pages/User/Login";
 import Profile from "./pages/User/Profile";
 import TraineesInfo from "./pages/User/TraineesInfo";
 import CoachesInfo from "./pages/User/CoachesInfo";
-import ResetPassword from "./pages/User/ResetPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 import EditMyTrainees from "./pages/User/EditTraineesForCoach";
 import AllForm from "./pages/Form/AllForms";
 import SingleForm from "./pages/Form/SingleForm";
 import OverView from "./pages/User/OverView";
 import TraineeResults from "./pages/User/TraineeResults";
-import ApplicantSignup from "./pages/Applicant/ApplicantSignup";
-import ApplicantVerification from "./pages/Applicant/ApplicantVerification";
+import ApplicantVerification from "./pages/auth/Verification";
 import ApplicationForm from "./pages/Applicant/ApplicationForm";
 import ThankYouNote from "./pages/Applicant/ThankYouNote";
 import Cohorts from "./pages/Cohort/Cohorts";
@@ -28,7 +26,7 @@ import Applicants from "./pages/User/Applicants";
 import CreateApplicationForm from "./pages/Form/CreateApplicationForm";
 import PrivateRoute from "./components/PrivateRoute";
 import PreviewApplicationPage from "./pages/Applicant/PreviewApplicationPage";
-import LoginSignup from "./pages/auth/LoginSignup";
+import Auth from "./pages/auth/Auth";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import GlobalLayout from "./components/layouts/GlobalLayout";
@@ -90,9 +88,7 @@ export default function App() {
             </Route>
           </Route>
 
-          <Route path="/auth" element={<LoginSignup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<ApplicantSignup />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/signup/thank-you" element={<ThankYouNote />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/verify" element={<ApplicantVerification />} />
