@@ -1,4 +1,3 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import ModalLayout from "./ModalLayout";
 import InputField from "../ui/InputField";
@@ -11,20 +10,7 @@ import useAutoCloseModal from "../../utils/hooks/useAutoCloseModal";
 import { getErrorInfo } from "../../utils/helper";
 import { handleShowAlert } from "../../utils/handleShowAlert";
 import { useDispatch } from "react-redux";
-
-// created dummy stages for testing purposes, will be removed soon when we get actual data
-const stages = [
-  {
-    title: "Stage 1",
-    description: "Fundament javascript gate",
-    id: "66b09b2e34299e3eb94123a0",
-  },
-  {
-    title: "Stage 1",
-    description: "React and redux",
-    id: "66b09b2e34299e3eb94123a1",
-  },
-];
+import { stages } from "../../mocks/stages.mock";
 
 const DropOrEnrollModal = ({
   closePopup,
