@@ -4,11 +4,15 @@ import Loader from "../../components/ui/Loader";
 import { useParams } from "react-router-dom";
 import EditForm from "../../components/ui/EditForm";
 import QuestionCard from "../../components/ui/QuestionCard";
-import { Cookie, Question } from "../../utils/types";
+import { AlertType, Cookie, Question } from "../../utils/types";
 import { useCookies } from "react-cookie";
+import { getErrorInfo } from "../../utils/helper";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import { useDispatch } from "react-redux";
 
 const SingleForm = () => {
   const [cookies] = useCookies([Cookie.jwt]);
+  const dispatch = useDispatch();
   const { id } = useParams<{ id: string }>();
   const { data, isFetching, error } = useGetFormQuery({
     id: id || "",
@@ -25,12 +29,12 @@ const SingleForm = () => {
     );
   }
 
-  if (error || !data) {
-    return (
-      <div className="h-[50vh] flex items-center justify-center">
-        <p>Failed to load form details. Please try again later.</p>
-      </div>
-    );
+  if (error) {
+    const { message } = getErrorInfo(error);
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    });
   }
 
   const { name, description, type, questionIds: questions = [] } = data;
