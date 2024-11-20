@@ -22,7 +22,7 @@ import { getErrorInfo } from "../../utils/helper";
 import { useCookies } from "react-cookie";
 
 const style = {
-  position: "absolute" as "absolute",
+  position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
@@ -31,6 +31,8 @@ const style = {
   borderRadius: 2,
   boxShadow: 24,
   p: 4,
+  maxBlockSize: "80vh",
+  overflowY: "auto",
 };
 
 export default function Cohorts() {
@@ -82,7 +84,7 @@ export default function Cohorts() {
           aria-describedby="modal-modal-description"
           sx={{ paddingInline: 10 }}
         >
-          <Box sx={{ ...style, maxBlockSize: "80vh", overflowY: "auto" }}>
+          <Box sx={style}>
             <Typography
               id="modal-modal-title"
               variant="h5"
