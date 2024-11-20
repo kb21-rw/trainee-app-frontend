@@ -26,15 +26,15 @@ const HomePage = () => {
   const role = useSelector((state: RootState) => state.user.role);
   const [cookies] = useCookies([Cookie.jwt]);
   const { data: applicationForm, isLoading } = useGetMyApplicationQuery(
-    cookies.jwt
+    cookies.jwt,
   );
 
   const { status } = applicationStatusHandler(applicationForm);
 
   return (
-    <div className="flex flex-col items-center justify-center mt-5 md:mt-20 space-y-10 p-5">
+    <div className="flex flex-col items-center justify-center mt-10 md:mt-20 space-y-10">
       <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-4 text-center">
-        {"Welcome to The GYM's Application Portal"}
+        Welcome to The GYM&apos;s Application Portal
       </h1>
       {isLoading && (
         <div className="flex items-center justify-center w-full h-screen">
@@ -42,12 +42,12 @@ const HomePage = () => {
         </div>
       )}
       {status === ApplicationFormStatus.OPEN && (
-        <div className="md:container md:mx-auto px-6 flex flex-col items-center justify-center">
+        <>
           <CohortInfo
             cohortTitle={applicationForm.name}
             applicationDeadline={getFormattedDate(applicationForm.endDate)}
             trainingStartDate={getFormattedDate(
-              applicationForm.trainingStartDate
+              applicationForm.trainingStartDate,
             )}
             programBenefits={[
               {
@@ -74,7 +74,7 @@ const HomePage = () => {
               </Button>
             </div>
           </div>
-        </div>
+        </>
       )}
       {status === ApplicationFormStatus.DEADLINE_PASSED && (
         <ApplicationStatus
