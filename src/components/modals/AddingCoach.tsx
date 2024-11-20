@@ -5,10 +5,11 @@ import Button from "../ui/Button";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useCreateCoachMutation } from "../../features/user/backendApi";
 import Loader from "../ui/Loader";
-import { CreateCoach, UserRole } from "../../utils/types";
+import { AlertType, CreateCoach, UserRole } from "../../utils/types";
 import useAutoCloseModal from "../../utils/hooks/useAutoCloseModal";
 import { useDispatch } from "react-redux";
-import { showAlert } from "../../features/user/alertSlice";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import { getErrorInfo } from "../../utils/helper";
 const AddingCoachModal = ({
   closePopup,
   jwt,
@@ -22,41 +23,27 @@ const AddingCoachModal = ({
   const { register, handleSubmit } = useForm<CreateCoach>();
 
   const onSubmit: SubmitHandler<CreateCoach> = async (data) => {
-    try {
-      const result = await createCoach({
-        jwt,
-        body: { ...data, role: UserRole.Coach },
-      }).unwrap();
-
-      if (result?.error) {
-        dispatch(
-          showAlert({
-            message: result.error.data.errorMessage,
-            type: "error",
-            displayDuration: 5000,
-          })
-        );
-        return;
-      }
-    } catch (error) {
-      return "false";
-    }
+    await createCoach({
+      jwt,
+      body: { ...data, role: UserRole.Coach },
+    }).unwrap();
   };
 
   if (error) {
-    throw error;
+    const { message } = getErrorInfo(error);
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    });
   }
 
   useAutoCloseModal(isSuccess, closePopup);
 
   if (isSuccess) {
-    dispatch(
-      showAlert({
-        message: "Coach was added successfully",
-        type: "error",
-        displayDuration: 5000,
-      })
-    );
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: "Coach was added successfully",
+    });
   }
 
   return (
