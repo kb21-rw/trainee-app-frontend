@@ -1,10 +1,9 @@
 import {
   useGetApplicantsQuery,
   useGetAllCohortsQuery,
-} from "../../features/user/apiSlice";
-import { getJWT } from "../../utils/helper";
+} from "../../features/user/backendApi";
 import { AiOutlineWarning } from "react-icons/ai";
-import { ButtonSize, Cohort } from "../../utils/types";
+import { ButtonSize, Cohort, Cookie } from "../../utils/types";
 import { useState, useEffect } from "react";
 import {
   Box,
@@ -15,10 +14,11 @@ import {
 } from "@mui/material";
 import OverViewTable from "../../components/ui/OverViewTable";
 import Button from "../../components/ui/Button";
+import { useCookies } from "react-cookie";
 
 const Applicants = () => {
-  const jwt: string = getJWT();
-  const { data: allCohorts } = useGetAllCohortsQuery({ jwt });
+  const [cookies] = useCookies([Cookie.jwt]);
+  const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt });
   const [selectedCohortId, setSelectedCohortId] = useState<string>("");
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const Applicants = () => {
     isFetching,
   } = useGetApplicantsQuery(
     {
-      jwt,
+      jwt: cookies.jwt,
       cohortId: selectedCohortId,
     },
     {
