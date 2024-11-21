@@ -45,27 +45,35 @@ const ApplicationForm = () => {
       (response: [string, string | string[]]) => ({
         questionId: response[0],
         answer: response[1],
-      })
+      }),
     );
 
+    const QuestionsPreview = formQuestions.map((question: any) => ({
+      ...question,
+      response: formData[question._id],
+    }));
     navigate("/preview", {
-      state: { formQuestions, responses, formTitle, formDeadline, formData },
+      state: {
+        formPreview: { ...data, questions: QuestionsPreview },
+        responses,
+        formData,
+      },
     });
   };
 
   const handleSave = async () => {
     const userResponses = Object.entries(
-      getValues() as { [key: string]: string | string[] }
+      getValues() as { [key: string]: string | string[] },
     );
 
     const modifiedResponses = userResponses.filter(
-      (response: [string, string | string[]]) => dirtyFields[response[0]]
+      (response: [string, string | string[]]) => dirtyFields[response[0]],
     );
     const responses = modifiedResponses.map(
       (response: [string, string | string[]]) => ({
         questionId: response[0],
         answer: response[1],
-      })
+      }),
     );
 
     const result = await saveApplicantResponse({
@@ -84,11 +92,12 @@ const ApplicationForm = () => {
   };
 
   useEffect(() => {
+    if(location?.state) return
     if (data) {
       const formQuestions = convertFormQuestionsToObject(data.questions);
       reset(formQuestions, { keepDirty: false });
     }
-  }, [reset, data]);
+  }, [reset, data, location?.state]);
 
   if (error) {
     const { message } = getErrorInfo(error);
@@ -187,7 +196,7 @@ const ApplicationForm = () => {
                   control={control}
                 />
               </Box>
-            )
+            ),
           )}
 
           <Box

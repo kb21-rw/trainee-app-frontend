@@ -4,7 +4,7 @@ import Loader from "../../components/ui/Loader";
 import { useParams } from "react-router-dom";
 import EditForm from "../../components/ui/EditForm";
 import QuestionCard from "../../components/ui/QuestionCard";
-import { AlertType, Cookie, Question } from "../../utils/types";
+import { AlertType, Cookie, TemplateQuestion } from "../../utils/types";
 import { useCookies } from "react-cookie";
 import { getErrorInfo } from "../../utils/helper";
 import { handleShowAlert } from "../../utils/handleShowAlert";
@@ -51,7 +51,7 @@ const SingleForm = () => {
           setActiveQuestion={setActiveQuestion}
         />
         <div className="flex flex-col gap-4">
-          {questions.map((question: Question) => (
+          {questions.map((question: TemplateQuestion) => (
             <QuestionCard
               key={question._id}
               activeQuestion={activeQuestion}

@@ -46,10 +46,18 @@ export interface Option {
   title: string;
 }
 
-export interface Question {
-  _id?: string;
+export interface TemplateQuestion {
+  _id: string;
   prompt: string;
   responses: Response[];
+  options: string[];
+  type: QuestionType;
+  required: boolean;
+}
+export interface UserResponseQuestion {
+  _id: string;
+  prompt: string;
+  response: null | string | string[];
   options: string[];
   type: QuestionType;
   required: boolean;
@@ -59,7 +67,7 @@ export interface Form {
   _id?: string;
   title: string;
   description: string;
-  questions: Question[];
+  questions: TemplateQuestion[];
 }
 
 export interface ApplicationFormResponse {

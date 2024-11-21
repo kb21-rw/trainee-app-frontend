@@ -8,11 +8,11 @@ import {
   TableRow,
 } from "../../../@/components/ui/table";
 import {
-  Question,
   Response,
   Form,
   QuestionType,
   Cookie,
+  TemplateQuestion,
 } from "../../utils/types";
 
 import { useGetOverviewForCoachQuery } from "../../features/user/backendApi";
@@ -61,7 +61,7 @@ const TraineeResults = () => {
   const traineeMap = new Map();
 
   data.forEach((form: Form) => {
-    form.questions.forEach((question: Question) => {
+    form.questions.forEach((question: TemplateQuestion) => {
       const questionType =
         question.options.length > 0
           ? QuestionType.SingleSelect
@@ -113,7 +113,7 @@ const TraineeResults = () => {
           </TableRow>
           <TableRow>
             {data.flatMap((form) =>
-              form.questions.map((question: Question) => (
+              form.questions.map((question: TemplateQuestion) => (
                 <TableHead
                   key={question._id}
                   scope="col"
@@ -132,7 +132,7 @@ const TraineeResults = () => {
                 {trainee.name ?? "No name"}
               </TableCell>
               {data.flatMap((form) =>
-                form.questions.map((question: Question) => (
+                form.questions.map((question: TemplateQuestion) => (
                   <TableCell
                     key={`${form._id}-${question._id}`}
                     className="border border-black p-2 w-16 max-w-md overflow-hidden whitespace-nowrap text-ellipsis"
