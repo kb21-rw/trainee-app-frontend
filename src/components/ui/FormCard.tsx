@@ -1,26 +1,26 @@
 import { useState } from "react";
 import { H2, H6, H7 } from "./Typography";
-import { IFormType } from "../../utils/types";
+import { Cookie, IFormType } from "../../utils/types";
 import Delete from "../../assets/DeleteIcon";
 import Edit from "../../assets/EditIcon";
-import { useDeleteFormMutation } from "../../features/user/apiSlice";
+import { useDeleteFormMutation } from "../../features/user/backendApi";
 import { useNavigate } from "react-router-dom";
 import View from "../../assets/ViewIcon";
 import Loader from "./Loader";
 import DeleteModal from "../modals/DeleteModal";
-import { getJWT } from "../../utils/helper";
+import { useCookies } from "react-cookie";
 
 const FormCard = ({ form }: { form: IFormType }) => {
+  const [cookies] = useCookies([Cookie.jwt]);
   const navigate = useNavigate();
   const questions = form.questions;
-  const jwt:string = getJWT()
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const [deleteForm, { isLoading: isDeleteFormLoading }] =
     useDeleteFormMutation();
 
   const handleDeleteForm = async (id: string) => {
-    await deleteForm({ jwt, id });
+    await deleteForm({ jwt: cookies.jwt, id });
     setShowDeleteModal(false);
   };
 

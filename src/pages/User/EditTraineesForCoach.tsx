@@ -1,21 +1,23 @@
 import React, { useState } from "react";
-import { useGetTraineesForCoachQuery } from "../../features/user/apiSlice";
+import { useGetTraineesForCoachQuery } from "../../features/user/backendApi";
 import UserTable from "../../components/ui/UserTable";
 import UserTableHeader from "../../components/ui/UserTableHeader";
-import { getJWT, getTraineesForCoach } from "../../utils/helper";
+import { getTraineesForCoach } from "../../utils/helper";
 import {
   usersPerPageValues,
   traineeTableSortingValues,
   editTraineeTableHeaders,
   editTraineeTableItems,
 } from "../../utils/data";
+import { Cookie } from "../../utils/types";
+import { useCookies } from "react-cookie";
 
 const EditTraineesForCoaches = () => {
-  const jwt = getJWT()
+  const [cookies] = useCookies([Cookie.jwt]);
   const [query, setQuery] = useState("");
   const { data, isFetching: isGetMyTraineesLoading } =
     useGetTraineesForCoachQuery({
-      jwt,
+      jwt: cookies.jwt,
       query,
     });
   const myTraineesList = getTraineesForCoach(data, editTraineeTableItems);

@@ -4,15 +4,15 @@ import Delete from "../../assets/DeleteIcon";
 import {
   useDeleteQuestionMutation,
   useEditQuestionMutation,
-} from "../../features/user/apiSlice";
+} from "../../features/user/backendApi";
 import SuccessCheckMark from "../../assets/SuccessCheckMarkIcon";
 import { useForm } from "react-hook-form";
 import AddIcon from "../../assets/AddIcon";
 import RemoveIcon from "../../assets/RemoveIcon";
 import Reset from "../../assets/ResetIcon";
 import DeleteModal from "../modals/DeleteModal";
-import { getJWT } from "../../utils/helper";
-import { QuestionType } from "../../utils/types";
+import { Cookie, QuestionType } from "../../utils/types";
+import { useCookies } from "react-cookie";
 
 const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
   const { prompt, type, options, _id } = question;
@@ -30,13 +30,13 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
       options,
     },
   });
-  const jwt:string = getJWT()
+  const [cookies] = useCookies([Cookie.jwt]);
   const [deleteQuestion] = useDeleteQuestionMutation();
   const [editQuestion] = useEditQuestionMutation();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleDeleteQuestion = async (_id: string) => {
-    await deleteQuestion({ jwt, id: _id });
+    await deleteQuestion({ jwt: cookies.jwt, id: _id });
     setShowDeleteModal(false);
   };
 
@@ -47,7 +47,7 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
   };
 
   const onSubmit = async (data: any) => {
-    await editQuestion({ jwt, body: data, id: _id });
+    await editQuestion({ jwt: cookies.jwt, body: data, id: _id });
   };
 
   const { type: selectedType } = watch();
@@ -60,7 +60,7 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
     >
       <div
         className={`p-8 custom-shadow ${
-          activeQuestion === _id && "border-l-8 border-[#4285F4]"
+          activeQuestion === _id && "border-l-8 border-primary-light"
         } flex flex-1 items-center justify-between rounded-xl`}
       >
         {false && (
@@ -84,16 +84,17 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
               ].map(
                 (
                   currentType: { label: string; value: string },
-                  index: number
+                  index: number,
                 ) => (
                   <option key={index} value={currentType.value}>
                     {currentType.label}
                   </option>
-                )
+                ),
               )}
             </select>
           </div>
-          {(selectedType === QuestionType.SingleSelect || selectedType === QuestionType.MultiSelect) && (
+          {(selectedType === QuestionType.SingleSelect ||
+            selectedType === QuestionType.MultiSelect) && (
             <div>
               <ol className="w-full my-4">
                 {currentOptions.map((option: string, index: number) => (
@@ -114,7 +115,7 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
                   setValue(
                     "options",
                     [...currentOptions, `option ${currentOptions.length + 1}`],
-                    { shouldDirty: true }
+                    { shouldDirty: true },
                   )
                 }
               >
@@ -123,7 +124,7 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
               {currentOptions.length > 0 && (
                 <button
                   onClick={() => {
-                    const updatedOptions = [...currentOptions]
+                    const updatedOptions = [...currentOptions];
                     updatedOptions.pop();
                     setValue("options", updatedOptions, { shouldDirty: true });
                   }}
@@ -147,21 +148,20 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
           </div>
         ) : null}
         <button
-          onClick={()=>setShowDeleteModal(true)}
+          onClick={() => setShowDeleteModal(true)}
           className="flex items-center gap-2"
         >
           <Delete />
         </button>
       </div>
-      {
-      showDeleteModal &&
+      {showDeleteModal && (
         <DeleteModal
           title="a question"
           name={prompt}
           closePopup={() => setShowDeleteModal(false)}
           onDelete={() => handleDeleteQuestion(_id)}
         />
-      }
+      )}
     </div>
   );
 };

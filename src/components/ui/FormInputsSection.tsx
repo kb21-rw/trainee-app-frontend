@@ -1,6 +1,7 @@
 import React from "react";
 import { UseFormRegister, FieldErrors, Control } from "react-hook-form";
 import { ApplicationFormType } from "../../utils/types";
+import classNames from "classnames";
 
 interface Props {
   register: UseFormRegister<ApplicationFormType>;
@@ -16,9 +17,10 @@ export const FormInputsSection: React.FC<Props> = ({
 }) => {
   return (
     <div
-      className={`p-8 custom-shadow border-t-[#673AB7] border-t-8 rounded-xl ${
-        activeInput === "title" && "border-l-8 border-l-[#4285F4]"
-      } flex flex-col gap-5 flex-1`}
+      className={classNames(
+        "p-8 custom-shadow border-l-primary-light border-t-8 rounded-xl flex flex-col gap-5 flex-1",
+        { "border-l-8 border-l-primary-light": activeInput === "title" },
+      )}
     >
       <input
         placeholder="Enter title"

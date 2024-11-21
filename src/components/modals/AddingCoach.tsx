@@ -3,11 +3,13 @@ import ModalLayout from "./ModalLayout";
 import InputField from "../ui/InputField";
 import Button from "../ui/Button";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useCreateCoachMutation } from "../../features/user/apiSlice";
+import { useCreateCoachMutation } from "../../features/user/backendApi";
 import Loader from "../ui/Loader";
-import Alert from "../ui/Alert";
-import { CreateCoach, UserRole } from "../../utils/types";
+import { AlertType, CreateCoach, UserRole } from "../../utils/types";
 import useAutoCloseModal from "../../utils/hooks/useAutoCloseModal";
+import { useDispatch } from "react-redux";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import { getErrorInfo } from "../../utils/helper";
 const AddingCoachModal = ({
   closePopup,
   jwt,
@@ -15,25 +17,35 @@ const AddingCoachModal = ({
   closePopup: () => void;
   jwt: string;
 }) => {
+  const dispatch = useDispatch();
   const [createCoach, { isLoading, error, isSuccess }] =
     useCreateCoachMutation();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CreateCoach>();
+  const { register, handleSubmit } = useForm<CreateCoach>();
 
   const onSubmit: SubmitHandler<CreateCoach> = async (data) => {
-    try {
-      await createCoach({ jwt, body: { ...data, role: UserRole.Coach } }).unwrap();
-    } catch (error) {
-      return "false";
-    }
+    await createCoach({
+      jwt,
+      body: { ...data, role: UserRole.Coach },
+    }).unwrap();
   };
 
+  if (error) {
+    const { message } = getErrorInfo(error);
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    });
+  }
+
   useAutoCloseModal(isSuccess, closePopup);
-  const errorMessage: any =
-    errors.name?.message || errors.email?.message || error?.data?.errorMessage;
+
+  if (isSuccess) {
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: "Coach was added successfully",
+    });
+  }
+
   return (
     <ModalLayout closePopup={closePopup} title="Add coach">
       {isLoading && (
@@ -41,8 +53,6 @@ const AddingCoachModal = ({
           <Loader />
         </div>
       )}
-      {errorMessage && <Alert type="error">{errorMessage}</Alert>}
-      {isSuccess && <Alert type="success">Coach was added succesfully</Alert>}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-8 w-full"

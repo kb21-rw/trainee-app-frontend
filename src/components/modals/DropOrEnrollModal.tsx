@@ -1,14 +1,16 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import ModalLayout from "./ModalLayout";
 import InputField from "../ui/InputField";
 import Button from "../ui/Button";
-import { ApplicantDecision, ButtonVariant } from "../../utils/types";
+import { AlertType, ApplicantDecision, ButtonVariant } from "../../utils/types";
 import TextArea from "../ui/TextArea";
-import { useApplicantDecisionMutation } from "../../features/user/apiSlice";
+import { useApplicantDecisionMutation } from "../../features/user/backendApi";
 import Loader from "../ui/Loader";
-import Alert from "../ui/Alert";
 import useAutoCloseModal from "../../utils/hooks/useAutoCloseModal";
+import { getErrorInfo } from "../../utils/helper";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import { useDispatch } from "react-redux";
+import { stages } from "../../mocks/stages.mock";
 
 const DropOrEnrollModal = ({
   closePopup,
@@ -25,32 +27,13 @@ const DropOrEnrollModal = ({
   jwt: string;
   decision: ApplicantDecision;
 }) => {
-  const { register, handleSubmit, watch, formState: {errors} } = useForm();
+  const dispatch = useDispatch();
+  const { register, handleSubmit, watch } = useForm();
 
   const [
     rejectUser,
     { isLoading: isRejectUserLoading, error, isSuccess: isRejectUserSuccess },
   ] = useApplicantDecisionMutation();
-
-  // created dummy stages for testing purposes, will be removed soon when we get actual data
-
-  const errorMessage: any =
-  errors?.name?.message ||
-  errors?.email?.message ||
-  error?.data?.errorMessage;
-
-  const stages = [
-    {
-      title: "Stage 1",
-      description: "Fundament javascript gate",
-      id: "66b09b2e34299e3eb94123a0",
-    },
-    {
-      title: "Stage 1",
-      description: "React and redux",
-      id: "66b09b2e34299e3eb94123a1",
-    },
-  ];
 
   const handleRejectUser = async () => {
     if (decideForUserId) {
@@ -72,6 +55,25 @@ const DropOrEnrollModal = ({
 
   useAutoCloseModal(isRejectUserSuccess, closePopup);
 
+  if (error) {
+    const { message } = getErrorInfo(error);
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    });
+  }
+
+  if (isRejectUserSuccess) {
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: `${
+        decision === ApplicantDecision.Rejected
+          ? `Dropped ${userName}`
+          : `Enrolled ${userName} to the next stage`
+      }`,
+    });
+  }
+
   return (
     <ModalLayout
       closePopup={closePopup}
@@ -81,10 +83,6 @@ const DropOrEnrollModal = ({
           : `Enroll ${userName} To the next stage`
       }`}
     >
-      {errorMessage && <Alert type="error">{errorMessage}</Alert>}
-      {isRejectUserSuccess && (
-        <Alert type="success">{`${decision === ApplicantDecision.Rejected ? `Dropped ${userName}` : `Enrolled ${userName} to the next stage`}`}</Alert>
-      )}
       <div>
         {isRejectUserLoading && (
           <div className="w-full bg-gray-500/60 flex justify-center items-center">

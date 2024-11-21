@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { H1 } from "../../components/ui/Typography";
 import Button from "../../components/ui/Button";
-import { useVerifyApplicantMutation } from "../../features/user/apiSlice";
+import { useVerifyApplicantMutation } from "../../features/user/backendApi";
 import Loader from "../../components/ui/Loader";
 import { AlertData } from "../../utils/types";
 
@@ -25,7 +25,7 @@ const ApplicantVerification = () => {
       const { data } = await verifyApplicant(userId);
 
       if (data?.userId) {
-        navigate(`/login?alertData=${JSON.stringify(loginAlertData)}`);
+        navigate(`/auth?alertData=${JSON.stringify(loginAlertData)}`);
       } else {
         throw new Error("Verification failed");
       }

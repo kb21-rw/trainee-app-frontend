@@ -1,16 +1,23 @@
 import React, { useState } from "react";
-import { useGetFormQuery } from "../../features/user/apiSlice";
+import { useGetFormQuery } from "../../features/user/backendApi";
 import Loader from "../../components/ui/Loader";
 import { useParams } from "react-router-dom";
 import EditForm from "../../components/ui/EditForm";
 import QuestionCard from "../../components/ui/QuestionCard";
-import { getJWT } from "../../utils/helper";
-import { Question } from "../../utils/types";
+import { AlertType, Cookie, TemplateQuestion } from "../../utils/types";
+import { useCookies } from "react-cookie";
+import { getErrorInfo } from "../../utils/helper";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import { useDispatch } from "react-redux";
 
 const SingleForm = () => {
+  const [cookies] = useCookies([Cookie.jwt]);
+  const dispatch = useDispatch();
   const { id } = useParams<{ id: string }>();
-  const jwt: string = getJWT();
-  const { data, isFetching, error } = useGetFormQuery({ id: id || "", jwt });
+  const { data, isFetching, error } = useGetFormQuery({
+    id: id || "",
+    jwt: cookies.jwt,
+  });
 
   const [activeQuestion, setActiveQuestion] = useState<string>("");
 
@@ -22,19 +29,18 @@ const SingleForm = () => {
     );
   }
 
-  if (error || !data) {
-    return (
-      <div className="h-[50vh] flex items-center justify-center">
-        <p>Failed to load form details. Please try again later.</p>
-      </div>
-    );
+  if (error) {
+    const { message } = getErrorInfo(error);
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    });
   }
 
   const { name, description, type, questionIds: questions = [] } = data;
 
   return (
     <div className="py-12 max-w-5xl mx-auto">
-
       <div className="flex flex-col gap-4">
         <EditForm
           name={name}
@@ -45,7 +51,7 @@ const SingleForm = () => {
           setActiveQuestion={setActiveQuestion}
         />
         <div className="flex flex-col gap-4">
-          {questions.map((question: Question) => (
+          {questions.map((question: TemplateQuestion) => (
             <QuestionCard
               key={question._id}
               activeQuestion={activeQuestion}
