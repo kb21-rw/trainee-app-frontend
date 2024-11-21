@@ -1,28 +1,20 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAddApplicantResponseMutation } from "../../features/user/backendApi";
 import { getErrorInfo, getFormattedDate } from "../../utils/helper";
-import { AlertType, Cookie, Question, QuestionType } from "../../utils/types";
+import { AlertType, Cookie, UserResponseQuestion } from "../../utils/types";
 import Button from "../../components/ui/Button";
-import {
-  TextField,
-  Checkbox,
-  Radio,
-  FormControlLabel,
-  RadioGroup,
-  FormGroup,
-} from "@mui/material";
 import { useEffect } from "react";
 import { handleShowAlert } from "../../utils/handleShowAlert";
 import { useDispatch } from "react-redux";
 import { useCookies } from "react-cookie";
+import ApplicationFormQuestionPreview from "../../components/ui/ApplicationFormQuestionPreview";
 
 const PreviewApplicationPage = () => {
   const [cookies] = useCookies([Cookie.jwt]);
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  const { formQuestions, responses, formData, formTitle, formDeadline } =
-    location.state || {};
+  const { formPreview, responses, formData } = location.state || {};
   const [addApplicantResponse, { isSuccess, error }] =
     useAddApplicantResponseMutation();
 
@@ -37,15 +29,11 @@ const PreviewApplicationPage = () => {
   }, [isSuccess]);
 
   const handleConfirm = async () => {
-    try {
-      await addApplicantResponse({
-        jwt: cookies.jwt,
-        body: responses,
-        action: "submit",
-      });
-    } catch (error) {
-      console.error("Error submitting form", error);
-    }
+    await addApplicantResponse({
+      jwt: cookies.jwt,
+      body: responses,
+      action: "submit",
+    });
   };
 
   const backToEdit = () => {
@@ -70,64 +58,21 @@ const PreviewApplicationPage = () => {
   return (
     <div className="my-12 items-center justify-center flex flex-col p-5 custom-shadow border-t-primary-dark border-t-8 rounded-xl">
       <div className="p-4 text-center">
-        <h1 className="font-bold text-xl sm:text-4xl">{formTitle}</h1>
+        <h1 className="font-bold text-xl sm:text-4xl">{formPreview.name}</h1>
         <p className="text-xs sm:text-base">
           Application deadline:{" "}
-          <span className="font-bold">{getFormattedDate(formDeadline)}</span>
+          <span className="font-bold">
+            {getFormattedDate(formPreview.endDate)}
+          </span>
         </p>
       </div>
       <div className="mb-8 p-4 rounded-t-xl md:w-4/5 w-full">
-        {formQuestions?.map((question: Question, index: number) => (
-          <div key={index} className="mb-6">
-            <h3 className="text-md font-semibold text-gray-600 mb-2">
-              {index + 1}. {question.prompt}
-            </h3>
-            {question.type === QuestionType.Text && (
-              <TextField
-                fullWidth
-                variant="standard"
-                value={responses[index]?.answer}
-                disabled
-              />
-            )}
-            {question.type === QuestionType.SingleSelect && (
-              <RadioGroup
-                value={responses[index]?.answer}
-                name={`question-${index}`}
-              >
-                {question.options?.map(
-                  (option: string, optionIndex: number) => (
-                    <FormControlLabel
-                      key={optionIndex}
-                      value={option}
-                      control={<Radio disabled />}
-                      label={option}
-                      disabled
-                    />
-                  )
-                )}
-              </RadioGroup>
-            )}
-            {question.type === QuestionType.MultiSelect && (
-              <FormGroup>
-                {question.options?.map(
-                  (option: string, optionIndex: number) => (
-                    <FormControlLabel
-                      key={optionIndex}
-                      control={
-                        <Checkbox
-                          checked={responses[index]?.answer.includes(option)}
-                          disabled
-                        />
-                      }
-                      label={option}
-                      disabled
-                    />
-                  )
-                )}
-              </FormGroup>
-            )}
-          </div>
+        {formPreview.questions.map((question: UserResponseQuestion, index: number) => (
+          <ApplicationFormQuestionPreview
+            key={question._id}
+            question={question}
+            index={index + 1}
+          />
         ))}
       </div>
 
