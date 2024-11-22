@@ -9,39 +9,20 @@ const OverViewTable: React.FC<DataGridProps> = ({ data }) => {
   const formatCellValue = (value: any) =>
     Array.isArray(value) ? value.join(", ") : value;
 
-  const uniqueQuestionsMap = new Map<
-    string,
-    { headerName: string; field: string }
-  >();
-
-  data.forEach((cohort: any) => {
-    cohort.forms.forEach((form: any) => {
-      form.questions.forEach((question: any, index: number) => {
-        const columnKey = `form_${form._id}_question_${question._id}_${index}`;
-        const uniqueKey = `${form._id}_${question.prompt}`;
-
-        if (!uniqueQuestionsMap.has(uniqueKey)) {
-          uniqueQuestionsMap.set(uniqueKey, {
-            headerName: question.prompt,
-            field: columnKey,
-          });
-        }
-      });
-    });
-  });
-
-  const uniqueColumns = Array.from(uniqueQuestionsMap.values());
-
-  const formattedColumns: GridColDef[] = [
-    { field: "applicantId", headerName: "Applicant ID", width: 200 },
-    { field: "stage", headerName: "Stage", width: 200 },
-    { field: "coach", headerName: "Coach", width: 200 },
-    ...uniqueColumns.map((q) => ({
-      field: q.field,
-      headerName: q.headerName,
+  const questionColumns = data[0].forms.flatMap((form: any) =>
+    form.questions.map((question: any) => ({
+      field: question._id,
+      headerName: question.prompt,
       width: 250,
       renderCell: (params: any) => formatCellValue(params.value),
     })),
+  );
+
+  const formattedColumns: GridColDef[] = [
+    { field: "name", headerName: "Name", width: 200 },
+    { field: "coach", headerName: "Coach", width: 200 },
+    { field: "stage", headerName: "Stage", width: 200 },
+    ...questionColumns,
   ];
 
   const rows = data.flatMap((cohort: any) =>
@@ -71,10 +52,10 @@ const OverViewTable: React.FC<DataGridProps> = ({ data }) => {
 
   const columnGroupingModel = data.flatMap((cohort: any) =>
     cohort.forms.map((form: any) => ({
-      groupId: form.name,
+      groupId: form._id,
       headerName: form.name,
-      children: form.questions.map((question: any, qIndex: number) => ({
-        field: `form_${form._id}_question_${question._id}_${qIndex}`,
+      children: form.questions.map((question: any) => ({
+        field: question._id,
         headerName: question.prompt,
       })),
     })),
@@ -92,7 +73,7 @@ const OverViewTable: React.FC<DataGridProps> = ({ data }) => {
           border: "1px solid #e0e0e0",
         },
         "& .MuiDataGrid-columnHeader": {
-          textAlign: 'center',
+          textAlign: "center",
           border: "1px solid #e0e0e0",
         },
         "& .MuiDataGrid-columnHeaderTitle": {
