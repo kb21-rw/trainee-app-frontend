@@ -2,8 +2,7 @@ import {
   useGetApplicantsQuery,
   useGetAllCohortsQuery,
 } from "../../features/user/backendApi";
-import { AiOutlineWarning } from "react-icons/ai";
-import { ButtonSize, Cohort, Cookie } from "../../utils/types";
+import { AlertType, ButtonSize, Cohort, Cookie } from "../../utils/types";
 import { useState, useEffect } from "react";
 import {
   Box,
@@ -15,11 +14,25 @@ import {
 import OverViewTable from "../../components/ui/OverViewTable";
 import Button from "../../components/ui/Button";
 import { useCookies } from "react-cookie";
+import { getErrorInfo } from "../../utils/helper";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import { useDispatch } from "react-redux";
+import Loader from "../../components/ui/Loader";
+import NotFound from "../../components/ui/NotFound";
 
 const Applicants = () => {
   const [cookies] = useCookies([Cookie.jwt]);
   const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt });
-  const [selectedCohortId, setSelectedCohortId] = useState<string>("");
+  const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null);
+  const dispatch = useDispatch();
+  const {
+    data: cohortOverview,
+    error,
+    isFetching,
+  } = useGetApplicantsQuery({
+    jwt: cookies.jwt,
+    cohortId: selectedCohortId,
+  });
 
   useEffect(() => {
     if (allCohorts) {
@@ -32,29 +45,12 @@ const Applicants = () => {
     }
   }, [allCohorts, selectedCohortId]);
 
-  const {
-    data: applicantsData,
-    isError,
-    isFetching,
-  } = useGetApplicantsQuery(
-    {
-      jwt: cookies.jwt,
-      cohortId: selectedCohortId,
-    },
-    {
-      skip: !selectedCohortId,
-    },
-  );
-
-  if (isError) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="flex flex-col items-center space-y-5">
-          <AiOutlineWarning className="text-6xl text-yellow-500" />
-          <h1 className="text-2xl">Error fetching applicants</h1>
-        </div>
-      </div>
-    );
+  if (error) {
+    const { message } = getErrorInfo(error);
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    });
   }
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -71,7 +67,7 @@ const Applicants = () => {
               <Select
                 labelId="cohort-label"
                 id="single-select"
-                value={selectedCohortId}
+                value={selectedCohortId ?? cohortOverview?._id ?? ""}
                 onChange={handleChange}
               >
                 {allCohorts?.map((cohort: Cohort) => (
@@ -85,12 +81,10 @@ const Applicants = () => {
         </div>
         <Button size={ButtonSize.Medium}>Add Applicant</Button>
       </div>
-      {isFetching && <div>Loading applicants...</div>}
-      {!isFetching && applicantsData?.length > 0 && (
-        <OverViewTable data={applicantsData} />
-      )}
-      {!isFetching && applicantsData?.length == 0 && (
-        <div>This Cohort is empty</div>
+      {isFetching && <Loader />}
+      {cohortOverview && <OverViewTable data={cohortOverview} />}
+      {!isFetching && !cohortOverview && (
+        <NotFound entity="Cohort" type="NoData" />
       )}
     </div>
   );
