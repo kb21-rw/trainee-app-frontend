@@ -43,7 +43,7 @@ const AllForms = () => {
         <FormsSkeleton />
       ) : forms?.length === 0 && !applicationForm ? (
         <div className="flex w-screen h-[50vh]">
-          <NotFound type="Form" />
+          <NotFound entity="Form" />
         </div>
       ) : (
         <div className="flex flex-col gap-4 py-4 px-[1px] md:container mx-auto w-3/5 h-[750px] overflow-scroll">

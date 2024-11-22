@@ -53,7 +53,7 @@ const UserTable = ({
         <tbody>
           <tr className="flex w-screen h-[50vh]">
             <td className="w-full h-full">
-              <NotFound type="User" />
+              <NotFound entity="User" />
             </td>
           </tr>
         </tbody>
