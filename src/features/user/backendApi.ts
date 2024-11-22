@@ -440,7 +440,7 @@ export const backendApi: any = createApi({
       query: (args) => {
         const { jwt, cohortId } = args;
         return {
-          url: `/cohorts/${cohortId}/overview`,
+          url: `/cohorts/overview${cohortId ? "?cohortId=" + cohortId : ""}`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
