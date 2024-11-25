@@ -2,15 +2,19 @@ import React from "react";
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 
 interface DataGridProps {
-  data: any[];
+  cohortOverview: any;
+  usersProgress: any;
 }
 
-const OverViewTable: React.FC<DataGridProps> = ({ data }) => {
+const OverViewTable: React.FC<DataGridProps> = ({
+  cohortOverview,
+  usersProgress,
+}) => {
   const formatCellValue = (value: any) => {
     if (!value) return "No response";
   };
 
-  const questionColumns = data[0].forms.flatMap((form: any) =>
+  const questionColumns = cohortOverview.forms.flatMap((form: any) =>
     form.questions.map((question: any) => ({
       field: question._id,
       headerName: question.prompt,
@@ -31,55 +35,50 @@ const OverViewTable: React.FC<DataGridProps> = ({ data }) => {
     ...questionColumns,
   ];
 
-  const allResponses = data[0].forms.flatMap((form: any) =>
+  const allResponses = cohortOverview.forms.flatMap((form: any) =>
     form.questions.flatMap((question: any) => question.responses),
   );
 
   const users = allResponses.reduce((uniqueUsers: any, response: any) => {
     const userId = response.user._id;
-    if (userId in uniqueUsers) {
-      const existingUser = uniqueUsers[userId];
-
-      return {
-        ...uniqueUsers,
-        [userId]: {
-          ...existingUser,
-          responses: {
-            ...existingUser.responses,
-            [response.questionId]: response.value,
-          },
-        },
-      };
-    }
-
+    const existingUser = uniqueUsers[userId] ?? {};
     return {
       ...uniqueUsers,
-      [response.user._id]: {
+      [userId]: {
         user: response.user,
-        responses: { [response.questionId]: response.value },
+        responses: {
+          ...existingUser?.responses,
+          [response.questionId]: response.value,
+        },
       },
     };
   }, {});
 
   const rows: GridRowsProp[] = Object.values(users).map((user: any) => {
+    const userStage = usersProgress.find(
+      (userProgress: any) => userProgress.id === user.user._id,
+    );
+    const stage = cohortOverview.stages.find(
+      (stage: any) => stage.id === userStage.droppedStage.id,
+    );
+
     return {
       id: user.user._id,
       name: user.user.name,
       coach: user.user.coach?.name,
+      stage: stage.name,
       ...user.responses,
     };
   });
 
-  const columnGroupingModel = data.flatMap((cohort: any) =>
-    cohort.forms.map((form: any) => ({
-      groupId: form._id,
-      headerName: form.name,
-      children: form.questions.map((question: any) => ({
-        field: question._id,
-        headerName: question.prompt,
-      })),
+  const columnGroupingModel = cohortOverview.forms.map((form: any) => ({
+    groupId: form._id,
+    headerName: form.name,
+    children: form.questions.map((question: any) => ({
+      field: question._id,
+      headerName: question.prompt,
     })),
-  );
+  }));
 
   return (
     <DataGrid
