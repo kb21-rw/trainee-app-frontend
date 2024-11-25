@@ -82,7 +82,7 @@ const Applicants = () => {
         <Button size={ButtonSize.Medium}>Add Applicant</Button>
       </div>
       {isFetching && <Loader />}
-      {cohortOverview && <OverViewTable cohortOverview={cohortOverview} usersProgress={cohortOverview.applicants} />}
+      {cohortOverview && <OverViewTable cohortOverview={cohortOverview} usersProgress={cohortOverview.applicants} stages={cohortOverview.applicationForm.stages} />}
       {!isFetching && !cohortOverview && (
         <NotFound entity="Cohort" type="NoData" />
       )}

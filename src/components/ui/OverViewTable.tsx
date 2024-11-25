@@ -4,11 +4,13 @@ import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 interface DataGridProps {
   cohortOverview: any;
   usersProgress: any;
+  stages: any;
 }
 
 const OverViewTable: React.FC<DataGridProps> = ({
   cohortOverview,
   usersProgress,
+  stages,
 }) => {
   const formatCellValue = (value: any) => {
     if (!value) return "No response";
@@ -58,7 +60,7 @@ const OverViewTable: React.FC<DataGridProps> = ({
     const userStage = usersProgress.find(
       (userProgress: any) => userProgress.id === user.user._id,
     );
-    const stage = cohortOverview.stages.find(
+    const stage = stages.find(
       (stage: any) => stage.id === userStage.droppedStage.id,
     );
 
