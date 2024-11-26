@@ -59,6 +59,7 @@ export interface Response {
   _id: string;
   user: User;
   value: string | string[];
+  questionId?: string;
 }
 
 export interface CreateCoach {

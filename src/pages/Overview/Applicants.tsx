@@ -87,7 +87,7 @@ const Applicants = () => {
       {cohortOverview && (
         <OverViewTable
           forms={cohortOverview.forms}
-          usersProgress={cohortOverview.applicants}
+          participants={cohortOverview.applicants}
           stages={cohortOverview.applicationForm.stages}
         />
       )}
