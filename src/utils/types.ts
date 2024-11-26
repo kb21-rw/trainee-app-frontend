@@ -219,3 +219,16 @@ export interface CohortParticipant {
   };
   feedbacks: { stageId: string; text: string }[];
 }
+
+export enum Decision {
+  Rejected = "Rejected",
+  Accepted = "Accepted",
+}
+
+export interface DecisionInfo {
+  userId: string;
+  name: string;
+  email: string;
+  stage: string;
+  decision: Decision;
+}

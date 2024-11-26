@@ -7,7 +7,12 @@ import {
   CohortParticipant,
   Stage,
   User,
+  ButtonSize,
+  ButtonVariant,
+  DecisionInfo,
+  Decision,
 } from "../../utils/types";
+import Button from "./Button";
 
 interface Response extends BaseResponse {
   questionId: string;
@@ -20,12 +25,15 @@ interface DataGridProps {
   forms: Form[];
   participants: CohortParticipant[];
   stages: Stage[];
+  // eslint-disable-next-line no-unused-vars
+  action: (_row: DecisionInfo) => void;
 }
 
 const OverViewTable: React.FC<DataGridProps> = ({
   forms,
   participants,
   stages,
+  action,
 }) => {
   const questionColumns = forms.flatMap((form) =>
     form.questions.map((question) => ({
@@ -46,6 +54,49 @@ const OverViewTable: React.FC<DataGridProps> = ({
     },
     { field: "stage", headerName: "Stage", width: 200 },
     ...questionColumns,
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 300,
+
+      renderCell: ({ row: { id, email, name, stage } }) => (
+        <div className="flex justify-around content-center align-middle py-2 h-full">
+          <Button
+            variant={ButtonVariant.Danger}
+            size={ButtonSize.Small}
+            onClick={() =>
+              action({
+                userId: id,
+                decision: Decision.Rejected,
+                email,
+                name,
+                stage,
+              })
+            }
+          >
+            <span className="h-full flex justify-center items-center">
+              Reject
+            </span>
+          </Button>
+          <Button
+            size={ButtonSize.Small}
+            onClick={() =>
+              action({
+                userId: id,
+                decision: Decision.Accepted,
+                email,
+                name,
+                stage,
+              })
+            }
+          >
+            <span className="h-full  flex justify-center items-center">
+              Accept
+            </span>
+          </Button>
+        </div>
+      ),
+    },
   ];
 
   const allResponses = forms.flatMap((form) =>
@@ -84,6 +135,7 @@ const OverViewTable: React.FC<DataGridProps> = ({
     return {
       id: user.user._id,
       name: user.user.name,
+      email: user.user.email,
       coach: user.user.coach?.name,
       stage: stage.name,
       ...user.responses,

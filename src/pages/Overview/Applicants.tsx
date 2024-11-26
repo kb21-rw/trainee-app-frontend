@@ -1,12 +1,14 @@
 import {
   useGetApplicantsQuery,
   useGetAllCohortsQuery,
+  useApplicantDecisionMutation,
 } from "../../features/user/backendApi";
 import {
   AlertType,
   ButtonSize,
   Cohort as BaseCohort,
   Cookie,
+  DecisionInfo,
 } from "../../utils/types";
 import { useState, useEffect } from "react";
 import {
@@ -24,22 +26,26 @@ import { handleShowAlert } from "../../utils/handleShowAlert";
 import { useDispatch } from "react-redux";
 import Loader from "../../components/ui/Loader";
 import NotFound from "../../components/ui/NotFound";
+import DecisionModal from "../../components/modals/DecisionModal";
 
 interface Cohort extends Pick<BaseCohort, "_id" | "name" | "description"> {}
 
 const Applicants = () => {
+  const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null);
   const [cookies] = useCookies([Cookie.jwt]);
   const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt });
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null);
   const dispatch = useDispatch();
   const {
     data: cohortOverview,
-    error,
+    error: cohortOverviewError,
     isFetching,
   } = useGetApplicantsQuery({
     jwt: cookies.jwt,
     cohortId: selectedCohortId,
   });
+  const [decide, { error: decisionError, isSuccess: decidingIsSuccess }] =
+    useApplicantDecisionMutation();
 
   useEffect(() => {
     if (cohortOverview && !selectedCohortId) {
@@ -52,16 +58,49 @@ const Applicants = () => {
     setSelectedCohortId(newCohortId);
   };
 
-  if (error) {
-    const { message } = getErrorInfo(error);
+  const handleDecision = (userData: DecisionInfo) => {
+    setDecisionInfo({ ...userData });
+  };
+
+  const handleSubmitDecision = async ({ feedback }: { feedback: string }) => {
+    if (!decisionInfo) {
+      return;
+    }
+
+    await decide({
+      jwt: cookies.jwt,
+      body: {
+        userId: decisionInfo.userId,
+        decision: decisionInfo.decision,
+        feedback,
+      },
+    });
+  };
+
+  if (cohortOverviewError || decisionError) {
+    const { message } = getErrorInfo(cohortOverviewError ?? decisionError);
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
     });
   }
 
+  if (decidingIsSuccess) {
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: `User is successfully ${decisionInfo?.decision.toLowerCase()}`,
+    });
+  }
+
   return (
     <div className="py-12 space-y-5">
+      {decisionInfo && (
+        <DecisionModal
+          decisionInfo={decisionInfo}
+          closeModal={() => setDecisionInfo(null)}
+          onSubmit={handleSubmitDecision}
+        />
+      )}
       <div className="flex justify-between items-center">
         <div className="w-52">
           <Box>
@@ -89,6 +128,7 @@ const Applicants = () => {
           forms={cohortOverview.forms}
           participants={cohortOverview.applicants}
           stages={cohortOverview.applicationForm.stages}
+          action={handleDecision}
         />
       )}
       {!isFetching && !cohortOverview && (
