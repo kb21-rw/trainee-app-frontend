@@ -6,7 +6,6 @@ import TextArea from "../ui/TextArea";
 import { useAddResponseMutation } from "../../features/user/backendApi";
 import Loader from "../ui/Loader";
 import RadioOption from "../ui/RadioOption";
-import useAutoCloseModal from "../../utils/hooks/useAutoCloseModal";
 import { getErrorInfo } from "../../utils/helper";
 import { AlertType, Cookie, QuestionType } from "../../utils/types";
 import { handleShowAlert } from "../../utils/handleShowAlert";
@@ -58,8 +57,6 @@ const ResponseModal = ({
     };
     await addResponse({ jwt: cookies.jwt, body: responseBody, questionId, userId });
   };
-
-  useAutoCloseModal(isSuccess, closePopup);
 
   useEffect(() => {
     setLocalCheckedOption(checkedOption);

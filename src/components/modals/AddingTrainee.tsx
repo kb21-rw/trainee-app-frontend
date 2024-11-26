@@ -8,7 +8,6 @@ import {
   useGetAllCoachesQuery,
 } from "../../features/user/backendApi";
 import Loader from "../ui/Loader";
-import useAutoCloseModal from "../../utils/hooks/useAutoCloseModal";
 import { AlertType, UserRole } from "../../utils/types";
 import { handleShowAlert } from "../../utils/handleShowAlert";
 import { getErrorInfo } from "../../utils/helper";
@@ -37,8 +36,6 @@ const AddingTraineeModal = ({
       body: { ...data, role: UserRole.Trainee },
     });
   };
-
-  useAutoCloseModal(isSuccess, closePopup);
 
   if (error) {
     const { message } = getErrorInfo(error);

@@ -6,7 +6,6 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useCreateCoachMutation } from "../../features/user/backendApi";
 import Loader from "../ui/Loader";
 import { AlertType, CreateCoach, UserRole } from "../../utils/types";
-import useAutoCloseModal from "../../utils/hooks/useAutoCloseModal";
 import { useDispatch } from "react-redux";
 import { handleShowAlert } from "../../utils/handleShowAlert";
 import { getErrorInfo } from "../../utils/helper";
@@ -36,8 +35,6 @@ const AddingCoachModal = ({
       message,
     });
   }
-
-  useAutoCloseModal(isSuccess, closePopup);
 
   if (isSuccess) {
     handleShowAlert(dispatch, {
