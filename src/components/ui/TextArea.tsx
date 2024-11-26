@@ -24,12 +24,12 @@ const TextArea = ({
   return (
     <div className={`${styles ? styles : "flex flex-col gap-5"} w-full`}>
       <label htmlFor={label} className="text-lg font-medium px-1">
-        {label} {!styles && ":"}
+        {label}
       </label>
       <div
         className={`${
           styles && "!w-2/3"
-        } w-full border border-gray-200 rounded-md flex justify-between h-32`}
+        } w-full border border-gray-200 rounded-xl flex justify-between h-32 overflow-hidden`}
       >
         <textarea
           name={name}
