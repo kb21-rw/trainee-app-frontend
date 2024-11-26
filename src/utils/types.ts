@@ -10,14 +10,55 @@ export interface IFormType {
 }
 
 export interface User {
-  _id?: string;
+  _id: string;
+  userId: string;
   name: string;
-  coach?: Coach;
+  email: string;
+  role: UserRole;
+  coach: Omit<User, "coach">;
 }
 
-export interface Coach {
-  _id?: string;
+export interface Cohort {
+  _id: string;
   name: string;
+  description: string;
+  isActive: boolean;
+  applicants: CohortParticipant[];
+  trainees: CohortParticipant[];
+  coaches: User[];
+  forms: Form[];
+  applicationForm: {
+    applicationForm: {
+      id: string;
+      stages: Stage[];
+      startDate: string;
+      endDate: string;
+    };
+  };
+  stages: Stage[];
+  trainingStartDate: string;
+}
+
+export interface Form {
+  _id: string;
+  name: string;
+  description: string;
+  type: FormType;
+  questions: Question[];
+}
+export interface Question {
+  _id: string;
+  prompt: string;
+  type: QuestionType;
+  required: boolean;
+  options: string[];
+  responses: Response[];
+}
+
+export interface Response {
+  _id: string;
+  user: User;
+  value: string | string[];
 }
 
 export interface CreateCoach {
@@ -25,21 +66,10 @@ export interface CreateCoach {
   email: string;
   password: string;
 }
-export interface CreateCohort {
-  name: string;
-  description: string;
-  stages: Stage[];
-}
-
 export interface Stage {
+  id: string;
   name: string;
   description: string;
-}
-
-export interface Response {
-  _id?: string;
-  text: string | null;
-  user: User;
 }
 
 export interface Option {
@@ -61,13 +91,6 @@ export interface UserResponseQuestion {
   options: string[];
   type: QuestionType;
   required: boolean;
-}
-
-export interface Form {
-  _id?: string;
-  title: string;
-  description: string;
-  questions: TemplateQuestion[];
 }
 
 export interface ApplicationFormResponse {
@@ -118,17 +141,6 @@ export type ApplicantDetails = {
 export enum ApplicantDecision {
   Accepted = "Accepted",
   Rejected = "Rejected",
-}
-export interface Cohort {
-  _id: string;
-  name: string;
-  description: string;
-  isActive: boolean;
-  stages: number;
-  applicants: number;
-  trainees: number;
-  coaches: number;
-  forms: number;
 }
 
 export enum FormType {
@@ -195,4 +207,14 @@ export enum Cookie {
 export enum AuthPage {
   Login = "Login",
   Signup = "Signup",
+}
+
+export interface CohortParticipant {
+  id: string;
+  passedStages: string[];
+  droppedStage: {
+    id: string;
+    isConfirmed: boolean;
+  };
+  feedbacks: { stageId: string; text: string }[];
 }
