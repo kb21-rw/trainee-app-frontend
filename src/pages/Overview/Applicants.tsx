@@ -2,7 +2,12 @@ import {
   useGetApplicantsQuery,
   useGetAllCohortsQuery,
 } from "../../features/user/backendApi";
-import { AlertType, ButtonSize, Cohort, Cookie } from "../../utils/types";
+import {
+  AlertType,
+  ButtonSize,
+  Cohort as BaseCohort,
+  Cookie,
+} from "../../utils/types";
 import { useState, useEffect } from "react";
 import {
   Box,
@@ -20,6 +25,8 @@ import { useDispatch } from "react-redux";
 import Loader from "../../components/ui/Loader";
 import NotFound from "../../components/ui/NotFound";
 
+interface Cohort extends Pick<BaseCohort, "_id" | "name" | "description"> {}
+
 const Applicants = () => {
   const [cookies] = useCookies([Cookie.jwt]);
   const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt });
@@ -35,15 +42,15 @@ const Applicants = () => {
   });
 
   useEffect(() => {
-    if (allCohorts) {
-      const activeCohort = allCohorts.find(
-        (cohort: Cohort) => cohort?.isActive,
-      );
-      if (activeCohort && !selectedCohortId) {
-        setSelectedCohortId(activeCohort._id);
-      }
+    if (cohortOverview && !selectedCohortId) {
+      setSelectedCohortId(cohortOverview._id);
     }
-  }, [allCohorts, selectedCohortId]);
+  }, [cohortOverview, selectedCohortId]);
+
+  const handleChange = (event: SelectChangeEvent) => {
+    const newCohortId = event.target.value;
+    setSelectedCohortId(newCohortId);
+  };
 
   if (error) {
     const { message } = getErrorInfo(error);
@@ -52,11 +59,6 @@ const Applicants = () => {
       message,
     });
   }
-
-  const handleChange = (event: SelectChangeEvent) => {
-    const newCohortId = event.target.value;
-    setSelectedCohortId(newCohortId);
-  };
 
   return (
     <div className="py-12 space-y-5">
@@ -71,8 +73,8 @@ const Applicants = () => {
                 onChange={handleChange}
               >
                 {allCohorts?.map((cohort: Cohort) => (
-                  <MenuItem key={cohort?._id} value={cohort?._id}>
-                    {cohort?.name}
+                  <MenuItem key={cohort._id} value={cohort._id}>
+                    {cohort.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -82,7 +84,13 @@ const Applicants = () => {
         <Button size={ButtonSize.Medium}>Add Applicant</Button>
       </div>
       {isFetching && <Loader />}
-      {cohortOverview && <OverViewTable cohortOverview={cohortOverview} usersProgress={cohortOverview.applicants} stages={cohortOverview.applicationForm.stages} />}
+      {cohortOverview && (
+        <OverViewTable
+          forms={cohortOverview.forms}
+          usersProgress={cohortOverview.applicants}
+          stages={cohortOverview.applicationForm.stages}
+        />
+      )}
       {!isFetching && !cohortOverview && (
         <NotFound entity="Cohort" type="NoData" />
       )}
