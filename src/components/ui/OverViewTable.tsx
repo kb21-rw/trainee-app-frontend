@@ -52,8 +52,6 @@ const OverViewTable: React.FC<DataGridProps> = ({
     form.questions.flatMap((question) => question.responses),
   );
 
-  console.log(allResponses);
-
   const users = allResponses.reduce(
     (
       uniqueUsers: { [key: string]: { user: User; responses: Response[] } },
