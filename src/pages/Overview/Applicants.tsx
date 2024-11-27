@@ -53,6 +53,24 @@ const Applicants = () => {
     }
   }, [cohortOverview, selectedCohortId]);
 
+  useEffect(() => {
+    if (cohortOverviewError || decisionError) {
+      const { message } = getErrorInfo(cohortOverviewError ?? decisionError);
+      handleShowAlert(dispatch, {
+        type: AlertType.Error,
+        message,
+      });
+    }
+
+    if (decidingIsSuccess) {
+      handleShowAlert(dispatch, {
+        type: AlertType.Success,
+        message: `User is successfully ${decisionInfo?.decision.toLowerCase()}`,
+      });
+      setDecisionInfo(null);
+    }
+  }, [cohortOverviewError, decidingIsSuccess, decisionError, dispatch]); // decisionInfo?.decision is not included because it changes causing the useEffect to run on every re-render
+
   const handleChange = (event: SelectChangeEvent) => {
     const newCohortId = event.target.value;
     setSelectedCohortId(newCohortId);
@@ -77,30 +95,14 @@ const Applicants = () => {
     });
   };
 
-  if (cohortOverviewError || decisionError) {
-    const { message } = getErrorInfo(cohortOverviewError ?? decisionError);
-    handleShowAlert(dispatch, {
-      type: AlertType.Error,
-      message,
-    });
-  }
-
-  if (decidingIsSuccess) {
-    handleShowAlert(dispatch, {
-      type: AlertType.Success,
-      message: `User is successfully ${decisionInfo?.decision.toLowerCase()}`,
-    });
-  }
-
   return (
     <div className="py-12 space-y-5">
-      {decisionInfo && (
-        <DecisionModal
-          decisionInfo={decisionInfo}
-          closeModal={() => setDecisionInfo(null)}
-          onSubmit={handleSubmitDecision}
-        />
-      )}
+      <DecisionModal
+        decisionInfo={decisionInfo}
+        closeModal={() => setDecisionInfo(null)}
+        onSubmit={handleSubmitDecision}
+      />
+
       <div className="flex justify-between items-center">
         <div className="w-52">
           <Box>
