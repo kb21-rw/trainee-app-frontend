@@ -44,32 +44,14 @@ const Applicants = () => {
     jwt: cookies.jwt,
     cohortId: selectedCohortId,
   });
-  const [decide, { error: decisionError, isSuccess: decidingIsSuccess }] =
-    useApplicantDecisionMutation();
+  const [
+    decide,
+    { error: decisionError, isSuccess: decidingIsSuccess, reset },
+  ] = useApplicantDecisionMutation();
 
   useEffect(() => {
-    if (cohortOverview && !selectedCohortId) {
-      setSelectedCohortId(cohortOverview._id);
-    }
+    
   }, [cohortOverview, selectedCohortId]);
-
-  useEffect(() => {
-    if (cohortOverviewError || decisionError) {
-      const { message } = getErrorInfo(cohortOverviewError ?? decisionError);
-      handleShowAlert(dispatch, {
-        type: AlertType.Error,
-        message,
-      });
-    }
-
-    if (decidingIsSuccess) {
-      handleShowAlert(dispatch, {
-        type: AlertType.Success,
-        message: `User is successfully ${decisionInfo?.decision.toLowerCase()}`,
-      });
-      setDecisionInfo(null);
-    }
-  }, [cohortOverviewError, decidingIsSuccess, decisionError, dispatch]); // decisionInfo?.decision is not included because it changes causing the useEffect to run on every re-render
 
   const handleChange = (event: SelectChangeEvent) => {
     const newCohortId = event.target.value;
@@ -94,6 +76,29 @@ const Applicants = () => {
       },
     });
   };
+
+  if (cohortOverviewError || decisionError) {
+    const { message } = getErrorInfo(cohortOverviewError ?? decisionError);
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    });
+    setDecisionInfo(null);
+    reset();
+  }
+
+  if (decidingIsSuccess) {
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: `User is successfully ${decisionInfo?.decision.toLowerCase()}`,
+    });
+    setDecisionInfo(null);
+    reset();
+  }
+
+  if (cohortOverview && !selectedCohortId) {
+    setSelectedCohortId(cohortOverview._id);
+  }
 
   return (
     <div className="py-12 space-y-5">
