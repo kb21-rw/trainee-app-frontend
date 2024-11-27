@@ -1,16 +1,16 @@
 import { useForm } from "react-hook-form";
-import ModalLayout from "./ModalLayout";
 import InputField from "../ui/InputField";
 import Button from "../ui/Button";
 import { ButtonVariant, Decision, DecisionInfo } from "../../utils/types";
 import TextArea from "../ui/TextArea";
+import { Modal } from "@mui/material";
 
 export default function DecisionModal({
-  decisionInfo: { decision, email, name, stage },
+  decisionInfo,
   onSubmit,
   closeModal,
 }: {
-  decisionInfo: DecisionInfo;
+  decisionInfo: DecisionInfo | null;
   // eslint-disable-next-line no-unused-vars
   onSubmit: (_data: { feedback: string }) => void;
   closeModal: () => void;
@@ -18,36 +18,46 @@ export default function DecisionModal({
   const { register, handleSubmit } = useForm<{ feedback: string }>();
 
   const modalData =
-    decision === Decision.Rejected
+    decisionInfo?.decision === Decision.Rejected
       ? { variant: ButtonVariant.Danger, title: "Reject user" }
       : { variant: ButtonVariant.Primary, title: "Accept user" };
 
   return (
-    <ModalLayout closePopup={closeModal} title={modalData.title}>
+    <Modal
+      open={Boolean(decisionInfo?.decision)}
+      onClose={closeModal}
+      aria-labelledby={modalData.title}
+      aria-describedby={`${modalData.title.split(" ")[0]} decision`}
+      component="div"
+      className="max-w-md mx-auto flex items-center "
+    >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-6 w-full"
+        className="flex flex-col gap-6 w-full bg-white p-5 rounded-xl"
       >
+        <h1 className="text-center text-3xl font-semibold">
+          {modalData.title}
+        </h1>
         <InputField
           type="text"
           label="Name"
           disabled
           name="name"
-          defaultValue={name}
+          defaultValue={decisionInfo?.name ?? ""}
         />
         <InputField
           type="email"
           label="Email"
           disabled
           name="email"
-          defaultValue={email}
+          defaultValue={decisionInfo?.email ?? ""}
         />
         <InputField
           type="text"
           label="Stage"
           disabled
           name="stage"
-          defaultValue={stage}
+          defaultValue={decisionInfo?.stage ?? ""}
         />
         <div>
           <TextArea
@@ -68,6 +78,6 @@ export default function DecisionModal({
           </Button>
         </div>
       </form>
-    </ModalLayout>
+    </Modal>
   );
 }
