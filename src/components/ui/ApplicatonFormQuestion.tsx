@@ -14,7 +14,7 @@ interface ApplicationDFormQuestionProps {
     _id: string;
     prompt: string;
     required: boolean;
-    response: null | string;
+    response: null | string | string[];
     type: QuestionType;
     options: string[];
   };

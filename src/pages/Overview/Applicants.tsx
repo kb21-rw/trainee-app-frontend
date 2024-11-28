@@ -9,6 +9,7 @@ import {
   Cohort as BaseCohort,
   Cookie,
   DecisionInfo,
+  ResponseModalQuestion,
 } from "../../utils/types";
 import { useState, useEffect } from "react";
 import {
@@ -27,11 +28,13 @@ import { useDispatch } from "react-redux";
 import Loader from "../../components/ui/Loader";
 import NotFound from "../../components/ui/NotFound";
 import DecisionModal from "../../components/modals/DecisionModal";
+import ResponseModal from "../../components/modals/ResponseModal";
 
 interface Cohort extends Pick<BaseCohort, "_id" | "name" | "description"> {}
 
 const Applicants = () => {
   const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null);
+  const [responseInfo, setResponseInfo] = useState<any | null>(null);
   const [cookies] = useCookies([Cookie.jwt]);
   const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt });
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null);
@@ -49,9 +52,7 @@ const Applicants = () => {
     { error: decisionError, isSuccess: decidingIsSuccess, reset },
   ] = useApplicantDecisionMutation();
 
-  useEffect(() => {
-    
-  }, [cohortOverview, selectedCohortId]);
+  useEffect(() => {}, [cohortOverview, selectedCohortId]);
 
   const handleChange = (event: SelectChangeEvent) => {
     const newCohortId = event.target.value;
@@ -60,6 +61,13 @@ const Applicants = () => {
 
   const handleDecision = (userData: DecisionInfo) => {
     setDecisionInfo({ ...userData });
+  };
+
+  const handleUpsertResponse = (data: {
+    userId: string;
+    question: ResponseModalQuestion;
+  }) => {
+    setResponseInfo(data);
   };
 
   const handleSubmitDecision = async ({ feedback }: { feedback: string }) => {
@@ -107,6 +115,12 @@ const Applicants = () => {
         closeModal={() => setDecisionInfo(null)}
         onSubmit={handleSubmitDecision}
       />
+      {responseInfo && (
+        <ResponseModal
+          responseInfo={responseInfo}
+          closeModal={() => setResponseInfo(null)}
+        />
+      )}
 
       <div className="flex justify-between items-center">
         <div className="w-52">
@@ -135,7 +149,7 @@ const Applicants = () => {
           forms={cohortOverview.forms}
           participants={cohortOverview.applicants}
           stages={cohortOverview.applicationForm.stages}
-          action={handleDecision}
+          actions={{ handleDecision, handleUpsertResponse }}
         />
       )}
       {!isFetching && !cohortOverview && (

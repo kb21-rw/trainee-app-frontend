@@ -94,6 +94,10 @@ export interface UserResponseQuestion {
   required: boolean;
 }
 
+export interface ResponseModalQuestion extends UserResponseQuestion {
+  form: string;
+}
+
 export interface ApplicationFormResponse {
   questionId: string;
   answer: string[];

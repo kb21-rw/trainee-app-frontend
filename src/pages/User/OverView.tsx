@@ -17,7 +17,6 @@ import {
 
 import { useGetOverviewQuery } from "../../features/user/backendApi";
 import Loader from "../../components/ui/Loader";
-import ResponseModal from "../../components/modals/ResponseModal";
 import { useCookies } from "react-cookie";
 const OverView = () => {
   const [cookies] = useCookies([Cookie.jwt]);
@@ -25,8 +24,8 @@ const OverView = () => {
     jwt: cookies.jwt,
   });
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalData, setModalData] = useState({
+  const [, setIsModalOpen] = useState(false);
+  const [, setModalData] = useState({
     formTitle: "",
     question: "",
     questionId: "",
@@ -71,7 +70,7 @@ const OverView = () => {
 
           const traineeInfo = traineeMap.get(response.user._id);
           traineeInfo.responses[`${form._id}-${question._id}`] =
-            response.text ?? "No response";
+            response ?? "No response";
         }
       });
     });
@@ -169,24 +168,6 @@ const OverView = () => {
           ))}
         </TableBody>
       </Table>
-      {isModalOpen && (
-        <ResponseModal
-          closePopup={() => setIsModalOpen(false)}
-          title={modalData.formTitle}
-          question={modalData.question}
-          questionId={modalData.questionId}
-          userId={modalData.userId}
-          response={modalData.response}
-          includeButton={false}
-          disabled={true}
-          questionType={modalData.questionType}
-          options={modalData.options}
-          checkedOption={modalData.checkedOption}
-          handleCheckChange={(value: string) =>
-            setModalData({ ...modalData, checkedOption: value })
-          }
-        />
-      )}
     </div>
   );
 };
