@@ -63,6 +63,10 @@ const Applicants = () => {
     setDecisionInfo({ ...userData });
   };
 
+  const handleCloseModal = () => {
+    setTimeout(() => setResponseInfo(null), 0);
+  };
+
   const handleUpsertResponse = (data: {
     userId: string;
     question: ResponseModalQuestion;
@@ -118,7 +122,7 @@ const Applicants = () => {
       {responseInfo && (
         <ResponseModal
           responseInfo={responseInfo}
-          closeModal={() => setResponseInfo(null)}
+          closeModal={handleCloseModal}
         />
       )}
 
