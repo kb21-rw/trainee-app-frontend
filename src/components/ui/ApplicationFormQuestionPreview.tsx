@@ -13,7 +13,7 @@ interface ApplicationDFormQuestionProps {
   index: number;
 }
 
-export default function ApplicationFormQuestion({
+export default function ApplicationFormQuestionPreview({
   question,
   index,
 }: ApplicationDFormQuestionProps) {
