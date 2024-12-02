@@ -4,6 +4,7 @@ import Button from "../ui/Button";
 import { ButtonVariant, Decision, DecisionInfo } from "../../utils/types";
 import TextArea from "../ui/TextArea";
 import { Modal } from "@mui/material";
+import { useEffect } from "react";
 
 export default function DecisionModal({
   decisionInfo,
@@ -15,12 +16,20 @@ export default function DecisionModal({
   onSubmit: (_data: { feedback: string }) => void;
   closeModal: () => void;
 }) {
-  const { register, handleSubmit } = useForm<{ feedback: string }>();
+  const { register, handleSubmit, resetField } = useForm<{
+    feedback: string;
+  }>();
 
   const modalData =
     decisionInfo?.decision === Decision.Rejected
       ? { variant: ButtonVariant.Danger, title: "Reject user" }
       : { variant: ButtonVariant.Primary, title: "Accept user" };
+
+  useEffect(() => {
+    if (!decisionInfo) {
+      resetField("feedback");
+    }
+  }, [decisionInfo, resetField]);
 
   return (
     <Modal
