@@ -1,66 +1,43 @@
-import { useEffect, useState } from "react";
-import ModalLayout from "./ModalLayout";
 import Button from "../ui/Button";
 import { useForm } from "react-hook-form";
-import TextArea from "../ui/TextArea";
+import { Modal } from "@mui/material";
+import ApplicationFormQuestion from "../ui/ApplicatonFormQuestion";
+import { AlertType, Cookie, ResponseModalQuestion } from "../../utils/types";
 import { useAddResponseMutation } from "../../features/user/backendApi";
-import Loader from "../ui/Loader";
-import RadioOption from "../ui/RadioOption";
-import { getErrorInfo } from "../../utils/helper";
-import { AlertType, Cookie, QuestionType } from "../../utils/types";
-import { handleShowAlert } from "../../utils/handleShowAlert";
 import { useDispatch } from "react-redux";
+import { getErrorInfo } from "../../utils/helper";
+import { handleShowAlert } from "../../utils/handleShowAlert";
+import Loader from "../ui/Loader";
 import { useCookies } from "react-cookie";
 
 const ResponseModal = ({
-  closePopup,
-  title,
-  question,
-  questionId,
-  userId,
-  response,
-  includeButton,
-  disabled,
-  questionType,
-  options,
-  checkedOption,
-  handleCheckChange,
+  responseInfo: { userId, question },
+  closeModal,
 }: {
-  closePopup: () => void;
-  title: string;
-  question: string;
-  questionId: string;
-  userId: string;
-  response?: string;
-  includeButton?: boolean;
-  disabled?: boolean;
-  questionType: string;
-  options: string[];
-  checkedOption: string;
-  // eslint-disable-next-line no-unused-vars
-  handleCheckChange: (_value: string) => void;
+  responseInfo: { userId: string; question: ResponseModalQuestion };
+  closeModal: () => void;
 }) => {
   const [cookies] = useCookies([Cookie.jwt]);
-  const { register, handleSubmit } = useForm();
+  const { handleSubmit, control } = useForm();
   const [addResponse, { isLoading, error, isSuccess }] =
     useAddResponseMutation();
   const dispatch = useDispatch();
-  const [localCheckedOption, setLocalCheckedOption] = useState(checkedOption);
-  const handleRadioChange = (value: string) => {
-    handleCheckChange(value);
+
+  const onSubmit = async (response: {
+    [questionId: string]: string | string[];
+  }) => {
+    const responseElements = Object.entries(response);
+    await addResponse({
+      jwt: cookies.jwt,
+      body: {
+        userId,
+        value: responseElements[0][1],
+        questionId: responseElements[0][0],
+      },
+    });
   };
 
-  const onSubmit = async (data: any) => {
-    const responseBody = {
-      ...data,
-      ...(questionType === QuestionType.Text && { text: localCheckedOption }),
-    };
-    await addResponse({ jwt: cookies.jwt, body: responseBody, questionId, userId });
-  };
-
-  useEffect(() => {
-    setLocalCheckedOption(checkedOption);
-  }, [checkedOption]);
+  const includeButton = true;
 
   if (error) {
     const { message } = getErrorInfo(error);
@@ -68,6 +45,8 @@ const ResponseModal = ({
       type: AlertType.Error,
       message,
     });
+
+    closeModal();
   }
 
   if (isSuccess) {
@@ -75,56 +54,47 @@ const ResponseModal = ({
       type: AlertType.Success,
       message: "Response was added successfully",
     });
+
+    closeModal();
   }
 
   return (
-    <ModalLayout closePopup={closePopup} title={title}>
-      {isLoading && (
-        <div className="flex items-center justify-center">
-          <Loader />
-        </div>
-      )}
+    <Modal
+      open={Boolean(userId)}
+      onClose={closeModal}
+      aria-labelledby="Title"
+      aria-describedby="description"
+      component="div"
+      className="max-w-xl mx-auto flex items-center "
+    >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-12 w-full"
+        className="bg-white flex flex-col gap-8 w-full px-8 py-6 rounded-xl"
       >
-        {questionType === "text" && (
-          <TextArea
-            label={question}
-            placeholder={response || "No response"}
-            name="text"
-            register={register}
-            defaultValue={response}
-            options={{
-              required: { value: true, message: "response is required" },
-              maxLength: {
-                message: "Add your response here",
-              },
-            }}
-            disabled={disabled}
-          />
-        )}
-        {questionType === QuestionType.SingleSelect && (
-          <div>
-            <h1 className="capitalize text-xl pb-5">{question}:</h1>
-            {options.map((option, index) => (
-              <RadioOption
-                key={option}
-                option={option}
-                id={`option-${index}`}
-                value={option}
-                checked={option === localCheckedOption}
-                onRadioChange={handleRadioChange}
-                disabled={disabled}
-              />
-            ))}
-          </div>
-        )}
-        <div className="flex justify-end">
-          {includeButton && <Button type="submit">Save Response</Button>}
+        <h1 className="text-2xl font-semibold">JavaScript Gate</h1>
+        <div>
+          <label
+            htmlFor={question._id}
+            className="text-lg inline-block mb-3 font-"
+          >
+            {question.prompt}
+          </label>
+          <ApplicationFormQuestion question={question} control={control} />
+        </div>
+        <div className="flex justify-around">
+          {
+            <Button outlined onClick={closeModal}>
+              Cancel
+            </Button>
+          }
+          {includeButton && (
+            <Button type="submit">
+              {isLoading ? <Loader /> : "Save Response"}
+            </Button>
+          )}
         </div>
       </form>
-    </ModalLayout>
+    </Modal>
   );
 };
 

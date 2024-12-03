@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   DataGrid,
   GridColDef,
   GridEventListener,
   GridRowsProp,
+  useGridApiRef,
 } from "@mui/x-data-grid";
 import {
   Form as BaseForm,
@@ -17,6 +18,7 @@ import {
   DecisionInfo,
   Decision,
   ResponseModalQuestion,
+  ResponseCell,
 } from "../../utils/types";
 import Button from "./Button";
 import { GridStateColDef } from "@mui/x-data-grid/internals";
@@ -32,6 +34,7 @@ interface DataGridProps {
   forms: Form[];
   participants: CohortParticipant[];
   stages: Stage[];
+  updates: ResponseCell[] | null;
   actions: {
     // eslint-disable-next-line no-unused-vars
     handleDecision?: (_row: DecisionInfo) => void;
@@ -44,11 +47,14 @@ const OverViewTable: React.FC<DataGridProps> = ({
   forms,
   participants,
   stages,
+  updates,
   actions: {
     handleDecision = () => undefined,
     handleUpsertResponse = () => undefined,
   },
 }) => {
+  const apiRef = useGridApiRef();
+
   const questionColumns: GridColDef[] = forms.flatMap((form) =>
     form.questions.map(({ _id, prompt, options, required, type }) => ({
       field: _id,
@@ -181,6 +187,12 @@ const OverViewTable: React.FC<DataGridProps> = ({
       question: { ...customColDef.question, response },
     });
   };
+
+  useEffect(() => {
+    if (updates) {
+      apiRef.current.updateRows(updates);
+    }
+  }, [updates, apiRef]);
 
   return (
     <DataGrid
