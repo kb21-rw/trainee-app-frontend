@@ -1,7 +1,7 @@
 import React from "react";
 import {
   useEditTraineeMutation,
-  useGetAllCoachesQuery,
+  useGetCoachesQuery,
 } from "../../features/user/backendApi";
 import { useForm } from "react-hook-form";
 import ModalLayout from "./ModalLayout";
@@ -27,7 +27,7 @@ const EditTraineeModal = ({
   const [editTrainee, { isLoading, error, isSuccess: isEditTraineeSuccess }] =
     useEditTraineeMutation();
   const query = "?coachesPerPage=100";
-  const allCoaches = useGetAllCoachesQuery(
+  const allCoaches = useGetCoachesQuery(
     { jwt, query },
     { skip: role !== UserRole.Admin }
   );

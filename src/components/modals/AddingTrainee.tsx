@@ -5,7 +5,7 @@ import Button from "../ui/Button";
 import { useForm } from "react-hook-form";
 import {
   useCreateTraineeMutation,
-  useGetAllCoachesQuery,
+  useGetCoachesQuery,
 } from "../../features/user/backendApi";
 import Loader from "../ui/Loader";
 import { AlertType, UserRole } from "../../utils/types";
@@ -22,7 +22,7 @@ const AddingTraineeModal = ({
 }) => {
   const [createTrainee, { isLoading, error, isSuccess }] =
     useCreateTraineeMutation();
-  const coachesData = useGetAllCoachesQuery({ jwt, query: "" });
+  const coachesData = useGetCoachesQuery({ jwt, query: "" });
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
 

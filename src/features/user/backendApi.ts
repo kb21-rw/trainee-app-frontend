@@ -49,11 +49,11 @@ export const backendApi: any = createApi({
       providesTags: ["myTrainees"],
     }),
 
-    getAllCoaches: builder.query({
+    getCoaches: builder.query({
       query: (args) => {
-        const { jwt, query } = args;
+        const { jwt, cohortId } = args;
         return {
-          url: `/coaches/all${query}`,
+          url: `/coaches${cohortId ? "?cohortId=" + cohortId : ""}`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
@@ -481,7 +481,7 @@ export const backendApi: any = createApi({
 
 export const {
   useGetAllTraineesQuery,
-  useGetAllCoachesQuery,
+  useGetCoachesQuery,
   useCreateCoachMutation,
   useCreateTraineeMutation,
   useLoginMutation,

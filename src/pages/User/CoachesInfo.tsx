@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useGetAllCoachesQuery } from "../../features/user/backendApi";
+import { useGetCoachesQuery } from "../../features/user/backendApi";
 import { useDeleteCoachMutation } from "../../features/user/backendApi";
 import AddingCoachModal from "../../components/modals/AddingCoach";
 import UserTable from "../../components/ui/UserTable";
@@ -24,7 +24,7 @@ const CoachesInfo = () => {
   const [cookies] = useCookies([Cookie.jwt]);
   const loggedInUser = useSelector((state: RootState) => state.user);
   const [query, setQuery] = useState("");
-  const { data, isFetching: isGetAllCoachesLoading } = useGetAllCoachesQuery({
+  const { data, isFetching: isGetAllCoachesLoading } = useGetCoachesQuery({
     jwt: cookies.jwt,
     query,
   });
