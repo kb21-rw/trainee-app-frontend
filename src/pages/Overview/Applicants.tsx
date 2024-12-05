@@ -2,6 +2,7 @@ import {
   useGetApplicantsQuery,
   useGetAllCohortsQuery,
   useApplicantDecisionMutation,
+  useGetCoachesQuery,
 } from "../../features/user/backendApi";
 import {
   AlertType,
@@ -10,7 +11,7 @@ import {
   Cookie,
   DecisionInfo,
 } from "../../utils/types";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Box,
   FormControl,
@@ -39,19 +40,28 @@ const Applicants = () => {
   const {
     data: cohortOverview,
     error: cohortOverviewError,
-    isFetching,
+    isFetching: cohortOverviewIsFetching,
   } = useGetApplicantsQuery({
     jwt: cookies.jwt,
     cohortId: selectedCohortId,
   });
+  const {
+    data: coaches,
+    error: coachesError,
+    isFetching: coachesIsFetching,
+  } = useGetCoachesQuery({
+    jwt: cookies.jwt,
+    cohortId: selectedCohortId,
+  });
+
   const [
     decide,
-    { error: decisionError, isSuccess: decidingIsSuccess, reset },
+    {
+      error: decisionError,
+      isSuccess: decidingIsSuccess,
+      reset: applicantDecisionReset,
+    },
   ] = useApplicantDecisionMutation();
-
-  useEffect(() => {
-    
-  }, [cohortOverview, selectedCohortId]);
 
   const handleChange = (event: SelectChangeEvent) => {
     const newCohortId = event.target.value;
@@ -77,14 +87,16 @@ const Applicants = () => {
     });
   };
 
-  if (cohortOverviewError || decisionError) {
-    const { message } = getErrorInfo(cohortOverviewError ?? decisionError);
+  if (cohortOverviewError || decisionError || coachesError) {
+    const { message } = getErrorInfo(
+      cohortOverviewError ?? decisionError ?? coachesError,
+    );
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
     });
     setDecisionInfo(null);
-    reset();
+    applicantDecisionReset();
   }
 
   if (decidingIsSuccess) {
@@ -93,7 +105,7 @@ const Applicants = () => {
       message: `User is successfully ${decisionInfo?.decision.toLowerCase()}`,
     });
     setDecisionInfo(null);
-    reset();
+    applicantDecisionReset();
   }
 
   if (cohortOverview && !selectedCohortId) {
@@ -129,16 +141,18 @@ const Applicants = () => {
         </div>
         <Button size={ButtonSize.Medium}>Add Applicant</Button>
       </div>
-      {isFetching && <Loader />}
+
+      {cohortOverviewIsFetching | coachesIsFetching && <Loader />}
       {cohortOverview && (
         <OverViewTable
           forms={cohortOverview.forms}
           participants={cohortOverview.applicants}
+          coaches={coaches}
           stages={cohortOverview.applicationForm.stages}
           action={handleDecision}
         />
       )}
-      {!isFetching && !cohortOverview && (
+      {!cohortOverviewIsFetching && !cohortOverview && (
         <NotFound entity="Cohort" type="NoData" />
       )}
     </div>

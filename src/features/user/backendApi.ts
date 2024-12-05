@@ -123,6 +123,21 @@ export const backendApi: any = createApi({
       invalidatesTags: ["trainees", "myTrainees"],
     }),
 
+    updateParticipant: builder.mutation({
+      query: (args) => {
+        const { jwt, body, participantId } = args;
+        return {
+          url: `/participants/${participantId}`,
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+          body: { ...body },
+        };
+      },
+      invalidatesTags: [],
+    }),
+
     deleteCoach: builder.mutation({
       query: (args) => {
         const { jwt, id } = args;
@@ -495,6 +510,7 @@ export const {
   useGetTraineesForCoachQuery,
   useEditCoachMutation,
   useEditTraineeMutation,
+  useUpdateParticipantMutation,
   useGetAllFormsQuery,
   useDeleteFormMutation,
   useGetFormQuery,

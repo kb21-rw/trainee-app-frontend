@@ -1,5 +1,10 @@
 import React from "react";
-import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridCellEditStopReasons,
+  GridColDef,
+  GridRowsProp,
+} from "@mui/x-data-grid";
 import {
   Form as BaseForm,
   Response as BaseResponse,
@@ -25,6 +30,7 @@ interface DataGridProps {
   forms: Form[];
   participants: CohortParticipant[];
   stages: Stage[];
+  coaches: User[];
   // eslint-disable-next-line no-unused-vars
   action: (_row: DecisionInfo) => void;
 }
@@ -32,6 +38,7 @@ interface DataGridProps {
 const OverViewTable: React.FC<DataGridProps> = ({
   forms,
   participants,
+  coaches,
   stages,
   action,
 }) => {
@@ -50,7 +57,16 @@ const OverViewTable: React.FC<DataGridProps> = ({
       field: "coach",
       headerName: "Coach",
       width: 200,
-      valueGetter: (value) => value ?? "No coach",
+      editable: true,
+      type: "singleSelect",
+      valueOptions: [
+        { value: "", label: "No coach" },
+        ...coaches.map((coach) => ({ value: coach._id, label: coach.name })),
+      ],
+      renderCell: (params) => {
+        const coach = coaches.find((coach) => coach._id === params.value);
+        return coach ? coach.name : "No coach";
+      },
     },
     { field: "stage", headerName: "Stage", width: 200 },
     ...questionColumns,
@@ -136,7 +152,7 @@ const OverViewTable: React.FC<DataGridProps> = ({
       id: user.user._id,
       name: user.user.name,
       email: user.user.email,
-      coach: user.user.coach?.name,
+      coach: user.user.coach?._id ?? "",
       stage: stage.name,
       ...user.responses,
     };
@@ -158,6 +174,16 @@ const OverViewTable: React.FC<DataGridProps> = ({
       columnGroupingModel={columnGroupingModel}
       hideFooter={true}
       disableRowSelectionOnClick
+      onCellEditStop={(params, event) => {
+        if (params.reason === GridCellEditStopReasons.cellFocusOut) {
+          event.defaultMuiPrevented = true;
+        }
+      }}
+      processRowUpdate={(updatedRow) => {
+        console.log(updatedRow);
+        return updatedRow;
+      }}
+      onProcessRowUpdateError={(error) => console.log(error)}
       sx={{
         "& .MuiDataGrid-cell": {
           border: "1px solid #000",
