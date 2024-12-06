@@ -3,6 +3,7 @@ import {
   useGetAllCohortsQuery,
   useApplicantDecisionMutation,
   useGetCoachesQuery,
+  useUpdateParticipantMutation,
 } from "../../features/user/backendApi";
 import {
   AlertType,
@@ -34,6 +35,7 @@ import ResponseModal from "../../components/modals/ResponseModal";
 interface Cohort extends Pick<BaseCohort, "_id" | "name" | "description"> {}
 
 const Applicants = () => {
+  console.log("++++++++++++=")
   const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null);
   const [responseInfo, setResponseInfo] = useState<any | null>(null);
   const [cookies] = useCookies([Cookie.jwt]);
@@ -65,6 +67,11 @@ const Applicants = () => {
       reset: applicantDecisionReset,
     },
   ] = useApplicantDecisionMutation();
+
+  const [
+    updateParticipant,
+    { isSuccess: updateParticipantIsSuccess, error: updateParticipantError },
+  ] = useUpdateParticipantMutation();
 
   const handleChange = (event: SelectChangeEvent) => {
     const newCohortId = event.target.value;
@@ -101,16 +108,40 @@ const Applicants = () => {
     });
   };
 
-  if (cohortOverviewError || decisionError || coachesError) {
+  const handleCoachChange = ({
+    coach,
+    participantId,
+  }: {
+    coach: string;
+    participantId: string;
+  }) => {
+    updateParticipant({
+      participantId,
+      body: { coach },
+      jwt: cookies.jwt,
+    });
+  };
+
+  if (
+    cohortOverviewError ||
+    decisionError ||
+    coachesError ||
+    updateParticipantError
+  ) {
     const { message } = getErrorInfo(
-      cohortOverviewError ?? decisionError ?? coachesError,
+      cohortOverviewError ??
+        decisionError ??
+        coachesError ??
+        updateParticipantError,
     );
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
     });
-    setDecisionInfo(null);
-    applicantDecisionReset();
+    if (decisionError) {
+      setDecisionInfo(null);
+      applicantDecisionReset();
+    }
   }
 
   if (decidingIsSuccess) {
@@ -120,6 +151,13 @@ const Applicants = () => {
     });
     setDecisionInfo(null);
     applicantDecisionReset();
+  }
+
+  if (updateParticipantIsSuccess) {
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: "Coach is successfully changed",
+    });
   }
 
   if (cohortOverview && !selectedCohortId) {
@@ -162,7 +200,7 @@ const Applicants = () => {
         <Button size={ButtonSize.Medium}>Add Applicant</Button>
       </div>
 
-      {cohortOverviewIsFetching | coachesIsFetching && <Loader />}
+      {cohortOverviewIsFetching || coachesIsFetching && <Loader />}
       {cohortOverview && (
         <OverViewTable
           forms={cohortOverview.forms}
@@ -170,7 +208,7 @@ const Applicants = () => {
           coaches={coaches}
           updates={[]}
           stages={cohortOverview.applicationForm.stages}
-          actions={{ handleDecision, handleUpsertResponse }}
+          actions={{ handleDecision, handleUpsertResponse, handleCoachChange }}
         />
       )}
       {!cohortOverviewIsFetching && !cohortOverview && (

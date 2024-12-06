@@ -42,6 +42,15 @@ interface DataGridProps {
     handleDecision?: (_row: DecisionInfo) => void;
     // eslint-disable-next-line no-unused-vars
     handleUpsertResponse?: (_row: any) => void;
+    handleCoachChange?: ({
+      // eslint-disable-next-line no-unused-vars
+      coach,
+      // eslint-disable-next-line no-unused-vars
+      participantId,
+    }: {
+      coach: string;
+      participantId: string;
+    }) => void;
   };
 }
 
@@ -54,6 +63,7 @@ const OverViewTable: React.FC<DataGridProps> = ({
   actions: {
     handleDecision = () => undefined,
     handleUpsertResponse = () => undefined,
+    handleCoachChange = () => undefined,
   },
 }) => {
   const apiRef = useGridApiRef();
@@ -202,7 +212,7 @@ const OverViewTable: React.FC<DataGridProps> = ({
 
   useEffect(() => {
     if (updates) {
-      apiRef.current.updateRows(updates);
+      // apiRef.current.updateRows(updates);
     }
   }, [updates, apiRef]);
 
@@ -220,7 +230,10 @@ const OverViewTable: React.FC<DataGridProps> = ({
         }
       }}
       processRowUpdate={(updatedRow) => {
-        console.log(updatedRow);
+        handleCoachChange({
+          coach: updatedRow.coach,
+          participantId: updatedRow.id,
+        });
         return updatedRow;
       }}
       onProcessRowUpdateError={(error) => console.log(error)}
