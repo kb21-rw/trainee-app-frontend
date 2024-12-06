@@ -388,13 +388,13 @@ export const backendApi: any = createApi({
     }),
 
     addResponse: builder.mutation({
-      query: ({ jwt, body, userId, questionId }) => ({
-        url: `/responses/${questionId}?userId=${userId}`,
+      query: ({ jwt, body }) => ({
+        url: `/responses`,
         method: "PUT",
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
-        body: { ...body },
+        body,
       }),
       invalidatesTags: ["overview", "response"],
     }),
@@ -462,7 +462,7 @@ export const backendApi: any = createApi({
           },
         };
       },
-      providesTags: ["applicants"],
+      providesTags: ["overview"],
     }),
     applicantDecision: builder.mutation({
       query: (args) => {

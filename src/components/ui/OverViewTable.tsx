@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   DataGrid,
   GridCellEditStopReasons,
   GridColDef,
+  GridEventListener,
   GridRowsProp,
+  useGridApiRef,
 } from "@mui/x-data-grid";
 import {
   Form as BaseForm,
@@ -16,8 +18,11 @@ import {
   ButtonVariant,
   DecisionInfo,
   Decision,
+  ResponseModalQuestion,
+  ResponseCell,
 } from "../../utils/types";
 import Button from "./Button";
+import { GridStateColDef } from "@mui/x-data-grid/internals";
 
 interface Response extends BaseResponse {
   questionId: string;
@@ -31,8 +36,13 @@ interface DataGridProps {
   participants: CohortParticipant[];
   stages: Stage[];
   coaches: User[];
-  // eslint-disable-next-line no-unused-vars
-  action: (_row: DecisionInfo) => void;
+  updates: ResponseCell[] | null;
+  actions: {
+    // eslint-disable-next-line no-unused-vars
+    handleDecision?: (_row: DecisionInfo) => void;
+    // eslint-disable-next-line no-unused-vars
+    handleUpsertResponse?: (_row: any) => void;
+  };
 }
 
 const OverViewTable: React.FC<DataGridProps> = ({
@@ -40,14 +50,21 @@ const OverViewTable: React.FC<DataGridProps> = ({
   participants,
   coaches,
   stages,
-  action,
+  updates,
+  actions: {
+    handleDecision = () => undefined,
+    handleUpsertResponse = () => undefined,
+  },
 }) => {
-  const questionColumns = forms.flatMap((form) =>
-    form.questions.map((question) => ({
-      field: question._id,
-      headerName: question.prompt,
+  const apiRef = useGridApiRef();
+
+  const questionColumns: GridColDef[] = forms.flatMap((form) =>
+    form.questions.map(({ _id, prompt, options, required, type }) => ({
+      field: _id,
+      headerName: prompt,
       width: 250,
-      valueGetter: (value: never) => value ?? "No response",
+      question: { _id, prompt, options, required, type, form: form.name },
+      valueFormatter: (value) => value ?? "No response",
     })),
   );
 
@@ -81,7 +98,7 @@ const OverViewTable: React.FC<DataGridProps> = ({
             variant={ButtonVariant.Danger}
             size={ButtonSize.Small}
             onClick={() =>
-              action({
+              handleDecision({
                 userId: id,
                 decision: Decision.Rejected,
                 email,
@@ -97,7 +114,7 @@ const OverViewTable: React.FC<DataGridProps> = ({
           <Button
             size={ButtonSize.Small}
             onClick={() =>
-              action({
+              handleDecision({
                 userId: id,
                 decision: Decision.Accepted,
                 email,
@@ -167,12 +184,35 @@ const OverViewTable: React.FC<DataGridProps> = ({
     })),
   }));
 
+  const handleCellClick: GridEventListener<"cellClick"> = ({
+    id,
+    value: response,
+    colDef,
+    field,
+  }) => {
+    if (field.length !== 24) return; // not a question
+    const customColDef = colDef as GridStateColDef & {
+      question: ResponseModalQuestion;
+    };
+    handleUpsertResponse({
+      userId: id,
+      question: { ...customColDef.question, response },
+    });
+  };
+
+  useEffect(() => {
+    if (updates) {
+      apiRef.current.updateRows(updates);
+    }
+  }, [updates, apiRef]);
+
   return (
     <DataGrid
       rows={rows}
       columns={formattedColumns}
       columnGroupingModel={columnGroupingModel}
       hideFooter={true}
+      onCellClick={handleCellClick}
       disableRowSelectionOnClick
       onCellEditStop={(params, event) => {
         if (params.reason === GridCellEditStopReasons.cellFocusOut) {
