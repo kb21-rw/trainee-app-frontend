@@ -12,7 +12,6 @@ import useLogout from "../../utils/hooks/useLogout";
 
 export default function GlobalLayout() {
   const [cookies] = useCookies([Cookie.jwt]);
-  const alert = useSelector((state: RootState) => state.alert);
   const loggedInUser = useSelector((state: RootState) => state.user);
   const {
     data: user,
@@ -46,7 +45,7 @@ export default function GlobalLayout() {
 
   return (
     <main className="max-h-screen font-lato max-w-[1920px] md:mx-auto overflow-x-hidden h-screen flex flex-col">
-      {alert.isVisible && <Alert />}
+      <Alert />
       <Outlet />
     </main>
   );
