@@ -49,7 +49,7 @@ interface DataGridProps {
       participantId,
     }: {
       coach: string;
-      participantId: string;
+      participantId: null | string;
     }) => void;
   };
 }
@@ -231,7 +231,7 @@ const OverViewTable: React.FC<DataGridProps> = ({
       }}
       processRowUpdate={(updatedRow) => {
         handleCoachChange({
-          coach: updatedRow.coach,
+          coach: updatedRow.coach ? updatedRow.coach : null,
           participantId: updatedRow.id,
         });
         return updatedRow;

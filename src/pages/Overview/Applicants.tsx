@@ -112,7 +112,7 @@ const Applicants = () => {
     participantId,
   }: {
     coach: string;
-    participantId: string;
+    participantId: null |string;
   }) => {
     updateParticipant({
       participantId,
