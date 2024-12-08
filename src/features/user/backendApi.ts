@@ -17,7 +17,7 @@ export const backendApi: any = createApi({
     "applicantForm",
     "applicantResponse",
     "cohorts",
-    "applicants",
+    "applicants overview",
     "token",
   ],
   endpoints: (builder) => ({
@@ -135,7 +135,7 @@ export const backendApi: any = createApi({
           body: { ...body },
         };
       },
-      invalidatesTags: [],
+      invalidatesTags: ["applicants overview"],
     }),
 
     deleteCoach: builder.mutation({
@@ -462,7 +462,7 @@ export const backendApi: any = createApi({
           },
         };
       },
-      providesTags: ["overview"],
+      providesTags: ["applicants overview"],
     }),
     applicantDecision: builder.mutation({
       query: (args) => {
@@ -476,7 +476,7 @@ export const backendApi: any = createApi({
           body: { ...body },
         };
       },
-      invalidatesTags: ["applicants"],
+      invalidatesTags: ["applicants overview"],
     }),
     getAllCohorts: builder.query({
       query: (args) => {

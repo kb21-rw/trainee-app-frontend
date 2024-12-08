@@ -35,7 +35,6 @@ import ResponseModal from "../../components/modals/ResponseModal";
 interface Cohort extends Pick<BaseCohort, "_id" | "name" | "description"> {}
 
 const Applicants = () => {
-  console.log("++++++++++++=")
   const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null);
   const [responseInfo, setResponseInfo] = useState<any | null>(null);
   const [cookies] = useCookies([Cookie.jwt]);
@@ -200,7 +199,7 @@ const Applicants = () => {
         <Button size={ButtonSize.Medium}>Add Applicant</Button>
       </div>
 
-      {cohortOverviewIsFetching || coachesIsFetching && <Loader />}
+      {cohortOverviewIsFetching || (coachesIsFetching && <Loader />)}
       {cohortOverview && (
         <OverViewTable
           forms={cohortOverview.forms}
