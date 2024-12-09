@@ -246,8 +246,8 @@ const OverViewTable: React.FC<DataGridProps> = ({
           event.defaultMuiPrevented = true;
         }
       }}
-      onCellEditStart={(params, event) => {
-        if (params.row.rejected) {
+      onCellEditStart={({ row: { rejected, passed } }, event) => {
+        if (rejected || passed) {
           event.defaultMuiPrevented = true;
         }
       }}
@@ -260,7 +260,9 @@ const OverViewTable: React.FC<DataGridProps> = ({
       }}
       onProcessRowUpdateError={(error) => console.log(error)}
       getRowClassName={({ row: { rejected, passed } }) =>
-        `${rejected ? "rejected" : "pending"} ${passed ? "passed" : ""}`
+        `${rejected ? "rejected" : ""} ${passed ? "passed" : ""} ${
+          !rejected && !passed ? "pending" : ""
+        }`
       }
       sx={{
         "& .MuiDataGrid-cell": {
