@@ -112,7 +112,7 @@ const Applicants = () => {
     participantId,
   }: {
     coach: string;
-    participantId: null |string;
+    participantId: null | string;
   }) => {
     updateParticipant({
       participantId,
@@ -199,7 +199,7 @@ const Applicants = () => {
         <Button size={ButtonSize.Medium}>Add Applicant</Button>
       </div>
 
-      {cohortOverviewIsFetching || (coachesIsFetching && <Loader />)}
+      {(cohortOverviewIsFetching || coachesIsFetching) && <Loader />}
       {cohortOverview && (
         <OverViewTable
           forms={cohortOverview.forms}

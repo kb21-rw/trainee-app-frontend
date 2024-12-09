@@ -101,44 +101,51 @@ const OverViewTable: React.FC<DataGridProps> = ({
       field: "actions",
       headerName: "Actions",
       width: 300,
+      align: "center",
 
-      renderCell: ({ row: { id, email, name, stage } }) => (
-        <div className="flex justify-around content-center align-middle py-2 h-full">
-          <Button
-            variant={ButtonVariant.Danger}
-            size={ButtonSize.Small}
-            onClick={() =>
-              handleDecision({
-                userId: id,
-                decision: Decision.Rejected,
-                email,
-                name,
-                stage,
-              })
-            }
-          >
-            <span className="h-full flex justify-center items-center">
-              Reject
-            </span>
-          </Button>
-          <Button
-            size={ButtonSize.Small}
-            onClick={() =>
-              handleDecision({
-                userId: id,
-                decision: Decision.Accepted,
-                email,
-                name,
-                stage,
-              })
-            }
-          >
-            <span className="h-full  flex justify-center items-center">
-              Accept
-            </span>
-          </Button>
-        </div>
-      ),
+      renderCell: ({ row: { id, email, name, stage, rejected, passed } }) => {
+        if (rejected) return "Rejected";
+
+        if (passed) return "Passed";
+
+        return (
+          <div className="flex justify-around content-center align-middle py-2 h-full">
+            <Button
+              variant={ButtonVariant.Danger}
+              size={ButtonSize.Small}
+              onClick={() =>
+                handleDecision({
+                  userId: id,
+                  decision: Decision.Rejected,
+                  email,
+                  name,
+                  stage,
+                })
+              }
+            >
+              <span className="h-full flex justify-center items-center">
+                Reject
+              </span>
+            </Button>
+            <Button
+              size={ButtonSize.Small}
+              onClick={() =>
+                handleDecision({
+                  userId: id,
+                  decision: Decision.Accepted,
+                  email,
+                  name,
+                  stage,
+                })
+              }
+            >
+              <span className="h-full  flex justify-center items-center">
+                Accept
+              </span>
+            </Button>
+          </div>
+        );
+      },
     },
   ];
 
@@ -175,12 +182,19 @@ const OverViewTable: React.FC<DataGridProps> = ({
       (stage) => stage.id === userStage.droppedStage.id,
     )!;
 
+    const userPassed = userStage.passedStages.includes(
+      stages[stages.length - 1].id,
+    );
+
     return {
       id: user.user._id,
       name: user.user.name,
       email: user.user.email,
       coach: user.user.coach?._id ?? "",
       stage: stage.name,
+      rejected: userStage.droppedStage.isConfirmed,
+      passed: userPassed,
+      actions: "",
       ...user.responses,
     };
   });
@@ -199,7 +213,10 @@ const OverViewTable: React.FC<DataGridProps> = ({
     value: response,
     colDef,
     field,
+    row: { rejected, passed },
   }) => {
+    if (rejected || passed) return;
+
     if (field.length !== 24) return; // not a question
     const customColDef = colDef as GridStateColDef & {
       question: ResponseModalQuestion;
@@ -229,6 +246,11 @@ const OverViewTable: React.FC<DataGridProps> = ({
           event.defaultMuiPrevented = true;
         }
       }}
+      onCellEditStart={(params, event) => {
+        if (params.row.rejected) {
+          event.defaultMuiPrevented = true;
+        }
+      }}
       processRowUpdate={(updatedRow) => {
         handleCoachChange({
           coach: updatedRow.coach ? updatedRow.coach : null,
@@ -237,9 +259,15 @@ const OverViewTable: React.FC<DataGridProps> = ({
         return updatedRow;
       }}
       onProcessRowUpdateError={(error) => console.log(error)}
+      getRowClassName={({ row: { rejected, passed } }) =>
+        `${rejected ? "rejected" : "pending"} ${passed ? "passed" : ""}`
+      }
       sx={{
         "& .MuiDataGrid-cell": {
           border: "1px solid #000",
+        },
+        "& .MuiDataGrid-row.pending": {
+          cursor: "pointer",
         },
         "& .MuiDataGrid-columnHeader": {
           textAlign: "center",
@@ -255,6 +283,18 @@ const OverViewTable: React.FC<DataGridProps> = ({
         },
         "& .MuiDataGrid-columnHeaders": {
           borderBottom: "none",
+        },
+        "& .MuiDataGrid-row.rejected": {
+          bgcolor: "#FEE2E2",
+        },
+        "& .MuiDataGrid-row.rejected:hover": {
+          bgcolor: "#FEE2E2",
+        },
+        "& .MuiDataGrid-row.passed": {
+          bgcolor: "#86EFAC",
+        },
+        "& .MuiDataGrid-row.passed:hover": {
+          bgcolor: "#86EFAC",
         },
       }}
     />
