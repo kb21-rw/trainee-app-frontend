@@ -7,7 +7,6 @@ import { useAddResponseMutation } from "../../features/user/backendApi";
 import { useDispatch } from "react-redux";
 import { getErrorInfo } from "../../utils/helper";
 import { handleShowAlert } from "../../utils/handleShowAlert";
-import Loader from "../ui/Loader";
 import { useCookies } from "react-cookie";
 
 const ResponseModal = ({
@@ -19,7 +18,7 @@ const ResponseModal = ({
 }) => {
   const [cookies] = useCookies([Cookie.jwt]);
   const { handleSubmit, control } = useForm();
-  const [addResponse, { isLoading, error, isSuccess }] =
+  const [addResponse, { error, isSuccess }] =
     useAddResponseMutation();
   const dispatch = useDispatch();
 
@@ -87,11 +86,7 @@ const ResponseModal = ({
               Cancel
             </Button>
           }
-          {includeButton && (
-            <Button type="submit">
-              {isLoading ? <Loader /> : "Save Response"}
-            </Button>
-          )}
+          {includeButton && <Button type="submit">Save Response</Button>}
         </div>
       </form>
     </Modal>

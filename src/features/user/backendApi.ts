@@ -396,7 +396,7 @@ export const backendApi: any = createApi({
         },
         body,
       }),
-      invalidatesTags: ["overview", "response"],
+      invalidatesTags: ["applicants overview", "response"],
     }),
 
     getMyApplication: builder.query({
