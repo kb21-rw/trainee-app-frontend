@@ -19,6 +19,7 @@ export const backendApi: any = createApi({
     "cohorts",
     "applicants overview",
     "token",
+    "users",
   ],
   endpoints: (builder) => ({
     getAllTrainees: builder.query({
@@ -49,6 +50,20 @@ export const backendApi: any = createApi({
       providesTags: ["myTrainees"],
     }),
 
+    getUsers: builder.query({
+      query: (args) => {
+        const { jwt } = args;
+        return {
+          url: "/users",
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        };
+      },
+      providesTags: ["users"],
+    }),
+    
     getCoaches: builder.query({
       query: (args) => {
         const { jwt, cohortId } = args;
@@ -497,6 +512,7 @@ export const backendApi: any = createApi({
 export const {
   useGetAllTraineesQuery,
   useGetCoachesQuery,
+  useGetUsersQuery,
   useCreateCoachMutation,
   useCreateTraineeMutation,
   useLoginMutation,

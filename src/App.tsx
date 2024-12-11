@@ -32,6 +32,7 @@ import { store } from "./store";
 import GlobalLayout from "./components/layouts/GlobalLayout";
 import { UserRole } from "./utils/types";
 import { CookiesProvider } from "react-cookie";
+import Users from "./pages/User/Users";
 
 export default function App() {
   const router = createBrowserRouter(
@@ -41,6 +42,7 @@ export default function App() {
           <Route element={<ProtectedLayout />}>
             <Route element={<PrivateRoute allowedRoles={[UserRole.Admin]} />}>
               <Route index element={<div>Admin homepage</div>} />
+              <Route path="/users" element={<Users />} />
               <Route path="/forms" element={<AllForm />} />
               <Route path="/forms/:id" element={<SingleForm />} />
               <Route

@@ -1,10 +1,11 @@
 import { FormType, MenuItemType } from "./types";
 
 export const adminMenu = [
-  { link: "/forms", title: "Forms" },
+  { link: "/users", title: "Users" },
   { link: "/applicants", title: "Applicants" },
   { link: "/trainees", title: "Trainees" },
   { link: "/coaches", title: "Coaches" },
+  { link: "/forms", title: "Forms" },
   { link: "/cohorts", title: "Cohorts" },
 ];
 export const coachMenu = [
