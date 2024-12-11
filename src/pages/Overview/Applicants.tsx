@@ -15,7 +15,6 @@ import {
 } from "../../utils/types";
 import { useState } from "react";
 import {
-  Box,
   FormControl,
   MenuItem,
   Select,
@@ -50,7 +49,7 @@ const Applicants = () => {
     cohortId: selectedCohortId,
   });
   const {
-    data: coaches,
+    data: cohortCoaches,
     error: coachesError,
     isFetching: coachesIsFetching,
   } = useGetCoachesQuery({
@@ -179,7 +178,6 @@ const Applicants = () => {
 
       <div className="flex justify-between items-center">
         <div className="w-52">
-          <Box>
             <FormControl fullWidth>
               <Select
                 labelId="cohort-label"
@@ -194,7 +192,6 @@ const Applicants = () => {
                 ))}
               </Select>
             </FormControl>
-          </Box>
         </div>
         <Button size={ButtonSize.Medium}>Add Applicant</Button>
       </div>
@@ -204,7 +201,7 @@ const Applicants = () => {
         <OverViewTable
           forms={cohortOverview.forms}
           participants={cohortOverview.applicants}
-          coaches={coaches}
+          coaches={cohortCoaches.coaches}
           updates={[]}
           stages={cohortOverview.applicationForm.stages}
           actions={{ handleDecision, handleUpsertResponse, handleCoachChange }}
