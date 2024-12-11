@@ -9,7 +9,7 @@ import ProtectedLayout from "./components/layouts/ProtectedLayout";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/User/Profile";
 import TraineesInfo from "./pages/User/TraineesInfo";
-import CoachesInfo from "./pages/User/CoachesInfo";
+import CoachesInfo from "./pages/User/Coaches";
 import ResetPassword from "./pages/auth/ResetPassword";
 import EditMyTrainees from "./pages/User/EditTraineesForCoach";
 import AllForm from "./pages/Form/AllForms";
