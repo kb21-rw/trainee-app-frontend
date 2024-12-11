@@ -54,7 +54,7 @@ interface DataGridProps {
   };
 }
 
-const OverViewTable: React.FC<DataGridProps> = ({
+export default function OverViewTable({
   forms,
   participants,
   coaches,
@@ -65,7 +65,7 @@ const OverViewTable: React.FC<DataGridProps> = ({
     handleUpsertResponse = () => undefined,
     handleCoachChange = () => undefined,
   },
-}) => {
+}: DataGridProps) {
   const apiRef = useGridApiRef();
 
   const questionColumns: GridColDef[] = forms.flatMap((form) =>
@@ -301,6 +301,4 @@ const OverViewTable: React.FC<DataGridProps> = ({
       }}
     />
   );
-};
-
-export default OverViewTable;
+}
