@@ -18,8 +18,10 @@ import { getErrorInfo } from "../../utils/helper";
 import Loader from "../../components/ui/Loader";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import DeleteIcon from "../../assets/DeleteIcon";
+import AddCoach from "../../components/modals/AddCoach";
 
 export default function Coaches() {
+  const [isAddCoachOpen, setIsAddCoachOpen] = useState(false);
   const dispatch = useDispatch();
   const [cookies] = useCookies([Cookie.jwt]);
   const {
@@ -49,10 +51,6 @@ export default function Coaches() {
       type: AlertType.Error,
       message,
     });
-  }
-
-  if (cohortCoachesIsFetching || cohortsAreFetching) {
-    return <Loader />;
   }
 
   const columns: GridColDef[] = [
@@ -87,35 +85,53 @@ export default function Coaches() {
     },
   ];
 
-  const rows = cohortCoaches?.coaches.map((coach: User) => ({
-    id: coach._id,
-    userId: coach.userId,
-    name: coach.name,
-    email: coach.email,
-  }));
+  const rows: { id: string; userId: string; name: string; email: string }[] =
+    cohortCoaches?.coaches?.map((coach: User) => ({
+      id: coach._id,
+      userId: coach.userId,
+      name: coach.name,
+      email: coach.email,
+    })) ?? [];
 
   return (
-    <div className="my-10 space-y-10">
-      <div className="flex justify-between items-center">
-        <div className="w-52">
-          <FormControl fullWidth>
-            <Select
-              labelId="cohort-label"
-              id="single-select"
-              value={selectedCohortId ?? cohortCoaches?._id ?? ""}
-              onChange={handleCohortChange}
+    <>
+      {isAddCoachOpen && (
+        <AddCoach
+          isOpen={isAddCoachOpen}
+          onClose={() => setTimeout(() => setIsAddCoachOpen(false), 0)}
+          cohortCoachIds={rows.map((coach) => coach.id)}
+        />
+      )}
+      <div className="my-10 space-y-10">
+        {(cohortsAreFetching || cohortCoachesIsFetching) && <Loader />}
+        <div className="flex justify-between items-center">
+          <div className="w-52">
+            <FormControl fullWidth>
+              <Select
+                labelId="cohort-label"
+                id="single-select"
+                value={selectedCohortId ?? cohortCoaches?._id ?? ""}
+                onChange={handleCohortChange}
+              >
+                {cohorts?.map((cohort: Cohort) => (
+                  <MenuItem key={cohort._id} value={cohort._id}>
+                    {cohort.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+          {cohortCoaches?.isActive && (
+            <Button
+              size={ButtonSize.Medium}
+              onClick={() => setIsAddCoachOpen(true)}
             >
-              {cohorts?.map((cohort: Cohort) => (
-                <MenuItem key={cohort._id} value={cohort._id}>
-                  {cohort.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+              Add coach
+            </Button>
+          )}
         </div>
-        <Button size={ButtonSize.Medium}>Add coach</Button>
+        <DataGrid columns={columns} rows={rows} hideFooter />
       </div>
-      <DataGrid columns={columns} rows={rows} hideFooter />
-    </div>
+    </>
   );
 }

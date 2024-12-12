@@ -52,9 +52,9 @@ export const backendApi: any = createApi({
 
     getUsers: builder.query({
       query: (args) => {
-        const { jwt } = args;
+        const { jwt, search } = args;
         return {
-          url: "/users",
+          url: `/users?${search ? search : ""}`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
@@ -63,7 +63,7 @@ export const backendApi: any = createApi({
       },
       providesTags: ["users"],
     }),
-    
+
     getCoaches: builder.query({
       query: (args) => {
         const { jwt, cohortId } = args;
@@ -78,16 +78,16 @@ export const backendApi: any = createApi({
       providesTags: ["coaches"],
     }),
 
-    createCoach: builder.mutation({
+    addCoach: builder.mutation({
       query: (args) => {
-        const { jwt, body } = args;
+        const { jwt, coachId } = args;
         return {
-          url: "/auth/register",
+          url: "/coaches",
           method: "POST",
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-          body: { ...body },
+          body: { coachId },
         };
       },
       invalidatesTags: ["coaches"],
@@ -513,7 +513,7 @@ export const {
   useGetAllTraineesQuery,
   useGetCoachesQuery,
   useGetUsersQuery,
-  useCreateCoachMutation,
+  useAddCoachMutation,
   useCreateUserMutation,
   useLoginMutation,
   useSignupMutation,
