@@ -8,7 +8,6 @@ import Error from "./components/Error";
 import ProtectedLayout from "./components/layouts/ProtectedLayout";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/User/Profile";
-import TraineesInfo from "./pages/User/TraineesInfo";
 import CoachesInfo from "./pages/User/Coaches";
 import ResetPassword from "./pages/auth/ResetPassword";
 import EditMyTrainees from "./pages/User/EditTraineesForCoach";
@@ -52,7 +51,7 @@ export default function App() {
               <Route path="/coaches" element={<CoachesInfo />} />
               <Route path="/cohorts" element={<Cohorts />} />
               <Route path="/applicants" element={<Applicants />} />
-              <Route path="/trainees" element={<TraineesInfo />} />
+              <Route path="/trainees" element={<h1>Trainees Overview...</h1>} />
             </Route>
 
             <Route element={<PrivateRoute allowedRoles={[UserRole.Coach]} />}>

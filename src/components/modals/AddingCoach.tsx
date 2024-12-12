@@ -9,13 +9,14 @@ import { AlertType, CreateCoach, UserRole } from "../../utils/types";
 import { useDispatch } from "react-redux";
 import { handleShowAlert } from "../../utils/handleShowAlert";
 import { getErrorInfo } from "../../utils/helper";
-const AddingCoachModal = ({
+
+export default function AddingCoachModal({
   closePopup,
   jwt,
 }: {
   closePopup: () => void;
   jwt: string;
-}) => {
+}) {
   const dispatch = useDispatch();
   const [createCoach, { isLoading, error, isSuccess }] =
     useCreateCoachMutation();
@@ -87,6 +88,4 @@ const AddingCoachModal = ({
       </form>
     </ModalLayout>
   );
-};
-
-export default AddingCoachModal;
+}

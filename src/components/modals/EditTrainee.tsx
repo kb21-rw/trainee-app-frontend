@@ -99,7 +99,7 @@ const EditTraineeModal = ({
               className="form-select rounded-xl h-[58px] border-gray-200"
               {...register("coach")}
             >
-              {allCoaches.data?.map((coach: any, index: number) => (
+              {allCoaches.coaches?.map((coach: any, index: number) => (
                 <option
                   key={index}
                   value={coach._id}
