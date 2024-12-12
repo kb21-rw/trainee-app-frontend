@@ -20,7 +20,7 @@ const Alert = () => {
     alert.isVisible && (
       <div
         className={classNames(
-          `w-alert-width py-2 flex justify-center items-center rounded-lg absolute top-14 left-1/2 -translate-x-1/2 z-50 border-green-600`,
+          `w-alert-width py-2 flex justify-center items-center rounded-lg absolute top-14 left-1/2 -translate-x-1/2 z-[9999] border-green-600`,
           { "bg-error-light text-error-dark": alert.type === AlertType.Error },
           { "bg-green-300 text-white": alert.type === AlertType.Success },
         )}
