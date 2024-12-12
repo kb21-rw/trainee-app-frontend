@@ -18,11 +18,11 @@ export default function Select({
   error,
 }: SelectProps) {
   return (
-    <div className="space-y-2">
+    <div className="relative space-y-2">
       {label && <label htmlFor={id}>{label}</label>}
       <div
         className={classNames(
-          "w-full p-3 border rounded-xl overflow-hidden",
+          " w-full p-3 border rounded-xl overflow-hidden",
           { "border-gray-200": !error },
           { "border-red-500": error },
         )}
@@ -38,7 +38,7 @@ export default function Select({
           ))}
         </SelectField>
         {error && (
-          <div className="w-full text-sm text-red-500 absolute -top-7">
+          <div className="absolute w-full text-xs text-red-500 -bottom-4 left-1">
             {error}
           </div>
         )}
