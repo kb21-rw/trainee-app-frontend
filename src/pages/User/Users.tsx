@@ -14,9 +14,12 @@ import { getErrorInfo } from "../../utils/helper";
 import Loader from "../../components/ui/Loader";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import EditIcon from "../../assets/EditIcon";
+import { useState } from "react";
+import CreateUser from "../../components/modals/CreateUser";
 
 export default function Users() {
   const dispatch = useDispatch();
+  const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false);
   const [cookies] = useCookies([Cookie.jwt]);
   const {
     data: users,
@@ -26,16 +29,15 @@ export default function Users() {
     jwt: cookies.jwt,
   });
 
+  const handleCloseCreateUserModal = () =>
+    setTimeout(() => setIsCreateUserModalOpen(false), 0);
+
   if (usersError) {
     const { message } = getErrorInfo(usersError);
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
     });
-  }
-
-  if (usersIsFetching) {
-    return <Loader />;
   }
 
   const columns: GridColDef[] = [
@@ -83,20 +85,33 @@ export default function Users() {
     },
   ];
 
-  const rows = users.map((user: User) => ({
-    id: user._id,
-    userId: user.userId,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-  }));
+  const rows =
+    users?.map((user: User) => ({
+      id: user._id,
+      userId: user.userId,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    })) ?? [];
 
   return (
-    <div className="my-10 space-y-10">
-      <div className="flex justify-end items-center">
-        <Button size={ButtonSize.Medium}>Add user</Button>
+    <>
+      {usersIsFetching && <Loader />}
+      <CreateUser
+        isOpen={isCreateUserModalOpen}
+        onClose={handleCloseCreateUserModal}
+      />
+      <div className="my-10 space-y-10">
+        <div className="flex justify-end items-center">
+          <Button
+            size={ButtonSize.Medium}
+            onClick={() => setIsCreateUserModalOpen(true)}
+          >
+            Create user
+          </Button>
+        </div>
+        <DataGrid columns={columns} rows={rows} />
       </div>
-      <DataGrid columns={columns} rows={rows} />
-    </div>
+    </>
   );
 }

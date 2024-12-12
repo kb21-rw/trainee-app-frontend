@@ -241,3 +241,9 @@ export interface DecisionInfo {
   stage: string;
   decision: Decision;
 }
+
+export interface CreateUserDto {
+  name: string;
+  email: string;
+  role: Omit<UserRole, UserRole.Applicant | UserRole.Trainee>;
+}
