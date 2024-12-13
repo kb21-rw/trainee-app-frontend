@@ -103,9 +103,6 @@ export default function Cohorts() {
       <DataGrid
         rows={modifiedArray}
         columns={columns}
-        hideFooter={true}
-        disableColumnFilter
-        disableColumnMenu
         disableRowSelectionOnClick
         sx={customizeDataGridStyles}
       />
