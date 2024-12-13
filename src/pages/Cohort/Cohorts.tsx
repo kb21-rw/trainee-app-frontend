@@ -4,12 +4,7 @@ import {
 } from "../../features/user/backendApi";
 import { DataGrid } from "@mui/x-data-grid";
 import CohortSkeleton from "./CohortSkeleton";
-import SearchBar from "./SearchBar";
-import {
-  columns,
-  TCohort,
-  TCohortWithId,
-} from "./cohortColumns";
+import { columns, TCohort, TCohortWithId } from "./cohortColumns";
 import Button from "../../components/ui/Button";
 import { AlertType, ButtonSize, Cookie } from "../../utils/types";
 import CreateCohortForm from "./CreateCohortForm";
@@ -72,8 +67,7 @@ export default function Cohorts() {
 
   return (
     <div className="mt-10">
-      <div className="flex justify-between mb-10">
-        <SearchBar />
+      <div className="flex justify-end mb-10">
         <Button onClick={handleOpen} size={ButtonSize.Small}>
           Create cohort
         </Button>
