@@ -16,6 +16,7 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import EditIcon from "../../assets/EditIcon";
 import { useState } from "react";
 import CreateUser from "../../components/modals/CreateUser";
+import { customizeDataGridStyles } from "../../utils/data";
 
 export default function Users() {
   const dispatch = useDispatch();
@@ -110,7 +111,7 @@ export default function Users() {
             Create user
           </Button>
         </div>
-        <DataGrid columns={columns} rows={rows} />
+        <DataGrid columns={columns} rows={rows} sx={customizeDataGridStyles} />
       </div>
     </>
   );

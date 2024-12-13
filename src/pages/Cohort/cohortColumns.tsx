@@ -71,21 +71,4 @@ export const columns: GridColDef<TCohortWithId>[] = [
     },
   },
 ]
-export const customizeDataGridStyles = {
-  border: 'none',
-  '& .MuiDataGrid-row': {
-    borderBottom: '1px solid #000000',
-  },
-  '& .header-background': {
-    backgroundColor: '#CCE4F0',
-    fontWeight: 'bold',
-    fontSize: '18px',
-    border: 'none',
-  },
-  '& .MuiDataGrid-columnSeparator': {
-    display: 'none',
-  },
-  '& .MuiDataGrid-cell:focus': {
-    outline: 'none',
-  },
-}
+

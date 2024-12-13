@@ -19,6 +19,7 @@ import Loader from "../../components/ui/Loader";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import DeleteIcon from "../../assets/DeleteIcon";
 import AddCoach from "../../components/modals/AddCoach";
+import { customizeDataGridStyles } from "../../utils/data";
 
 export default function Coaches() {
   const [isAddCoachOpen, setIsAddCoachOpen] = useState(false);
@@ -130,7 +131,7 @@ export default function Coaches() {
             </Button>
           )}
         </div>
-        <DataGrid columns={columns} rows={rows} hideFooter />
+        <DataGrid columns={columns} rows={rows} hideFooter sx={customizeDataGridStyles} />
       </div>
     </>
   );

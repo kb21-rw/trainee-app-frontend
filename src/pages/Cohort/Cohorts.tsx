@@ -7,7 +7,6 @@ import CohortSkeleton from "./CohortSkeleton";
 import SearchBar from "./SearchBar";
 import {
   columns,
-  customizeDataGridStyles,
   TCohort,
   TCohortWithId,
 } from "./cohortColumns";
@@ -20,6 +19,7 @@ import { handleShowAlert } from "../../utils/handleShowAlert";
 import { useDispatch } from "react-redux";
 import { getErrorInfo } from "../../utils/helper";
 import { useCookies } from "react-cookie";
+import { customizeDataGridStyles } from "../../utils/data";
 
 const style = {
   position: "absolute",
