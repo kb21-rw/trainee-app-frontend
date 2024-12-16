@@ -3,7 +3,6 @@ import {
   useGetAllCohortsQuery,
 } from "../../features/user/backendApi";
 import { DataGrid } from "@mui/x-data-grid";
-import CohortSkeleton from "./CohortSkeleton";
 import { columns, TCohort, TCohortWithId } from "./cohortColumns";
 import Button from "../../components/ui/Button";
 import { AlertType, ButtonSize, Cookie } from "../../utils/types";
@@ -15,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { getErrorInfo } from "../../utils/helper";
 import { useCookies } from "react-cookie";
 import { customizeDataGridStyles } from "../../utils/data";
+import TableSkeleton from "../../components/skeletons/TableSkeleton";
 
 const style = {
   position: "absolute",
@@ -56,7 +56,7 @@ export default function Cohorts() {
     });
   }
 
-  if (isFetching) return <CohortSkeleton />;
+  if (isFetching) return <TableSkeleton />;
 
   if (isSuccess) {
     handleShowAlert(dispatch, {

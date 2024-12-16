@@ -11,12 +11,12 @@ import { useCookies } from "react-cookie";
 import { useDispatch } from "react-redux";
 import { handleShowAlert } from "../../utils/handleShowAlert";
 import { getErrorInfo } from "../../utils/helper";
-import Loader from "../../components/ui/Loader";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import EditIcon from "../../assets/EditIcon";
 import { useState } from "react";
 import CreateUser from "../../components/modals/CreateUser";
 import { customizeDataGridStyles } from "../../utils/data";
+import TableSkeleton from "../../components/skeletons/TableSkeleton";
 
 export default function Users() {
   const dispatch = useDispatch();
@@ -40,6 +40,8 @@ export default function Users() {
       message,
     });
   }
+
+  if (usersIsFetching) return <TableSkeleton />;
 
   const columns: GridColDef[] = [
     {
@@ -97,7 +99,6 @@ export default function Users() {
 
   return (
     <>
-      {usersIsFetching && <Loader />}
       <CreateUser
         isOpen={isCreateUserModalOpen}
         onClose={handleCloseCreateUserModal}
