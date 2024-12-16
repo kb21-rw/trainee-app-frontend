@@ -1,4 +1,4 @@
-import { FormType, MenuItemType } from "./types";
+import { ApplicationFormStatus, FormType, MenuItemType } from "./types";
 
 export const adminMenu = [
   { link: "/users", title: "Users" },
@@ -82,45 +82,75 @@ export const editTraineeTableHeaders = ["No", "Name", "Email", ""];
 export const editTraineeTableItems = ["_id", "name", "email"];
 export const traineeTableDataItems = ["_id", "name", "email", "coach"];
 
-export const noOpenApplicationInfo = {
-  heading: "No open application found",
-  description:
-    "Dear applicant, there is no open application at the moment, click on the button bellow to join our waiting list to be notified when the next application opens.",
-  buttonText: "Join waiting list",
-  buttonLink: "forms.google.com",
-};
-
-export const deadLineExceededInfo = {
-  heading: "Application deadline passed",
-  description:
-    "Dear applicant, the application deadline has been exceeded, click on the button bellow to join our waiting list to be notified when the next application opens.",
-  buttonText: "Join waiting list",
-  buttonLink: "forms.google.com",
-};
-
-export const userAppliedInfo = {
-  heading: "Application Submitted 🎉",
-  description:
-    "Your application has been submitted, we will review it and get back to you soon via email. Thanks for applying!",
-  buttonText: "View your submitted application",
-  buttonLink: "/saved-application",
+export const applicationFormStatusData = {
+  [ApplicationFormStatus.Open]: {
+    heading: "Welcome to The GYM's Application Portal",
+    description:
+      "The Gym is currently accepting applications for the software developer trainee program. Click on the button below to apply.",
+    buttonText: "Apply now",
+    buttonLink: "/apply",
+    programBenefits: [
+      {
+        title: "Hands-On Projects",
+        description: "Work on real-world projects to build your portfolio.",
+      },
+      {
+        title: "Expert Instructors",
+        description:
+          "Learn from industry professionals with years of experience.",
+      },
+      {
+        title: "Career Support",
+        description:
+          "Get assistance with job placement, resume building, and interview preparation.",
+      },
+    ],
+  },
+  [ApplicationFormStatus.NoApplication]: {
+    heading: "Application is not open yet!",
+    description:
+      "Dear applicant, there is no open application at the moment, click on the button below to join our waiting list to be notified when the next application opens.",
+    buttonText: "Join waiting list",
+    buttonLink: "/",
+  },
+  [ApplicationFormStatus.DeadlinePassed]: {
+    heading: "Application deadline passed",
+    description:
+      "Dear applicant, the application deadline has passed, click on the button below to join our waiting list to be notified when the next application opens.",
+    buttonText: "Join waiting list",
+    buttonLink: "/",
+  },
+  [ApplicationFormStatus.Submitted]: {
+    heading: "Application Submitted 🎉",
+    description:
+      "Your application has been submitted, we will review it and get back to you soon via email. Thanks for applying!",
+    buttonText: "View your submitted application",
+    buttonLink: "/saved-application",
+  },
+  [ApplicationFormStatus.Saved]: {
+    heading: "You have a saved application!",
+    description:
+      "You have a saved application that you can still edit and submit before the deadline. Don't forget to review and submit it on time!",
+    buttonText: "Continue your application",
+    buttonLink: "/apply",
+  },
 };
 
 export const customizeDataGridStyles = {
-  border: 'none',
-  '& .MuiDataGrid-row': {
-    borderBottom: '1px solid #000000',
+  border: "none",
+  "& .MuiDataGrid-row": {
+    borderBottom: "1px solid #000000",
   },
-  '& .MuiDataGrid-columnHeader': {
-    backgroundColor: '#CCE4F0',
-    fontWeight: 'bold',
-    fontSize: '18px',
-    border: 'none',
+  "& .MuiDataGrid-columnHeader": {
+    backgroundColor: "#CCE4F0",
+    fontWeight: "bold",
+    fontSize: "18px",
+    border: "none",
   },
-  '& .MuiDataGrid-columnSeparator': {
-    display: 'none',
+  "& .MuiDataGrid-columnSeparator": {
+    display: "none",
   },
-  '& .MuiDataGrid-cell:focus': {
-    outline: 'none',
+  "& .MuiDataGrid-cell:focus": {
+    outline: "none",
   },
-}
+};
