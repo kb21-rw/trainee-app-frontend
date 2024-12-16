@@ -174,26 +174,19 @@ export interface ApplicationFormType {
 }
 
 export enum ApplicationFormStatus {
-  OPEN = "Open",
-  CLOSED = "Closed",
-  DEADLINE_PASSED = "DeadlinePassed",
-  NO_APPLICATION = "NoApplication",
+  Open = "Open",
+  Saved = "Saved",
+  Submitted = "Submitted",
+  NoApplication = "NoApplication",
+  DeadlinePassed = "DeadlinePassed",
 }
 
-export type ApplicationStatus = {
-  isOpen: boolean;
-  status: ApplicationFormStatus;
-};
-
-export type ApplicationForm = {
-  id: string;
-  name: string;
-  description: string;
-  type: string;
-  questions: any[];
-  startDate: string | Date;
-  endDate: string | Date;
-};
+export interface ApplicationForm extends Omit<Form, "questions"> {
+  startDate: string;
+  endDate: string;
+  trainingStartDate: string;
+  questions: UserResponseQuestion[];
+}
 
 export interface IAlert {
   open: boolean;

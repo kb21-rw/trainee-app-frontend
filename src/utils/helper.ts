@@ -2,7 +2,6 @@ import {
   ApplicantDetails,
   ApplicationForm,
   ApplicationFormStatus,
-  ApplicationStatus,
   QuestionType,
   UserRole,
 } from "./types";
@@ -33,16 +32,16 @@ dayjs.extend(advancedFormat);
 export const getCoaches = (
   data: any[],
   dataItems: string[],
-  currentUser: UserState
+  currentUser: UserState,
 ): Array<Array<string>> => {
   const currentUserName = currentUser.name;
   const filteredCoachesData = data?.filter(
-    (coachData) => coachData.name !== currentUserName
+    (coachData) => coachData.name !== currentUserName,
   );
 
   const coachesData = filteredCoachesData?.map(
     (coachData: any) =>
-      dataItems?.map((dataItem: string) => coachData[dataItem])
+      dataItems?.map((dataItem: string) => coachData[dataItem]),
   );
 
   return coachesData;
@@ -66,8 +65,8 @@ export const getTraineesForCoach = (data: any, dataItems: string[]) => {
           ? traineeData?.coach?.name
           : dataItem === "coachId"
           ? traineeData?.coach?._id
-          : traineeData[dataItem]
-      )
+          : traineeData[dataItem],
+      ),
   );
   return traineesData;
 };
@@ -90,18 +89,18 @@ export const getTrainees = (data: any, dataItems: string[]) => {
           ? traineeData?.coach?.name || "No coach assigned"
           : dataItem === "coachId"
           ? traineeData?.coach?._id || ""
-          : traineeData[dataItem]
-      )
+          : traineeData[dataItem],
+      ),
   );
   return traineesData;
 };
 
 export const getApplicants = (
   data: ApplicantDetails[],
-  dataItems: string[]
+  dataItems: string[],
 ) => {
   return data?.map((item: any) =>
-    dataItems.map((key) => item[key as keyof ApplicantDetails])
+    dataItems.map((key) => item[key as keyof ApplicantDetails]),
   );
 };
 
@@ -117,73 +116,45 @@ export const getApplicants = (
 
 export const getCohorts = (data: Cohort[], dataItems: string[]) => {
   return data?.map((item: any) =>
-    dataItems.map((key) => item[key as keyof Cohort])
+    dataItems.map((key) => item[key as keyof Cohort]),
   );
 };
 
 /**
  * Determines the current status of an application based on the provided dates.
  *
- * This function checks whether an application is open, if its deadline has passed, or if there is no active application.
+ * This function checks whether an application is open, if it's deadline has passed, or if there is no active application.
  * Additionally, it adds a 10-day grace period after the application deadline, during which it indicates that the application
  * deadline has passed but still recognizes the application as recently closed.
  *
- * @param {ApplicationForm | undefined} application - An object representing the application form, which includes:
- *   - `startDate`: A string or Date representing the start date of the application window in the format "YYYY-MM-DD".
- *   - `endDate`: A string or Date representing the end date of the application window in the format "YYYY-MM-DD".
+ * @param {ApplicationForm | undefined} application
  *
- * @returns {ApplicationStatus} - An object containing:
- *   - `isOpen`: A boolean indicating whether the application is currently open.
- *   - `status`: A value from the `FormStatus` enum representing the current application status:
- *     - `ApplicationFormStatus.OPEN`: The application is open (current date falls between startDate and endDate).
- *     - `ApplicationFormStatus.DEADLINE_PASSED`: The application deadline has passed, but it is within the 10-day grace period.
- *     - `ApplicationFormStatus.NO_APPLICATION`: Either no application exists, or more than 10 days have passed since the application deadline.
+ * @returns {ApplicationFormStatus} application status
  */
 
-export const applicationStatusHandler = (
-  application: ApplicationForm | undefined
-): ApplicationStatus => {
-  const currentDate = dayjs();
+export const getApplicationFormStatus = (
+  application?: ApplicationForm,
+): ApplicationFormStatus => {
+  if (!application) return ApplicationFormStatus.NoApplication;
 
-  if (!application) {
-    return {
-      isOpen: false,
-      status: ApplicationFormStatus.NO_APPLICATION,
-    };
-  }
-
-  const startDate = dayjs(application.startDate);
+  const today = dayjs();
   const endDate = dayjs(application.endDate);
-  const tenDaysAfterDeadline = endDate.clone().add(10, "days");
+  const tenDaysAfterDeadline = endDate.add(10, "days");
 
-  if (currentDate.isBetween(startDate, endDate, undefined, "[]")) {
-    return {
-      isOpen: true,
-      status: ApplicationFormStatus.OPEN,
-    };
+  if (today.isAfter(endDate)) {
+    if (today.isAfter(tenDaysAfterDeadline))
+      return ApplicationFormStatus.NoApplication;
+
+    return ApplicationFormStatus.DeadlinePassed;
   }
 
-  if (
-    currentDate.isAfter(endDate) &&
-    currentDate.isBefore(tenDaysAfterDeadline)
-  ) {
-    return {
-      isOpen: false,
-      status: ApplicationFormStatus.DEADLINE_PASSED,
-    };
-  }
+  const someQuestionsAreAnswered = application.questions.some(
+    (question) => question.response !== null,
+  );
 
-  if (currentDate.isAfter(tenDaysAfterDeadline)) {
-    return {
-      isOpen: false,
-      status: ApplicationFormStatus.NO_APPLICATION,
-    };
-  }
+  if (someQuestionsAreAnswered) return ApplicationFormStatus.Saved;
 
-  return {
-    isOpen: false,
-    status: ApplicationFormStatus.NO_APPLICATION,
-  };
+  return ApplicationFormStatus.Open;
 };
 
 /**
@@ -248,7 +219,7 @@ export const getFormattedDate = (date: string) => {
  */
 
 export const convertFormQuestionsToObject = (
-  questions: { _id: string; response: string; type: QuestionType }[]
+  questions: { _id: string; response: string; type: QuestionType }[],
 ) => {
   return questions.reduce(
     (formQuestions: { [key: string]: string | string[] }, question) => ({
@@ -257,6 +228,6 @@ export const convertFormQuestionsToObject = (
         question.response ??
         (question.type === QuestionType.MultiSelect ? [] : ""),
     }),
-    {}
+    {},
   );
 };
