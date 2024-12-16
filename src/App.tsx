@@ -40,7 +40,6 @@ export default function App() {
         <Route element={<GlobalLayout />}>
           <Route element={<ProtectedLayout />}>
             <Route element={<PrivateRoute allowedRoles={[UserRole.Admin]} />}>
-              <Route index element={<div>Admin homepage</div>} />
               <Route path="/users" element={<Users />} />
               <Route path="/forms" element={<AllForm />} />
               <Route path="/forms/:id" element={<SingleForm />} />

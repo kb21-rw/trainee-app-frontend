@@ -221,7 +221,7 @@ export const getErrorInfo = (error: any): { type: string; message: string } => {
 export const getRoleBasedHomepageURL = (role: UserRole) => {
   switch (role) {
     case UserRole.Admin:
-      return "/";
+      return "/users";
     case UserRole.Coach:
       return "/overview";
     default:
