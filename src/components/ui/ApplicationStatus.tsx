@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 interface ApplicationStatusProps {
   heading: string;
@@ -23,18 +24,18 @@ const ApplicationStatus: React.FC<ApplicationStatusProps> = ({
       <div className="max-w-2xl mx-auto flex flex-col items-center justify-center border border-gray-300 rounded-lg p-6 shadow-lg space-y-4">
         <p className="text-center text-gray-500">{description}</p>
 
-        <a
+        <Link
           className="bg-primary-dark text-white px-6 py-3 rounded-md"
-          href={buttonLink}
+          to={buttonLink}
         >
           {buttonText}
-        </a>
+        </Link>
 
         <div className="text-gray-600 text-sm text-center">
           Learn more about The Gym software developer trainee program{" "}
-          <a href="https://www.the-gym.rw/" className="text-blue-600 underline">
+          <Link to="https://www.the-gym.rw/" className="text-blue-600 underline">
             here
-          </a>
+          </Link>
           .
         </div>
       </div>

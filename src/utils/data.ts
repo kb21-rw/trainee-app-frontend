@@ -103,7 +103,7 @@ export const userAppliedInfo = {
   description:
     "Your application has been submitted, we will review it and get back to you soon via email. Thanks for applying!",
   buttonText: "View your submitted application",
-  buttonLink: "forms.google.com",
+  buttonLink: "/saved-application",
 };
 
 export const customizeDataGridStyles = {
