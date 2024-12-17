@@ -68,7 +68,11 @@ const Applicants = () => {
 
   const [
     updateParticipant,
-    { isSuccess: updateParticipantIsSuccess, error: updateParticipantError },
+    {
+      isSuccess: updateParticipantIsSuccess,
+      error: updateParticipantError,
+      reset: updateParticipantReset,
+    },
   ] = useUpdateParticipantMutation();
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -156,6 +160,7 @@ const Applicants = () => {
       type: AlertType.Success,
       message: "Coach is successfully changed",
     });
+    updateParticipantReset();
   }
 
   if (cohortOverview && !selectedCohortId) {
@@ -178,20 +183,20 @@ const Applicants = () => {
 
       <div className="flex justify-between items-center">
         <div className="w-52">
-            <FormControl fullWidth>
-              <Select
-                labelId="cohort-label"
-                id="single-select"
-                value={selectedCohortId ?? cohortOverview?._id ?? ""}
-                onChange={handleChange}
-              >
-                {allCohorts?.map((cohort: Cohort) => (
-                  <MenuItem key={cohort._id} value={cohort._id}>
-                    {cohort.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+          <FormControl fullWidth>
+            <Select
+              labelId="cohort-label"
+              id="single-select"
+              value={selectedCohortId ?? cohortOverview?._id ?? ""}
+              onChange={handleChange}
+            >
+              {allCohorts?.map((cohort: Cohort) => (
+                <MenuItem key={cohort._id} value={cohort._id}>
+                  {cohort.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </div>
         <Button size={ButtonSize.Medium}>Add Applicant</Button>
       </div>
