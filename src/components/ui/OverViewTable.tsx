@@ -19,6 +19,7 @@ import {
   Decision,
   ResponseModalQuestion,
   ResponseCell,
+  ParticipantPhase,
 } from "../../utils/types";
 import Button from "./Button";
 import { GridStateColDef } from "@mui/x-data-grid/internals";
@@ -119,10 +120,14 @@ export default function OverViewTable({
       headerName: "Actions",
       width: 300,
       align: "center",
-      renderCell: ({ row: { id, email, name, stage, rejected, passed } }) => {
-        if (rejected) return "Rejected";
-
-        if (passed) return "Passed";
+      type: "singleSelect",
+      valueOptions: [
+        ParticipantPhase.Active,
+        ParticipantPhase.Completed,
+        ParticipantPhase.Rejected,
+      ],
+      renderCell: ({ row: { id, email, name, stage, actions } }) => {
+        if (actions !== ParticipantPhase.Active) return actions;
 
         return (
           <div className="flex justify-around content-center align-middle py-2 h-full">
@@ -202,6 +207,12 @@ export default function OverViewTable({
       stages[stages.length - 1].id,
     );
 
+    const participantPhase = userStage.droppedStage.isConfirmed
+      ? ParticipantPhase.Rejected
+      : userPassed
+      ? ParticipantPhase.Completed
+      : ParticipantPhase.Active;
+
     return {
       id: user.user._id,
       name: user.user.name,
@@ -209,9 +220,7 @@ export default function OverViewTable({
       coach: user.user.coach?._id ?? "",
       coachName: user.user.coach?.name ?? "No coach",
       stage: stage.name,
-      rejected: userStage.droppedStage.isConfirmed,
-      passed: userPassed,
-      actions: "",
+      actions: participantPhase,
       ...user.responses,
     };
   });
@@ -230,9 +239,9 @@ export default function OverViewTable({
     value: response,
     colDef,
     field,
-    row: { rejected, passed },
+    row: { actions },
   }) => {
-    if (rejected || passed) return;
+    if (actions !== ParticipantPhase.Active) return;
 
     if (field.length !== 24) return; // not a question
     const customColDef = colDef as GridStateColDef & {
@@ -265,8 +274,8 @@ export default function OverViewTable({
             event.defaultMuiPrevented = true;
           }
         }}
-        onCellEditStart={({ row: { rejected, passed } }, event) => {
-          if (rejected || passed) {
+        onCellEditStart={({ row: { actions } }, event) => {
+          if (actions !== ParticipantPhase.Active) {
             event.defaultMuiPrevented = true;
           }
         }}
@@ -283,16 +292,16 @@ export default function OverViewTable({
           };
         }}
         onProcessRowUpdateError={(error) => console.log(error)}
-        getRowClassName={({ row: { rejected, passed } }) =>
-          `${rejected ? "rejected" : ""} ${passed ? "passed" : ""} ${
-            !rejected && !passed ? "pending" : ""
-          }`
+        getRowClassName={({ row: { actions } }) =>
+          `${actions === ParticipantPhase.Rejected ? "rejected" : ""} ${
+            actions === ParticipantPhase.Completed ? "completed" : ""
+          } ${actions === ParticipantPhase.Active ? "active" : ""}`
         }
         sx={{
           "& .MuiDataGrid-cell": {
             border: "1px solid #000",
           },
-          "& .MuiDataGrid-row.pending": {
+          "& .MuiDataGrid-row.active": {
             cursor: "pointer",
           },
           "& .MuiDataGrid-columnHeader": {
@@ -316,10 +325,10 @@ export default function OverViewTable({
           "& .MuiDataGrid-row.rejected:hover": {
             bgcolor: "#FEE2E2",
           },
-          "& .MuiDataGrid-row.passed": {
+          "& .MuiDataGrid-row.completed": {
             bgcolor: "#86EFAC",
           },
-          "& .MuiDataGrid-row.passed:hover": {
+          "& .MuiDataGrid-row.completed:hover": {
             bgcolor: "#86EFAC",
           },
         }}

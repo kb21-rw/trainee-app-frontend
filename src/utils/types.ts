@@ -148,11 +148,6 @@ export type ApplicantDetails = {
   _id: string;
 };
 
-export enum ApplicantDecision {
-  Accepted = "Accepted",
-  Rejected = "Rejected",
-}
-
 export enum FormType {
   Applicant = "Applicant",
   Trainee = "Trainee",
@@ -239,4 +234,10 @@ export interface CreateUserDto {
   name: string;
   email: string;
   role: Omit<UserRole, UserRole.Applicant | UserRole.Trainee>;
+}
+
+export enum ParticipantPhase {
+  Rejected = "Rejected",
+  Active = "Active",
+  Completed = "Completed",
 }
