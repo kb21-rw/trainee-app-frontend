@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import { useState } from "react";
 import {
   DataGrid,
   GridCellEditStopReasons,
   GridColDef,
   GridEventListener,
   GridRowsProp,
-  useGridApiRef,
 } from "@mui/x-data-grid";
 import {
   Form as BaseForm,
@@ -23,6 +22,9 @@ import {
 } from "../../utils/types";
 import Button from "./Button";
 import { GridStateColDef } from "@mui/x-data-grid/internals";
+import WriteIcon from "../../assets/WriteIcon";
+import SettingsIcon from "../../assets/SettingsIcon";
+import SettingsModal from "../modals/Settings";
 
 interface Response extends BaseResponse {
   questionId: string;
@@ -59,14 +61,13 @@ export default function OverViewTable({
   participants,
   coaches,
   stages,
-  updates,
   actions: {
     handleDecision = () => undefined,
     handleUpsertResponse = () => undefined,
     handleCoachChange = () => undefined,
   },
 }: DataGridProps) {
-  const apiRef = useGridApiRef();
+  const [settingsInfo, setSettingsInfo] = useState<any>(null);
 
   const questionColumns: GridColDef[] = forms.flatMap((form) =>
     form.questions.map(({ _id, prompt, options, required, type }) => ({
@@ -79,7 +80,27 @@ export default function OverViewTable({
   );
 
   const formattedColumns: GridColDef[] = [
-    { field: "name", headerName: "Name", width: 200 },
+    {
+      field: "name",
+      headerName: "Name",
+      width: 200,
+      renderCell: ({ row }) => (
+        <div className="flex items-center justify-between">
+          <span>{row.name}</span>
+          <div className="flex items-center gap-2">
+            <button className="hover:scale-125 duration-200">
+              <WriteIcon className="h-4 w-4 fill-primary-dark hover:fill-primary-light" />
+            </button>
+            <button
+              className="hover:scale-125 duration-200"
+              onClick={() => setSettingsInfo(row)}
+            >
+              <SettingsIcon className="h-6 w-6" />
+            </button>
+          </div>
+        </div>
+      ),
+    },
     {
       field: "coach",
       headerName: "Coach",
@@ -90,10 +111,6 @@ export default function OverViewTable({
         { value: "", label: "No coach" },
         ...coaches.map((coach) => ({ value: coach._id, label: coach.name })),
       ],
-      renderCell: (params) => {
-        const coach = coaches.find((coach) => coach._id === params.value);
-        return coach ? coach.name : "No coach";
-      },
     },
     { field: "stage", headerName: "Stage", width: 200 },
     ...questionColumns,
@@ -102,7 +119,6 @@ export default function OverViewTable({
       headerName: "Actions",
       width: 300,
       align: "center",
-
       renderCell: ({ row: { id, email, name, stage, rejected, passed } }) => {
         if (rejected) return "Rejected";
 
@@ -191,6 +207,7 @@ export default function OverViewTable({
       name: user.user.name,
       email: user.user.email,
       coach: user.user.coach?._id ?? "",
+      coachName: user.user.coach?.name ?? "No coach",
       stage: stage.name,
       rejected: userStage.droppedStage.isConfirmed,
       passed: userPassed,
@@ -227,78 +244,86 @@ export default function OverViewTable({
     });
   };
 
-  useEffect(() => {
-    if (updates) {
-      // apiRef.current.updateRows(updates);
-    }
-  }, [updates, apiRef]);
-
   return (
-    <DataGrid
-      rows={rows}
-      columns={formattedColumns}
-      columnGroupingModel={columnGroupingModel}
-      hideFooter={true}
-      onCellClick={handleCellClick}
-      disableRowSelectionOnClick
-      onCellEditStop={(params, event) => {
-        if (params.reason === GridCellEditStopReasons.cellFocusOut) {
-          event.defaultMuiPrevented = true;
+    <>
+      {setSettingsInfo && (
+        <SettingsModal
+          row={settingsInfo}
+          onClose={() => setSettingsInfo(null)}
+          handleDecision={handleDecision}
+        />
+      )}
+      <DataGrid
+        rows={rows}
+        columns={formattedColumns}
+        columnGroupingModel={columnGroupingModel}
+        hideFooter={true}
+        onCellClick={handleCellClick}
+        disableRowSelectionOnClick
+        onCellEditStop={(params, event) => {
+          if (params.reason === GridCellEditStopReasons.cellFocusOut) {
+            event.defaultMuiPrevented = true;
+          }
+        }}
+        onCellEditStart={({ row: { rejected, passed } }, event) => {
+          if (rejected || passed) {
+            event.defaultMuiPrevented = true;
+          }
+        }}
+        processRowUpdate={(updatedRow) => {
+          handleCoachChange({
+            coach: updatedRow.coach ? updatedRow.coach : null,
+            participantId: updatedRow.id,
+          });
+          return {
+            ...updatedRow,
+            coachName:
+              coaches.find((coach) => coach._id === updatedRow.coach)?.name ??
+              "No coach",
+          };
+        }}
+        onProcessRowUpdateError={(error) => console.log(error)}
+        getRowClassName={({ row: { rejected, passed } }) =>
+          `${rejected ? "rejected" : ""} ${passed ? "passed" : ""} ${
+            !rejected && !passed ? "pending" : ""
+          }`
         }
-      }}
-      onCellEditStart={({ row: { rejected, passed } }, event) => {
-        if (rejected || passed) {
-          event.defaultMuiPrevented = true;
-        }
-      }}
-      processRowUpdate={(updatedRow) => {
-        handleCoachChange({
-          coach: updatedRow.coach ? updatedRow.coach : null,
-          participantId: updatedRow.id,
-        });
-        return updatedRow;
-      }}
-      onProcessRowUpdateError={(error) => console.log(error)}
-      getRowClassName={({ row: { rejected, passed } }) =>
-        `${rejected ? "rejected" : ""} ${passed ? "passed" : ""} ${
-          !rejected && !passed ? "pending" : ""
-        }`
-      }
-      sx={{
-        "& .MuiDataGrid-cell": {
-          border: "1px solid #000",
-        },
-        "& .MuiDataGrid-row.pending": {
-          cursor: "pointer",
-        },
-        "& .MuiDataGrid-columnHeader": {
-          textAlign: "center",
-          border: "1px solid #000",
-        },
-        "& .MuiDataGrid-columnHeaderTitle": {
-          fontWeight: "bold",
-          fontSize: "15px",
-          separator: "none",
-        },
-        "& .MuiDataGrid-columnHeaderTitleContainer": {
-          justifyContent: "center",
-        },
-        "& .MuiDataGrid-columnHeaders": {
-          borderBottom: "none",
-        },
-        "& .MuiDataGrid-row.rejected": {
-          bgcolor: "#FEE2E2",
-        },
-        "& .MuiDataGrid-row.rejected:hover": {
-          bgcolor: "#FEE2E2",
-        },
-        "& .MuiDataGrid-row.passed": {
-          bgcolor: "#86EFAC",
-        },
-        "& .MuiDataGrid-row.passed:hover": {
-          bgcolor: "#86EFAC",
-        },
-      }}
-    />
+        sx={{
+          "& .MuiDataGrid-cell": {
+            border: "1px solid #000",
+          },
+          "& .MuiDataGrid-row.pending": {
+            cursor: "pointer",
+          },
+          "& .MuiDataGrid-columnHeader": {
+            textAlign: "center",
+            border: "1px solid #000",
+          },
+          "& .MuiDataGrid-columnHeaderTitle": {
+            fontWeight: "bold",
+            fontSize: "15px",
+            separator: "none",
+          },
+          "& .MuiDataGrid-columnHeaderTitleContainer": {
+            justifyContent: "center",
+          },
+          "& .MuiDataGrid-columnHeaders": {
+            borderBottom: "none",
+          },
+          "& .MuiDataGrid-row.rejected": {
+            bgcolor: "#FEE2E2",
+          },
+          "& .MuiDataGrid-row.rejected:hover": {
+            bgcolor: "#FEE2E2",
+          },
+          "& .MuiDataGrid-row.passed": {
+            bgcolor: "#86EFAC",
+          },
+          "& .MuiDataGrid-row.passed:hover": {
+            bgcolor: "#86EFAC",
+          },
+        }}
+      />
+    </>
   );
 }
