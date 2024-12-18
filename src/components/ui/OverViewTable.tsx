@@ -20,6 +20,7 @@ import {
   ResponseCell,
   ParticipantPhase,
   UserRow,
+  ResponseModalInfo,
 } from "../../utils/types";
 import Button from "./Button";
 import { GridStateColDef } from "@mui/x-data-grid/internals";
@@ -43,9 +44,9 @@ interface DataGridProps {
   updates: ResponseCell[] | null;
   actions: {
     // eslint-disable-next-line no-unused-vars
-    handleDecision?: (_row: DecisionInfo) => void;
+    handleDecision?: (data: DecisionInfo) => void;
     // eslint-disable-next-line no-unused-vars
-    handleUpsertResponse?: (_row: any) => void;
+    handleUpsertResponse?: (data: ResponseModalInfo) => void;
     handleCoachChange?: ({
       // eslint-disable-next-line no-unused-vars
       coach,
@@ -143,7 +144,7 @@ export default function OverViewTable({
               size={ButtonSize.Small}
               onClick={() =>
                 handleDecision({
-                  userId: id,
+                  userId: id as string,
                   decision: Decision.Rejected,
                   email,
                   name,
@@ -263,8 +264,11 @@ export default function OverViewTable({
       question: ResponseModalQuestion;
     };
     handleUpsertResponse({
-      userId: id,
-      question: { ...customColDef.question, response },
+      userId: id as string,
+      question: {
+        ...customColDef.question,
+        response: response as string | string[] | null,
+      },
     });
   };
 

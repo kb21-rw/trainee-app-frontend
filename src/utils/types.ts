@@ -252,3 +252,8 @@ export interface UserRow {
   actions: ParticipantPhase;
   [key: string]: string | string[];
 }
+
+export interface ResponseModalInfo {
+  userId: string;
+  question: ResponseModalQuestion;
+}
