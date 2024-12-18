@@ -147,7 +147,7 @@ export const backendApi: any = createApi({
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-          body: { ...body },
+          body,
         };
       },
       invalidatesTags: ["applicants overview"],
