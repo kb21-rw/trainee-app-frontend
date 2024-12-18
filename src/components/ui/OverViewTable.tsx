@@ -91,12 +91,14 @@ export default function OverViewTable({
         <div className="flex items-center justify-between">
           <span>{row.name}</span>
           <div className="flex items-center gap-2">
-            <button
-              className="hover:scale-125 duration-200"
-              onClick={() => setParticipantInfo(row)}
-            >
-              <WriteIcon className="h-4 w-4 fill-primary-dark hover:fill-primary-light" />
-            </button>
+            {row.actions === ParticipantPhase.Active && (
+              <button
+                className="hover:scale-125 duration-200"
+                onClick={() => setParticipantInfo(row)}
+              >
+                <WriteIcon className="h-4 w-4 fill-primary-dark hover:fill-primary-light" />
+              </button>
+            )}
             <button
               className="hover:scale-125 duration-200"
               onClick={() => setSettingsInfo(row)}
