@@ -16,6 +16,7 @@ export default function Select({
   options,
   register,
   error,
+  defaultValue,
 }: SelectProps) {
   return (
     <div className="relative space-y-2">
@@ -30,6 +31,7 @@ export default function Select({
         <SelectField
           className="w-full flex justify-between focus:outline-none"
           {...register}
+          value={defaultValue}
         >
           {options.map((option) => (
             <option key={option.value} value={option.value}>
