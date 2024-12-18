@@ -247,6 +247,7 @@ export interface UserRow {
   name: string;
   email: string;
   coach: string;
+  coachName: string;
   stage: string;
   actions: ParticipantPhase;
   [key: string]: string | string[];

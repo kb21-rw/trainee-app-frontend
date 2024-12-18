@@ -5,6 +5,7 @@ import {
   Decision,
   DecisionInfo,
   ParticipantPhase,
+  UserRow,
 } from "../../utils/types";
 import { Modal } from "@mui/material";
 
@@ -13,7 +14,7 @@ export default function SettingsModal({
   onClose = () => undefined,
   handleDecision = () => undefined,
 }: {
-  row: any;
+  row: UserRow;
   // eslint-disable-next-line no-unused-vars
   handleDecision?: (_row: DecisionInfo) => void;
   onClose: () => void;

@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import Button from "../ui/Button";
 import { Modal } from "@mui/material";
 import { useCookies } from "react-cookie";
-import { AlertType, Cookie, User } from "../../utils/types";
+import { AlertType, Cookie, User, UserRow } from "../../utils/types";
 import { useUpdateParticipantMutation } from "../../features/user/backendApi";
 import { useDispatch } from "react-redux";
 import { getErrorInfo } from "../../utils/helper";
@@ -15,7 +15,7 @@ export default function EditParticipantModal({
   coaches,
   onClose,
 }: {
-  row: any;
+  row: UserRow;
   coaches: User[];
   onClose: () => void;
 }) {
