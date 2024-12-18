@@ -241,3 +241,13 @@ export enum ParticipantPhase {
   Active = "Active",
   Completed = "Completed",
 }
+
+export interface UserRow {
+  id: string;
+  name: string;
+  email: string;
+  coach: string;
+  stage: string;
+  actions: ParticipantPhase;
+  [key: string]: string | string[];
+}

@@ -4,7 +4,6 @@ import {
   GridCellEditStopReasons,
   GridColDef,
   GridEventListener,
-  GridRowsProp,
 } from "@mui/x-data-grid";
 import {
   Form as BaseForm,
@@ -20,6 +19,7 @@ import {
   ResponseModalQuestion,
   ResponseCell,
   ParticipantPhase,
+  UserRow,
 } from "../../utils/types";
 import Button from "./Button";
 import { GridStateColDef } from "@mui/x-data-grid/internals";
@@ -183,18 +183,26 @@ export default function OverViewTable({
 
   const users = allResponses.reduce(
     (
-      uniqueUsers: { [key: string]: { user: User; responses: Response[] } },
+      uniqueUsers: {
+        [key: string]: {
+          user: User;
+          responses: { [key: string]: string | string[] };
+        };
+      },
       response,
     ) => {
       const userId = response.user._id;
-      const existingUser = uniqueUsers[userId] ?? {};
+      const existingUser = uniqueUsers[userId] ?? {
+        user: response.user,
+        responses: {},
+      };
       return {
         ...uniqueUsers,
         [userId]: {
           user: response.user,
           responses: {
-            ...existingUser?.responses,
-            [response?.questionId]: response.value,
+            ...existingUser.responses,
+            [response.questionId]: response.value,
           },
         },
       };
@@ -202,7 +210,7 @@ export default function OverViewTable({
     {},
   );
 
-  const rows: GridRowsProp[] = Object.values(users).map((user) => {
+  const rows: UserRow[] = Object.values(users).map((user) => {
     const userStage = participants.find(
       (userProgress) => userProgress.id === user.user._id,
     )!;
