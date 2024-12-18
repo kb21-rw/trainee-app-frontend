@@ -26,6 +26,7 @@ import { GridStateColDef } from "@mui/x-data-grid/internals";
 import WriteIcon from "../../assets/WriteIcon";
 import SettingsIcon from "../../assets/SettingsIcon";
 import SettingsModal from "../modals/Settings";
+import EditParticipantModal from "../modals/EditParticipantModal";
 
 interface Response extends BaseResponse {
   questionId: string;
@@ -69,6 +70,7 @@ export default function OverViewTable({
   },
 }: DataGridProps) {
   const [settingsInfo, setSettingsInfo] = useState<any>(null);
+  const [participantInfo, setParticipantInfo] = useState<any>(null);
 
   const questionColumns: GridColDef[] = forms.flatMap((form) =>
     form.questions.map(({ _id, prompt, options, required, type }) => ({
@@ -89,7 +91,10 @@ export default function OverViewTable({
         <div className="flex items-center justify-between">
           <span>{row.name}</span>
           <div className="flex items-center gap-2">
-            <button className="hover:scale-125 duration-200">
+            <button
+              className="hover:scale-125 duration-200"
+              onClick={() => setParticipantInfo(row)}
+            >
               <WriteIcon className="h-4 w-4 fill-primary-dark hover:fill-primary-light" />
             </button>
             <button
@@ -258,8 +263,15 @@ export default function OverViewTable({
       {setSettingsInfo && (
         <SettingsModal
           row={settingsInfo}
-          onClose={() => setSettingsInfo(null)}
+          onClose={() => setTimeout(() => setSettingsInfo(null), 0)}
           handleDecision={handleDecision}
+        />
+      )}
+      {participantInfo && (
+        <EditParticipantModal
+          row={participantInfo}
+          onClose={() => setTimeout(() => setParticipantInfo(null), 0)}
+          coaches={coaches}
         />
       )}
       <DataGrid
