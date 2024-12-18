@@ -31,7 +31,7 @@ export default function Select({
         <SelectField
           className="w-full flex justify-between focus:outline-none"
           {...register}
-          value={defaultValue}
+          defaultValue={defaultValue}
         >
           {options.map((option) => (
             <option key={option.value} value={option.value}>
