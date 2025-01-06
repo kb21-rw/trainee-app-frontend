@@ -7,8 +7,8 @@ import { useUpdateParticipantMutation } from "../../features/user/backendApi";
 import { useDispatch } from "react-redux";
 import { getErrorInfo } from "../../utils/helper";
 import { handleShowAlert } from "../../utils/handleShowAlert";
-import Select from "../ui/Select";
 import Input from "../ui/Input";
+import SmartSelect from "../ui/SmartSelect";
 
 export default function EditParticipantModal({
   row,
@@ -23,19 +23,25 @@ export default function EditParticipantModal({
   const {
     handleSubmit,
     register,
-    formState: { errors },
-  } = useForm<{ name: string; coach: string }>();
+    formState: { errors, isDirty },
+  } = useForm<{ name: string; coach: string }>({
+    defaultValues: { name: row.name ?? "", coach: row.coach ?? "" },
+  });
   const [updateParticipant, { error, isSuccess }] =
     useUpdateParticipantMutation();
   const dispatch = useDispatch();
 
   const coachOptions = [
-    { value: "", label: "Select a coach" },
+    { value: "", label: "No coach" },
     ...coaches.map((coach) => ({
       value: coach._id,
       label: coach.name,
     })),
   ];
+
+  const selectedCoach = coachOptions.find(
+    (coach) => coach.value === row?.coach,
+  );
 
   const onSubmit = async (formData: { name: string; coach: string }) => {
     await updateParticipant({
@@ -57,7 +63,7 @@ export default function EditParticipantModal({
   if (isSuccess) {
     handleShowAlert(dispatch, {
       type: AlertType.Success,
-      message: "Response was added successfully",
+      message: "Participant was updated successfully",
     });
     onClose();
   }
@@ -79,23 +85,22 @@ export default function EditParticipantModal({
         <Input
           type="text"
           label="Name"
-          defaultValue={row?.name ?? ""}
           register={{ ...register("name", { required: "Name is required" }) }}
           error={errors.name?.message}
         />
-        <Select
-          label="Coach"
-          defaultValue={row?.coach ?? ""}
+        <SmartSelect
+          defaultValue={selectedCoach}
           options={coachOptions}
           register={{ ...register("coach") }}
-          error={errors.coach?.message}
         />
         <div className="flex justify-around gap-2">
           <Button outlined onClick={onClose}>
             Cancel
           </Button>
 
-          <Button type="submit">Confirm</Button>
+          <Button type="submit" disabled={!isDirty}>
+            Confirm
+          </Button>
         </div>
       </form>
     </Modal>
