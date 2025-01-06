@@ -1,4 +1,4 @@
-export default function ViewIcon({ className }: { className: string }) {
+export default function ViewIcon({ className }: { className?: string }) {
   return (
     <svg
       width="23"

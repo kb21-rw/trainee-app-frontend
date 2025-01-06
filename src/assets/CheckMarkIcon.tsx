@@ -1,6 +1,4 @@
-import React from "react";
-
-const CheckMarkIcon = () => {
+export default function CheckMarkIcon({ className }: { className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -8,6 +6,7 @@ const CheckMarkIcon = () => {
       height="25"
       viewBox="0 0 45 45"
       fill="none"
+      className={className}
     >
       <g clipPath="url(#clip0_394_7)">
         <path
@@ -22,6 +21,4 @@ const CheckMarkIcon = () => {
       </defs>
     </svg>
   );
-};
-
-export default CheckMarkIcon;
+}
