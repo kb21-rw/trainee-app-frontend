@@ -8,18 +8,12 @@ import {
 import {
   AlertType,
   ButtonSize,
-  Cohort as BaseCohort,
+  Cohort,
   Cookie,
   DecisionInfo,
   ResponseModalQuestion,
 } from "../../utils/types";
-import { useState } from "react";
-import {
-  FormControl,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from "@mui/material";
+import { useEffect, useState } from "react";
 import OverViewTable from "../../components/ui/OverViewTable";
 import Button from "../../components/ui/Button";
 import { useCookies } from "react-cookie";
@@ -30,8 +24,8 @@ import Loader from "../../components/ui/Loader";
 import NotFound from "../../components/ui/NotFound";
 import DecisionModal from "../../components/modals/DecisionModal";
 import ResponseModal from "../../components/modals/ResponseModal";
-
-interface Cohort extends Pick<BaseCohort, "_id" | "name" | "description"> {}
+import SmartSelect from "../../components/ui/SmartSelect";
+import { useForm } from "react-hook-form";
 
 const Applicants = () => {
   const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null);
@@ -40,6 +34,9 @@ const Applicants = () => {
   const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt });
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null);
   const dispatch = useDispatch();
+  const { register, watch } = useForm<{ cohortId: string }>({
+    defaultValues: { cohortId: "" },
+  });
   const {
     data: cohortOverview,
     error: cohortOverviewError,
@@ -75,10 +72,29 @@ const Applicants = () => {
     },
   ] = useUpdateParticipantMutation();
 
-  const handleChange = (event: SelectChangeEvent) => {
-    const newCohortId = event.target.value;
-    setSelectedCohortId(newCohortId);
-  };
+  useEffect(() => {
+    const subscription = watch(({ cohortId }) => {
+      setSelectedCohortId(cohortId ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
+  const selectedCohortFromOverview = cohortOverview
+    ? { value: cohortOverview._id, label: cohortOverview.name }
+    : null;
+
+  const selectedCohortFromId = selectedCohortId
+    ? {
+        value: selectedCohortId,
+        label:
+          allCohorts?.find((cohort: Cohort) => cohort._id === selectedCohortId)
+            ?.name ?? "",
+      }
+    : null;
+
+  const selectedCohort =
+    selectedCohortFromOverview ?? selectedCohortFromId ?? undefined;
 
   const handleDecision = (userData: DecisionInfo) => {
     setDecisionInfo({ ...userData });
@@ -183,20 +199,18 @@ const Applicants = () => {
 
       <div className="flex justify-between items-center">
         <div className="w-52">
-          <FormControl fullWidth>
-            <Select
-              labelId="cohort-label"
-              id="single-select"
-              value={selectedCohortId ?? cohortOverview?._id ?? ""}
-              onChange={handleChange}
-            >
-              {allCohorts?.map((cohort: Cohort) => (
-                <MenuItem key={cohort._id} value={cohort._id}>
-                  {cohort.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <form>
+            <SmartSelect
+              options={
+                allCohorts?.map((cohort: Cohort) => ({
+                  value: cohort._id,
+                  label: cohort.name,
+                })) ?? []
+              }
+              defaultValue={selectedCohort}
+              register={{ ...register("cohortId") }}
+            />
+          </form>
         </div>
         <Button size={ButtonSize.Medium}>Add Applicant</Button>
       </div>

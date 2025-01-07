@@ -5,7 +5,7 @@ import {
   ComboboxOption,
   ComboboxOptions,
 } from "@headlessui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import classNames from "classnames";
 import { UseFormRegisterReturn } from "react-hook-form";
 import DropDownIcon from "../../assets/DropDownIcon";
@@ -31,7 +31,11 @@ export default function SmartSelect({
   register: { onChange, name },
 }: SmartSelectProps) {
   const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState(defaultValue ?? null);
+  const [selected, setSelected] = useState<Option | null>(defaultValue ?? null);
+
+  useEffect(() => {
+    setSelected(defaultValue ?? null);
+  }, [defaultValue]);
 
   const filteredOptions =
     query === ""
