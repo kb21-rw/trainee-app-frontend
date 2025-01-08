@@ -41,6 +41,7 @@ interface DataGridProps {
   participants: CohortParticipant[];
   stages: Stage[];
   coaches: User[];
+  participantsInfo: User[];
   updates: ResponseCell[] | null;
   actions: {
     // eslint-disable-next-line no-unused-vars
@@ -62,6 +63,7 @@ interface DataGridProps {
 export default function OverViewTable({
   forms,
   participants,
+  participantsInfo,
   coaches,
   stages,
   actions: {
@@ -182,7 +184,7 @@ export default function OverViewTable({
     form.questions.flatMap((question) => question.responses),
   );
 
-  const users = allResponses.reduce(
+  let users = allResponses.reduce(
     (
       uniqueUsers: {
         [key: string]: {
@@ -210,6 +212,19 @@ export default function OverViewTable({
     },
     {},
   );
+
+  const missingUsers = participants
+    .filter((participant) => !users[participant.id])
+    .map((participant) => ({
+      [participant.id]: {
+        user: participantsInfo.find(
+          (participantInfo) => participantInfo._id === participant.id,
+        ),
+        responses: {},
+      },
+    }));
+
+  users = { ...users, ...Object.assign({}, ...missingUsers) };
 
   const rows: UserRow[] = Object.values(users).map((user) => {
     const userStage = participants.find(

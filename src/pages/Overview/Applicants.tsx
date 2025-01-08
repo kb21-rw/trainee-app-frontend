@@ -220,6 +220,7 @@ const Applicants = () => {
         <OverViewTable
           forms={cohortOverview.forms}
           participants={cohortOverview.applicants}
+          participantsInfo={cohortOverview.participantsInfo}
           coaches={cohortCoaches.coaches}
           updates={[]}
           stages={cohortOverview.applicationForm.stages}
