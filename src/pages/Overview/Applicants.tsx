@@ -184,7 +184,7 @@ const Applicants = () => {
   }
 
   return (
-    <div className="py-12 space-y-5">
+    <div className="py-12 space-y-5 flex flex-col h-full">
       <DecisionModal
         decisionInfo={decisionInfo}
         closeModal={() => setDecisionInfo(null)}
@@ -228,7 +228,9 @@ const Applicants = () => {
         />
       )}
       {!cohortOverviewIsFetching && !cohortOverview && (
-        <NotFound entity="Cohort" type="NoData" />
+        <div className="flex-1">
+          <NotFound entity="Cohort" type="NoData" />
+        </div>
       )}
     </div>
   );
