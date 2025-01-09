@@ -179,11 +179,20 @@ export default function AddApplicantsModal({
                 anchor="bottom"
                 className="relative z-[9999] w-[var(--input-width)] rounded-lg bg-white p-0.5 empty:invisible transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0 shadow-2xl"
               >
+                {filteredPeople.length === 0 && (
+                  <ComboboxOption
+                    value={null}
+                    disabled
+                    className="text-center text-slate-600 text-xs p-1"
+                  >
+                    No results found
+                  </ComboboxOption>
+                )}
                 {filteredPeople.map((prospect) => (
                   <ComboboxOption
                     key={prospect.id}
                     value={prospect}
-                    className="group flex items-center gap-1 data-[focus]:bg-blue-100 rounded-md  p-1"
+                    className="group flex items-center gap-1 data-[focus]:bg-blue-100 rounded-md p-1"
                   >
                     <TickIcon className="w-3 h-3 invisible size-4 group-data-[selected]:visible" />
                     {prospect.label}
