@@ -99,6 +99,8 @@ const Applicants = () => {
     selectedCohortFromOverview ?? selectedCohortFromId ?? undefined;
 
   const handleAddApplicants = () => setIsAddingApplicants(true);
+  const handleCloseAddApplicantsModal = () =>
+    setTimeout(() => setIsAddingApplicants(false), 0);
 
   const handleDecision = (userData: DecisionInfo) => {
     setDecisionInfo({ ...userData });
@@ -203,7 +205,7 @@ const Applicants = () => {
       {isAddingApplicants && (
         <AddApplicantsModal
           isOpen={isAddingApplicants}
-          onClose={() => setIsAddingApplicants(false)}
+          onClose={handleCloseAddApplicantsModal}
         />
       )}
 

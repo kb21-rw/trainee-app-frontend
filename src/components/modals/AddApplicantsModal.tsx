@@ -7,16 +7,20 @@ import {
 } from "@headlessui/react";
 import Button from "../ui/Button";
 import { Modal } from "@mui/material";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import DropDownIcon from "../../assets/DropDownIcon";
 import classNames from "classnames";
-import { useGetUsersQuery } from "../../features/user/backendApi";
+import {
+  useAddApplicantsMutation,
+  useGetUsersQuery,
+} from "../../features/user/backendApi";
 import { useCookies } from "react-cookie";
 import { AlertType, Cookie, User } from "../../utils/types";
 import { getErrorInfo } from "../../utils/helper";
 import { useDispatch } from "react-redux";
 import { handleShowAlert } from "../../utils/handleShowAlert";
 import Loader from "../ui/Loader";
+import TickIcon from "../../assets/TickIcon";
 
 interface Option {
   id: string;
@@ -42,6 +46,15 @@ export default function AddApplicantsModal({
     jwt: cookies.jwt,
     search: "role=Prospect",
   });
+  const [
+    addApplicants,
+    {
+      error: applicantsError,
+      isLoading: isAddApplicantsLoading,
+      isSuccess: isAddApplicantsSuccess,
+      reset: resetAddApplicants,
+    },
+  ] = useAddApplicantsMutation();
 
   const formattedProspects: Option[] =
     prospects?.map((prospect: User) => ({
@@ -56,12 +69,41 @@ export default function AddApplicantsModal({
           return prospect.label.toLowerCase().includes(query.toLowerCase());
         });
 
-  if (prospectsError) {
-    const { message } = getErrorInfo(prospectsError);
+  const handleSubmit = async (
+    event: FormEvent<HTMLFormElement>,
+  ): Promise<void> => {
+    event.preventDefault();
+    const prospectIds: string[] = selectedProspects.map(
+      (prospect: Option) => prospect.id,
+    );
+
+    await addApplicants({ jwt: cookies.jwt, body: { prospectIds } });
+  };
+
+  const removeProspect = (prospectId: string) => {
+    setSelectedProspects((prevProspects) =>
+      prevProspects.filter((prospect) => prospect.id !== prospectId),
+    );
+  };
+
+  if (prospectsError ?? applicantsError) {
+    const { message } = getErrorInfo(prospectsError ?? applicantsError);
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
     });
+
+    resetAddApplicants();
+  }
+
+  if (isAddApplicantsSuccess) {
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: "Applicants were added successfully",
+    });
+
+    resetAddApplicants();
+    onClose();
   }
 
   return (
@@ -72,7 +114,10 @@ export default function AddApplicantsModal({
       component="div"
       className="max-w-md mx-auto flex items-center "
     >
-      <form className="flex flex-col gap-6 w-full bg-white p-5 rounded-xl">
+      <form
+        className="flex flex-col gap-6 w-full bg-white p-5 rounded-xl"
+        onSubmit={handleSubmit}
+      >
         <h1 className="text-center text-3xl font-semibold">Add applicants</h1>
         {prospectsIsFetching && (
           <div className="grid place-content-center">
@@ -101,8 +146,14 @@ export default function AddApplicantsModal({
                     {selectedProspects.map((prospect) => (
                       <li
                         key={prospect.id}
-                        className="py-2 px-4 border border-neutral-200 rounded-md text-xs"
+                        className="group relative py-2 px-4 border border-neutral-200 rounded-md text-xs overflow-hidden hover:cursor-pointer"
                       >
+                        <button
+                          onClick={() => removeProspect(prospect.id)}
+                          className="absolute text-red-400 font-bold text-xs invisible group-hover:visible shadow-md top-0 right-0 rounded-sm py-0 px-1 bg-white"
+                        >
+                          x
+                        </button>
                         {prospect.label}
                       </li>
                     ))}
@@ -126,17 +177,15 @@ export default function AddApplicantsModal({
 
               <ComboboxOptions
                 anchor="bottom"
-                className="relative z-[9999] w-[var(--input-width)] rounded-lg bg-white p-1 empty:invisible transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0 shadow-2xl"
+                className="relative z-[9999] w-[var(--input-width)] rounded-lg bg-white p-0.5 empty:invisible transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0 shadow-2xl"
               >
                 {filteredPeople.map((prospect) => (
                   <ComboboxOption
                     key={prospect.id}
                     value={prospect}
-                    className="group data-[focus]:bg-blue-100 rounded-md p-1"
+                    className="group flex items-center gap-1 data-[focus]:bg-blue-100 rounded-md  p-1"
                   >
-                    <span className="invisible size-4 fill-white group-data-[selected]:visible">
-                      ++
-                    </span>
+                    <TickIcon className="w-3 h-3 invisible size-4 group-data-[selected]:visible" />
                     {prospect.label}
                   </ComboboxOption>
                 ))}
@@ -147,10 +196,9 @@ export default function AddApplicantsModal({
               <Button outlined onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit">
-                {!isOpen ? "..." : "Add applicants"}
-              </Button>{" "}
-              {/* Replace is Open with the loading state */}
+              <Button type="submit" disabled={selectedProspects.length === 0}>
+                {isAddApplicantsLoading ? "..." : "Add applicants"}
+              </Button>
             </div>
           </>
         )}
