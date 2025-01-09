@@ -493,6 +493,19 @@ export const backendApi: any = createApi({
       },
       invalidatesTags: ["applicants overview"],
     }),
+    addApplicants: builder.mutation({
+      query: ({ jwt, body }) => {
+        return {
+          url: `/cohorts/add-applicants`,
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+          body,
+        };
+      },
+      invalidatesTags: ["applicants overview"],
+    }),
     getAllCohorts: builder.query({
       query: (args) => {
         const { jwt, query } = args;
@@ -544,6 +557,7 @@ export const {
   useCreateCohortMutation,
   useGetApplicantsQuery,
   useApplicantDecisionMutation,
+  useAddApplicantsMutation,
   useGetAllCohortsQuery,
   useGetApplicationFormQuery,
 } = backendApi;
