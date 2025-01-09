@@ -26,10 +26,12 @@ import DecisionModal from "../../components/modals/DecisionModal";
 import ResponseModal from "../../components/modals/ResponseModal";
 import SmartSelect from "../../components/ui/SmartSelect";
 import { useForm } from "react-hook-form";
+import AddApplicantsModal from "../../components/modals/AddApplicantsModal";
 
 const Applicants = () => {
   const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null);
   const [responseInfo, setResponseInfo] = useState<any | null>(null);
+  const [isAddingApplicants, setIsAddingApplicants] = useState<boolean>(false);
   const [cookies] = useCookies([Cookie.jwt]);
   const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt });
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null);
@@ -95,6 +97,8 @@ const Applicants = () => {
 
   const selectedCohort =
     selectedCohortFromOverview ?? selectedCohortFromId ?? undefined;
+
+  const handleAddApplicants = () => setIsAddingApplicants(true);
 
   const handleDecision = (userData: DecisionInfo) => {
     setDecisionInfo({ ...userData });
@@ -196,6 +200,12 @@ const Applicants = () => {
           closeModal={handleCloseModal}
         />
       )}
+      {isAddingApplicants && (
+        <AddApplicantsModal
+          isOpen={isAddingApplicants}
+          onClose={() => setIsAddingApplicants(false)}
+        />
+      )}
 
       <div className="flex justify-between items-center">
         <div className="w-52">
@@ -212,7 +222,9 @@ const Applicants = () => {
             />
           </form>
         </div>
-        <Button size={ButtonSize.Medium}>Add Applicant</Button>
+        <Button size={ButtonSize.Medium} onClick={handleAddApplicants}>
+          Add Applicant
+        </Button>
       </div>
 
       {(cohortOverviewIsFetching || coachesIsFetching) && <Loader />}
