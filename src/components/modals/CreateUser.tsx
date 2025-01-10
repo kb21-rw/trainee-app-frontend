@@ -11,6 +11,7 @@ import { handleShowAlert } from "../../utils/handleShowAlert";
 import { useDispatch } from "react-redux";
 import { useCookies } from "react-cookie";
 import { useCreateUserMutation } from "../../features/user/backendApi";
+import Loader from "../ui/Loader";
 
 const selectOptions = [
   { value: UserRole.Prospect, label: "Prospect" },
@@ -112,7 +113,12 @@ export default function CreateUser({
             Cancel
           </Button>
 
-          <Button type="submit">{isUserLoading ? "..." : "Create"}</Button>
+          <Button type="submit" disabled={isUserLoading}>
+            <span className="flex items-center gap-1">
+              {isUserLoading ? <Loader borderColor="#000" size="xs" /> : ""}
+              <span>Create </span>
+            </span>
+          </Button>
         </div>
       </form>
     </Modal>
