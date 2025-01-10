@@ -30,19 +30,6 @@ export default function Users() {
     jwt: cookies.jwt,
   });
 
-  const handleCloseCreateUserModal = () =>
-    setTimeout(() => setIsCreateUserModalOpen(false), 0);
-
-  if (usersError) {
-    const { message } = getErrorInfo(usersError);
-    handleShowAlert(dispatch, {
-      type: AlertType.Error,
-      message,
-    });
-  }
-
-  if (usersIsFetching) return <TableSkeleton />;
-
   const columns: GridColDef[] = [
     {
       field: "userId",
@@ -96,6 +83,19 @@ export default function Users() {
       email: user.email,
       role: user.role,
     })) ?? [];
+
+  const handleCloseCreateUserModal = () =>
+    setTimeout(() => setIsCreateUserModalOpen(false), 0);
+
+  if (usersError) {
+    const { message } = getErrorInfo(usersError);
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    });
+  }
+
+  if (usersIsFetching) return <TableSkeleton />;
 
   return (
     <>
