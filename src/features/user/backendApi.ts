@@ -348,7 +348,7 @@ export const backendApi: any = createApi({
           body: { ...body },
         };
       },
-      invalidatesTags: ["forms"],
+      invalidatesTags: ["forms", "overview"],
     }),
 
     deleteQuestion: builder.mutation({
@@ -362,7 +362,7 @@ export const backendApi: any = createApi({
           },
         };
       },
-      invalidatesTags: ["forms"],
+      invalidatesTags: ["forms", "overview"],
     }),
 
     editQuestion: builder.mutation({
@@ -377,7 +377,7 @@ export const backendApi: any = createApi({
           body: { ...body },
         };
       },
-      invalidatesTags: ["forms"],
+      invalidatesTags: ["forms", "overview"],
     }),
     getOverview: builder.query({
       query: ({ jwt }) => ({
