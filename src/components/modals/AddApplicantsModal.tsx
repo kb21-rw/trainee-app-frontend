@@ -206,7 +206,12 @@ export default function AddApplicantsModal({
                 Cancel
               </Button>
               <Button type="submit" disabled={selectedProspects.length === 0}>
-                {isAddApplicantsLoading ? "..." : "Add applicants"}
+                <span className="flex items-center gap-1">
+                  {isAddApplicantsLoading && (
+                    <Loader borderColor="#fff" size="xs" />
+                  )}
+                  <span>Add applicants</span>
+                </span>
               </Button>
             </div>
           </>
