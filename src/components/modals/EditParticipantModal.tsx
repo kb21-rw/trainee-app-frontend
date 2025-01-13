@@ -9,6 +9,7 @@ import { getErrorInfo } from "../../utils/helper";
 import { handleShowAlert } from "../../utils/handleShowAlert";
 import Input from "../ui/Input";
 import SmartSelect from "../ui/SmartSelect";
+import Loader from "../ui/Loader";
 
 export default function EditParticipantModal({
   row,
@@ -27,7 +28,7 @@ export default function EditParticipantModal({
   } = useForm<{ name: string; coach: string }>({
     defaultValues: { name: row.name ?? "", coach: row.coach ?? "" },
   });
-  const [updateParticipant, { error, isSuccess }] =
+  const [updateParticipant, { error, isSuccess, isLoading }] =
     useUpdateParticipantMutation();
   const dispatch = useDispatch();
 
@@ -99,7 +100,10 @@ export default function EditParticipantModal({
           </Button>
 
           <Button type="submit" disabled={!isDirty}>
-            Confirm
+            <span className="flex items-center gap-1">
+              {isLoading && <Loader borderColor="#fff" size="xs" />}
+              <span>Confirm</span>
+            </span>
           </Button>
         </div>
       </form>

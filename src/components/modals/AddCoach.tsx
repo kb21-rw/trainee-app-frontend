@@ -11,6 +11,7 @@ import {
   useAddCoachMutation,
   useGetUsersQuery,
 } from "../../features/user/backendApi";
+import Loader from "../ui/Loader";
 
 export default function AddCoach({
   isOpen,
@@ -102,7 +103,12 @@ export default function AddCoach({
             Cancel
           </Button>
 
-          <Button type="submit">{isCoachLoading ? "..." : "Add coach"}</Button>
+          <Button type="submit">
+            <span className="flex items-center gap-1">
+              {isCoachLoading && <Loader borderColor="#fff" size="xs" />}
+              <span>Add coach</span>
+            </span>
+          </Button>
         </div>
       </form>
     </Modal>
