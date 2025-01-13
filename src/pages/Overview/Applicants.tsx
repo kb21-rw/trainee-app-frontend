@@ -224,9 +224,12 @@ const Applicants = () => {
             />
           </form>
         </div>
-        <Button size={ButtonSize.Medium} onClick={handleAddApplicants}>
-          Add Applicant
-        </Button>
+        {/* Display a button only if it's an active cohort which has an application form */}
+        {cohortOverview?.isActive && cohortOverview.applicationForm?.id && (
+          <Button size={ButtonSize.Medium} onClick={handleAddApplicants}>
+            Add Applicant
+          </Button>
+        )}
       </div>
 
       {(cohortOverviewIsFetching || coachesIsFetching) && <Loader />}

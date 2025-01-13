@@ -305,11 +305,18 @@ export default function OverViewTable({
       )}
       <DataGrid
         rows={rows}
-        columns={formattedColumns}
+        columns={forms.length === 0 ? [] : formattedColumns}
         columnGroupingModel={columnGroupingModel}
         hideFooter={true}
         onCellClick={handleCellClick}
         disableRowSelectionOnClick
+        slots={{
+          noRowsOverlay: () => (
+            <div className="h-full flex justify-center items-center">
+              <p className="text-center">No participants yet</p>
+            </div>
+          ),
+        }}
         onCellEditStop={(params, event) => {
           if (params.reason === GridCellEditStopReasons.cellFocusOut) {
             event.defaultMuiPrevented = true;
