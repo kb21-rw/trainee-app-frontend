@@ -17,7 +17,6 @@ export const backendApi: any = createApi({
     "applicantForm",
     "applicantResponse",
     "cohorts",
-    "applicants overview",
     "token",
     "users",
   ],
@@ -150,7 +149,7 @@ export const backendApi: any = createApi({
           body: { ...body, coach: body.coach === "" ? null : body.coach },
         };
       },
-      invalidatesTags: ["applicants overview"],
+      invalidatesTags: ["overview"],
     }),
 
     deleteCoach: builder.mutation({
@@ -291,7 +290,7 @@ export const backendApi: any = createApi({
           body: { ...body },
         };
       },
-      invalidatesTags: ["forms"],
+      invalidatesTags: ["forms", "overview"],
     }),
 
     editForm: builder.mutation({
@@ -411,7 +410,7 @@ export const backendApi: any = createApi({
         },
         body,
       }),
-      invalidatesTags: ["applicants overview", "response"],
+      invalidatesTags: ["overview", "response"],
     }),
 
     getMyApplication: builder.query({
@@ -477,7 +476,7 @@ export const backendApi: any = createApi({
           },
         };
       },
-      providesTags: ["applicants overview"],
+      providesTags: ["overview"],
     }),
     applicantDecision: builder.mutation({
       query: (args) => {
@@ -491,7 +490,7 @@ export const backendApi: any = createApi({
           body: { ...body },
         };
       },
-      invalidatesTags: ["applicants overview"],
+      invalidatesTags: ["overview"],
     }),
     addApplicants: builder.mutation({
       query: ({ jwt, body }) => {
@@ -504,7 +503,7 @@ export const backendApi: any = createApi({
           body,
         };
       },
-      invalidatesTags: ["applicants overview", "users"],
+      invalidatesTags: ["overview", "users"],
     }),
     getAllCohorts: builder.query({
       query: (args) => {
