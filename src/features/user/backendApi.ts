@@ -504,7 +504,7 @@ export const backendApi: any = createApi({
           body,
         };
       },
-      invalidatesTags: ["applicants overview"],
+      invalidatesTags: ["applicants overview", "users"],
     }),
     getAllCohorts: builder.query({
       query: (args) => {
