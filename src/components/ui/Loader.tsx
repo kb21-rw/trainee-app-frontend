@@ -11,15 +11,15 @@ export default function Loader({
 }: LoaderProps) {
   return (
     <div
+      style={{ borderColor: borderColor, borderRightColor: "transparent" }}
       className={classNames(
-        "inline-block animate-spin rounded-full border-solid border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]",
+        "inline-block animate-spin rounded-full border-solid align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]",
         {
           "h-3 w-3 border-2": size === "xs",
           "h-4 w-4 border-2": size === "sm",
           "h-8 w-8 border-4": size === "md",
           "h-12 w-12 border-5": size === "lg",
         },
-        { [`border-[${borderColor}]`]: borderColor },
       )}
       role="status"
     ></div>
