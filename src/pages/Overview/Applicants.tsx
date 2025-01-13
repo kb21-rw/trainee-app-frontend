@@ -95,8 +95,16 @@ const Applicants = () => {
       }
     : null;
 
+  const activeCohort = allCohorts?.find((cohort: Cohort) => cohort.isActive);
+  const selectedCohortFromActive = activeCohort
+    ? { value: activeCohort._id, label: activeCohort.name }
+    : null;
+
   const selectedCohort =
-    selectedCohortFromOverview ?? selectedCohortFromId ?? undefined;
+    selectedCohortFromOverview ??
+    selectedCohortFromId ??
+    selectedCohortFromActive ??
+    undefined;
 
   const handleAddApplicants = () => setIsAddingApplicants(true);
   const handleCloseAddApplicantsModal = () =>
