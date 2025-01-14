@@ -19,5 +19,5 @@ export default function WriteIcon({ className }: { className?: string }) {
         fill="inherit"
       />
     </svg>
-  );
+  )
 }

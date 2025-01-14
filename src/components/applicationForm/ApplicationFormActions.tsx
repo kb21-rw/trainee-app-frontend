@@ -1,19 +1,19 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from "react"
+import { Link } from "react-router-dom"
 import {
   ApplicationForm,
   ApplicationFormStatus,
   ButtonSize,
   UserRole,
-} from "../../utils/types";
-import { getApplicationFormStatus, getFormattedDate } from "../../utils/helper";
-import { applicationFormStatusData } from "../../utils/data";
-import CohortInfo from "../ui/CohortInfo";
-import Button from "../ui/Button";
+} from "../../utils/types"
+import { getApplicationFormStatus, getFormattedDate } from "../../utils/helper"
+import { applicationFormStatusData } from "../../utils/data"
+import CohortInfo from "../ui/CohortInfo"
+import Button from "../ui/Button"
 
 interface ApplicationFormActionsProps {
-  applicationForm: ApplicationForm;
-  role: UserRole;
+  applicationForm: ApplicationForm
+  role: UserRole
 }
 
 export default function ApplicationFormActions({
@@ -23,9 +23,9 @@ export default function ApplicationFormActions({
   const status =
     role === UserRole.Applicant
       ? ApplicationFormStatus.Submitted
-      : getApplicationFormStatus(applicationForm);
+      : getApplicationFormStatus(applicationForm)
 
-  const statusBasedData = applicationFormStatusData[status];
+  const statusBasedData = applicationFormStatusData[status]
 
   return (
     <>
@@ -84,5 +84,5 @@ export default function ApplicationFormActions({
         </>
       )}
     </>
-  );
+  )
 }

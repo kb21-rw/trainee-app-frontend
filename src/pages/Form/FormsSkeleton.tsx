@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, Skeleton, Stack } from "@mui/material";
+import { Card, CardContent, CardHeader, Skeleton, Stack } from "@mui/material"
 
 function FormsSkeleton() {
   return (
@@ -25,7 +25,7 @@ function FormsSkeleton() {
         <Skeleton variant="text" width="100%" height={30} />
       </CardContent>
     </Card>
-  );
+  )
 }
 
-export default FormsSkeleton;
+export default FormsSkeleton

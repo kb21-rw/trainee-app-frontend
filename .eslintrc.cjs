@@ -7,6 +7,7 @@ module.exports = {
     "plugin:react/jsx-runtime",
     "plugin:react-hooks/recommended",
     "plugin:react/jsx-runtime",
+    "plugin:@typescript-eslint/recommended",
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parserOptions: { ecmaVersion: "latest", sourceType: "module" },
@@ -18,13 +19,23 @@ module.exports = {
       "warn",
       { allowConstantExport: true },
     ],
-    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-explicit-any": "warn",
     "padding-line-between-statements": [
       "error",
       { blankLine: "always", prev: "block-like", next: "*" },
     ],
     "react/jsx-uses-react": "error",
-    "react/jsx-uses-vars": "error",
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "no-console": "warn",
+    eqeqeq: "warn",
+    "no-debugger": "warn",
+    "consistent-return": "error",
+    "no-unused-vars": [
+      "error",
+      { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+    ],
   },
-};
+}
+
+{
+}

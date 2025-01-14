@@ -20,5 +20,5 @@ export default function CheckMarkIcon({ className }: { className?: string }) {
         </clipPath>
       </defs>
     </svg>
-  );
+  )
 }

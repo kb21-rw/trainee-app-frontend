@@ -1,11 +1,11 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AlertType } from "../../utils/types";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { AlertType } from "../../utils/types"
 
 export interface AlertState {
-  isVisible: boolean;
-  message: string;
-  type: AlertType | null;
-  displayDuration?: number;
+  isVisible: boolean
+  message: string
+  type: AlertType | null
+  displayDuration?: number
 }
 
 const initialState: AlertState = {
@@ -13,7 +13,7 @@ const initialState: AlertState = {
   message: "",
   type: null,
   displayDuration: 3000,
-};
+}
 
 export const alertSlice = createSlice({
   name: "alert",
@@ -21,22 +21,22 @@ export const alertSlice = createSlice({
   reducers: {
     showAlert: (
       state,
-      action: PayloadAction<Omit<AlertState, "isVisible">>
+      action: PayloadAction<Omit<AlertState, "isVisible">>,
     ) => {
-      const { message, type, displayDuration } = action.payload;
-      state.isVisible = true;
-      state.message = message;
-      state.type = type;
-      state.displayDuration = displayDuration ?? 3000;
+      const { message, type, displayDuration } = action.payload
+      state.isVisible = true
+      state.message = message
+      state.type = type
+      state.displayDuration = displayDuration ?? 3000
     },
     hideAlert: (state) => {
-      state.isVisible = false;
-      state.message = "";
-      state.type = null;
-      state.displayDuration = 3000;
+      state.isVisible = false
+      state.message = ""
+      state.type = null
+      state.displayDuration = 3000
     },
   },
-});
+})
 
-export const { showAlert, hideAlert } = alertSlice.actions;
-export default alertSlice.reducer;
+export const { showAlert, hideAlert } = alertSlice.actions
+export default alertSlice.reducer

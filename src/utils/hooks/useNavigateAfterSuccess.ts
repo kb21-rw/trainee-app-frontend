@@ -1,15 +1,17 @@
-import { useEffect } from "react";
+import { useEffect } from "react"
 
 const useNavigateAfterSuccess = (path: string, dependency: boolean) => {
   useEffect(() => {
     if (dependency) {
       const timer = setTimeout(() => {
-        window.location.href = path;
-      }, 3000);
+        window.location.href = path
+      }, 3000)
 
-      return () => clearTimeout(timer);
+      return () => clearTimeout(timer)
     }
-  }, [dependency, path]);
-};
+
+    return undefined
+  }, [dependency, path])
+}
 
 export default useNavigateAfterSuccess

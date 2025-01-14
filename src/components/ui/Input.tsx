@@ -1,14 +1,14 @@
-import { InputHTMLAttributes, useState } from "react";
-import OpenEye from "../../assets/OpenEyeIcon";
-import ClosedEye from "../../assets/ClosedEyeIcon";
-import { UseFormRegisterReturn } from "react-hook-form";
-import classNames from "classnames";
-import { Input as InputField } from "@headlessui/react";
+import { InputHTMLAttributes, useState } from "react"
+import OpenEye from "../../assets/OpenEyeIcon"
+import ClosedEye from "../../assets/ClosedEyeIcon"
+import { UseFormRegisterReturn } from "react-hook-form"
+import classNames from "classnames"
+import { Input as InputField } from "@headlessui/react"
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
-  register?: UseFormRegisterReturn<any>;
-  error?: string;
+  label?: string
+  register?: UseFormRegisterReturn<any>
+  error?: string
 }
 
 export default function Input({
@@ -21,14 +21,14 @@ export default function Input({
   error,
   register,
 }: InputProps) {
-  const [show, setShow] = useState<boolean>(false);
+  const [show, setShow] = useState<boolean>(false)
 
   const inputType =
-    type === "password" ? (show ? "text" : "password") : type ?? "text";
+    type === "password" ? (show ? "text" : "password") : type ?? "text"
 
   const handleShowHidePassword = () => {
-    setShow((prevShow) => !prevShow);
-  };
+    setShow((prevShow) => !prevShow)
+  }
 
   return (
     <div className="relative space-y-2">
@@ -62,5 +62,5 @@ export default function Input({
         </div>
       )}
     </div>
-  );
+  )
 }

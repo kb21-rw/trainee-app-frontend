@@ -1,22 +1,22 @@
-import { NavLink, Outlet } from "react-router-dom";
-import { adminMenu, applicantMenu, coachMenu } from "../../utils/data";
+import { NavLink, Outlet } from "react-router-dom"
+import { adminMenu, applicantMenu, coachMenu } from "../../utils/data"
 
-import { UserRole } from "../../utils/types";
-import Footer from "../ui/Footer";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
-import useLogout from "../../utils/hooks/useLogout";
+import { UserRole } from "../../utils/types"
+import Footer from "../ui/Footer"
+import { useSelector } from "react-redux"
+import { RootState } from "../../store"
+import useLogout from "../../utils/hooks/useLogout"
 
 const ProtectedLayout = () => {
-  const loggedInUser = useSelector((state: RootState) => state.user);
-  const handleLogout = useLogout();
+  const loggedInUser = useSelector((state: RootState) => state.user)
+  const handleLogout = useLogout()
 
   const menu =
     (loggedInUser.role === UserRole.Admin && adminMenu) ||
     (loggedInUser.role === UserRole.Coach && coachMenu) ||
     (loggedInUser.role === UserRole.Applicant && applicantMenu) ||
     (loggedInUser.role === UserRole.Prospect && applicantMenu) ||
-    [];
+    []
 
   return (
     <>
@@ -63,7 +63,7 @@ const ProtectedLayout = () => {
       </div>
       <Footer />
     </>
-  );
-};
+  )
+}
 
-export default ProtectedLayout;
+export default ProtectedLayout

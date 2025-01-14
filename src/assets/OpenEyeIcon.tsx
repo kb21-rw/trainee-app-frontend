@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 const OpenEyeIcon = () => {
   return (
@@ -28,7 +28,7 @@ const OpenEyeIcon = () => {
         strokeLinejoin="round"
       />
     </svg>
-  );
-};
+  )
+}
 
-export default OpenEyeIcon;
+export default OpenEyeIcon

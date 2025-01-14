@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState } from "react"
 import {
   DataGrid,
   GridCellEditStopReasons,
   GridColDef,
   GridEventListener,
-} from "@mui/x-data-grid";
+} from "@mui/x-data-grid"
 import {
   Form as BaseForm,
   Response as BaseResponse,
@@ -21,43 +21,43 @@ import {
   ParticipantPhase,
   UserRow,
   ResponseModalInfo,
-} from "../../utils/types";
-import Button from "./Button";
-import { GridStateColDef } from "@mui/x-data-grid/internals";
-import WriteIcon from "../../assets/WriteIcon";
-import SettingsIcon from "../../assets/SettingsIcon";
-import SettingsModal from "../modals/Settings";
-import EditParticipantModal from "../modals/EditParticipantModal";
+} from "../../utils/types"
+import Button from "./Button"
+import { GridStateColDef } from "@mui/x-data-grid/internals"
+import WriteIcon from "../../assets/WriteIcon"
+import SettingsIcon from "../../assets/SettingsIcon"
+import SettingsModal from "../modals/Settings"
+import EditParticipantModal from "../modals/EditParticipantModal"
 
 interface Response extends BaseResponse {
-  questionId: string;
+  questionId: string
 }
 
-type Question = (Omit<BaseQuestion, "responses"> & { responses: Response })[];
-type Form = Omit<BaseForm, "questions"> & { questions: Question };
+type Question = (Omit<BaseQuestion, "responses"> & { responses: Response })[]
+type Form = Omit<BaseForm, "questions"> & { questions: Question }
 
 interface DataGridProps {
-  forms: Form[];
-  participants: CohortParticipant[];
-  stages: Stage[];
-  coaches: User[];
-  participantsInfo: User[];
-  updates: ResponseCell[] | null;
+  forms: Form[]
+  participants: CohortParticipant[]
+  stages: Stage[]
+  coaches: User[]
+  participantsInfo: User[]
+  updates: ResponseCell[] | null
   actions: {
     // eslint-disable-next-line no-unused-vars
-    handleDecision?: (data: DecisionInfo) => void;
+    handleDecision?: (data: DecisionInfo) => void
     // eslint-disable-next-line no-unused-vars
-    handleUpsertResponse?: (data: ResponseModalInfo) => void;
+    handleUpsertResponse?: (data: ResponseModalInfo) => void
     handleCoachChange?: ({
       // eslint-disable-next-line no-unused-vars
       coach,
       // eslint-disable-next-line no-unused-vars
       participantId,
     }: {
-      coach: string;
-      participantId: null | string;
-    }) => void;
-  };
+      coach: string
+      participantId: null | string
+    }) => void
+  }
 }
 
 export default function OverViewTable({
@@ -72,8 +72,8 @@ export default function OverViewTable({
     handleCoachChange = () => undefined,
   },
 }: DataGridProps) {
-  const [settingsInfo, setSettingsInfo] = useState<any>(null);
-  const [participantInfo, setParticipantInfo] = useState<any>(null);
+  const [settingsInfo, setSettingsInfo] = useState<any>(null)
+  const [participantInfo, setParticipantInfo] = useState<any>(null)
 
   const questionColumns: GridColDef[] = forms.flatMap((form) =>
     form.questions.map(({ _id, prompt, options, required, type }) => ({
@@ -83,7 +83,7 @@ export default function OverViewTable({
       question: { _id, prompt, options, required, type, form: form.name },
       valueFormatter: (value) => value ?? "No response",
     })),
-  );
+  )
 
   const formattedColumns: GridColDef[] = [
     {
@@ -137,7 +137,7 @@ export default function OverViewTable({
         ParticipantPhase.Rejected,
       ],
       renderCell: ({ row: { id, email, name, stage, actions } }) => {
-        if (actions !== ParticipantPhase.Active) return actions;
+        if (actions !== ParticipantPhase.Active) return actions
 
         return (
           <div className="flex justify-around content-center align-middle py-2 h-full">
@@ -175,30 +175,30 @@ export default function OverViewTable({
               </span>
             </Button>
           </div>
-        );
+        )
       },
     },
-  ];
+  ]
 
   const allResponses = forms.flatMap((form) =>
     form.questions.flatMap((question) => question.responses),
-  );
+  )
 
   let users = allResponses.reduce(
     (
       uniqueUsers: {
         [key: string]: {
-          user: User;
-          responses: { [key: string]: string | string[] };
-        };
+          user: User
+          responses: { [key: string]: string | string[] }
+        }
       },
       response,
     ) => {
-      const userId = response.user._id;
+      const userId = response.user._id
       const existingUser = uniqueUsers[userId] ?? {
         user: response.user,
         responses: {},
-      };
+      }
       return {
         ...uniqueUsers,
         [userId]: {
@@ -208,10 +208,10 @@ export default function OverViewTable({
             [response.questionId]: response.value,
           },
         },
-      };
+      }
     },
     {},
-  );
+  )
 
   const missingUsers = participants
     .filter((participant) => !users[participant.id])
@@ -222,27 +222,27 @@ export default function OverViewTable({
         ),
         responses: {},
       },
-    }));
+    }))
 
-  users = { ...users, ...Object.assign({}, ...missingUsers) };
+  users = { ...users, ...Object.assign({}, ...missingUsers) }
 
   const rows: UserRow[] = Object.values(users).map((user) => {
     const userStage = participants.find(
       (userProgress) => userProgress.id === user.user._id,
-    )!;
+    )!
     const stage = stages.find(
       (stage) => stage.id === userStage.droppedStage.id,
-    )!;
+    )!
 
     const userPassed = userStage.passedStages.includes(
       stages[stages.length - 1].id,
-    );
+    )
 
     const participantPhase = userStage.droppedStage.isConfirmed
       ? ParticipantPhase.Rejected
       : userPassed
       ? ParticipantPhase.Completed
-      : ParticipantPhase.Active;
+      : ParticipantPhase.Active
 
     return {
       id: user.user._id,
@@ -253,8 +253,8 @@ export default function OverViewTable({
       stage: stage.name,
       actions: participantPhase,
       ...user.responses,
-    };
-  });
+    }
+  })
 
   const columnGroupingModel = forms.map((form) => ({
     groupId: form._id,
@@ -263,7 +263,7 @@ export default function OverViewTable({
       field: question._id,
       headerName: question.prompt,
     })),
-  }));
+  }))
 
   const handleCellClick: GridEventListener<"cellClick"> = ({
     id,
@@ -272,20 +272,20 @@ export default function OverViewTable({
     field,
     row: { actions },
   }) => {
-    if (actions !== ParticipantPhase.Active) return;
+    if (actions !== ParticipantPhase.Active) return
 
-    if (field.length !== 24) return; // not a question
+    if (field.length !== 24) return // not a question
     const customColDef = colDef as GridStateColDef & {
-      question: ResponseModalQuestion;
-    };
+      question: ResponseModalQuestion
+    }
     handleUpsertResponse({
       userId: id as string,
       question: {
         ...customColDef.question,
         response: response as string | string[] | null,
       },
-    });
-  };
+    })
+  }
 
   return (
     <>
@@ -319,25 +319,25 @@ export default function OverViewTable({
         }}
         onCellEditStop={(params, event) => {
           if (params.reason === GridCellEditStopReasons.cellFocusOut) {
-            event.defaultMuiPrevented = true;
+            event.defaultMuiPrevented = true
           }
         }}
         onCellEditStart={({ row: { actions } }, event) => {
           if (actions !== ParticipantPhase.Active) {
-            event.defaultMuiPrevented = true;
+            event.defaultMuiPrevented = true
           }
         }}
         processRowUpdate={(updatedRow) => {
           handleCoachChange({
             coach: updatedRow.coach ? updatedRow.coach : null,
             participantId: updatedRow.id,
-          });
+          })
           return {
             ...updatedRow,
             coachName:
               coaches.find((coach) => coach._id === updatedRow.coach)?.name ??
               "No coach",
-          };
+          }
         }}
         onProcessRowUpdateError={(error) => console.log(error)}
         getRowClassName={({ row: { actions } }) =>
@@ -382,5 +382,5 @@ export default function OverViewTable({
         }}
       />
     </>
-  );
+  )
 }

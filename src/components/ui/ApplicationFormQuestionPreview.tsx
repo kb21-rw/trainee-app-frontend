@@ -1,4 +1,4 @@
-import { QuestionType, UserResponseQuestion } from "../../utils/types";
+import { QuestionType, UserResponseQuestion } from "../../utils/types"
 import {
   Checkbox,
   FormControlLabel,
@@ -6,11 +6,11 @@ import {
   Radio,
   RadioGroup,
   TextField,
-} from "@mui/material";
+} from "@mui/material"
 
 interface ApplicationDFormQuestionProps {
-  question: UserResponseQuestion;
-  index: number;
+  question: UserResponseQuestion
+  index: number
 }
 
 export default function ApplicationFormQuestionPreview({
@@ -61,5 +61,5 @@ export default function ApplicationFormQuestionPreview({
         </FormGroup>
       )}
     </div>
-  );
+  )
 }

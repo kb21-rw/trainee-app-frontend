@@ -1,14 +1,14 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from "react"
+import { Link } from "react-router-dom"
 
 interface CohortInfoProps {
-  cohortTitle: string;
-  applicationDeadline: string;
-  trainingStartDate: string;
+  cohortTitle: string
+  applicationDeadline: string
+  trainingStartDate: string
   programBenefits: {
-    title: string;
-    description: string;
-  }[];
+    title: string
+    description: string
+  }[]
 }
 
 const CohortInfo: React.FC<CohortInfoProps> = ({
@@ -75,7 +75,7 @@ const CohortInfo: React.FC<CohortInfoProps> = ({
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default CohortInfo;
+export default CohortInfo

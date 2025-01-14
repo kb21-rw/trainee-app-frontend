@@ -1,16 +1,16 @@
-import { InputLabel, Stack } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers";
-import Button from "../../components/ui/Button";
-import { ButtonSize, Cookie } from "../../utils/types";
-import CohortTextField from "./CohortTextField";
-import Stages from "./Stages";
-import { z } from "zod";
-import { Controller, useForm, SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import dayjs, { Dayjs } from "dayjs";
-import { useCookies } from "react-cookie";
+import { InputLabel, Stack } from "@mui/material"
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import { DatePicker } from "@mui/x-date-pickers"
+import Button from "../../components/ui/Button"
+import { ButtonSize, Cookie } from "../../utils/types"
+import CohortTextField from "./CohortTextField"
+import Stages from "./Stages"
+import { z } from "zod"
+import { Controller, useForm, SubmitHandler } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import dayjs, { Dayjs } from "dayjs"
+import { useCookies } from "react-cookie"
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -25,34 +25,34 @@ const schema = z.object({
       z.object({
         stageName: z.string().min(2, "Stage Name is required"),
         stageDescription: z.string().min(2, "Stage Description is required"),
-      })
+      }),
     )
     .nonempty("At least one stage is required"),
-});
+})
 
 const FORM_NAME = {
   name: "name",
   description: "description",
   trainingStartDate: "trainingStartDate",
   stages: { stageName: "stageName", stageDescription: "stageDescription" },
-} as const;
+} as const
 
 type TCohortFormValues = {
-  name: string;
-  description: string;
-  trainingStartDate: Dayjs | null;
-  stages: { stageName: string; stageDescription: string }[];
-};
+  name: string
+  description: string
+  trainingStartDate: Dayjs | null
+  stages: { stageName: string; stageDescription: string }[]
+}
 
 function CreateCohortForm({
   handleClose,
   createCohort,
 }: {
-  handleClose: () => void;
+  handleClose: () => void
   // eslint-disable-next-line no-unused-vars
-  createCohort: (_data: { jwt: string; body: any }) => any;
+  createCohort: (_data: { jwt: string; body: any }) => any
 }) {
-  const [cookies] = useCookies([Cookie.jwt]);
+  const [cookies] = useCookies([Cookie.jwt])
   const {
     register,
     control,
@@ -67,7 +67,7 @@ function CreateCohortForm({
       trainingStartDate: null,
       stages: [{ stageName: "", stageDescription: "" }],
     },
-  });
+  })
 
   const onSubmit: SubmitHandler<TCohortFormValues> = async (data) => {
     await createCohort({
@@ -78,22 +78,22 @@ function CreateCohortForm({
           return {
             name: stage.stageName,
             description: stage.stageDescription,
-          };
+          }
         }),
       },
-    });
-    handleClose();
-  };
+    })
+    handleClose()
+  }
 
   return (
     <form
       noValidate
       onSubmit={handleSubmit(async (formData) => {
         try {
-          await onSubmit(formData);
-          reset();
+          await onSubmit(formData)
+          reset()
         } catch (error) {
-          reset(formData);
+          reset(formData)
         }
       })}
     >
@@ -124,7 +124,7 @@ function CreateCohortForm({
                 minDate={dayjs().add(1, "day")}
                 value={value || null}
                 onChange={(newValue: Dayjs | null) => {
-                  onChange(newValue);
+                  onChange(newValue)
                 }}
                 disablePast
                 slotProps={{
@@ -136,7 +136,7 @@ function CreateCohortForm({
                   },
                 }}
               />
-            );
+            )
           }}
         />
       </LocalizationProvider>
@@ -158,7 +158,7 @@ function CreateCohortForm({
         </Button>
       </Stack>
     </form>
-  );
+  )
 }
 
-export default CreateCohortForm;
+export default CreateCohortForm

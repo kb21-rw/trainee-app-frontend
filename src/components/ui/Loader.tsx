@@ -1,8 +1,8 @@
-import classNames from "classnames";
+import classNames from "classnames"
 
 interface LoaderProps {
-  size?: "xs" | "sm" | "md" | "lg";
-  borderColor?: string;
+  size?: "xs" | "sm" | "md" | "lg"
+  borderColor?: string
 }
 
 export default function Loader({
@@ -23,5 +23,5 @@ export default function Loader({
       )}
       role="status"
     ></div>
-  );
+  )
 }

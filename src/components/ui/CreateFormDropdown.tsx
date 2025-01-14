@@ -1,40 +1,40 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { PlusIcon } from "@radix-ui/react-icons";
-import { Link } from "react-router-dom";
-import { useCreateFormMutation } from "../../features/user/backendApi";
-import { useNavigate } from "react-router-dom";
-import { Cookie, FormType } from "../../utils/types";
-import { menuItems } from "../../utils/data";
-import { useGetApplicationFormQuery } from "../../features/user/backendApi";
-import classNames from "classnames";
-import { useCookies } from "react-cookie";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react"
+import { PlusIcon } from "@radix-ui/react-icons"
+import { Link } from "react-router-dom"
+import { useCreateFormMutation } from "../../features/user/backendApi"
+import { useNavigate } from "react-router-dom"
+import { Cookie, FormType } from "../../utils/types"
+import { menuItems } from "../../utils/data"
+import { useGetApplicationFormQuery } from "../../features/user/backendApi"
+import classNames from "classnames"
+import { useCookies } from "react-cookie"
 
-type NextFormType = Exclude<FormType, FormType.Application>;
+type NextFormType = Exclude<FormType, FormType.Application>
 
 export default function CreateFormDropdown() {
-  const navigate = useNavigate();
-  const [cookies] = useCookies([Cookie.jwt]);
+  const navigate = useNavigate()
+  const [cookies] = useCookies([Cookie.jwt])
 
-  const [createForm] = useCreateFormMutation();
-  const { data: applicationForm } = useGetApplicationFormQuery(cookies.jwt);
+  const [createForm] = useCreateFormMutation()
+  const { data: applicationForm } = useGetApplicationFormQuery(cookies.jwt)
 
   const onClickAddForm = async (type: NextFormType) => {
     try {
-      const nextFormTitle = `${type} form name...`;
+      const nextFormTitle = `${type} form name...`
 
-      let requestBody: object = { name: nextFormTitle, type };
+      const requestBody: object = { name: nextFormTitle, type }
 
       const { data: formData } = await createForm({
         jwt: cookies.jwt,
         body: requestBody,
-      });
+      })
 
-      const id = formData?._id;
-      navigate(`/forms/${id}`);
+      const id = formData?._id
+      navigate(`/forms/${id}`)
     } catch (error) {
-      console.error("Error creating form:", error);
+      console.error("Error creating form:", error)
     }
-  };
+  }
 
   return (
     <Menu>
@@ -84,5 +84,5 @@ export default function CreateFormDropdown() {
         ))}
       </MenuItems>
     </Menu>
-  );
+  )
 }

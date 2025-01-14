@@ -1,5 +1,5 @@
-import { Grid2, InputLabel, TextField, TextFieldProps } from '@mui/material'
-import { Controller, UseFormRegister } from 'react-hook-form'
+import { Grid2, InputLabel, TextField, TextFieldProps } from "@mui/material"
+import { Controller, UseFormRegister } from "react-hook-form"
 
 type InputMuiProps = {
   label: string
@@ -7,8 +7,8 @@ type InputMuiProps = {
   control: any
   register: UseFormRegister<any>
   errors: any
-  variant?: TextFieldProps['variant']
-} & Omit<TextFieldProps, 'variant'>
+  variant?: TextFieldProps["variant"]
+} & Omit<TextFieldProps, "variant">
 
 function CohortTextField({
   label,
@@ -26,7 +26,7 @@ function CohortTextField({
         render={({ field: { value } }) => {
           return (
             <>
-              <InputLabel shrink htmlFor='bootstrap-input'>
+              <InputLabel shrink htmlFor="bootstrap-input">
                 {label}
               </InputLabel>
               <TextField
@@ -34,7 +34,7 @@ function CohortTextField({
                 value={value}
                 helperText={errors[name]?.message}
                 {...register(name)}
-                size='small'
+                size="small"
                 fullWidth
                 {...props}
               />

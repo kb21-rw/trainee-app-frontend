@@ -1,47 +1,45 @@
-import { useSignupMutation } from "../../features/user/backendApi";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import InputField from "../../components/ui/InputField";
-import Button from "../../components/ui/Button";
-import { H1 } from "../../components/ui/Typography";
-import Loader from "../../components/ui/Loader";
-import { ButtonSize, Cookie } from "../../utils/types";
-import { useCookies } from "react-cookie";
+import { useSignupMutation } from "../../features/user/backendApi"
+import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router-dom"
+import InputField from "../../components/ui/InputField"
+import Button from "../../components/ui/Button"
+import { H1 } from "../../components/ui/Typography"
+import Loader from "../../components/ui/Loader"
+import { ButtonSize, Cookie } from "../../utils/types"
+import { useCookies } from "react-cookie"
 
-const Signup = ({
-  handlePageChange,
-}: {
-  handlePageChange: () => void;
-}) => {
-  const [signup, { isLoading, error }] = useSignupMutation();
+const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
+  const [signup, { isLoading, error }] = useSignupMutation()
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm();
-  const [, setCookie] = useCookies([Cookie.jwt]);
-  const navigate = useNavigate();
+  } = useForm()
+  const [, setCookie] = useCookies([Cookie.jwt])
+  const navigate = useNavigate()
 
-  const password = watch("password");
+  const password = watch("password")
 
   const onSubmit = async (userData: any) => {
     const result = await signup({
       name: userData.name,
       email: userData.email,
       password: userData.password,
-    });
+    })
     if (result.data.userId) {
-      setCookie(Cookie.jwt, result.data.userId, { maxAge: 1800 });
-      return navigate("/signup/thank-you");
+      setCookie(Cookie.jwt, result.data.userId, { maxAge: 1800 })
+      return navigate("/signup/thank-you")
     }
-  };
+
+    return undefined
+  }
 
   const errorMessage: any =
     errors.email?.message ||
     errors.password?.message ||
     errors["confirm-password"]?.message ||
-    error?.data?.errorMessage;
+    error?.data?.errorMessage
 
   return (
     <form
@@ -49,7 +47,7 @@ const Signup = ({
       className="flex flex-col h-screen justify-center gap-5 md:gap-8 px-5 sm:px-10 md:p-0 mx-auto md:max-w-sm"
     >
       <div className="text-center">
-      <H1>Signup</H1>
+        <H1>Signup</H1>
       </div>
       <div className="w-full flex text-center justify-center">
         {isLoading && <Loader />}
@@ -136,7 +134,7 @@ const Signup = ({
         </Button>
       </div>
     </form>
-  );
-};
+  )
+}
 
-export default Signup;
+export default Signup

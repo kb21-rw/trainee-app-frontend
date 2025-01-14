@@ -1,35 +1,35 @@
-import { useForm } from "react-hook-form";
-import InputField from "../ui/InputField";
-import Button from "../ui/Button";
-import { ButtonVariant, Decision, DecisionInfo } from "../../utils/types";
-import TextArea from "../ui/TextArea";
-import { Modal } from "@mui/material";
-import { useEffect } from "react";
+import { useForm } from "react-hook-form"
+import InputField from "../ui/InputField"
+import Button from "../ui/Button"
+import { ButtonVariant, Decision, DecisionInfo } from "../../utils/types"
+import TextArea from "../ui/TextArea"
+import { Modal } from "@mui/material"
+import { useEffect } from "react"
 
 export default function DecisionModal({
   decisionInfo,
   onSubmit,
   closeModal,
 }: {
-  decisionInfo: DecisionInfo | null;
+  decisionInfo: DecisionInfo | null
   // eslint-disable-next-line no-unused-vars
-  onSubmit: (_data: { feedback: string }) => void;
-  closeModal: () => void;
+  onSubmit: (_data: { feedback: string }) => void
+  closeModal: () => void
 }) {
   const { register, handleSubmit, resetField } = useForm<{
-    feedback: string;
-  }>();
+    feedback: string
+  }>()
 
   const modalData =
     decisionInfo?.decision === Decision.Rejected
       ? { variant: ButtonVariant.Danger, title: "Reject user" }
-      : { variant: ButtonVariant.Primary, title: "Accept user" };
+      : { variant: ButtonVariant.Primary, title: "Accept user" }
 
   useEffect(() => {
     if (!decisionInfo) {
-      resetField("feedback");
+      resetField("feedback")
     }
-  }, [decisionInfo, resetField]);
+  }, [decisionInfo, resetField])
 
   return (
     <Modal
@@ -88,5 +88,5 @@ export default function DecisionModal({
         </div>
       </form>
     </Modal>
-  );
+  )
 }

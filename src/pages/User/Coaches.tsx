@@ -1,38 +1,33 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 import {
   useGetAllCohortsQuery,
   useGetCoachesQuery,
-} from "../../features/user/backendApi";
-import Button from "../../components/ui/Button";
-import { AlertType, ButtonSize, Cohort, Cookie, User } from "../../utils/types";
-import { useCookies } from "react-cookie";
-import { useDispatch } from "react-redux";
-import {
-  FormControl,
-  SelectChangeEvent,
-  MenuItem,
-  Select,
-} from "@mui/material";
-import { handleShowAlert } from "../../utils/handleShowAlert";
-import { getErrorInfo } from "../../utils/helper";
-import Loader from "../../components/ui/Loader";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import DeleteIcon from "../../assets/DeleteIcon";
-import AddCoach from "../../components/modals/AddCoach";
-import { customizeDataGridStyles } from "../../utils/data";
+} from "../../features/user/backendApi"
+import Button from "../../components/ui/Button"
+import { AlertType, ButtonSize, Cohort, Cookie, User } from "../../utils/types"
+import { useCookies } from "react-cookie"
+import { useDispatch } from "react-redux"
+import { FormControl, SelectChangeEvent, MenuItem, Select } from "@mui/material"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { getErrorInfo } from "../../utils/helper"
+import Loader from "../../components/ui/Loader"
+import { DataGrid, GridColDef } from "@mui/x-data-grid"
+import DeleteIcon from "../../assets/DeleteIcon"
+import AddCoach from "../../components/modals/AddCoach"
+import { customizeDataGridStyles } from "../../utils/data"
 
 export default function Coaches() {
-  const [isAddCoachOpen, setIsAddCoachOpen] = useState(false);
-  const dispatch = useDispatch();
-  const [cookies] = useCookies([Cookie.jwt]);
+  const [isAddCoachOpen, setIsAddCoachOpen] = useState(false)
+  const dispatch = useDispatch()
+  const [cookies] = useCookies([Cookie.jwt])
   const {
     data: cohorts,
     error: cohortsError,
     isFetching: cohortsAreFetching,
   } = useGetAllCohortsQuery({
     jwt: cookies.jwt,
-  });
-  const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null);
+  })
+  const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
   const {
     data: cohortCoaches,
     error: cohortCoachesError,
@@ -40,18 +35,18 @@ export default function Coaches() {
   } = useGetCoachesQuery({
     jwt: cookies.jwt,
     cohortId: selectedCohortId,
-  });
+  })
   const handleCohortChange = (event: SelectChangeEvent) => {
-    const cohortId = event.target.value;
-    setSelectedCohortId(cohortId);
-  };
+    const cohortId = event.target.value
+    setSelectedCohortId(cohortId)
+  }
 
   if (cohortsError || cohortCoachesError || cohortCoachesError) {
-    const { message } = getErrorInfo(cohortsError ?? cohortCoachesError);
+    const { message } = getErrorInfo(cohortsError ?? cohortCoachesError)
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
-    });
+    })
   }
 
   const columns: GridColDef[] = [
@@ -81,10 +76,10 @@ export default function Coaches() {
               <DeleteIcon />
             </button>
           </div>
-        );
+        )
       },
     },
-  ];
+  ]
 
   const rows: { id: string; userId: string; name: string; email: string }[] =
     cohortCoaches?.coaches?.map((coach: User) => ({
@@ -92,7 +87,7 @@ export default function Coaches() {
       userId: coach.userId,
       name: coach.name,
       email: coach.email,
-    })) ?? [];
+    })) ?? []
 
   return (
     <>
@@ -131,8 +126,13 @@ export default function Coaches() {
             </Button>
           )}
         </div>
-        <DataGrid columns={columns} rows={rows} hideFooter sx={customizeDataGridStyles} />
+        <DataGrid
+          columns={columns}
+          rows={rows}
+          hideFooter
+          sx={customizeDataGridStyles}
+        />
       </div>
     </>
-  );
+  )
 }

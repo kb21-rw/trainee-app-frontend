@@ -1,30 +1,30 @@
-import { InputLabel, Paper, Stack, TextField, Typography } from "@mui/material";
-import Button from "../../components/ui/Button";
-import { ButtonSize, ButtonVariant } from "../../utils/types";
-import { Controller, UseFormRegister, useFieldArray } from "react-hook-form";
+import { InputLabel, Paper, Stack, TextField, Typography } from "@mui/material"
+import Button from "../../components/ui/Button"
+import { ButtonSize, ButtonVariant } from "../../utils/types"
+import { Controller, UseFormRegister, useFieldArray } from "react-hook-form"
 
 type StageProps = {
-  stagesNames?: { stageName: string; stageDescription: string };
-  control: any;
-  register?: UseFormRegister<any>;
-  errors: any;
-};
+  stagesNames?: { stageName: string; stageDescription: string }
+  control: any
+  register?: UseFormRegister<any>
+  errors: any
+}
 
 function Stages({ control, errors }: StageProps) {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "stages",
-  });
+  })
 
   const addStage = () => {
-    append({ stageName: "", stageDescription: "" });
-  };
+    append({ stageName: "", stageDescription: "" })
+  }
 
   const removeStage = (index: number) => {
     if (fields.length > 1) {
-      remove(index);
+      remove(index)
     }
-  };
+  }
 
   return (
     <>
@@ -97,7 +97,7 @@ function Stages({ control, errors }: StageProps) {
         </Button>
       </Stack>
     </>
-  );
+  )
 }
 
-export default Stages;
+export default Stages

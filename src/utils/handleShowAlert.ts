@@ -1,7 +1,7 @@
-import { showAlert } from "../features/user/alertSlice";
-import { Dispatch } from "react";
-import { AnyAction } from "@reduxjs/toolkit";
-import { AlertType } from "./types";
+import { showAlert } from "../features/user/alertSlice"
+import { Dispatch } from "react"
+import { AnyAction } from "@reduxjs/toolkit"
+import { AlertType } from "./types"
 
 export const handleShowAlert = (
   dispatch: Dispatch<AnyAction>,
@@ -10,10 +10,10 @@ export const handleShowAlert = (
     message,
     displayDuration,
   }: {
-    type: AlertType;
-    message: string;
-    displayDuration?: number;
-  }
+    type: AlertType
+    message: string
+    displayDuration?: number
+  },
 ) => {
   // Debounce the State Update
   setTimeout(() => {
@@ -22,7 +22,7 @@ export const handleShowAlert = (
         message,
         type,
         displayDuration,
-      })
-    );
-  }, 0);
-};
+      }),
+    )
+  }, 0)
+}

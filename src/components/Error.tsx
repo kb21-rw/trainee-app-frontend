@@ -1,13 +1,13 @@
-import { useRouteError } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useRouteError } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 type ErrorType = {
-  type: string;
-  message: string;
-};
+  type: string
+  message: string
+}
 
 const Error = () => {
-  const error = useRouteError() as ErrorType;
+  const error = useRouteError() as ErrorType
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-5xl">{error.type} 🫤</h1>
@@ -16,7 +16,7 @@ const Error = () => {
         Back to home page
       </Link>
     </div>
-  );
-};
+  )
+}
 
-export default Error;
+export default Error

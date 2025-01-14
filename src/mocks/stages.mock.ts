@@ -9,4 +9,4 @@ export const stages = [
     description: "React and redux",
     id: "66b09b2e34299e3eb94123a1",
   },
-];
+]

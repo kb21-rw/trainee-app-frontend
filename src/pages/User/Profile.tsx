@@ -1,53 +1,52 @@
-import React from "react";
-import { H1 } from "../../components/ui/Typography";
-import Button from "../../components/ui/Button";
-import InputField from "../../components/ui/InputField";
-import Loader from "../../components/ui/Loader";
+import React from "react"
+import { H1 } from "../../components/ui/Typography"
+import Button from "../../components/ui/Button"
+import InputField from "../../components/ui/InputField"
+import Loader from "../../components/ui/Loader"
 import {
   useGetProfileQuery,
   useUpdateProfileMutation,
-} from "../../features/user/backendApi";
-import { useForm } from "react-hook-form";
-import { getErrorInfo } from "../../utils/helper";
-import { handleShowAlert } from "../../utils/handleShowAlert";
-import { AlertType, Cookie } from "../../utils/types";
-import { useDispatch } from "react-redux";
-import { useCookies } from "react-cookie";
+} from "../../features/user/backendApi"
+import { useForm } from "react-hook-form"
+import { getErrorInfo } from "../../utils/helper"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { AlertType, Cookie } from "../../utils/types"
+import { useDispatch } from "react-redux"
+import { useCookies } from "react-cookie"
 
 const Profile = () => {
-  const [cookies] = useCookies([Cookie.jwt]);
+  const [cookies] = useCookies([Cookie.jwt])
   const [updateProfile, { isLoading, isSuccess, error }] =
-    useUpdateProfileMutation();
-  const dispatch = useDispatch();
-  const { data } = useGetProfileQuery(cookies.jwt);
-  const { register, handleSubmit } = useForm();
+    useUpdateProfileMutation()
+  const dispatch = useDispatch()
+  const { data } = useGetProfileQuery(cookies.jwt)
+  const { register, handleSubmit } = useForm()
 
   const onSubmit = async (data: {
-    email?: string;
-    name?: string;
-    password?: string;
+    email?: string
+    name?: string
+    password?: string
   }) => {
-    const profileData: { email?: string; name?: string; password?: string } =
-      {};
-    if (data.email) profileData.email = data.email;
-    if (data.name) profileData.name = data.name;
-    if (data.password) profileData.password = data.password;
-    await updateProfile({ jwt: cookies.jwt, profileData });
-  };
+    const profileData: { email?: string; name?: string; password?: string } = {}
+    if (data.email) profileData.email = data.email
+    if (data.name) profileData.name = data.name
+    if (data.password) profileData.password = data.password
+    await updateProfile({ jwt: cookies.jwt, profileData })
+  }
 
   if (error) {
-    const { message } = getErrorInfo(error);
+    const { message } = getErrorInfo(error)
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
-    });
+    })
   }
 
   if (isSuccess) {
     handleShowAlert(dispatch, {
       type: AlertType.Success,
       message: "Profile was updated successfully!",
-    });
+    })
   }
 
   return (
@@ -98,7 +97,7 @@ const Profile = () => {
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Profile;
+export default Profile

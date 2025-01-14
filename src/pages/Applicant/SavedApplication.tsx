@@ -1,27 +1,27 @@
-import { useCookies } from "react-cookie";
-import { AlertType, Cookie, UserResponseQuestion } from "../../utils/types";
-import { useGetMyApplicationQuery } from "../../features/user/backendApi";
-import Loader from "../../components/ui/Loader";
-import { getErrorInfo } from "../../utils/helper";
-import { handleShowAlert } from "../../utils/handleShowAlert";
-import { useDispatch } from "react-redux";
-import ApplicationFormQuestionPreview from "../../components/ui/ApplicationFormQuestionPreview";
-import { Link } from "react-router-dom";
+import { useCookies } from "react-cookie"
+import { AlertType, Cookie, UserResponseQuestion } from "../../utils/types"
+import { useGetMyApplicationQuery } from "../../features/user/backendApi"
+import Loader from "../../components/ui/Loader"
+import { getErrorInfo } from "../../utils/helper"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { useDispatch } from "react-redux"
+import ApplicationFormQuestionPreview from "../../components/ui/ApplicationFormQuestionPreview"
+import { Link } from "react-router-dom"
 
 export default function SavedApplication() {
-  const [cookies] = useCookies([Cookie.jwt]);
-  const dispatch = useDispatch();
+  const [cookies] = useCookies([Cookie.jwt])
+  const dispatch = useDispatch()
   const {
     data: application,
     isFetching,
     error,
-  } = useGetMyApplicationQuery(cookies.jwt);
+  } = useGetMyApplicationQuery(cookies.jwt)
 
-  if (isFetching || !application) return <Loader />;
+  if (isFetching || !application) return <Loader />
 
   if (error) {
-    const { message } = getErrorInfo(error);
-    handleShowAlert(dispatch, { type: AlertType.Error, message });
+    const { message } = getErrorInfo(error)
+    handleShowAlert(dispatch, { type: AlertType.Error, message })
   }
 
   return (
@@ -50,5 +50,5 @@ export default function SavedApplication() {
         </Link>
       </div>
     </div>
-  );
+  )
 }

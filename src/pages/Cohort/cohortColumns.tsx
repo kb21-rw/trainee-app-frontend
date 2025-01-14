@@ -1,17 +1,17 @@
-import { GridColDef } from "@mui/x-data-grid";
-import ActionButtons from "./ActionButtons";
+import { GridColDef } from "@mui/x-data-grid"
+import ActionButtons from "./ActionButtons"
 
 export type TCohort = {
-  applicants: number;
-  coaches: number;
-  description: string;
-  forms: number;
-  name: string;
-  stages: number;
-  trainees: number;
-  _id: string;
-};
-export type TCohortWithId = TCohort & { readonly id: number };
+  applicants: number
+  coaches: number
+  description: string
+  forms: number
+  name: string
+  stages: number
+  trainees: number
+  _id: string
+}
+export type TCohortWithId = TCohort & { readonly id: number }
 export const columns: GridColDef<TCohortWithId>[] = [
   {
     field: "id",
@@ -48,7 +48,7 @@ export const columns: GridColDef<TCohortWithId>[] = [
     headerAlign: "center",
 
     renderCell: () => {
-      return <ActionButtons />;
+      return <ActionButtons />
     },
   },
-];
+]

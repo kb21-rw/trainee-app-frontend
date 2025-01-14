@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement } from "react"
 
 export default function SearchIcon(): ReactElement {
   return (
@@ -16,5 +16,5 @@ export default function SearchIcon(): ReactElement {
         strokeLinejoin="round"
       />
     </svg>
-  );
+  )
 }

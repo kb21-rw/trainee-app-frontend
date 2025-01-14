@@ -1,13 +1,13 @@
-import { SelectHTMLAttributes } from "react";
-import { Select as SelectField } from "@headlessui/react";
-import { UseFormRegisterReturn } from "react-hook-form";
-import classNames from "classnames";
+import { SelectHTMLAttributes } from "react"
+import { Select as SelectField } from "@headlessui/react"
+import { UseFormRegisterReturn } from "react-hook-form"
+import classNames from "classnames"
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
-  options: { value: string; label: string }[];
-  register?: UseFormRegisterReturn<any>;
-  label?: string;
-  error?: string;
+  options: { value: string; label: string }[]
+  register?: UseFormRegisterReturn<any>
+  label?: string
+  error?: string
 }
 
 export default function Select({
@@ -46,5 +46,5 @@ export default function Select({
         )}
       </div>
     </div>
-  );
+  )
 }

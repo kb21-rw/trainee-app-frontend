@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import OpenEye from "../../assets/OpenEyeIcon";
-import ClosedEye from "../../assets/ClosedEyeIcon";
-import { FieldErrors } from "react-hook-form";
-import classNames from "classnames";
+import React, { useState } from "react"
+import OpenEye from "../../assets/OpenEyeIcon"
+import ClosedEye from "../../assets/ClosedEyeIcon"
+import { FieldErrors } from "react-hook-form"
+import classNames from "classnames"
 
 const InputField = ({
   label,
@@ -16,23 +16,23 @@ const InputField = ({
   errors,
   disabled = false,
 }: {
-  label: string;
-  type: string;
-  placeholder?: string;
-  name: string;
-  defaultValue?: string;
-  register?: any;
-  options?: any;
-  errorMessage?: any;
-  errors?: FieldErrors;
-  disabled?: boolean;
+  label: string
+  type: string
+  placeholder?: string
+  name: string
+  defaultValue?: string
+  register?: any
+  options?: any
+  errorMessage?: any
+  errors?: FieldErrors
+  disabled?: boolean
 }) => {
-  const [show, setShow] = useState<boolean>(false);
+  const [show, setShow] = useState<boolean>(false)
   const passwordIcon = () => {
-    return show ? <OpenEye /> : <ClosedEye />;
-  };
+    return show ? <OpenEye /> : <ClosedEye />
+  }
 
-  const fieldErrorMessage = name && errors && errors[name]?.message;
+  const fieldErrorMessage = name && errors && errors[name]?.message
 
   return (
     <div className="flex flex-col gap-2">
@@ -67,7 +67,7 @@ const InputField = ({
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default InputField;
+export default InputField

@@ -3,35 +3,34 @@ import {
   createRoutesFromElements,
   Route,
   RouterProvider,
-} from "react-router-dom";
-import Error from "./components/Error";
-import ProtectedLayout from "./components/layouts/ProtectedLayout";
-import NotFound from "./pages/NotFound";
-import Profile from "./pages/User/Profile";
-import CoachesInfo from "./pages/User/Coaches";
-import ResetPassword from "./pages/auth/ResetPassword";
-import EditMyTrainees from "./pages/User/EditTraineesForCoach";
-import AllForm from "./pages/Form/AllForms";
-import SingleForm from "./pages/Form/SingleForm";
-import OverView from "./pages/User/OverView";
-import TraineeResults from "./pages/User/TraineeResults";
-import ApplicantVerification from "./pages/auth/Verification";
-import ApplicationForm from "./pages/Applicant/ApplicationForm";
-import ThankYouNote from "./pages/Applicant/ThankYouNote";
-import Cohorts from "./pages/Cohort/Cohorts";
-import HomePage from "./pages/Applicant/HomePage";
-import SavedApplication from "./pages/Applicant/SavedApplication";
-import Applicants from "./pages/Overview/Applicants";
-import CreateApplicationForm from "./pages/Form/CreateApplicationForm";
-import PrivateRoute from "./components/PrivateRoute";
-import PreviewApplicationPage from "./pages/Applicant/PreviewApplicationPage";
-import Auth from "./pages/auth/Auth";
-import { Provider } from "react-redux";
-import { store } from "./store";
-import GlobalLayout from "./components/layouts/GlobalLayout";
-import { UserRole } from "./utils/types";
-import { CookiesProvider } from "react-cookie";
-import Users from "./pages/User/Users";
+} from "react-router-dom"
+import Error from "./components/Error"
+import ProtectedLayout from "./components/layouts/ProtectedLayout"
+import NotFound from "./pages/NotFound"
+import Profile from "./pages/User/Profile"
+import CoachesInfo from "./pages/User/Coaches"
+import ResetPassword from "./pages/auth/ResetPassword"
+import AllForm from "./pages/Form/AllForms"
+import SingleForm from "./pages/Form/SingleForm"
+import OverView from "./pages/User/OverView"
+import TraineeResults from "./pages/User/TraineeResults"
+import ApplicantVerification from "./pages/auth/Verification"
+import ApplicationForm from "./pages/Applicant/ApplicationForm"
+import ThankYouNote from "./pages/Applicant/ThankYouNote"
+import Cohorts from "./pages/Cohort/Cohorts"
+import HomePage from "./pages/Applicant/HomePage"
+import SavedApplication from "./pages/Applicant/SavedApplication"
+import Applicants from "./pages/Overview/Applicants"
+import CreateApplicationForm from "./pages/Form/CreateApplicationForm"
+import PrivateRoute from "./components/PrivateRoute"
+import PreviewApplicationPage from "./pages/Applicant/PreviewApplicationPage"
+import Auth from "./pages/auth/Auth"
+import { Provider } from "react-redux"
+import { store } from "./store"
+import GlobalLayout from "./components/layouts/GlobalLayout"
+import { UserRole } from "./utils/types"
+import { CookiesProvider } from "react-cookie"
+import Users from "./pages/User/Users"
 
 export default function App() {
   const router = createBrowserRouter(
@@ -55,7 +54,7 @@ export default function App() {
 
             <Route element={<PrivateRoute allowedRoles={[UserRole.Coach]} />}>
               <Route path="/overview" element={<OverView />} />
-              <Route path="/my-trainees" element={<EditMyTrainees />} />
+              <Route path="/my-trainees" element={<h1>My trainees</h1>} />
               <Route path="/trainees-results" element={<TraineeResults />} />
             </Route>
 
@@ -97,7 +96,7 @@ export default function App() {
         </Route>
       </Route>,
     ),
-  );
+  )
 
   return (
     <CookiesProvider defaultSetOptions={{ path: "/" }}>
@@ -105,5 +104,5 @@ export default function App() {
         <RouterProvider router={router} />
       </Provider>
     </CookiesProvider>
-  );
+  )
 }

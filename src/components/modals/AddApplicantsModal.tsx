@@ -4,40 +4,40 @@ import {
   ComboboxInput,
   ComboboxOption,
   ComboboxOptions,
-} from "@headlessui/react";
-import Button from "../ui/Button";
-import { Modal } from "@mui/material";
-import { FormEvent, useState } from "react";
-import DropDownIcon from "../../assets/DropDownIcon";
-import classNames from "classnames";
+} from "@headlessui/react"
+import Button from "../ui/Button"
+import { Modal } from "@mui/material"
+import { FormEvent, useState } from "react"
+import DropDownIcon from "../../assets/DropDownIcon"
+import classNames from "classnames"
 import {
   useAddApplicantsMutation,
   useGetUsersQuery,
-} from "../../features/user/backendApi";
-import { useCookies } from "react-cookie";
-import { AlertType, Cookie, User } from "../../utils/types";
-import { getErrorInfo } from "../../utils/helper";
-import { useDispatch } from "react-redux";
-import { handleShowAlert } from "../../utils/handleShowAlert";
-import Loader from "../ui/Loader";
-import TickIcon from "../../assets/TickIcon";
+} from "../../features/user/backendApi"
+import { useCookies } from "react-cookie"
+import { AlertType, Cookie, User } from "../../utils/types"
+import { getErrorInfo } from "../../utils/helper"
+import { useDispatch } from "react-redux"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import Loader from "../ui/Loader"
+import TickIcon from "../../assets/TickIcon"
 
 interface Option {
-  id: string;
-  label: string;
+  id: string
+  label: string
 }
 
 export default function AddApplicantsModal({
   isOpen,
   onClose,
 }: {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
 }) {
-  const [cookies] = useCookies([Cookie.jwt]);
-  const dispatch = useDispatch();
-  const [selectedProspects, setSelectedProspects] = useState<Option[]>([]);
-  const [query, setQuery] = useState("");
+  const [cookies] = useCookies([Cookie.jwt])
+  const dispatch = useDispatch()
+  const [selectedProspects, setSelectedProspects] = useState<Option[]>([])
+  const [query, setQuery] = useState("")
   const {
     data: prospects,
     error: prospectsError,
@@ -45,7 +45,7 @@ export default function AddApplicantsModal({
   } = useGetUsersQuery({
     jwt: cookies.jwt,
     search: "role=Prospect",
-  });
+  })
   const [
     addApplicants,
     {
@@ -54,56 +54,56 @@ export default function AddApplicantsModal({
       isSuccess: isAddApplicantsSuccess,
       reset: resetAddApplicants,
     },
-  ] = useAddApplicantsMutation();
+  ] = useAddApplicantsMutation()
 
   const formattedProspects: Option[] =
     prospects?.map((prospect: User) => ({
       id: prospect._id,
       label: prospect.name,
-    })) ?? [];
+    })) ?? []
 
   const filteredPeople =
     query === ""
       ? formattedProspects
       : formattedProspects.filter((prospect) => {
-          return prospect.label.toLowerCase().includes(query.toLowerCase());
-        });
+          return prospect.label.toLowerCase().includes(query.toLowerCase())
+        })
 
   const handleSubmit = async (
     event: FormEvent<HTMLFormElement>,
   ): Promise<void> => {
-    event.preventDefault();
+    event.preventDefault()
     const prospectIds: string[] = selectedProspects.map(
       (prospect: Option) => prospect.id,
-    );
+    )
 
-    await addApplicants({ jwt: cookies.jwt, body: { prospectIds } });
-  };
+    await addApplicants({ jwt: cookies.jwt, body: { prospectIds } })
+  }
 
   const removeProspect = (prospectId: string) => {
     setSelectedProspects((prevProspects) =>
       prevProspects.filter((prospect) => prospect.id !== prospectId),
-    );
-  };
+    )
+  }
 
   if (prospectsError ?? applicantsError) {
-    const { message } = getErrorInfo(prospectsError ?? applicantsError);
+    const { message } = getErrorInfo(prospectsError ?? applicantsError)
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
-    });
+    })
 
-    resetAddApplicants();
+    resetAddApplicants()
   }
 
   if (isAddApplicantsSuccess) {
     handleShowAlert(dispatch, {
       type: AlertType.Success,
       message: "Applicants were added successfully",
-    });
+    })
 
-    resetAddApplicants();
-    onClose();
+    resetAddApplicants()
+    onClose()
   }
 
   return (
@@ -167,7 +167,7 @@ export default function AddApplicantsModal({
                     "w-full p-3 border rounded-xl overflow-hidden focus:outline-none",
                   )}
                   onChange={(event) => {
-                    setQuery(event.target.value);
+                    setQuery(event.target.value)
                   }}
                 />
                 <ComboboxButton className="group absolute inset-y-0 right-0 px-2.5">
@@ -218,5 +218,5 @@ export default function AddApplicantsModal({
         )}
       </form>
     </Modal>
-  );
+  )
 }

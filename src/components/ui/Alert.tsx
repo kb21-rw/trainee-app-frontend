@@ -1,20 +1,20 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store";
-import { hideAlert } from "../../features/user/alertSlice";
-import { AlertType } from "../../utils/types";
-import classNames from "classnames";
+import { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "../../store"
+import { hideAlert } from "../../features/user/alertSlice"
+import { AlertType } from "../../utils/types"
+import classNames from "classnames"
 
 const Alert = () => {
-  const alert = useSelector((stage: RootState) => stage.alert);
-  const dispatch = useDispatch();
+  const alert = useSelector((stage: RootState) => stage.alert)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      dispatch(hideAlert());
-    }, alert.displayDuration);
-    return () => clearTimeout(timer);
-  }, [alert.displayDuration, dispatch]);
+      dispatch(hideAlert())
+    }, alert.displayDuration)
+    return () => clearTimeout(timer)
+  }, [alert.displayDuration, dispatch])
 
   return (
     alert.isVisible && (
@@ -28,7 +28,7 @@ const Alert = () => {
         {alert.message}
       </div>
     )
-  );
-};
+  )
+}
 
-export default Alert;
+export default Alert

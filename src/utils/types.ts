@@ -1,111 +1,111 @@
-import { ReactNode } from "react";
+import { ReactNode } from "react"
 
 /* eslint-disable no-unused-vars */
 export interface IFormType {
-  _id: string;
-  name: string;
-  description: string;
-  type: string;
-  questions: number;
+  _id: string
+  name: string
+  description: string
+  type: string
+  questions: number
 }
 
 export interface User {
-  _id: string;
-  userId: string;
-  name: string;
-  email: string;
-  role: UserRole;
-  coach: Omit<User, "coach">;
+  _id: string
+  userId: string
+  name: string
+  email: string
+  role: UserRole
+  coach: Omit<User, "coach">
 }
 
 export interface Cohort {
-  _id: string;
-  name: string;
-  description: string;
-  isActive: boolean;
-  applicants: CohortParticipant[];
-  trainees: CohortParticipant[];
-  coaches: User[];
-  forms: Form[];
+  _id: string
+  name: string
+  description: string
+  isActive: boolean
+  applicants: CohortParticipant[]
+  trainees: CohortParticipant[]
+  coaches: User[]
+  forms: Form[]
   applicationForm: {
     applicationForm: {
-      id: string;
-      stages: Stage[];
-      startDate: string;
-      endDate: string;
-    };
-  };
-  stages: Stage[];
-  trainingStartDate: string;
+      id: string
+      stages: Stage[]
+      startDate: string
+      endDate: string
+    }
+  }
+  stages: Stage[]
+  trainingStartDate: string
 }
 
 export interface Form {
-  _id: string;
-  name: string;
-  description: string;
-  type: FormType;
-  questions: Question[];
+  _id: string
+  name: string
+  description: string
+  type: FormType
+  questions: Question[]
 }
 export interface Question {
-  _id: string;
-  prompt: string;
-  type: QuestionType;
-  required: boolean;
-  options: string[];
-  responses: Response[];
+  _id: string
+  prompt: string
+  type: QuestionType
+  required: boolean
+  options: string[]
+  responses: Response[]
 }
 
 export interface Response {
-  _id: string;
-  user: User;
-  value: string | string[];
-  questionId?: string;
+  _id: string
+  user: User
+  value: string | string[]
+  questionId?: string
 }
 
 export interface CreateCoach {
-  name: string;
-  email: string;
-  password: string;
+  name: string
+  email: string
+  password: string
 }
 export interface Stage {
-  id: string;
-  name: string;
-  description: string;
+  id: string
+  name: string
+  description: string
 }
 
 export interface Option {
-  title: string;
+  title: string
 }
 
 export interface TemplateQuestion {
-  _id: string;
-  prompt: string;
-  responses: Response[];
-  options: string[];
-  type: QuestionType;
-  required: boolean;
+  _id: string
+  prompt: string
+  responses: Response[]
+  options: string[]
+  type: QuestionType
+  required: boolean
 }
 export interface UserResponseQuestion {
-  _id: string;
-  prompt: string;
-  response: null | string | string[];
-  options: string[];
-  type: QuestionType;
-  required: boolean;
+  _id: string
+  prompt: string
+  response: null | string | string[]
+  options: string[]
+  type: QuestionType
+  required: boolean
 }
 
 export interface ResponseModalQuestion extends UserResponseQuestion {
-  form: string;
+  form: string
 }
 
 export interface ResponseCell {
-  id: string;
-  [key: string]: null | string | string[];
+  id: string
+  [key: string]: null | string | string[]
 }
 
 export interface ApplicationFormResponse {
-  questionId: string;
-  answer: string[];
+  questionId: string
+  answer: string[]
 }
 
 export enum ButtonVariant {
@@ -134,19 +134,19 @@ export enum UserRole {
 }
 
 export type ApplicantDetails = {
-  applied: boolean;
-  createdAt: string;
-  email: string;
-  googleId: string | null;
-  name: string;
-  password: string;
-  role: string;
-  updatedAt: string;
-  userId: string;
-  verified: boolean;
-  __v: number;
-  _id: string;
-};
+  applied: boolean
+  createdAt: string
+  email: string
+  googleId: string | null
+  name: string
+  password: string
+  role: string
+  updatedAt: string
+  userId: string
+  verified: boolean
+  __v: number
+  _id: string
+}
 
 export enum FormType {
   Applicant = "Applicant",
@@ -155,17 +155,17 @@ export enum FormType {
 }
 
 export interface MenuItemType {
-  label: string;
-  type?: FormType;
-  link?: string;
+  label: string
+  type?: FormType
+  link?: string
 }
 
 export interface ApplicationFormType {
-  title: string;
-  description: string;
-  startDate: Date | null;
-  endDate: Date | null;
-  stages: { name: string; description: string }[] | [];
+  title: string
+  description: string
+  startDate: Date | null
+  endDate: Date | null
+  stages: { name: string; description: string }[] | []
 }
 
 export enum ApplicationFormStatus {
@@ -177,18 +177,18 @@ export enum ApplicationFormStatus {
 }
 
 export interface ApplicationForm extends Omit<Form, "questions"> {
-  startDate: string;
-  endDate: string;
-  trainingStartDate: string;
-  questions: UserResponseQuestion[];
+  startDate: string
+  endDate: string
+  trainingStartDate: string
+  questions: UserResponseQuestion[]
 }
 
 export interface IAlert {
-  open: boolean;
-  type: "error" | "success";
-  children: ReactNode;
-  displayDuration?: number;
-  onClose: () => void;
+  open: boolean
+  type: "error" | "success"
+  children: ReactNode
+  displayDuration?: number
+  onClose: () => void
 }
 
 export enum AlertType {
@@ -196,7 +196,7 @@ export enum AlertType {
   Success = "Success",
 }
 
-export type AlertData = Pick<IAlert, "type" | "displayDuration" | "children">;
+export type AlertData = Pick<IAlert, "type" | "displayDuration" | "children">
 
 export enum Cookie {
   jwt = "jwt",
@@ -208,13 +208,13 @@ export enum AuthPage {
 }
 
 export interface CohortParticipant {
-  id: string;
-  passedStages: string[];
+  id: string
+  passedStages: string[]
   droppedStage: {
-    id: string;
-    isConfirmed: boolean;
-  };
-  feedbacks: { stageId: string; text: string }[];
+    id: string
+    isConfirmed: boolean
+  }
+  feedbacks: { stageId: string; text: string }[]
 }
 
 export enum Decision {
@@ -223,17 +223,17 @@ export enum Decision {
 }
 
 export interface DecisionInfo {
-  userId: string;
-  name: string;
-  email: string;
-  stage: string;
-  decision: Decision;
+  userId: string
+  name: string
+  email: string
+  stage: string
+  decision: Decision
 }
 
 export interface CreateUserDto {
-  name: string;
-  email: string;
-  role: Omit<UserRole, UserRole.Applicant | UserRole.Trainee>;
+  name: string
+  email: string
+  role: Omit<UserRole, UserRole.Applicant | UserRole.Trainee>
 }
 
 export enum ParticipantPhase {
@@ -243,17 +243,17 @@ export enum ParticipantPhase {
 }
 
 export interface UserRow {
-  id: string;
-  name: string;
-  email: string;
-  coach: string;
-  coachName: string;
-  stage: string;
-  actions: ParticipantPhase;
-  [key: string]: string | string[];
+  id: string
+  name: string
+  email: string
+  coach: string
+  coachName: string
+  stage: string
+  actions: ParticipantPhase
+  [key: string]: string | string[]
 }
 
 export interface ResponseModalInfo {
-  userId: string;
-  question: ResponseModalQuestion;
+  userId: string
+  question: ResponseModalQuestion
 }

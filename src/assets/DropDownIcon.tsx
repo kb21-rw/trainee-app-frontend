@@ -13,5 +13,5 @@ export default function DropDownIcon({ className }: { className?: string }) {
         fill="black"
       />
     </svg>
-  );
+  )
 }

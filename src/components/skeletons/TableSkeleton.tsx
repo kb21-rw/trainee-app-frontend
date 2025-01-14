@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, Skeleton, Stack } from "@mui/material";
+import { Card, CardContent, CardHeader, Skeleton, Stack } from "@mui/material"
 
 export default function TableSkeleton() {
   return (
@@ -20,5 +20,5 @@ export default function TableSkeleton() {
         <Skeleton variant="text" width="100%" height={30} />
       </CardContent>
     </Card>
-  );
+  )
 }

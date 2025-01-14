@@ -4,7 +4,7 @@ import {
   useApplicantDecisionMutation,
   useGetCoachesQuery,
   useUpdateParticipantMutation,
-} from "../../features/user/backendApi";
+} from "../../features/user/backendApi"
 import {
   AlertType,
   ButtonSize,
@@ -12,33 +12,33 @@ import {
   Cookie,
   DecisionInfo,
   ResponseModalQuestion,
-} from "../../utils/types";
-import { useEffect, useState } from "react";
-import OverViewTable from "../../components/ui/OverViewTable";
-import Button from "../../components/ui/Button";
-import { useCookies } from "react-cookie";
-import { getErrorInfo } from "../../utils/helper";
-import { handleShowAlert } from "../../utils/handleShowAlert";
-import { useDispatch } from "react-redux";
-import Loader from "../../components/ui/Loader";
-import NotFound from "../../components/ui/NotFound";
-import DecisionModal from "../../components/modals/DecisionModal";
-import ResponseModal from "../../components/modals/ResponseModal";
-import SmartSelect from "../../components/ui/SmartSelect";
-import { useForm } from "react-hook-form";
-import AddApplicantsModal from "../../components/modals/AddApplicantsModal";
+} from "../../utils/types"
+import { useEffect, useState } from "react"
+import OverViewTable from "../../components/ui/OverViewTable"
+import Button from "../../components/ui/Button"
+import { useCookies } from "react-cookie"
+import { getErrorInfo } from "../../utils/helper"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { useDispatch } from "react-redux"
+import Loader from "../../components/ui/Loader"
+import NotFound from "../../components/ui/NotFound"
+import DecisionModal from "../../components/modals/DecisionModal"
+import ResponseModal from "../../components/modals/ResponseModal"
+import SmartSelect from "../../components/ui/SmartSelect"
+import { useForm } from "react-hook-form"
+import AddApplicantsModal from "../../components/modals/AddApplicantsModal"
 
 const Applicants = () => {
-  const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null);
-  const [responseInfo, setResponseInfo] = useState<any | null>(null);
-  const [isAddingApplicants, setIsAddingApplicants] = useState<boolean>(false);
-  const [cookies] = useCookies([Cookie.jwt]);
-  const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt });
-  const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null);
-  const dispatch = useDispatch();
+  const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null)
+  const [responseInfo, setResponseInfo] = useState<any | null>(null)
+  const [isAddingApplicants, setIsAddingApplicants] = useState<boolean>(false)
+  const [cookies] = useCookies([Cookie.jwt])
+  const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt })
+  const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
+  const dispatch = useDispatch()
   const { register, watch } = useForm<{ cohortId: string }>({
     defaultValues: { cohortId: "" },
-  });
+  })
   const {
     data: cohortOverview,
     error: cohortOverviewError,
@@ -46,7 +46,7 @@ const Applicants = () => {
   } = useGetApplicantsQuery({
     jwt: cookies.jwt,
     cohortId: selectedCohortId,
-  });
+  })
   const {
     data: cohortCoaches,
     error: coachesError,
@@ -54,7 +54,7 @@ const Applicants = () => {
   } = useGetCoachesQuery({
     jwt: cookies.jwt,
     cohortId: selectedCohortId,
-  });
+  })
 
   const [
     decide,
@@ -63,7 +63,7 @@ const Applicants = () => {
       isSuccess: decidingIsSuccess,
       reset: applicantDecisionReset,
     },
-  ] = useApplicantDecisionMutation();
+  ] = useApplicantDecisionMutation()
 
   const [
     updateParticipant,
@@ -72,19 +72,19 @@ const Applicants = () => {
       error: updateParticipantError,
       reset: updateParticipantReset,
     },
-  ] = useUpdateParticipantMutation();
+  ] = useUpdateParticipantMutation()
 
   useEffect(() => {
     const subscription = watch(({ cohortId }) => {
-      setSelectedCohortId(cohortId ?? null);
-    });
+      setSelectedCohortId(cohortId ?? null)
+    })
 
-    return () => subscription.unsubscribe();
-  }, [watch]);
+    return () => subscription.unsubscribe()
+  }, [watch])
 
   const selectedCohortFromOverview = cohortOverview
     ? { value: cohortOverview._id, label: cohortOverview.name }
-    : null;
+    : null
 
   const selectedCohortFromId = selectedCohortId
     ? {
@@ -93,41 +93,41 @@ const Applicants = () => {
           allCohorts?.find((cohort: Cohort) => cohort._id === selectedCohortId)
             ?.name ?? "",
       }
-    : null;
+    : null
 
-  const activeCohort = allCohorts?.find((cohort: Cohort) => cohort.isActive);
+  const activeCohort = allCohorts?.find((cohort: Cohort) => cohort.isActive)
   const selectedCohortFromActive = activeCohort
     ? { value: activeCohort._id, label: activeCohort.name }
-    : null;
+    : null
 
   const selectedCohort =
     selectedCohortFromOverview ??
     selectedCohortFromId ??
     selectedCohortFromActive ??
-    undefined;
+    undefined
 
-  const handleAddApplicants = () => setIsAddingApplicants(true);
+  const handleAddApplicants = () => setIsAddingApplicants(true)
   const handleCloseAddApplicantsModal = () =>
-    setTimeout(() => setIsAddingApplicants(false), 0);
+    setTimeout(() => setIsAddingApplicants(false), 0)
 
   const handleDecision = (userData: DecisionInfo) => {
-    setDecisionInfo({ ...userData });
-  };
+    setDecisionInfo({ ...userData })
+  }
 
   const handleCloseModal = () => {
-    setTimeout(() => setResponseInfo(null), 0);
-  };
+    setTimeout(() => setResponseInfo(null), 0)
+  }
 
   const handleUpsertResponse = (data: {
-    userId: string;
-    question: ResponseModalQuestion;
+    userId: string
+    question: ResponseModalQuestion
   }) => {
-    setResponseInfo(data);
-  };
+    setResponseInfo(data)
+  }
 
   const handleSubmitDecision = async ({ feedback }: { feedback: string }) => {
     if (!decisionInfo) {
-      return;
+      return
     }
 
     await decide({
@@ -137,22 +137,22 @@ const Applicants = () => {
         decision: decisionInfo.decision,
         feedback,
       },
-    });
-  };
+    })
+  }
 
   const handleCoachChange = ({
     coach,
     participantId,
   }: {
-    coach: string;
-    participantId: null | string;
+    coach: string
+    participantId: null | string
   }) => {
     updateParticipant({
       participantId,
       body: { coach },
       jwt: cookies.jwt,
-    });
-  };
+    })
+  }
 
   if (
     cohortOverviewError ||
@@ -165,14 +165,14 @@ const Applicants = () => {
         decisionError ??
         coachesError ??
         updateParticipantError,
-    );
+    )
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
-    });
+    })
     if (decisionError) {
-      setDecisionInfo(null);
-      applicantDecisionReset();
+      setDecisionInfo(null)
+      applicantDecisionReset()
     }
   }
 
@@ -180,21 +180,21 @@ const Applicants = () => {
     handleShowAlert(dispatch, {
       type: AlertType.Success,
       message: `User is successfully ${decisionInfo?.decision.toLowerCase()}`,
-    });
-    setDecisionInfo(null);
-    applicantDecisionReset();
+    })
+    setDecisionInfo(null)
+    applicantDecisionReset()
   }
 
   if (updateParticipantIsSuccess) {
     handleShowAlert(dispatch, {
       type: AlertType.Success,
       message: "Coach is successfully changed",
-    });
-    updateParticipantReset();
+    })
+    updateParticipantReset()
   }
 
   if (cohortOverview && !selectedCohortId) {
-    setSelectedCohortId(cohortOverview._id);
+    setSelectedCohortId(cohortOverview._id)
   }
 
   return (
@@ -258,7 +258,7 @@ const Applicants = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Applicants;
+export default Applicants

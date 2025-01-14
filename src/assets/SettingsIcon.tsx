@@ -18,5 +18,5 @@ export default function SettingsIcon({ className }: { className?: string }) {
         />
       </g>
     </svg>
-  );
+  )
 }

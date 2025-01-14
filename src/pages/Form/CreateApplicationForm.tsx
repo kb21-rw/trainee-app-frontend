@@ -1,26 +1,26 @@
-import { useState } from "react";
-import SuccessCheckMarkIcon from "../../assets/SuccessCheckMarkIcon";
-import CheckMarkIcon from "../../assets/CheckMarkIcon";
-import { AlertType, ApplicationFormType, Cookie } from "../../utils/types";
-import { useApplicationForm } from "../../utils/hooks/useApplicationForm";
-import { FormInputsSection } from "../../components/ui/FormInputsSection";
-import { StagesSection } from "../../components/ui/StagesSection";
-import { useCreateFormMutation } from "../../features/user/backendApi";
-import FormDateInputs from "../../components/ui/FormDateInput";
-import useNavigateAfterSuccess from "../../utils/hooks/useNavigateAfterSuccess";
+import { useState } from "react"
+import SuccessCheckMarkIcon from "../../assets/SuccessCheckMarkIcon"
+import CheckMarkIcon from "../../assets/CheckMarkIcon"
+import { AlertType, ApplicationFormType, Cookie } from "../../utils/types"
+import { useApplicationForm } from "../../utils/hooks/useApplicationForm"
+import { FormInputsSection } from "../../components/ui/FormInputsSection"
+import { StagesSection } from "../../components/ui/StagesSection"
+import { useCreateFormMutation } from "../../features/user/backendApi"
+import FormDateInputs from "../../components/ui/FormDateInput"
+import useNavigateAfterSuccess from "../../utils/hooks/useNavigateAfterSuccess"
 
-import moment from "moment";
+import moment from "moment"
 
-import { getErrorInfo } from "../../utils/helper";
-import { handleShowAlert } from "../../utils/handleShowAlert";
-import { useDispatch } from "react-redux";
-import { useCookies } from "react-cookie";
+import { getErrorInfo } from "../../utils/helper"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { useDispatch } from "react-redux"
+import { useCookies } from "react-cookie"
 
 const CreateApplicationForm = () => {
-  const [cookies] = useCookies([Cookie.jwt]);
-  const [activeInput, setActiveInput] = useState("");
-  const [createForm, { error, isSuccess }] = useCreateFormMutation();
-  const dispatch = useDispatch();
+  const [cookies] = useCookies([Cookie.jwt])
+  const [activeInput, setActiveInput] = useState("")
+  const [createForm, { error, isSuccess }] = useCreateFormMutation()
+  const dispatch = useDispatch()
   const {
     register,
     handleSubmit,
@@ -31,9 +31,9 @@ const CreateApplicationForm = () => {
     addStagesHandler,
     addNewStage,
     removeStage,
-  } = useApplicationForm();
+  } = useApplicationForm()
 
-  useNavigateAfterSuccess("/forms", isSuccess);
+  useNavigateAfterSuccess("/forms", isSuccess)
 
   const onSubmit = async (data: ApplicationFormType) => {
     const requestBody = {
@@ -43,26 +43,26 @@ const CreateApplicationForm = () => {
       startDate: moment(data.startDate).format("YYYY-MM-DD"),
       endDate: moment(data.endDate).format("YYYY-MM-DD"),
       stages: data.stages,
-    };
+    }
     await createForm({
       jwt: cookies.jwt,
       body: requestBody,
-    });
-  };
+    })
+  }
 
   if (error) {
-    const { message } = getErrorInfo(error);
+    const { message } = getErrorInfo(error)
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
-    });
+    })
   }
 
   if (isSuccess) {
     handleShowAlert(dispatch, {
       type: AlertType.Success,
       message: "Form was created successfully!",
-    });
+    })
   }
 
   return (
@@ -102,7 +102,7 @@ const CreateApplicationForm = () => {
         )}
       </div>
     </form>
-  );
-};
+  )
+}
 
-export default CreateApplicationForm;
+export default CreateApplicationForm

@@ -1,12 +1,12 @@
-import React, { useRef } from "react";
-import SearchIcon from "../../assets/SearchIcon";
+import React, { useRef } from "react"
+import SearchIcon from "../../assets/SearchIcon"
 
 const SearchInput = ({ setSearchQuery }: { setSearchQuery: any }) => {
-  const searchRef = useRef<HTMLInputElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null)
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
+    setSearchQuery(event.target.value)
+  }
 
   return (
     <div className="flex w-full items-center max-w-xl h-14 border border-gray-250 rounded-xl">
@@ -21,7 +21,7 @@ const SearchInput = ({ setSearchQuery }: { setSearchQuery: any }) => {
         ref={searchRef}
       />
     </div>
-  );
-};
+  )
+}
 
-export default SearchInput;
+export default SearchInput

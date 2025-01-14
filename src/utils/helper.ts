@@ -1,124 +1,10 @@
 import {
-  ApplicantDetails,
   ApplicationForm,
   ApplicationFormStatus,
   QuestionType,
   UserRole,
-} from "./types";
-import { Cohort } from "./types";
-import dayjs from "dayjs";
-import isBetween from "dayjs/plugin/isBetween";
-import advancedFormat from "dayjs/plugin/advancedFormat";
-import { UserState } from "../features/user/userSlice";
-
-/**
- * extend dayjs to use necessary plugins
- */
-
-dayjs.extend(isBetween);
-dayjs.extend(advancedFormat);
-
-/**
- * Structures an array of data into a two-dimensional array containing information for each coach.
- *
- * @param {Array<Array<string>>} data - The input data in a two-dimensional array format.
- * @returns {Array<Array<string>>} - A two-dimensional array with coach information, each containing:
- *   - The coach's id
- *   - The coach's name
- *   - The coach's email
- *   - The coach's role
- */
-
-export const getCoaches = (
-  data: any[],
-  dataItems: string[],
-  currentUser: UserState,
-): Array<Array<string>> => {
-  const currentUserName = currentUser.name;
-  const filteredCoachesData = data?.filter(
-    (coachData) => coachData.name !== currentUserName,
-  );
-
-  const coachesData = filteredCoachesData?.map(
-    (coachData: any) =>
-      dataItems?.map((dataItem: string) => coachData[dataItem]),
-  );
-
-  return coachesData;
-};
-
-/**
- * getTraineesForCoach structures an array of data into a two-dimensional array containing information for each coach.
- *
- * @param {Array<Array<string>>} data - The input data in a two-dimensional array format.
- * @returns {Array<Array<string>>} - A two-dimensional array with coach information, each containing:
- *   - The trainee's id
- *   - The trainee's name
- *   - The trainee's email
- *   - The trainee's coach
- */
-export const getTraineesForCoach = (data: any, dataItems: string[]) => {
-  const traineesData = data?.map(
-    (traineeData: any) =>
-      dataItems?.map((dataItem: string) =>
-        dataItem === "coach"
-          ? traineeData?.coach?.name
-          : dataItem === "coachId"
-          ? traineeData?.coach?._id
-          : traineeData[dataItem],
-      ),
-  );
-  return traineesData;
-};
-/**
- * getTrainees structures an array of data into a two-dimensional array containing information for each coach.
- *
- * @param {Array<Array<string>>} data - The input data in a two-dimensional array format.
- * @returns {Array<Array<string>>} - A two-dimensional array with coach information, each containing:
- *   - The trainee's id
- *   - The trainee's name
- *   - The trainee's email
- *   - The trainee's coach
- */
-
-export const getTrainees = (data: any, dataItems: string[]) => {
-  const traineesData = data?.map(
-    (traineeData: any) =>
-      dataItems?.map((dataItem: string) =>
-        dataItem === "coach"
-          ? traineeData?.coach?.name || "No coach assigned"
-          : dataItem === "coachId"
-          ? traineeData?.coach?._id || ""
-          : traineeData[dataItem],
-      ),
-  );
-  return traineesData;
-};
-
-export const getApplicants = (
-  data: ApplicantDetails[],
-  dataItems: string[],
-) => {
-  return data?.map((item: any) =>
-    dataItems.map((key) => item[key as keyof ApplicantDetails]),
-  );
-};
-
-/**
- * Retrieves specific data items from each cohort in the provided data array.
- *
- * @param {Cohort[]} data - An array of cohort objects. Each object represents a cohort and contains various properties.
- * @param {string[]} dataItems - An array of strings representing the keys of the properties you want to extract from each cohort object.
- *
- * @returns {Array<Array<any>>} - A two-dimensional array where each inner array contains the values corresponding to the keys specified in `dataItems` for each cohort object in `data`.
- *
- */
-
-export const getCohorts = (data: Cohort[], dataItems: string[]) => {
-  return data?.map((item: any) =>
-    dataItems.map((key) => item[key as keyof Cohort]),
-  );
-};
+} from "./types"
+import dayjs from "dayjs"
 
 /**
  * Determines the current status of an application based on the provided dates.
@@ -135,27 +21,27 @@ export const getCohorts = (data: Cohort[], dataItems: string[]) => {
 export const getApplicationFormStatus = (
   application?: ApplicationForm,
 ): ApplicationFormStatus => {
-  if (!application) return ApplicationFormStatus.NoApplication;
+  if (!application) return ApplicationFormStatus.NoApplication
 
-  const today = dayjs();
-  const endDate = dayjs(application.endDate);
-  const tenDaysAfterDeadline = endDate.add(10, "days");
+  const today = dayjs()
+  const endDate = dayjs(application.endDate)
+  const tenDaysAfterDeadline = endDate.add(10, "days")
 
   if (today.isAfter(endDate)) {
     if (today.isAfter(tenDaysAfterDeadline))
-      return ApplicationFormStatus.NoApplication;
+      return ApplicationFormStatus.NoApplication
 
-    return ApplicationFormStatus.DeadlinePassed;
+    return ApplicationFormStatus.DeadlinePassed
   }
 
   const someQuestionsAreAnswered = application.questions.some(
     (question) => question.response !== null,
-  );
+  )
 
-  if (someQuestionsAreAnswered) return ApplicationFormStatus.Saved;
+  if (someQuestionsAreAnswered) return ApplicationFormStatus.Saved
 
-  return ApplicationFormStatus.Open;
-};
+  return ApplicationFormStatus.Open
+}
 
 /**
  * getErrorInfo extracts error details
@@ -166,21 +52,23 @@ export const getApplicationFormStatus = (
  *   - message
  */
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getErrorInfo = (error: any): { type: string; message: string } => {
-  console.log(error);
+  // eslint-disable-next-line no-console
+  console.log(error)
   if (!error?.data) {
-    throw { type: error.status, message: error.error.split(":")[1] };
+    throw { type: error.status, message: error.error.split(":")[1] }
   }
 
   if (error?.data?.type === "ServerError") {
-    throw { type: "ServerError", message: error.data.errorMessage };
+    throw { type: "ServerError", message: error.data.errorMessage }
   }
 
   return {
     type: error.data?.type || "Unknown",
     message: error.data?.errorMessage || "Unknown error occurred!",
-  };
-};
+  }
+}
 
 /**
  * getRoleBasedHomepageURL returns a homepage url based on role provided
@@ -192,13 +80,13 @@ export const getErrorInfo = (error: any): { type: string; message: string } => {
 export const getRoleBasedHomepageURL = (role: UserRole) => {
   switch (role) {
     case UserRole.Admin:
-      return "/users";
+      return "/users"
     case UserRole.Coach:
-      return "/overview";
+      return "/overview"
     default:
-      return "/home";
+      return "/home"
   }
-};
+}
 
 /**
  * getFormattedDate returns a DD MMMM YYYY formatted date
@@ -208,8 +96,8 @@ export const getRoleBasedHomepageURL = (role: UserRole) => {
  */
 
 export const getFormattedDate = (date: string) => {
-  return dayjs(date).format("DD MMMM YYYY");
-};
+  return dayjs(date).format("DD MMMM YYYY")
+}
 
 /**
  * convertFormQuestionsToObject returns an object where questionIds are keys and responses are values
@@ -229,5 +117,5 @@ export const convertFormQuestionsToObject = (
         (question.type === QuestionType.MultiSelect ? [] : ""),
     }),
     {},
-  );
-};
+  )
+}

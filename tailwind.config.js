@@ -2,6 +2,9 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  corePlugins: {
+    apply: true,
+  },
   theme: {
     extend: {
       colors: {
@@ -12,14 +15,14 @@ export default {
         "error-dark": "#AF5356",
       },
       borderColor: {
-       "gray-250": "#DBD5E0",
+        "gray-250": "#DBD5E0",
       },
       width: {
-        'alert-width': '37.5rem', 
+        "alert-width": "37.5rem",
       },
       fontFamily: {
-        'lato': ['Lato','Sans-serif']
+        lato: ["Lato", "Sans-serif"],
       },
     },
   },
-};
+}

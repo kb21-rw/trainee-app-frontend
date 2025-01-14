@@ -1,17 +1,17 @@
-import { useState } from "react";
-import ApplicantSignup from "./Signup";
-import Login from "./Login";
-import { AuthPage } from "../../utils/types";
-import classNames from "classnames";
+import { useState } from "react"
+import ApplicantSignup from "./Signup"
+import Login from "./Login"
+import { AuthPage } from "../../utils/types"
+import classNames from "classnames"
 
 const Auth = () => {
-  const [page, setPage] = useState<AuthPage>(AuthPage.Login);
+  const [page, setPage] = useState<AuthPage>(AuthPage.Login)
 
   const handlePageChange = () => {
     setPage((prevPage) =>
       prevPage === AuthPage.Login ? AuthPage.Signup : AuthPage.Login,
-    );
-  };
+    )
+  }
 
   return (
     <div className="flex relative">
@@ -66,7 +66,7 @@ const Auth = () => {
         <ApplicantSignup handlePageChange={handlePageChange} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Auth;
+export default Auth

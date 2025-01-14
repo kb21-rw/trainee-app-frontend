@@ -1,6 +1,6 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
-import Sort from "../../assets/SortIcon";
-import SearchInput from "./SearchInput";
+import React, { useState, useEffect, Dispatch, SetStateAction } from "react"
+import Sort from "../../assets/SortIcon"
+import SearchInput from "./SearchInput"
 
 const UserTableHeader = ({
   setQuery,
@@ -8,21 +8,21 @@ const UserTableHeader = ({
   usersPerPageValues,
   userType,
 }: {
-  setQuery: Dispatch<SetStateAction<string>>;
-  sortingValues: { title: string; value: string }[];
-  usersPerPageValues: number[];
-  userType: string;
+  setQuery: Dispatch<SetStateAction<string>>
+  sortingValues: { title: string; value: string }[]
+  usersPerPageValues: number[]
+  userType: string
 }) => {
-  const DEFAULTCOACHESPERPAGE = "10";
-  const [sortBy, setSortBy] = useState("entry");
-  const [usersPerPage, setUsersPerPage] = useState(DEFAULTCOACHESPERPAGE);
-  const [searchQuery, setSearchQuery] = useState("");
+  const DEFAULTCOACHESPERPAGE = "10"
+  const [sortBy, setSortBy] = useState("entry")
+  const [usersPerPage, setUsersPerPage] = useState(DEFAULTCOACHESPERPAGE)
+  const [searchQuery, setSearchQuery] = useState("")
 
   useEffect(() => {
     return setQuery(
       `?searchString=${searchQuery}&sortBy=${sortBy}&coachesPerPage=${usersPerPage}`,
-    );
-  }, [searchQuery, sortBy, usersPerPage, setQuery]);
+    )
+  }, [searchQuery, sortBy, usersPerPage, setQuery])
   return (
     <div className="flex items-center justify-between gap-16">
       <SearchInput setSearchQuery={setSearchQuery} />
@@ -79,7 +79,7 @@ const UserTableHeader = ({
         </label>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default UserTableHeader;
+export default UserTableHeader

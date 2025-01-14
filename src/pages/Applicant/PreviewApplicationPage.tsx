@@ -1,58 +1,60 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { useAddApplicantResponseMutation } from "../../features/user/backendApi";
-import { getErrorInfo, getFormattedDate } from "../../utils/helper";
-import { AlertType, Cookie, UserResponseQuestion } from "../../utils/types";
-import Button from "../../components/ui/Button";
-import { useEffect } from "react";
-import { handleShowAlert } from "../../utils/handleShowAlert";
-import { useDispatch } from "react-redux";
-import { useCookies } from "react-cookie";
-import ApplicationFormQuestionPreview from "../../components/ui/ApplicationFormQuestionPreview";
+import { useLocation, useNavigate } from "react-router-dom"
+import { useAddApplicantResponseMutation } from "../../features/user/backendApi"
+import { getErrorInfo, getFormattedDate } from "../../utils/helper"
+import { AlertType, Cookie, UserResponseQuestion } from "../../utils/types"
+import Button from "../../components/ui/Button"
+import { useEffect } from "react"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { useDispatch } from "react-redux"
+import { useCookies } from "react-cookie"
+import ApplicationFormQuestionPreview from "../../components/ui/ApplicationFormQuestionPreview"
 
 const PreviewApplicationPage = () => {
-  const [cookies] = useCookies([Cookie.jwt]);
-  const dispatch = useDispatch();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { formPreview, responses, formData } = location.state || {};
+  const [cookies] = useCookies([Cookie.jwt])
+  const dispatch = useDispatch()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { formPreview, responses, formData } = location.state || {}
   const [addApplicantResponse, { isSuccess, error }] =
-    useAddApplicantResponseMutation();
+    useAddApplicantResponseMutation()
 
   useEffect(() => {
     if (isSuccess) {
       const timer = setTimeout(() => {
-        window.location.href = "/home";
-      }, 3000);
+        window.location.href = "/home"
+      }, 3000)
 
-      return () => clearTimeout(timer);
+      return () => clearTimeout(timer)
     }
-  }, [isSuccess]);
+
+    return undefined
+  }, [isSuccess])
 
   const handleConfirm = async () => {
     await addApplicantResponse({
       jwt: cookies.jwt,
       body: responses,
       action: "submit",
-    });
-  };
+    })
+  }
 
   const backToEdit = () => {
-    navigate("/apply", { state: formData });
-  };
+    navigate("/apply", { state: formData })
+  }
 
   if (error) {
-    const { message } = getErrorInfo(error);
+    const { message } = getErrorInfo(error)
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
-    });
+    })
   }
 
   if (isSuccess) {
     handleShowAlert(dispatch, {
       type: AlertType.Success,
       message: "Successfully Applied, Redirecting to home page...",
-    });
+    })
   }
 
   return (
@@ -67,13 +69,15 @@ const PreviewApplicationPage = () => {
         </p>
       </div>
       <div className="mb-8 p-4 rounded-t-xl md:w-4/5 w-full">
-        {formPreview.questions.map((question: UserResponseQuestion, index: number) => (
-          <ApplicationFormQuestionPreview
-            key={question._id}
-            question={question}
-            index={index + 1}
-          />
-        ))}
+        {formPreview.questions.map(
+          (question: UserResponseQuestion, index: number) => (
+            <ApplicationFormQuestionPreview
+              key={question._id}
+              question={question}
+              index={index + 1}
+            />
+          ),
+        )}
       </div>
 
       <div className="flex justify-end space-x-4">
@@ -87,7 +91,7 @@ const PreviewApplicationPage = () => {
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PreviewApplicationPage;
+export default PreviewApplicationPage

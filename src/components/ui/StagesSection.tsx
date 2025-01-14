@@ -1,27 +1,27 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
-import { UseFormRegister } from "react-hook-form";
-import { ApplicationFormType, Stage } from "../../utils/types";
-import RemoveIcon from "../../assets/RemoveIcon";
-import AddIcon from "../../assets/AddIcon";
+import React from "react"
+import { UseFormRegister } from "react-hook-form"
+import { ApplicationFormType, Stage } from "../../utils/types"
+import RemoveIcon from "../../assets/RemoveIcon"
+import AddIcon from "../../assets/AddIcon"
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Typography,
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+} from "@mui/material"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 
 interface Props {
-  currentStages: Stage[];
+  currentStages: Stage[]
   addStagesHandler: (
     value: string,
     index: number,
     field: "name" | "description",
-  ) => void;
-  addNewStage: () => void;
-  removeStage: (index: number) => void;
-  register: UseFormRegister<ApplicationFormType>;
+  ) => void
+  addNewStage: () => void
+  removeStage: (index: number) => void
+  register: UseFormRegister<ApplicationFormType>
 }
 
 export const StagesSection: React.FC<Props> = ({
@@ -80,11 +80,15 @@ export const StagesSection: React.FC<Props> = ({
               </div>
             </div>
           ))}
-          <button type="button" onClick={addNewStage} className="flex items center space-x-2">
+          <button
+            type="button"
+            onClick={addNewStage}
+            className="flex items center space-x-2"
+          >
             <span>New Stage</span> <AddIcon />
           </button>
         </div>
       </AccordionDetails>
     </Accordion>
-  );
-};
+  )
+}

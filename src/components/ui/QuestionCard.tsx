@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import Loader from "./Loader";
-import Delete from "../../assets/DeleteIcon";
+import React, { useState } from "react"
+import Loader from "./Loader"
+import Delete from "../../assets/DeleteIcon"
 import {
   useDeleteQuestionMutation,
   useEditQuestionMutation,
-} from "../../features/user/backendApi";
-import SuccessCheckMark from "../../assets/SuccessCheckMarkIcon";
-import { useForm } from "react-hook-form";
-import AddIcon from "../../assets/AddIcon";
-import RemoveIcon from "../../assets/RemoveIcon";
-import Reset from "../../assets/ResetIcon";
-import DeleteModal from "../modals/DeleteModal";
-import { Cookie, QuestionType } from "../../utils/types";
-import { useCookies } from "react-cookie";
+} from "../../features/user/backendApi"
+import SuccessCheckMark from "../../assets/SuccessCheckMarkIcon"
+import { useForm } from "react-hook-form"
+import AddIcon from "../../assets/AddIcon"
+import RemoveIcon from "../../assets/RemoveIcon"
+import Reset from "../../assets/ResetIcon"
+import DeleteModal from "../modals/DeleteModal"
+import { Cookie, QuestionType } from "../../utils/types"
+import { useCookies } from "react-cookie"
 
 const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
-  const { prompt, type, options, _id } = question;
+  const { prompt, type, options, _id } = question
   const {
     register,
     handleSubmit,
@@ -29,29 +29,29 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
       type,
       options,
     },
-  });
-  const [cookies] = useCookies([Cookie.jwt]);
-  const [deleteQuestion] = useDeleteQuestionMutation();
-  const [editQuestion] = useEditQuestionMutation();
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  })
+  const [cookies] = useCookies([Cookie.jwt])
+  const [deleteQuestion] = useDeleteQuestionMutation()
+  const [editQuestion] = useEditQuestionMutation()
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   const handleDeleteQuestion = async (_id: string) => {
-    await deleteQuestion({ jwt: cookies.jwt, id: _id });
-    setShowDeleteModal(false);
-  };
+    await deleteQuestion({ jwt: cookies.jwt, id: _id })
+    setShowDeleteModal(false)
+  }
 
   const changeOptionsHandler = (value: string, index: number) => {
-    const updatedOptions = [...currentOptions];
-    updatedOptions[index] = value;
-    setValue("options", updatedOptions, { shouldDirty: true });
-  };
+    const updatedOptions = [...currentOptions]
+    updatedOptions[index] = value
+    setValue("options", updatedOptions, { shouldDirty: true })
+  }
 
   const onSubmit = async (data: any) => {
-    await editQuestion({ jwt: cookies.jwt, body: data, id: _id });
-  };
+    await editQuestion({ jwt: cookies.jwt, body: data, id: _id })
+  }
 
-  const { type: selectedType } = watch();
-  const { options: currentOptions } = watch();
+  const { type: selectedType } = watch()
+  const { options: currentOptions } = watch()
 
   return (
     <div
@@ -124,9 +124,9 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
               {currentOptions.length > 0 && (
                 <button
                   onClick={() => {
-                    const updatedOptions = [...currentOptions];
-                    updatedOptions.pop();
-                    setValue("options", updatedOptions, { shouldDirty: true });
+                    const updatedOptions = [...currentOptions]
+                    updatedOptions.pop()
+                    setValue("options", updatedOptions, { shouldDirty: true })
                   }}
                 >
                   <RemoveIcon />
@@ -163,7 +163,7 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default QuestionCard;
+export default QuestionCard

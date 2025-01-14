@@ -13,5 +13,5 @@ export default function ViewIcon({ className }: { className?: string }) {
         fill="#0077B6"
       />
     </svg>
-  );
+  )
 }

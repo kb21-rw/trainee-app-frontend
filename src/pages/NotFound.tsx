@@ -1,11 +1,10 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import Button from "../components/ui/Button";
-import { ButtonSize } from "../utils/types";
+import React from "react"
+import { useNavigate } from "react-router-dom"
+import Button from "../components/ui/Button"
+import { ButtonSize } from "../utils/types"
 
 const NotFound = () => {
-  const navigate = useNavigate();
-
+  const navigate = useNavigate()
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
@@ -15,14 +14,14 @@ const NotFound = () => {
           alt="Not found page"
           className="w-full"
         />
-       <div className="md:w-1/2">
-       <Button size={ButtonSize.Large} onClick={() => navigate(-1)}>
-          <span>Go Back</span>
-       </Button>
-       </div>
+        <div className="md:w-1/2">
+          <Button size={ButtonSize.Large} onClick={() => navigate(-1)}>
+            <span>Go Back</span>
+          </Button>
+        </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default NotFound;
+export default NotFound

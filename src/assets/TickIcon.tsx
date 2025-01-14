@@ -14,5 +14,5 @@ export default function TickIcon({ className }: { className?: string }) {
     >
       <polygon points="452.253,28.326 197.831,394.674 29.044,256.875 0,292.469 207.253,461.674 490,54.528 " />
     </svg>
-  );
+  )
 }

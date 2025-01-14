@@ -1,45 +1,45 @@
-import InputField from "../ui/InputField";
-import Button from "../ui/Button";
+import InputField from "../ui/InputField"
+import Button from "../ui/Button"
 import {
   ButtonVariant,
   Decision,
   DecisionInfo,
   ParticipantPhase,
   UserRow,
-} from "../../utils/types";
-import { Modal } from "@mui/material";
+} from "../../utils/types"
+import { Modal } from "@mui/material"
 
 export default function SettingsModal({
   row,
   onClose = () => undefined,
   handleDecision = () => undefined,
 }: {
-  row: UserRow;
+  row: UserRow
   // eslint-disable-next-line no-unused-vars
-  handleDecision?: (_row: DecisionInfo) => void;
-  onClose: () => void;
+  handleDecision?: (_row: DecisionInfo) => void
+  onClose: () => void
 }) {
   const handleReject = () => {
-    onClose();
+    onClose()
     handleDecision({
       userId: row?.id,
       decision: Decision.Rejected,
       email: row?.email,
       name: row?.name,
       stage: row?.stage,
-    });
-  };
+    })
+  }
 
   const handleAccept = () => {
-    onClose();
+    onClose()
     handleDecision({
       userId: row?.id,
       decision: Decision.Accepted,
       email: row?.email,
       name: row?.name,
       stage: row?.stage,
-    });
-  };
+    })
+  }
 
   return (
     <Modal
@@ -95,5 +95,5 @@ export default function SettingsModal({
         </div>
       </form>
     </Modal>
-  );
+  )
 }

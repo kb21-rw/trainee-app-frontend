@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 import {
   Table,
   TableBody,
@@ -6,25 +6,25 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../../@/components/ui/table";
+} from "../../../@/components/ui/table"
 import {
   Response,
   Form,
   QuestionType,
   Cookie,
   TemplateQuestion,
-} from "../../utils/types";
+} from "../../utils/types"
 
-import { useGetOverviewQuery } from "../../features/user/backendApi";
-import Loader from "../../components/ui/Loader";
-import { useCookies } from "react-cookie";
+import { useGetOverviewQuery } from "../../features/user/backendApi"
+import Loader from "../../components/ui/Loader"
+import { useCookies } from "react-cookie"
 const OverView = () => {
-  const [cookies] = useCookies([Cookie.jwt]);
+  const [cookies] = useCookies([Cookie.jwt])
   const { data, isFetching, isError } = useGetOverviewQuery({
     jwt: cookies.jwt,
-  });
+  })
 
-  const [, setIsModalOpen] = useState(false);
+  const [, setIsModalOpen] = useState(false)
   const [, setModalData] = useState({
     formTitle: "",
     question: "",
@@ -35,25 +35,25 @@ const OverView = () => {
     questionType: "",
     options: [] as string[],
     checkedOption: "",
-  });
+  })
 
   if (isFetching) {
     return (
       <div className="h-screen flex items-center justify-center">
         <Loader />
       </div>
-    );
+    )
   }
 
   if (isError) {
-    return <Loader />;
+    return <Loader />
   }
 
   if (!Array.isArray(data) || data.length === 0) {
-    return <div>No data available.</div>;
+    return <div>No data available.</div>
   }
 
-  const traineeMap = new Map();
+  const traineeMap = new Map()
 
   data.forEach((form: Form) => {
     form.questions.forEach((question: TemplateQuestion) => {
@@ -65,16 +65,16 @@ const OverView = () => {
               coach: response.user.coach?.name,
               id: response.user._id,
               responses: {},
-            });
+            })
           }
 
-          const traineeInfo = traineeMap.get(response.user._id);
+          const traineeInfo = traineeMap.get(response.user._id)
           traineeInfo.responses[`${form._id}-${question._id}`] =
-            response ?? "No response";
+            response ?? "No response"
         }
-      });
-    });
-  });
+      })
+    })
+  })
 
   return (
     <div className="py-20 overflow-x-auto">
@@ -137,7 +137,7 @@ const OverView = () => {
                     key={`${form._id}-${question._id}`}
                     className="border border-black p-2 whitespace-nowrap w-16 max-w-md overflow-hidden text-ellipsis"
                     onClick={() => {
-                      setIsModalOpen(true);
+                      setIsModalOpen(true)
                       setModalData({
                         formTitle: form.title,
                         question: question.prompt,
@@ -156,7 +156,7 @@ const OverView = () => {
                         ]
                           ? trainee.responses[`${form._id}-${question._id}`]
                           : "",
-                      });
+                      })
                     }}
                   >
                     {trainee.responses[`${form._id}-${question._id}`] ??
@@ -169,7 +169,7 @@ const OverView = () => {
         </TableBody>
       </Table>
     </div>
-  );
-};
+  )
+}
 
-export default OverView;
+export default OverView

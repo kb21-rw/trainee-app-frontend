@@ -1,34 +1,34 @@
-import { useGetUsersQuery } from "../../features/user/backendApi";
-import Button from "../../components/ui/Button";
+import { useGetUsersQuery } from "../../features/user/backendApi"
+import Button from "../../components/ui/Button"
 import {
   AlertType,
   ButtonSize,
   Cookie,
   User,
   UserRole,
-} from "../../utils/types";
-import { useCookies } from "react-cookie";
-import { useDispatch } from "react-redux";
-import { handleShowAlert } from "../../utils/handleShowAlert";
-import { getErrorInfo } from "../../utils/helper";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import EditIcon from "../../assets/EditIcon";
-import { useState } from "react";
-import CreateUser from "../../components/modals/CreateUser";
-import { customizeDataGridStyles } from "../../utils/data";
-import TableSkeleton from "../../components/skeletons/TableSkeleton";
+} from "../../utils/types"
+import { useCookies } from "react-cookie"
+import { useDispatch } from "react-redux"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { getErrorInfo } from "../../utils/helper"
+import { DataGrid, GridColDef } from "@mui/x-data-grid"
+import EditIcon from "../../assets/EditIcon"
+import { useState } from "react"
+import CreateUser from "../../components/modals/CreateUser"
+import { customizeDataGridStyles } from "../../utils/data"
+import TableSkeleton from "../../components/skeletons/TableSkeleton"
 
 export default function Users() {
-  const dispatch = useDispatch();
-  const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false);
-  const [cookies] = useCookies([Cookie.jwt]);
+  const dispatch = useDispatch()
+  const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false)
+  const [cookies] = useCookies([Cookie.jwt])
   const {
     data: users,
     error: usersError,
     isFetching: usersIsFetching,
   } = useGetUsersQuery({
     jwt: cookies.jwt,
-  });
+  })
 
   const columns: GridColDef[] = [
     {
@@ -70,10 +70,10 @@ export default function Users() {
               <EditIcon />
             </button>
           </div>
-        );
+        )
       },
     },
-  ];
+  ]
 
   const rows =
     users?.map((user: User) => ({
@@ -82,20 +82,20 @@ export default function Users() {
       name: user.name,
       email: user.email,
       role: user.role,
-    })) ?? [];
+    })) ?? []
 
   const handleCloseCreateUserModal = () =>
-    setTimeout(() => setIsCreateUserModalOpen(false), 0);
+    setTimeout(() => setIsCreateUserModalOpen(false), 0)
 
   if (usersError) {
-    const { message } = getErrorInfo(usersError);
+    const { message } = getErrorInfo(usersError)
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
-    });
+    })
   }
 
-  if (usersIsFetching) return <TableSkeleton />;
+  if (usersIsFetching) return <TableSkeleton />
 
   return (
     <>
@@ -115,5 +115,5 @@ export default function Users() {
         <DataGrid columns={columns} rows={rows} sx={customizeDataGridStyles} />
       </div>
     </>
-  );
+  )
 }

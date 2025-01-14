@@ -1,25 +1,25 @@
-import React, { useState } from "react";
-import SearchInput from "../../components/ui/SearchInput";
+import React, { useState } from "react"
+import SearchInput from "../../components/ui/SearchInput"
 import {
   useGetAllFormsQuery,
   useGetApplicationFormQuery,
-} from "../../features/user/backendApi";
-import FormCard from "../../components/ui/FormCard";
-import { Cookie, IFormType } from "../../utils/types";
-import NotFound from "../../components/ui/NotFound";
-import CreateFormDropdown from "../../components/ui/CreateFormDropdown";
-import { Link } from "react-router-dom";
-import FormsSkeleton from "./FormsSkeleton";
-import { useCookies } from "react-cookie";
+} from "../../features/user/backendApi"
+import FormCard from "../../components/ui/FormCard"
+import { Cookie, IFormType } from "../../utils/types"
+import NotFound from "../../components/ui/NotFound"
+import CreateFormDropdown from "../../components/ui/CreateFormDropdown"
+import { Link } from "react-router-dom"
+import FormsSkeleton from "./FormsSkeleton"
+import { useCookies } from "react-cookie"
 
 const AllForms = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [cookies] = useCookies([Cookie.jwt]);
+  const [searchQuery, setSearchQuery] = useState("")
+  const [cookies] = useCookies([Cookie.jwt])
   const { data, isFetching } = useGetAllFormsQuery({
     jwt: cookies.jwt,
     searchString: searchQuery,
-  });
-  const { data: applicationForm } = useGetApplicationFormQuery(cookies.jwt);
+  })
+  const { data: applicationForm } = useGetApplicationFormQuery(cookies.jwt)
 
   const parsedApplicationForm = {
     _id: applicationForm?._id,
@@ -28,8 +28,8 @@ const AllForms = () => {
     type: applicationForm?.type,
     questions: applicationForm?.questions.length,
     startDate: applicationForm?.startDate,
-  };
-  const forms = data?.forms;
+  }
+  const forms = data?.forms
 
   return (
     <div className="py-12">
@@ -66,7 +66,7 @@ const AllForms = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default AllForms;
+export default AllForms

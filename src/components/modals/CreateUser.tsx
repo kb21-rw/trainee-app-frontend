@@ -1,43 +1,43 @@
-import { useForm } from "react-hook-form";
-import Button from "../ui/Button";
-import { Modal } from "@mui/material";
-import { AlertType, Cookie, CreateUserDto, UserRole } from "../../utils/types";
-import Input from "../ui/Input";
-import Select from "../ui/Select";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { getErrorInfo } from "../../utils/helper";
-import { handleShowAlert } from "../../utils/handleShowAlert";
-import { useDispatch } from "react-redux";
-import { useCookies } from "react-cookie";
-import { useCreateUserMutation } from "../../features/user/backendApi";
-import Loader from "../ui/Loader";
+import { useForm } from "react-hook-form"
+import Button from "../ui/Button"
+import { Modal } from "@mui/material"
+import { AlertType, Cookie, CreateUserDto, UserRole } from "../../utils/types"
+import Input from "../ui/Input"
+import Select from "../ui/Select"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { getErrorInfo } from "../../utils/helper"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { useDispatch } from "react-redux"
+import { useCookies } from "react-cookie"
+import { useCreateUserMutation } from "../../features/user/backendApi"
+import Loader from "../ui/Loader"
 
 const selectOptions = [
   { value: UserRole.Prospect, label: "Prospect" },
   { value: UserRole.Coach, label: "Coach" },
   { value: UserRole.Admin, label: "Admin" },
-];
+]
 
 const AddUserFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email"),
   role: z.enum([UserRole.Prospect, UserRole.Coach, UserRole.Admin]),
-});
+})
 
 export default function CreateUser({
   isOpen,
   onClose,
 }: {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
 }) {
-  const [cookies] = useCookies([Cookie.jwt]);
-  const dispatch = useDispatch();
+  const [cookies] = useCookies([Cookie.jwt])
+  const dispatch = useDispatch()
   const [
     createUser,
     { error: userError, isLoading: isUserLoading, reset: resetCreateUser },
-  ] = useCreateUserMutation();
+  ] = useCreateUserMutation()
 
   const {
     register,
@@ -47,27 +47,27 @@ export default function CreateUser({
   } = useForm<CreateUserDto>({
     resolver: zodResolver(AddUserFormSchema),
     defaultValues: { name: "", email: "", role: UserRole.Prospect },
-  });
+  })
 
   const onSubmit = async (formData: CreateUserDto) => {
     try {
-      await createUser({ jwt: cookies.jwt, body: formData });
+      await createUser({ jwt: cookies.jwt, body: formData })
       handleShowAlert(dispatch, {
         type: AlertType.Success,
         message: "User was created successfully",
-      });
-      resetForm();
-      onClose();
+      })
+      resetForm()
+      onClose()
     } catch (error) {
-      const { message } = getErrorInfo(userError);
+      const { message } = getErrorInfo(userError)
       handleShowAlert(dispatch, {
         type: AlertType.Error,
         message,
-      });
+      })
     } finally {
-      resetCreateUser();
+      resetCreateUser()
     }
-  };
+  }
 
   return (
     <Modal
@@ -113,5 +113,5 @@ export default function CreateUser({
         </div>
       </form>
     </Modal>
-  );
+  )
 }

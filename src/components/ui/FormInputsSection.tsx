@@ -1,13 +1,13 @@
-import React from "react";
-import { UseFormRegister, FieldErrors, Control } from "react-hook-form";
-import { ApplicationFormType } from "../../utils/types";
-import classNames from "classnames";
+import React from "react"
+import { UseFormRegister, FieldErrors, Control } from "react-hook-form"
+import { ApplicationFormType } from "../../utils/types"
+import classNames from "classnames"
 
 interface Props {
-  register: UseFormRegister<ApplicationFormType>;
-  errors: FieldErrors<ApplicationFormType>;
-  control: Control<ApplicationFormType>;
-  activeInput: string;
+  register: UseFormRegister<ApplicationFormType>
+  errors: FieldErrors<ApplicationFormType>
+  control: Control<ApplicationFormType>
+  activeInput: string
 }
 
 export const FormInputsSection: React.FC<Props> = ({
@@ -39,5 +39,5 @@ export const FormInputsSection: React.FC<Props> = ({
         <p className="text-red-400">Description should not be empty</p>
       )}
     </div>
-  );
-};
+  )
+}

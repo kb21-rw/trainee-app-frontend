@@ -1,14 +1,14 @@
-import React from "react";
-import { Control, FieldErrors } from "react-hook-form";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { Controller } from "react-hook-form";
-import moment from "moment";
-import { ApplicationFormType } from "../../utils/types";
+import React from "react"
+import { Control, FieldErrors } from "react-hook-form"
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment"
+import { Controller } from "react-hook-form"
+import moment from "moment"
+import { ApplicationFormType } from "../../utils/types"
 
 interface DateSectionProps {
-  control: Control<ApplicationFormType>;
-  errors: FieldErrors<ApplicationFormType>;
+  control: Control<ApplicationFormType>
+  errors: FieldErrors<ApplicationFormType>
 }
 
 const FormDateInputs: React.FC<DateSectionProps> = ({ control, errors }) => {
@@ -23,7 +23,7 @@ const FormDateInputs: React.FC<DateSectionProps> = ({ control, errors }) => {
             minDate={moment().add(1, "day")}
             value={field.value ? moment(field.value) : null}
             onChange={(date) => {
-              field.onChange(date);
+              field.onChange(date)
             }}
             label={label}
             {...props}
@@ -31,7 +31,7 @@ const FormDateInputs: React.FC<DateSectionProps> = ({ control, errors }) => {
         )}
       />
     </LocalizationProvider>
-  );
+  )
 
   return (
     <div className="flex items-center gap-20">
@@ -52,7 +52,7 @@ const FormDateInputs: React.FC<DateSectionProps> = ({ control, errors }) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default FormDateInputs;
+export default FormDateInputs

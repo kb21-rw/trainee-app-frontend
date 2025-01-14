@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 const SortIcon = () => {
   return (
@@ -73,7 +73,7 @@ const SortIcon = () => {
         strokeLinejoin="round"
       />
     </svg>
-  );
-};
+  )
+}
 
-export default SortIcon;
+export default SortIcon

@@ -1,4 +1,4 @@
-import { ApplicationFormStatus, FormType, MenuItemType } from "./types";
+import { ApplicationFormStatus, FormType, MenuItemType } from "./types"
 
 export const adminMenu = [
   { link: "/users", title: "Users" },
@@ -7,14 +7,14 @@ export const adminMenu = [
   { link: "/coaches", title: "Coaches" },
   { link: "/forms", title: "Forms" },
   { link: "/cohorts", title: "Cohorts" },
-];
+]
 export const coachMenu = [
   { link: "/overview", title: "Overview" },
   { link: "/trainees-results", title: "Trainee Results" },
   { link: "/my-trainees", title: "My trainees" },
-];
+]
 
-export const applicantMenu = [{ link: "/home", title: "Home" }];
+export const applicantMenu = [{ link: "/home", title: "Home" }]
 
 export const menuItems: MenuItemType[] = [
   { label: "Create a new form for Trainees", type: FormType.Trainee },
@@ -23,33 +23,33 @@ export const menuItems: MenuItemType[] = [
     label: "Create a new Application form",
     link: "/forms/create/application-form",
   },
-];
+]
 
-export const usersPerPageValues = [10, 20, 30, 40, 50, 100];
-export const cohortsPerPage = [10, 20, 30, 40, 50, 100];
-export const applicantsPerPage = [3, 5, 10, 20, 30, 40, 50, 100];
+export const usersPerPageValues = [10, 20, 30, 40, 50, 100]
+export const cohortsPerPage = [10, 20, 30, 40, 50, 100]
+export const applicantsPerPage = [3, 5, 10, 20, 30, 40, 50, 100]
 export const coachTableSortingValues = [
   { title: "Entry", value: "entry" },
   { title: "Name", value: "name" },
   { title: "Role", value: "role" },
-];
-export const coachTableHeaders = ["No", "Name", "Email", "Role", "Action"];
-export const coachTableDataItems = ["_id", "name", "email", "role"];
+]
+export const coachTableHeaders = ["No", "Name", "Email", "Role", "Action"]
+export const coachTableDataItems = ["_id", "name", "email", "role"]
 export const traineeTableSortingValues = [
   { title: "Entry", value: "entry" },
   { title: "Name", value: "name" },
-];
+]
 
 export const cohortTableSortingValues = [
   { title: "Entry", value: "entry" },
   { title: "Name", value: "name" },
-];
+]
 
 export const applicantTableSortingValues = [
   { title: "Entry", value: "entry" },
   { title: "Name", value: "name" },
   { title: "Email", value: "email" },
-];
+]
 
 export const cohortTableHeaders = [
   "No",
@@ -59,7 +59,7 @@ export const cohortTableHeaders = [
   "Trainees",
   "Dropped",
   "Action",
-];
+]
 export const cohortTableDataItems = [
   "_id",
   "name",
@@ -67,7 +67,7 @@ export const cohortTableDataItems = [
   "applicants",
   "trainees",
   "rejected",
-];
+]
 export const applicantTableHeaders = [
   "No",
   "Applicant Number",
@@ -75,12 +75,12 @@ export const applicantTableHeaders = [
   "Email",
   "Response",
   "Action",
-];
-export const applicantTableDataItems = ["_id", "userId", "name", "email"];
-export const traineeTableHeaders = ["No", "Name", "Email", "Coach", "Action"];
-export const editTraineeTableHeaders = ["No", "Name", "Email", ""];
-export const editTraineeTableItems = ["_id", "name", "email"];
-export const traineeTableDataItems = ["_id", "name", "email", "coach"];
+]
+export const applicantTableDataItems = ["_id", "userId", "name", "email"]
+export const traineeTableHeaders = ["No", "Name", "Email", "Coach", "Action"]
+export const editTraineeTableHeaders = ["No", "Name", "Email", ""]
+export const editTraineeTableItems = ["_id", "name", "email"]
+export const traineeTableDataItems = ["_id", "name", "email", "coach"]
 
 export const applicationFormStatusData = {
   [ApplicationFormStatus.Open]: {
@@ -134,7 +134,7 @@ export const applicationFormStatusData = {
     buttonText: "Continue your application",
     buttonLink: "/apply",
   },
-};
+}
 
 export const customizeDataGridStyles = {
   border: "none",
@@ -153,4 +153,4 @@ export const customizeDataGridStyles = {
   "& .MuiDataGrid-cell:focus": {
     outline: "none",
   },
-};
+}

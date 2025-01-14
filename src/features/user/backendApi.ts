@@ -1,6 +1,6 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 
-const api_url = import.meta.env.VITE_API_URL;
+const api_url = import.meta.env.VITE_API_URL
 
 export const backendApi: any = createApi({
   reducerPath: "backendApi",
@@ -23,63 +23,63 @@ export const backendApi: any = createApi({
   endpoints: (builder) => ({
     getAllTrainees: builder.query({
       query: (args) => {
-        const { jwt, query } = args;
+        const { jwt, query } = args
         return {
           url: `/trainees/all${query}`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-        };
+        }
       },
       providesTags: ["trainees"],
     }),
 
     getTraineesForCoach: builder.query({
       query: (args) => {
-        const { jwt, query } = args;
+        const { jwt, query } = args
         return {
           url: `/trainees/my-trainees${query}`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-        };
+        }
       },
       providesTags: ["myTrainees"],
     }),
 
     getUsers: builder.query({
       query: (args) => {
-        const { jwt, search } = args;
+        const { jwt, search } = args
         return {
           url: `/users?${search ? search : ""}`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-        };
+        }
       },
       providesTags: ["users"],
     }),
 
     getCoaches: builder.query({
       query: (args) => {
-        const { jwt, cohortId } = args;
+        const { jwt, cohortId } = args
         return {
           url: `/coaches${cohortId ? "?cohortId=" + cohortId : ""}`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-        };
+        }
       },
       providesTags: ["coaches"],
     }),
 
     addCoach: builder.mutation({
       query: (args) => {
-        const { jwt, coachId } = args;
+        const { jwt, coachId } = args
         return {
           url: "/coaches",
           method: "POST",
@@ -87,14 +87,14 @@ export const backendApi: any = createApi({
             Authorization: `Bearer ${jwt}`,
           },
           body: { coachId },
-        };
+        }
       },
       invalidatesTags: ["coaches"],
     }),
 
     createUser: builder.mutation({
       query: (args) => {
-        const { jwt, body } = args;
+        const { jwt, body } = args
         return {
           url: "/auth/register",
           method: "POST",
@@ -102,14 +102,14 @@ export const backendApi: any = createApi({
             Authorization: `Bearer ${jwt}`,
           },
           body,
-        };
+        }
       },
       invalidatesTags: ["users"],
     }),
 
     editCoach: builder.mutation({
       query: (args) => {
-        const { jwt, body, id } = args;
+        const { jwt, body, id } = args
         return {
           url: `/coaches/edit-coach-or-admin/${id}`,
           method: "PATCH",
@@ -117,14 +117,14 @@ export const backendApi: any = createApi({
             Authorization: `Bearer ${jwt}`,
           },
           body: { ...body },
-        };
+        }
       },
       invalidatesTags: ["coaches"],
     }),
 
     editTrainee: builder.mutation({
       query: (args) => {
-        const { jwt, body, id } = args;
+        const { jwt, body, id } = args
         return {
           url: `/trainees/${id}`,
           method: "PATCH",
@@ -132,14 +132,14 @@ export const backendApi: any = createApi({
             Authorization: `Bearer ${jwt}`,
           },
           body: { ...body },
-        };
+        }
       },
       invalidatesTags: ["trainees", "myTrainees"],
     }),
 
     updateParticipant: builder.mutation({
       query: (args) => {
-        const { jwt, body, participantId } = args;
+        const { jwt, body, participantId } = args
         return {
           url: `/participants/${participantId}`,
           method: "PATCH",
@@ -147,35 +147,35 @@ export const backendApi: any = createApi({
             Authorization: `Bearer ${jwt}`,
           },
           body: { ...body, coach: body.coach === "" ? null : body.coach },
-        };
+        }
       },
       invalidatesTags: ["overview"],
     }),
 
     deleteCoach: builder.mutation({
       query: (args) => {
-        const { jwt, id } = args;
+        const { jwt, id } = args
         return {
           url: `/users/${id}`,
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-        };
+        }
       },
       invalidatesTags: ["coaches"],
     }),
 
     deleteTrainee: builder.mutation({
       query: (args) => {
-        const { jwt, id } = args;
+        const { jwt, id } = args
         return {
           url: `/users/${id}`,
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-        };
+        }
       },
       invalidatesTags: ["trainees"],
     }),
@@ -186,7 +186,7 @@ export const backendApi: any = createApi({
           url: "/auth/login",
           method: "POST",
           body: { ...body },
-        };
+        }
       },
       invalidatesTags: ["token"],
     }),
@@ -197,7 +197,7 @@ export const backendApi: any = createApi({
           url: "auth/register/applicant",
           method: "POST",
           body: { ...body },
-        };
+        }
       },
     }),
     verifyApplicant: builder.mutation({
@@ -205,7 +205,7 @@ export const backendApi: any = createApi({
         return {
           url: `/auth/applicant/verify?userId=${userId}`,
           method: "PATCH",
-        };
+        }
       },
     }),
 
@@ -215,7 +215,7 @@ export const backendApi: any = createApi({
           url: "/auth/reset-password",
           method: "POST",
           body,
-        };
+        }
       },
     }),
 
@@ -232,7 +232,7 @@ export const backendApi: any = createApi({
 
     updateProfile: builder.mutation({
       query: (args) => {
-        const { jwt, profileData } = args;
+        const { jwt, profileData } = args
         return {
           url: "/users/my-profile",
           method: "PATCH",
@@ -240,17 +240,17 @@ export const backendApi: any = createApi({
             Authorization: `Bearer ${jwt}`,
           },
           body: { ...profileData },
-        };
+        }
       },
       invalidatesTags: ["profile"],
     }),
 
     getAllForms: builder.query({
       query: (args) => {
-        const { jwt, searchString = "", cohort } = args;
-        let queryString = `searchString=${searchString}`;
+        const { jwt, searchString = "", cohort } = args
+        let queryString = `searchString=${searchString}`
         if (cohort) {
-          queryString += `&cohort=${cohort}`;
+          queryString += `&cohort=${cohort}`
         }
 
         return {
@@ -259,28 +259,28 @@ export const backendApi: any = createApi({
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-        };
+        }
       },
       providesTags: ["forms"],
     }),
 
     getForm: builder.query({
       query: (args) => {
-        const { jwt, id } = args;
+        const { jwt, id } = args
         return {
           url: `/forms/${id}`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-        };
+        }
       },
       providesTags: ["forms"],
     }),
 
     createForm: builder.mutation({
       query: (args) => {
-        const { jwt, body } = args;
+        const { jwt, body } = args
         return {
           url: "/forms",
           method: "POST",
@@ -288,14 +288,14 @@ export const backendApi: any = createApi({
             Authorization: `Bearer ${jwt}`,
           },
           body: { ...body },
-        };
+        }
       },
       invalidatesTags: ["forms", "overview"],
     }),
 
     editForm: builder.mutation({
       query: (args) => {
-        const { jwt, body, id } = args;
+        const { jwt, body, id } = args
         return {
           url: `/forms/${id}`,
           method: "PATCH",
@@ -303,42 +303,42 @@ export const backendApi: any = createApi({
             Authorization: `Bearer ${jwt}`,
           },
           body: { ...body },
-        };
+        }
       },
       invalidatesTags: ["forms"],
     }),
 
     deleteForm: builder.mutation({
       query: (args) => {
-        const { jwt, id } = args;
+        const { jwt, id } = args
         return {
           url: `/forms/${id}`,
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-        };
+        }
       },
       invalidatesTags: ["forms"],
     }),
 
     getAllQuestionsForForm: builder.query({
       query: (args) => {
-        const { jwt, formId } = args;
+        const { jwt, formId } = args
         return {
           url: `/questions/${formId}`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-        };
+        }
       },
       providesTags: ["questions"],
     }),
 
     createQuestion: builder.mutation({
       query: (args) => {
-        const { jwt, formId, body } = args;
+        const { jwt, formId, body } = args
         return {
           url: `/questions/${formId}`,
           method: "POST",
@@ -346,28 +346,28 @@ export const backendApi: any = createApi({
             Authorization: `Bearer ${jwt}`,
           },
           body: { ...body },
-        };
+        }
       },
       invalidatesTags: ["forms", "overview"],
     }),
 
     deleteQuestion: builder.mutation({
       query: (args) => {
-        const { jwt, id } = args;
+        const { jwt, id } = args
         return {
           url: `/questions/${id}`,
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-        };
+        }
       },
       invalidatesTags: ["forms", "overview"],
     }),
 
     editQuestion: builder.mutation({
       query: (args) => {
-        const { jwt, body, id } = args;
+        const { jwt, body, id } = args
         return {
           url: `/questions/${id}`,
           method: "PATCH",
@@ -375,7 +375,7 @@ export const backendApi: any = createApi({
             Authorization: `Bearer ${jwt}`,
           },
           body: { ...body },
-        };
+        }
       },
       invalidatesTags: ["forms", "overview"],
     }),
@@ -421,7 +421,7 @@ export const backendApi: any = createApi({
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-        };
+        }
       },
       providesTags: ["applicantForm"],
     }),
@@ -434,7 +434,7 @@ export const backendApi: any = createApi({
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-        };
+        }
       },
       providesTags: ["applicantForm"],
     }),
@@ -453,7 +453,7 @@ export const backendApi: any = createApi({
 
     createCohort: builder.mutation({
       query: (args) => {
-        const { jwt, body } = args;
+        const { jwt, body } = args
         return {
           url: "/cohorts",
           method: "POST",
@@ -461,26 +461,26 @@ export const backendApi: any = createApi({
             Authorization: `Bearer ${jwt}`,
           },
           body: { ...body },
-        };
+        }
       },
       invalidatesTags: ["cohorts"],
     }),
     getApplicants: builder.query({
       query: (args) => {
-        const { jwt, cohortId } = args;
+        const { jwt, cohortId } = args
         return {
           url: `/cohorts/overview${cohortId ? "?cohortId=" + cohortId : ""}`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-        };
+        }
       },
       providesTags: ["overview"],
     }),
     applicantDecision: builder.mutation({
       query: (args) => {
-        const { jwt, body } = args;
+        const { jwt, body } = args
         return {
           url: `/cohorts/decision`,
           method: "PATCH",
@@ -488,7 +488,7 @@ export const backendApi: any = createApi({
             Authorization: `Bearer ${jwt}`,
           },
           body: { ...body },
-        };
+        }
       },
       invalidatesTags: ["overview"],
     }),
@@ -501,25 +501,25 @@ export const backendApi: any = createApi({
             Authorization: `Bearer ${jwt}`,
           },
           body,
-        };
+        }
       },
       invalidatesTags: ["overview", "users"],
     }),
     getAllCohorts: builder.query({
       query: (args) => {
-        const { jwt, query } = args;
+        const { jwt, query } = args
         return {
           url: `/cohorts?${query}`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-        };
+        }
       },
       providesTags: ["cohorts"],
     }),
   }),
-});
+})
 
 export const {
   useGetAllTraineesQuery,
@@ -559,4 +559,4 @@ export const {
   useAddApplicantsMutation,
   useGetAllCohortsQuery,
   useGetApplicationFormQuery,
-} = backendApi;
+} = backendApi

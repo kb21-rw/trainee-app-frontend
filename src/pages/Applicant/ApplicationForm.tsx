@@ -1,31 +1,31 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom"
 import {
   useAddApplicantResponseMutation,
   useGetMyApplicationQuery,
-} from "../../features/user/backendApi";
-import Loader from "../../components/ui/Loader";
-import { AlertType, Cookie, QuestionType } from "../../utils/types";
-import { useCookies } from "react-cookie";
-import { Box, Typography } from "@mui/material";
-import { useForm } from "react-hook-form";
-import Button from "../../components/ui/Button";
+} from "../../features/user/backendApi"
+import Loader from "../../components/ui/Loader"
+import { AlertType, Cookie, QuestionType } from "../../utils/types"
+import { useCookies } from "react-cookie"
+import { Box, Typography } from "@mui/material"
+import { useForm } from "react-hook-form"
+import Button from "../../components/ui/Button"
 import {
   convertFormQuestionsToObject,
   getErrorInfo,
   getFormattedDate,
-} from "../../utils/helper";
-import { handleShowAlert } from "../../utils/handleShowAlert";
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
-import ApplicationFormQuestion from "../../components/ui/ApplicatonFormQuestion";
+} from "../../utils/helper"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { useDispatch } from "react-redux"
+import { useEffect } from "react"
+import ApplicationFormQuestion from "../../components/ui/ApplicatonFormQuestion"
 
 const ApplicationForm = () => {
-  const location = useLocation();
-  const [cookies] = useCookies([Cookie.jwt]);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { data, isFetching } = useGetMyApplicationQuery(cookies.jwt);
-  const [saveApplicantResponse, { error }] = useAddApplicantResponseMutation();
+  const location = useLocation()
+  const [cookies] = useCookies([Cookie.jwt])
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const { data, isFetching } = useGetMyApplicationQuery(cookies.jwt)
+  const [saveApplicantResponse, { error }] = useAddApplicantResponseMutation()
   const {
     handleSubmit,
     getValues,
@@ -34,11 +34,11 @@ const ApplicationForm = () => {
     formState: { isDirty, errors, dirtyFields },
   } = useForm({
     values: location?.state,
-  });
+  })
 
-  const formTitle = data?.name;
-  const formDeadline = data?.endDate;
-  const formQuestions = data?.questions ?? [];
+  const formTitle = data?.name
+  const formDeadline = data?.endDate
+  const formQuestions = data?.questions ?? []
 
   const handleFormSubmit = (formData: { [key: string]: string | string[] }) => {
     const responses = Object.entries(formData).map(
@@ -46,62 +46,62 @@ const ApplicationForm = () => {
         questionId: response[0],
         answer: response[1],
       }),
-    );
+    )
 
     const QuestionsPreview = formQuestions.map((question: any) => ({
       ...question,
       response: formData[question._id],
-    }));
+    }))
     navigate("/preview", {
       state: {
         formPreview: { ...data, questions: QuestionsPreview },
         responses,
         formData,
       },
-    });
-  };
+    })
+  }
 
   const handleSave = async () => {
     const userResponses = Object.entries(
       getValues() as { [key: string]: string | string[] },
-    );
+    )
 
     const modifiedResponses = userResponses.filter(
       (response: [string, string | string[]]) => dirtyFields[response[0]],
-    );
+    )
     const responses = modifiedResponses.map(
       (response: [string, string | string[]]) => ({
         questionId: response[0],
         answer: response[1],
       }),
-    );
+    )
 
     const result = await saveApplicantResponse({
       jwt: cookies.jwt,
       body: responses,
       action: "save",
-    });
+    })
 
-    const formQuestions = convertFormQuestionsToObject(result.data.questions);
-    reset(formQuestions, { keepDirty: false });
+    const formQuestions = convertFormQuestionsToObject(result.data.questions)
+    reset(formQuestions, { keepDirty: false })
 
     handleShowAlert(dispatch, {
       type: AlertType.Success,
       message: "Successfully saved your progress",
-    });
-  };
+    })
+  }
 
   useEffect(() => {
-    if(location?.state) return
+    if (location?.state) return
     if (data) {
-      const formQuestions = convertFormQuestionsToObject(data.questions);
-      reset(formQuestions, { keepDirty: false });
+      const formQuestions = convertFormQuestionsToObject(data.questions)
+      reset(formQuestions, { keepDirty: false })
     }
-  }, [reset, data, location?.state]);
+  }, [reset, data, location?.state])
 
   if (error) {
-    const { message } = getErrorInfo(error);
-    handleShowAlert(dispatch, { type: AlertType.Error, message });
+    const { message } = getErrorInfo(error)
+    handleShowAlert(dispatch, { type: AlertType.Error, message })
   }
 
   if (isFetching)
@@ -109,7 +109,7 @@ const ApplicationForm = () => {
       <div className="h-[50vh] flex items-center justify-center">
         <Loader />
       </div>
-    );
+    )
 
   return (
     <div className="py-12">
@@ -162,12 +162,12 @@ const ApplicationForm = () => {
 
           {formQuestions.map(
             (question: {
-              _id: string;
-              prompt: string;
-              required: boolean;
-              response: null | string;
-              type: QuestionType;
-              options: string[];
+              _id: string
+              prompt: string
+              required: boolean
+              response: null | string
+              type: QuestionType
+              options: string[]
             }) => (
               <Box
                 key={question._id}
@@ -210,7 +210,7 @@ const ApplicationForm = () => {
         </Box>
       </>
     </div>
-  );
-};
+  )
+}
 
-export default ApplicationForm;
+export default ApplicationForm

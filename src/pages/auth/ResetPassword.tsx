@@ -1,38 +1,38 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { H1 } from "../../components/ui/Typography";
-import Loader from "../../components/ui/Loader";
-import InputField from "../../components/ui/InputField";
-import Button from "../../components/ui/Button";
-import { useForm } from "react-hook-form";
-import { useResetPasswordMutation } from "../../features/user/backendApi";
-import { AlertType, ButtonSize } from "../../utils/types";
-import { getErrorInfo } from "../../utils/helper";
-import { handleShowAlert } from "../../utils/handleShowAlert";
-import { useDispatch } from "react-redux";
+import React from "react"
+import { Link } from "react-router-dom"
+import { H1 } from "../../components/ui/Typography"
+import Loader from "../../components/ui/Loader"
+import InputField from "../../components/ui/InputField"
+import Button from "../../components/ui/Button"
+import { useForm } from "react-hook-form"
+import { useResetPasswordMutation } from "../../features/user/backendApi"
+import { AlertType, ButtonSize } from "../../utils/types"
+import { getErrorInfo } from "../../utils/helper"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { useDispatch } from "react-redux"
 
 const ResetPassword = () => {
   const [resetPassword, { isLoading, error, isSuccess }] =
-    useResetPasswordMutation();
-  const dispatch = useDispatch();
-  const { register, handleSubmit } = useForm();
+    useResetPasswordMutation()
+  const dispatch = useDispatch()
+  const { register, handleSubmit } = useForm()
   const onSubmit = async (data: any) => {
-    await resetPassword({ email: data.email });
-  };
+    await resetPassword({ email: data.email })
+  }
 
   if (error) {
-    const { message } = getErrorInfo(error);
+    const { message } = getErrorInfo(error)
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
-    });
+    })
   }
 
   if (isSuccess) {
     handleShowAlert(dispatch, {
       type: AlertType.Success,
       message: "Password was reset successfully!",
-    });
+    })
   }
 
   return (
@@ -65,7 +65,7 @@ const ResetPassword = () => {
         </Link>
       </div>
     </form>
-  );
-};
+  )
+}
 
-export default ResetPassword;
+export default ResetPassword

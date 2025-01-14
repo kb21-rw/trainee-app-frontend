@@ -1,36 +1,36 @@
-import { useForm } from "react-hook-form";
-import Button from "../ui/Button";
-import { Modal } from "@mui/material";
-import { useCookies } from "react-cookie";
-import { AlertType, Cookie, User, UserRow } from "../../utils/types";
-import { useUpdateParticipantMutation } from "../../features/user/backendApi";
-import { useDispatch } from "react-redux";
-import { getErrorInfo } from "../../utils/helper";
-import { handleShowAlert } from "../../utils/handleShowAlert";
-import Input from "../ui/Input";
-import SmartSelect from "../ui/SmartSelect";
-import Loader from "../ui/Loader";
+import { useForm } from "react-hook-form"
+import Button from "../ui/Button"
+import { Modal } from "@mui/material"
+import { useCookies } from "react-cookie"
+import { AlertType, Cookie, User, UserRow } from "../../utils/types"
+import { useUpdateParticipantMutation } from "../../features/user/backendApi"
+import { useDispatch } from "react-redux"
+import { getErrorInfo } from "../../utils/helper"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import Input from "../ui/Input"
+import SmartSelect from "../ui/SmartSelect"
+import Loader from "../ui/Loader"
 
 export default function EditParticipantModal({
   row,
   coaches,
   onClose,
 }: {
-  row: UserRow;
-  coaches: User[];
-  onClose: () => void;
+  row: UserRow
+  coaches: User[]
+  onClose: () => void
 }) {
-  const [cookies] = useCookies([Cookie.jwt]);
+  const [cookies] = useCookies([Cookie.jwt])
   const {
     handleSubmit,
     register,
     formState: { errors, isDirty },
   } = useForm<{ name: string; coach: string }>({
     defaultValues: { name: row.name ?? "", coach: row.coach ?? "" },
-  });
+  })
   const [updateParticipant, { error, isSuccess, isLoading }] =
-    useUpdateParticipantMutation();
-  const dispatch = useDispatch();
+    useUpdateParticipantMutation()
+  const dispatch = useDispatch()
 
   const coachOptions = [
     { value: "", label: "No coach" },
@@ -38,35 +38,33 @@ export default function EditParticipantModal({
       value: coach._id,
       label: coach.name,
     })),
-  ];
+  ]
 
-  const selectedCoach = coachOptions.find(
-    (coach) => coach.value === row?.coach,
-  );
+  const selectedCoach = coachOptions.find((coach) => coach.value === row?.coach)
 
   const onSubmit = async (formData: { name: string; coach: string }) => {
     await updateParticipant({
       jwt: cookies.jwt,
       body: formData,
       participantId: row.id,
-    });
-  };
+    })
+  }
 
   if (error) {
-    const { message } = getErrorInfo(error);
+    const { message } = getErrorInfo(error)
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
-    });
-    onClose();
+    })
+    onClose()
   }
 
   if (isSuccess) {
     handleShowAlert(dispatch, {
       type: AlertType.Success,
       message: "Participant was updated successfully",
-    });
-    onClose();
+    })
+    onClose()
   }
 
   return (
@@ -108,5 +106,5 @@ export default function EditParticipantModal({
         </div>
       </form>
     </Modal>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import { Control, Controller } from "react-hook-form";
-import { QuestionType } from "../../utils/types";
+import { Control, Controller } from "react-hook-form"
+import { QuestionType } from "../../utils/types"
 import {
   Checkbox,
   FormControlLabel,
@@ -7,18 +7,18 @@ import {
   Radio,
   RadioGroup,
   TextField,
-} from "@mui/material";
+} from "@mui/material"
 
 interface ApplicationDFormQuestionProps {
   question: {
-    _id: string;
-    prompt: string;
-    required: boolean;
-    response: null | string | string[];
-    type: QuestionType;
-    options: string[];
-  };
-  control: Control<any, any>;
+    _id: string
+    prompt: string
+    required: boolean
+    response: null | string | string[]
+    type: QuestionType
+    options: string[]
+  }
+  control: Control<any, any>
 }
 
 export default function ApplicationFormQuestion({
@@ -47,18 +47,18 @@ export default function ApplicationFormQuestion({
                             const newValues = e.target.checked
                               ? [...field.value, option]
                               : field.value.filter(
-                                  (item: string) => item !== option
-                                );
-                            field.onChange(newValues);
+                                  (item: string) => item !== option,
+                                )
+                            field.onChange(newValues)
                           }}
                         />
                       }
                       label={option}
                     />
-                  )
+                  ),
                 )}
               </FormGroup>
-            );
+            )
 
           case QuestionType.SingleSelect:
             return (
@@ -72,7 +72,7 @@ export default function ApplicationFormQuestion({
                   />
                 ))}
               </RadioGroup>
-            );
+            )
 
           default:
             return (
@@ -82,9 +82,9 @@ export default function ApplicationFormQuestion({
                 fullWidth
                 variant="standard"
               />
-            );
+            )
         }
       }}
     />
-  );
+  )
 }

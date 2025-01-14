@@ -1,29 +1,29 @@
-import { useForm } from "react-hook-form";
-import Button from "../ui/Button";
-import { Modal } from "@mui/material";
-import { AlertType, Cookie, User, UserRole } from "../../utils/types";
-import Select from "../ui/Select";
-import { getErrorInfo } from "../../utils/helper";
-import { handleShowAlert } from "../../utils/handleShowAlert";
-import { useDispatch } from "react-redux";
-import { useCookies } from "react-cookie";
+import { useForm } from "react-hook-form"
+import Button from "../ui/Button"
+import { Modal } from "@mui/material"
+import { AlertType, Cookie, User, UserRole } from "../../utils/types"
+import Select from "../ui/Select"
+import { getErrorInfo } from "../../utils/helper"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { useDispatch } from "react-redux"
+import { useCookies } from "react-cookie"
 import {
   useAddCoachMutation,
   useGetUsersQuery,
-} from "../../features/user/backendApi";
-import Loader from "../ui/Loader";
+} from "../../features/user/backendApi"
+import Loader from "../ui/Loader"
 
 export default function AddCoach({
   isOpen,
   onClose,
   cohortCoachIds,
 }: {
-  isOpen: boolean;
-  onClose: () => void;
-  cohortCoachIds: string[];
+  isOpen: boolean
+  onClose: () => void
+  cohortCoachIds: string[]
 }) {
-  const [cookies] = useCookies([Cookie.jwt]);
-  const dispatch = useDispatch();
+  const [cookies] = useCookies([Cookie.jwt])
+  const dispatch = useDispatch()
   const [
     addCoach,
     {
@@ -32,48 +32,48 @@ export default function AddCoach({
       isSuccess: isCoachSuccess,
       reset: resetAddCoach,
     },
-  ] = useAddCoachMutation();
+  ] = useAddCoachMutation()
 
   const { data: coaches, error: coachesError } = useGetUsersQuery({
     jwt: cookies.jwt,
     search: `role=${UserRole.Coach}`,
-  });
+  })
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset: resetForm,
-  } = useForm<{ coachId: string }>();
+  } = useForm<{ coachId: string }>()
 
   const onSubmit = async ({ coachId }: { coachId: string }) => {
-    await addCoach({ jwt: cookies.jwt, coachId });
-  };
+    await addCoach({ jwt: cookies.jwt, coachId })
+  }
 
   if (coachError || coachesError) {
-    const { message } = getErrorInfo(coachError ?? coachesError);
+    const { message } = getErrorInfo(coachError ?? coachesError)
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
-    });
-    resetAddCoach();
+    })
+    resetAddCoach()
   }
 
   if (isCoachSuccess) {
     handleShowAlert(dispatch, {
       type: AlertType.Success,
       message: "Coach was added successfully",
-    });
+    })
 
-    resetForm();
-    resetAddCoach();
-    onClose();
+    resetForm()
+    resetAddCoach()
+    onClose()
   }
 
   const availableCoaches =
     coaches
       ?.filter((coach: User) => !cohortCoachIds.includes(coach._id))
-      .map((coach: User) => ({ value: coach._id, label: coach.name })) ?? [];
+      .map((coach: User) => ({ value: coach._id, label: coach.name })) ?? []
 
   return (
     <Modal
@@ -112,5 +112,5 @@ export default function AddCoach({
         </div>
       </form>
     </Modal>
-  );
+  )
 }

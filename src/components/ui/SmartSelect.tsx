@@ -4,23 +4,23 @@ import {
   ComboboxInput,
   ComboboxOption,
   ComboboxOptions,
-} from "@headlessui/react";
-import { useEffect, useState } from "react";
-import classNames from "classnames";
-import { UseFormRegisterReturn } from "react-hook-form";
-import DropDownIcon from "../../assets/DropDownIcon";
+} from "@headlessui/react"
+import { useEffect, useState } from "react"
+import classNames from "classnames"
+import { UseFormRegisterReturn } from "react-hook-form"
+import DropDownIcon from "../../assets/DropDownIcon"
 
 interface Option {
-  value: string;
-  label: string;
+  value: string
+  label: string
 }
 
 interface SmartSelectProps {
-  options: Option[];
-  defaultValue?: Option;
-  label?: string;
-  error?: string;
-  register: UseFormRegisterReturn<any>;
+  options: Option[]
+  defaultValue?: Option
+  label?: string
+  error?: string
+  register: UseFormRegisterReturn<any>
 }
 
 export default function SmartSelect({
@@ -30,19 +30,19 @@ export default function SmartSelect({
   label,
   register: { onChange, name },
 }: SmartSelectProps) {
-  const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState<Option | null>(defaultValue ?? null);
+  const [query, setQuery] = useState("")
+  const [selected, setSelected] = useState<Option | null>(defaultValue ?? null)
 
   useEffect(() => {
-    setSelected(defaultValue ?? null);
-  }, [defaultValue]);
+    setSelected(defaultValue ?? null)
+  }, [defaultValue])
 
   const filteredOptions =
     query === ""
       ? options
       : options.filter((option) => {
-          return option.label.toLowerCase().includes(query.toLowerCase());
-        });
+          return option.label.toLowerCase().includes(query.toLowerCase())
+        })
 
   return (
     <div className="bg-white space-y-2">
@@ -51,8 +51,8 @@ export default function SmartSelect({
       <Combobox
         value={selected}
         onChange={(option) => {
-          setSelected(option);
-          onChange({ target: { name, value: option?.value } });
+          setSelected(option)
+          onChange({ target: { name, value: option?.value } })
         }}
         onClose={() => setQuery("")}
       >
@@ -65,7 +65,7 @@ export default function SmartSelect({
             )}
             displayValue={(option: Option | null) => option?.label ?? ""}
             onChange={(event) => {
-              setQuery(event.target.value);
+              setQuery(event.target.value)
             }}
           />
           <ComboboxButton className="group absolute inset-y-0 right-0 px-2.5">
@@ -90,5 +90,5 @@ export default function SmartSelect({
         </ComboboxOptions>
       </Combobox>
     </div>
-  );
+  )
 }
