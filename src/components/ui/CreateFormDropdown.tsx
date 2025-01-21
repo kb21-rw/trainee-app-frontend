@@ -1,38 +1,73 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react"
 import { PlusIcon } from "@radix-ui/react-icons"
-import { Link } from "react-router-dom"
 import { useCreateFormMutation } from "../../features/user/backendApi"
 import { useNavigate } from "react-router-dom"
-import { Cookie, FormType } from "../../utils/types"
-import { menuItems } from "../../utils/data"
-import { useGetApplicationFormQuery } from "../../features/user/backendApi"
+import { AlertType, Cookie, FormType } from "../../utils/types"
 import classNames from "classnames"
 import { useCookies } from "react-cookie"
+import dayjs from "dayjs"
+import { getErrorInfo } from "../../utils/helper"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { useDispatch } from "react-redux"
 
-type NextFormType = Exclude<FormType, FormType.Application>
+const menuItems = [
+  { label: "Create a new form for Trainees", type: FormType.Trainee },
+  { label: "Create a new form for Applicants", type: FormType.Applicant },
+]
 
-export default function CreateFormDropdown() {
+interface CreateFormDropdownProps {
+  applicationFormExists: boolean
+}
+
+export default function CreateFormDropdown({
+  applicationFormExists,
+}: CreateFormDropdownProps) {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [cookies] = useCookies([Cookie.jwt])
 
   const [createForm] = useCreateFormMutation()
-  const { data: applicationForm } = useGetApplicationFormQuery(cookies.jwt)
 
-  const onClickAddForm = async (type: NextFormType) => {
+  const potentialForms = applicationFormExists
+    ? menuItems
+    : [
+        {
+          label: "Create a new Application form",
+          type: FormType.Application,
+        },
+        ...menuItems,
+      ]
+
+  const handleCreateForm = async (type: FormType) => {
+    const nextFormTitle = `${type} form name...`
+    const requestBody: {
+      name: string
+      type: FormType
+      startDate?: string
+      endDate?: string
+      stages?: { name: string }[]
+    } = { name: nextFormTitle, type }
+
+    if (type === FormType.Application) {
+      requestBody.startDate = dayjs().add(1, "day").toISOString()
+      requestBody.endDate = dayjs().add(2, "day").toISOString()
+      requestBody.stages = [{ name: "Application" }]
+    }
+
     try {
-      const nextFormTitle = `${type} form name...`
+      const result = await createForm({ jwt: cookies.jwt, body: requestBody })
 
-      const requestBody: object = { name: nextFormTitle, type }
+      if (result.error) {
+        throw result.error
+      }
 
-      const { data: formData } = await createForm({
-        jwt: cookies.jwt,
-        body: requestBody,
-      })
-
-      const id = formData?._id
-      navigate(`/forms/${id}`)
+      navigate(`/forms/${result?.data?._id}`)
     } catch (error) {
-      console.error("Error creating form:", error)
+      const { message } = getErrorInfo(error)
+      handleShowAlert(dispatch, {
+        type: AlertType.Error,
+        message,
+      })
     }
   }
 
@@ -40,7 +75,7 @@ export default function CreateFormDropdown() {
     <Menu>
       <MenuButton className="flex items-center gap-2 bg-primary-dark text-white px-4 py-3 rounded">
         <PlusIcon />
-        Add form
+        Create form
       </MenuButton>
 
       <MenuItems
@@ -48,38 +83,17 @@ export default function CreateFormDropdown() {
         anchor="bottom end"
         className="origin-top-right rounded-lg border border-white/5 bg-white text-sm text-gray-500 font-medium transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0 custom-shadow"
       >
-        {menuItems.map((item, index) => (
+        {potentialForms.map((item, index) => (
           <MenuItem key={index}>
-            {item.link ? (
-              !applicationForm &&
-              item.link === "/forms/create/application-form" ? (
-                <Link
-                  to={item.link}
-                  className={classNames(
-                    "group flex w-full items-center py-3 px-5 data-[focus]:bg-primary-dark data-[focus]:text-white",
-                    {
-                      "border-none": index === menuItems.length - 1,
-                      "border-b": index !== menuItems.length - 1,
-                    },
-                  )}
-                >
-                  {item.label}
-                </Link>
-              ) : (
-                <span className="hidden"></span>
-              )
-            ) : (
-              <button
-                className={classNames(
-                  "group flex w-full items-center py-3 px-5 data-[focus]:bg-primary-dark data-[focus]:text-white",
-                  { "border-none": index === menuItems.length - 1 },
-                  { "border-b": !(index === menuItems.length - 1) },
-                )}
-                onClick={() => onClickAddForm(item.type as NextFormType)}
-              >
-                {item.label}
-              </button>
-            )}
+            <button
+              className={classNames(
+                "group flex w-full items-center py-3 px-5 data-[focus]:bg-primary-dark data-[focus]:text-white border-b",
+                { "border-none": index === potentialForms.length - 1 },
+              )}
+              onClick={() => handleCreateForm(item.type)}
+            >
+              {item.label}
+            </button>
           </MenuItem>
         ))}
       </MenuItems>
