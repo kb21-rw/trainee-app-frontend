@@ -102,12 +102,17 @@ export default function EditableFormCard({ form }: UpdateFormProps) {
       const result = await editForm({
         jwt: cookies.jwt,
         id: form._id,
-        body: { ...requestBody, type: form.type },
+        body: requestBody,
       })
 
       if (result.error) {
         throw result.error
       }
+
+      handleShowAlert(dispatch, {
+        type: AlertType.Success,
+        message: "Form updated successfully",
+      })
 
       navigate(`/forms/${result?.data?._id}`)
     } catch (error) {
@@ -181,7 +186,7 @@ export default function EditableFormCard({ form }: UpdateFormProps) {
           </>
         )}
       </div>
-      <div className="flex flex-col justify-between gap-6 p-4 custom-shadow rounded-xl">
+      <div className="flex flex-col justify-between max-h-48 gap-6 p-4 custom-shadow rounded-xl">
         {isDirty ? (
           <button type="submit">
             <SuccessCheckMark />
