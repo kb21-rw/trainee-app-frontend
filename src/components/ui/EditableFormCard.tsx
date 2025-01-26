@@ -19,11 +19,9 @@ import {
   QuestionType,
 } from "../../utils/types"
 import { useCookies } from "react-cookie"
-import classNames from "classnames"
 import dayjs from "dayjs"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Dispatch, SetStateAction } from "react"
 import UpdateStages from "./UpdateStages"
 import { DatePicker } from "@mui/x-date-pickers"
 import { getErrorInfo } from "../../utils/helper"
@@ -57,15 +55,9 @@ export type FormDtoSchema = z.infer<typeof FormDto>
 
 interface UpdateFormProps {
   form: ApplicationForm | Form
-  activeQuestion: string
-  setActiveQuestion: Dispatch<SetStateAction<string>>
 }
 
-export default function EditableFormCard({
-  form,
-  activeQuestion,
-  setActiveQuestion,
-}: UpdateFormProps) {
+export default function EditableFormCard({ form }: UpdateFormProps) {
   const defaultValues = {
     name: form.name,
     description: form.description ?? "",
@@ -136,22 +128,13 @@ export default function EditableFormCard({
   }
 
   return (
-    <form
-      className="flex gap-2"
-      onFocus={() => setActiveQuestion("title")}
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <form className="group flex gap-2" onSubmit={handleSubmit(onSubmit)}>
       {isDeleteFormLoading && (
         <div className="absolute inset-0 h-full w-full">
           <Loader />
         </div>
       )}
-      <div
-        className={classNames(
-          "p-8 custom-shadow border-primary-dark border-t-8  rounded-xl flex flex-col gap-8 flex-1",
-          { "border-l-8 border-l-primary-light": activeQuestion === "prompt" },
-        )}
-      >
+      <div className="p-8 custom-shadow border-t-primary-dark group-focus-within:border-t-primary-light border-t-8  rounded-xl flex flex-col gap-8 flex-1">
         <input
           placeholder="Enter title"
           className="outline-none text-[42px] font-bold border-b border-black/10"

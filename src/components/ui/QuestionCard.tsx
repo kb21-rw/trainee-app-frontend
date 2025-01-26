@@ -14,7 +14,7 @@ import DeleteModal from "../modals/DeleteModal"
 import { Cookie, QuestionType } from "../../utils/types"
 import { useCookies } from "react-cookie"
 
-const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
+const QuestionCard = ({ question }: any) => {
   const { prompt, type, options, _id } = question
   const {
     register,
@@ -54,15 +54,8 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
   const { options: currentOptions } = watch()
 
   return (
-    <div
-      className="flex justify-start gap-2"
-      onFocus={() => setActiveQuestion(_id)}
-    >
-      <div
-        className={`p-8 custom-shadow ${
-          activeQuestion === _id && "border-l-8 border-primary-light"
-        } flex flex-1 items-center justify-between rounded-xl`}
-      >
+    <div className="flex justify-start gap-2 group">
+      <div className="p-8 custom-shadow group-focus-within:border-l-8 group-focus-within:border-primary-light flex flex-1 items-center justify-between rounded-xl">
         {false && (
           <div className="absolute inset-0 h-full w-full">
             <Loader />
@@ -72,9 +65,7 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
           <div className="flex items-center gap-4">
             <input
               {...register("prompt")}
-              className={`text-2xl flex-1 h-16  ${
-                activeQuestion === _id && "bg-white"
-              } focus:border-b-2 border-blue-400 outline-none py-1 px-0.5`}
+              className={`text-2xl flex-1 h-16 focus:border-b-2 border-primary-light outline-none py-1 px-0.5`}
             />
             <select className="p-2" {...register("type")} value={selectedType}>
               {[

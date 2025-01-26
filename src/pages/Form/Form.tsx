@@ -1,4 +1,3 @@
-import React, { useState } from "react"
 import { useGetFormQuery } from "../../features/user/backendApi"
 import Loader from "../../components/ui/Loader"
 import { useParams } from "react-router-dom"
@@ -22,7 +21,6 @@ export default function Form() {
     id: id || "",
     jwt: cookies.jwt,
   })
-  const [activeQuestion, setActiveQuestion] = useState<string>("")
 
   const { questionIds: questions = [], ...formProps } = form ?? {}
 
@@ -45,19 +43,10 @@ export default function Form() {
   return (
     <div className="py-12 max-w-5xl mx-auto">
       <div className="flex flex-col gap-4">
-        <EditableFormCard
-          form={formProps}
-          activeQuestion={activeQuestion}
-          setActiveQuestion={setActiveQuestion}
-        />
+        <EditableFormCard form={formProps} />
         <div className="flex flex-col gap-4">
           {questions.map((question: TemplateQuestion) => (
-            <QuestionCard
-              key={question._id}
-              activeQuestion={activeQuestion}
-              setActiveQuestion={setActiveQuestion}
-              question={question}
-            />
+            <QuestionCard key={question._id} question={question} />
           ))}
         </div>
       </div>
