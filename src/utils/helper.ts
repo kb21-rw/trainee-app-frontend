@@ -2,6 +2,7 @@ import {
   ApplicationForm,
   ApplicationFormStatus,
   QuestionType,
+  UserResponseQuestion,
   UserRole,
 } from "./types"
 import dayjs from "dayjs"
@@ -19,7 +20,9 @@ import dayjs from "dayjs"
  */
 
 export const getApplicationFormStatus = (
-  application?: ApplicationForm,
+  application?: Omit<ApplicationForm, "questions"> & {
+    questions: UserResponseQuestion[]
+  },
 ): ApplicationFormStatus => {
   if (!application) return ApplicationFormStatus.NoApplication
 

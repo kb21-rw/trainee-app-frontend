@@ -11,7 +11,7 @@ import Profile from "./pages/User/Profile"
 import CoachesInfo from "./pages/User/Coaches"
 import ResetPassword from "./pages/auth/ResetPassword"
 import AllForm from "./pages/Form/AllForms"
-import SingleForm from "./pages/Form/SingleForm"
+import SingleForm from "./pages/Form/Form"
 import OverView from "./pages/User/OverView"
 import TraineeResults from "./pages/User/TraineeResults"
 import ApplicantVerification from "./pages/auth/Verification"
@@ -21,7 +21,6 @@ import Cohorts from "./pages/Cohort/Cohorts"
 import HomePage from "./pages/Applicant/HomePage"
 import SavedApplication from "./pages/Applicant/SavedApplication"
 import Applicants from "./pages/Overview/Applicants"
-import CreateApplicationForm from "./pages/Form/CreateApplicationForm"
 import PrivateRoute from "./components/PrivateRoute"
 import PreviewApplicationPage from "./pages/Applicant/PreviewApplicationPage"
 import Auth from "./pages/auth/Auth"
@@ -31,6 +30,8 @@ import GlobalLayout from "./components/layouts/GlobalLayout"
 import { UserRole } from "./utils/types"
 import { CookiesProvider } from "react-cookie"
 import Users from "./pages/User/Users"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 
 export default function App() {
   const router = createBrowserRouter(
@@ -42,10 +43,6 @@ export default function App() {
               <Route path="/users" element={<Users />} />
               <Route path="/forms" element={<AllForm />} />
               <Route path="/forms/:id" element={<SingleForm />} />
-              <Route
-                path="/forms/create/application-form"
-                element={<CreateApplicationForm />}
-              />
               <Route path="/coaches" element={<CoachesInfo />} />
               <Route path="/cohorts" element={<Cohorts />} />
               <Route path="/applicants" element={<Applicants />} />
@@ -101,7 +98,9 @@ export default function App() {
   return (
     <CookiesProvider defaultSetOptions={{ path: "/" }}>
       <Provider store={store}>
-        <RouterProvider router={router} />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <RouterProvider router={router} />
+        </LocalizationProvider>
       </Provider>
     </CookiesProvider>
   )

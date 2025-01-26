@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { useGetFormQuery } from "../../features/user/backendApi"
 import Loader from "../../components/ui/Loader"
 import { useParams } from "react-router-dom"
-import UpdateFormCard from "../../components/ui/UpdateFormCard"
+import EditableFormCard from "../../components/ui/EditableFormCard"
 import QuestionCard from "../../components/ui/QuestionCard"
 import { AlertType, Cookie, TemplateQuestion } from "../../utils/types"
 import { useCookies } from "react-cookie"
@@ -45,7 +45,7 @@ export default function Form() {
   return (
     <div className="py-12 max-w-5xl mx-auto">
       <div className="flex flex-col gap-4">
-        <UpdateFormCard
+        <EditableFormCard
           form={formProps}
           activeQuestion={activeQuestion}
           setActiveQuestion={setActiveQuestion}

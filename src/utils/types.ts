@@ -39,13 +39,27 @@ export interface Cohort {
   trainingStartDate: string
 }
 
-export interface Form {
+export interface BaseForm {
   _id: string
   name: string
   description: string
-  type: FormType
+  type: FormType.Applicant | FormType.Trainee
   questions: Question[]
 }
+
+export interface ExtraApplicantFormFields {
+  type: FormType.Application
+  startDate: string
+  endDate: string
+  stages: Stage[]
+}
+
+export interface ApplicationForm
+  extends ExtraApplicantFormFields,
+    Omit<BaseForm, "type"> {}
+
+export type Form = BaseForm | ApplicationForm
+
 export interface Question {
   _id: string
   prompt: string
@@ -62,15 +76,11 @@ export interface Response {
   questionId?: string
 }
 
-export interface CreateCoach {
-  name: string
-  email: string
-  password: string
-}
 export interface Stage {
   id: string
   name: string
   description: string
+  participantsCount: number
 }
 
 export interface Option {
@@ -154,33 +164,12 @@ export enum FormType {
   Application = "Application",
 }
 
-export interface MenuItemType {
-  label: string
-  type?: FormType
-  link?: string
-}
-
-export interface ApplicationFormType {
-  title: string
-  description: string
-  startDate: Date | null
-  endDate: Date | null
-  stages: { name: string; description: string }[] | []
-}
-
 export enum ApplicationFormStatus {
   Open = "Open",
   Saved = "Saved",
   Submitted = "Submitted",
   NoApplication = "NoApplication",
   DeadlinePassed = "DeadlinePassed",
-}
-
-export interface ApplicationForm extends Omit<Form, "questions"> {
-  startDate: string
-  endDate: string
-  trainingStartDate: string
-  questions: UserResponseQuestion[]
 }
 
 export interface IAlert {

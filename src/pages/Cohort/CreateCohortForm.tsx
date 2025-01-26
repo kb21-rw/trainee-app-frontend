@@ -1,6 +1,4 @@
 import { InputLabel, Stack } from "@mui/material"
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { DatePicker } from "@mui/x-date-pickers"
 import Button from "../../components/ui/Button"
 import { ButtonSize, Cookie } from "../../utils/types"
@@ -111,35 +109,33 @@ function CreateCohortForm({
         errors={errors}
         label="Description"
       />
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <InputLabel shrink htmlFor="bootstrap-input">
-          Training start date
-        </InputLabel>
-        <Controller
-          control={control}
-          name={FORM_NAME.trainingStartDate}
-          render={({ field: { onChange, value } }) => {
-            return (
-              <DatePicker
-                minDate={dayjs().add(1, "day")}
-                value={value || null}
-                onChange={(newValue: Dayjs | null) => {
-                  onChange(newValue)
-                }}
-                disablePast
-                slotProps={{
-                  textField: {
-                    size: "small",
-                    fullWidth: true,
-                    helperText: errors[FORM_NAME.trainingStartDate]?.message,
-                    error: FORM_NAME.trainingStartDate in errors,
-                  },
-                }}
-              />
-            )
-          }}
-        />
-      </LocalizationProvider>
+      <InputLabel shrink htmlFor="bootstrap-input">
+        Training start date
+      </InputLabel>
+      <Controller
+        control={control}
+        name={FORM_NAME.trainingStartDate}
+        render={({ field: { onChange, value } }) => {
+          return (
+            <DatePicker
+              minDate={dayjs().add(1, "day")}
+              value={value || null}
+              onChange={(newValue: Dayjs | null) => {
+                onChange(newValue)
+              }}
+              disablePast
+              slotProps={{
+                textField: {
+                  size: "small",
+                  fullWidth: true,
+                  helperText: errors[FORM_NAME.trainingStartDate]?.message,
+                  error: FORM_NAME.trainingStartDate in errors,
+                },
+              }}
+            />
+          )
+        }}
+      />
 
       <Stages
         stagesNames={FORM_NAME.stages}

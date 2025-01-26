@@ -11,6 +11,7 @@ import Delete from "../../assets/DeleteIcon"
 import Loader from "./Loader"
 import { useNavigate } from "react-router-dom"
 import {
+  AlertType,
   ApplicationForm,
   Cookie,
   Form,
@@ -19,27 +20,40 @@ import {
 } from "../../utils/types"
 import { useCookies } from "react-cookie"
 import classNames from "classnames"
-import { DatePicker } from "@mui/x-date-pickers"
 import dayjs from "dayjs"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Dispatch, SetStateAction } from "react"
+import UpdateStages from "./UpdateStages"
+import { DatePicker } from "@mui/x-date-pickers"
+import { getErrorInfo } from "../../utils/helper"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { useDispatch } from "react-redux"
 
-const FormSchema = z.object({
+const FormDto = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
-  startDate: z.string().optional(),
-  endDate: z.string().optional(),
+  startDate: z
+    .custom((value) => dayjs.isDayjs(value) || value instanceof Date, {
+      message: "Start date is required",
+    })
+    .transform((value) => (dayjs.isDayjs(value) ? value.toDate() : value)),
+  endDate: z
+    .custom((value) => dayjs.isDayjs(value) || value instanceof Date, {
+      message: "End date is required",
+    })
+    .transform((value) => (dayjs.isDayjs(value) ? value.toDate() : value)),
   stages: z
     .array(
       z.object({
-        id: z.string().optional(),
-        name: z.string(),
+        name: z.string().min(2, "Name is required"),
         description: z.string(),
       }),
     )
     .optional(),
 })
+
+export type FormDtoSchema = z.infer<typeof FormDto>
 
 interface UpdateFormProps {
   form: ApplicationForm | Form
@@ -47,20 +61,29 @@ interface UpdateFormProps {
   setActiveQuestion: Dispatch<SetStateAction<string>>
 }
 
-export default function UpdateFormCard({
+export default function EditableFormCard({
   form,
   activeQuestion,
   setActiveQuestion,
 }: UpdateFormProps) {
+  const defaultValues = {
+    name: form.name,
+    description: form.description ?? "",
+    startDate:
+      form.type === FormType.Application ? dayjs(form.startDate) : null,
+    endDate: form.type === FormType.Application ? dayjs(form.endDate) : null,
+    stages: form.type === FormType.Application ? form.stages : [],
+  }
   const [cookies] = useCookies([Cookie.jwt])
+  const dispatch = useDispatch()
   const {
     control,
     register,
     handleSubmit,
     formState: { isDirty, dirtyFields, errors },
-  } = useForm({
-    resolver: zodResolver(FormSchema),
-    // defaultValues: { name, description, ...rest },
+  } = useForm<FormDtoSchema>({
+    resolver: zodResolver(FormDto),
+    defaultValues,
   })
 
   const [editForm] = useEditFormMutation()
@@ -74,16 +97,34 @@ export default function UpdateFormCard({
     navigate(`/forms`)
   }
 
-  const onSubmit = async (data: any) => {
-    console.log("======= In submit ========")
-    console.log(data)
-    console.log({ dirtyFields, errors })
-    return
-    await editForm({
-      jwt: cookies.jwt,
-      body: { ...data, type: form.type },
-      _id: form._id,
-    })
+  const onSubmit = async (data: FormDtoSchema) => {
+    const requestBody: Partial<FormDtoSchema> = {}
+
+    for (const key in dirtyFields) {
+      const myKey = key as keyof FormDtoSchema
+      if (!dirtyFields[myKey]) continue
+      requestBody[myKey] = data[myKey] as any
+    }
+
+    try {
+      const result = await editForm({
+        jwt: cookies.jwt,
+        id: form._id,
+        body: { ...requestBody, type: form.type },
+      })
+
+      if (result.error) {
+        throw result.error
+      }
+
+      navigate(`/forms/${result?.data?._id}`)
+    } catch (error) {
+      const { message } = getErrorInfo(error)
+      handleShowAlert(dispatch, {
+        type: AlertType.Error,
+        message,
+      })
+    }
   }
 
   const handleAddQuestion = async () => {
@@ -93,9 +134,6 @@ export default function UpdateFormCard({
       body: { prompt: `Question`, type: QuestionType.Text },
     })
   }
-
-  console.log({ errors, dirtyFields, isDirty })
-  // console.log({ name, description, _id, type, ...rest })
 
   return (
     <form
@@ -116,51 +154,48 @@ export default function UpdateFormCard({
       >
         <input
           placeholder="Enter title"
-          className="outline-none text-[42px] font-bold border-b border-black"
-          defaultValue={form.name}
+          className="outline-none text-[42px] font-bold border-b border-black/10"
           {...register("name")}
         />
         <input
           placeholder="Enter description"
-          className="outline-none border-b border-black"
-          defaultValue={form.description}
+          className="outline-none border-b border-black/10"
           {...register("description")}
         />
         {form.type === FormType.Application && (
-          <div className="flex justify-between">
-            <Controller
-              name="startDate"
+          <>
+            <div className="flex justify-between">
+              <Controller
+                name="startDate"
+                control={control}
+                render={({ field, ...props }) => (
+                  <DatePicker
+                    value={field.value ?? null}
+                    onChange={field.onChange}
+                    label="Application open date"
+                    {...props}
+                  />
+                )}
+              />
+              <Controller
+                name="endDate"
+                control={control}
+                render={({ field, ...props }) => (
+                  <DatePicker
+                    value={field.value ?? null}
+                    onChange={field.onChange}
+                    label="Application close date"
+                    {...props}
+                  />
+                )}
+              />
+            </div>
+            <UpdateStages
               control={control}
-              defaultValue={dayjs(form.startDate)}
-              render={({ field, ...props }) => (
-                <DatePicker
-                  minDate={dayjs().add(1, "day")}
-                  value={field.value ? dayjs(field.value) : null}
-                  onChange={(date) => {
-                    field.onChange(date)
-                  }}
-                  label="Application open date"
-                  {...props}
-                />
-              )}
+              register={register}
+              error={errors}
             />
-            <Controller
-              name="endDate"
-              control={control}
-              defaultValue={dayjs(form.endDate)}
-              render={({ field, ...props }) => (
-                <DatePicker
-                  minDate={dayjs().add(2, "day")}
-                  value={field.value ? dayjs(field.value) : null}
-                  onChange={(date) => {
-                    field.onChange(date)
-                  }}
-                  label="Application close date"
-                  {...props}
-                />
-              )}
-            />
-          </div>
+          </>
         )}
       </div>
       <div className="flex flex-col justify-between gap-6 p-4 custom-shadow rounded-xl">

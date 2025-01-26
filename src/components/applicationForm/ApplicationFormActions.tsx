@@ -4,6 +4,7 @@ import {
   ApplicationForm,
   ApplicationFormStatus,
   ButtonSize,
+  UserResponseQuestion,
   UserRole,
 } from "../../utils/types"
 import { getApplicationFormStatus, getFormattedDate } from "../../utils/helper"
@@ -12,7 +13,10 @@ import CohortInfo from "../ui/CohortInfo"
 import Button from "../ui/Button"
 
 interface ApplicationFormActionsProps {
-  applicationForm: ApplicationForm
+  applicationForm: Omit<ApplicationForm, "questions"> & {
+    questions: UserResponseQuestion[]
+    trainingStartDate: string
+  }
   role: UserRole
 }
 

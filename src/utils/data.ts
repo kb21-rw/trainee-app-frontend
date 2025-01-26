@@ -1,4 +1,4 @@
-import { ApplicationFormStatus, FormType, MenuItemType } from "./types"
+import { ApplicationFormStatus } from "./types"
 
 export const adminMenu = [
   { link: "/users", title: "Users" },
@@ -15,15 +15,6 @@ export const coachMenu = [
 ]
 
 export const applicantMenu = [{ link: "/home", title: "Home" }]
-
-export const menuItems: MenuItemType[] = [
-  { label: "Create a new form for Trainees", type: FormType.Trainee },
-  { label: "Create a new form for Applicants", type: FormType.Applicant },
-  {
-    label: "Create a new Application form",
-    link: "/forms/create/application-form",
-  },
-]
 
 export const usersPerPageValues = [10, 20, 30, 40, 50, 100]
 export const cohortsPerPage = [10, 20, 30, 40, 50, 100]
