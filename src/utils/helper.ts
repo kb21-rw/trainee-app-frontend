@@ -28,7 +28,10 @@ export const getApplicationFormStatus = (
 
   const today = dayjs()
   const endDate = dayjs(application.endDate)
+  const startDate = dayjs(application.startDate)
   const tenDaysAfterDeadline = endDate.add(10, "days")
+
+  if (today.isBefore(startDate)) return ApplicationFormStatus.NoApplication
 
   if (today.isAfter(endDate)) {
     if (today.isAfter(tenDaysAfterDeadline))
