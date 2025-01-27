@@ -248,7 +248,7 @@ const Applicants = () => {
           participantsInfo={cohortOverview.participantsInfo}
           coaches={cohortCoaches.coaches}
           updates={[]}
-          stages={cohortOverview.applicationForm.stages}
+          stages={cohortOverview.forms?.[0]?.stages ?? []}
           actions={{ handleDecision, handleUpsertResponse, handleCoachChange }}
         />
       )}
