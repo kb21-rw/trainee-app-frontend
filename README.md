@@ -1,62 +1,50 @@
-# Trainee App (Frontend)
+# Trainee App Frontend
 
-Welcome to the trainee app 🤗. This is the frontend documentation for the Trainee App, a web application designed to streamline the process of collecting and managing trainee information for coaches. It offers a user-friendly interface for coaches and admins to register, log in, and efficiently manage data.
+## Overview
 
-## Project Overview
+The Trainee App frontend is the user interface for a training management tool that streamlines tracking participants' performance through coaches' feedback. This interface provides role-based access for Prospects, Applicants, Trainees, Coaches, and Admins, allowing efficient management of users, cohorts, forms, and evaluations.
 
-This project is a monorepo that contains two parts: the frontend and backend. The frontend is built using Vite, React, Redux, and React Router using TypeScript language.
+## Key Features
 
-[Trainee app hosted](https://trainee-app.vercel.app/)
+1. Applying: Prospects can view open applications and apply to join cohorts.
+2. Evaluating: Coaches can assess applicants and trainees by filling out admin-created forms.
+3. Feedback Management: Coaches can view feedback provided by other coaches.
+4. Role-Based Access:
+   -  Admin: Full access to manage users, cohorts, forms, and feedback.
+   - Coaches: Can evaluate and view participant performance but cannot modify other coaches' feedback.
+   - Applicants: Limited access to view and update personal information and submitted application.
+   - Trainees: Can not log in anymore
 
-## Getting Started
+## Technologies Used
 
-These instructions will help you get a copy of the frontend up and running on your local machine for development and testing purposes. To test the frontend you need to have backend running because it is the one managing the access of data which need to visualised in frontnd.
+1. React (with Vite and TypeScript) - Frontend framework.
+2. React Hook Form (with Zod) - Form management and validation.
+3. Material UI (MUI) - Complex components like data grids.
+4. Redux Toolkit - State management.
+5. Day.js - Date manipulation.
+6. Tailwind CSS - Styling.
 
-## Installation
+## Getting started
 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/NNesta/trainee-app.git
+git clone https://github.com/kb21-rw/trainee-app-frontend.git
 ```
 
-2. Navigate to the repository
+2. Navigate to the repository:
 
 ```bash
-cd trainee-app
+cd trainee-app-frontend
 ```
 
-### Navigate to the project directory to the backend:
-
-```shell
-cd backend
-```
-
-### Install dependencies for the backend:
+3. Install dependencies:
 
 ```shell
 npm install
 ```
 
-### run backend:
-
-```shell
-npm run dev
-```
-
-### Navigate to the project directory to frontend:
-
-```shell
-cd frontend
-```
-
-### Install dependencies for the frontend:
-
-```shell
-npm install
-```
-
-### run the frontend:
+4. Start the development server (make sure you have .env file before running this command):
 
 ```shell
 npm run dev
