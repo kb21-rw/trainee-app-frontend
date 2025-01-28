@@ -32,14 +32,22 @@ const FormDto = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
   startDate: z
-    .custom((value) => dayjs.isDayjs(value) || value instanceof Date, {
-      message: "Start date is required",
-    })
+    .custom(
+      (value) =>
+        value === null || dayjs.isDayjs(value) || value instanceof Date,
+      {
+        message: "Start date must be a valid Date",
+      },
+    )
     .transform((value) => (dayjs.isDayjs(value) ? value.toDate() : value)),
   endDate: z
-    .custom((value) => dayjs.isDayjs(value) || value instanceof Date, {
-      message: "End date is required",
-    })
+    .custom(
+      (value) =>
+        value === null || dayjs.isDayjs(value) || value instanceof Date,
+      {
+        message: "End date must be a valid Date",
+      },
+    )
     .transform((value) => (dayjs.isDayjs(value) ? value.toDate() : value)),
   stages: z
     .array(
@@ -89,7 +97,9 @@ export default function EditableFormCard({ form }: UpdateFormProps) {
     navigate(`/forms`)
   }
 
+  console.log(errors)
   const onSubmit = async (data: FormDtoSchema) => {
+    console.log("Heelkjdkf")
     const requestBody: Partial<FormDtoSchema> = {}
 
     for (const key in dirtyFields) {
