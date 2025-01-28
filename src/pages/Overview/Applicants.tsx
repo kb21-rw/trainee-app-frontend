@@ -233,7 +233,7 @@ const Applicants = () => {
           </form>
         </div>
         {/* Display a button only if it's an active cohort which has an application form */}
-        {cohortOverview?.isActive && cohortOverview.applicationForm?.id && (
+        {cohortOverview?.isActive && cohortOverview.applicationForm && (
           <Button size={ButtonSize.Medium} onClick={handleAddApplicants}>
             Add Applicant
           </Button>

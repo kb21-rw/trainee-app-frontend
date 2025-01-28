@@ -97,9 +97,7 @@ export default function EditableFormCard({ form }: UpdateFormProps) {
     navigate(`/forms`)
   }
 
-  console.log(errors)
   const onSubmit = async (data: FormDtoSchema) => {
-    console.log("Heelkjdkf")
     const requestBody: Partial<FormDtoSchema> = {}
 
     for (const key in dirtyFields) {
