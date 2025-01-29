@@ -54,11 +54,7 @@ export default function UpdateCohortModal({
   const dispatch = useDispatch()
   const [
     updateCohort,
-    {
-      error: cohortError,
-      isLoading: isCohortLoading,
-      reset: resetUpdateCohort,
-    },
+    { isLoading: isCohortLoading, reset: resetUpdateCohort },
   ] = useUpdateCohortMutation()
 
   const {
@@ -87,11 +83,14 @@ export default function UpdateCohortModal({
     }
 
     try {
-      await updateCohort({
+      const result = await updateCohort({
         jwt: cookies.jwt,
         body: requestBody,
         id: cohort._id,
       })
+
+      if (result.error) throw result.error
+
       handleShowAlert(dispatch, {
         type: AlertType.Success,
         message: "Cohort was updated successfully",
@@ -99,7 +98,7 @@ export default function UpdateCohortModal({
       resetForm()
       onClose()
     } catch (error) {
-      const { message } = getErrorInfo(cohortError)
+      const { message } = getErrorInfo(error)
       handleShowAlert(dispatch, {
         type: AlertType.Error,
         message,
