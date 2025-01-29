@@ -3,9 +3,8 @@ import {
   useGetAllCohortsQuery,
 } from "../../features/user/backendApi"
 import { DataGrid } from "@mui/x-data-grid"
-import { columns, TCohort, TCohortWithId } from "./cohortColumns"
 import Button from "../../components/ui/Button"
-import { AlertType, ButtonSize, Cookie } from "../../utils/types"
+import { AlertType, ButtonSize, Cookie, Stage } from "../../utils/types"
 import CreateCohortForm from "./CreateCohortForm"
 import { Box, Modal, Typography } from "@mui/material"
 import { useState } from "react"
@@ -15,6 +14,21 @@ import { getErrorInfo } from "../../utils/helper"
 import { useCookies } from "react-cookie"
 import { customizeDataGridStyles } from "../../utils/data"
 import TableSkeleton from "../../components/skeletons/TableSkeleton"
+import { GridColDef } from "@mui/x-data-grid"
+import UpdateCohortModal from "../../components/modals/UpdateCohortModal"
+
+type TCohort = {
+  applicants: number
+  coaches: number
+  description: string
+  forms: number
+  name: string
+  stages: Stage[]
+  trainees: number
+  _id: string
+  trainingStartDate: string
+}
+type TCohortWithId = TCohort & { readonly id: string }
 
 const style = {
   position: "absolute",
@@ -35,18 +49,88 @@ export default function Cohorts() {
   const [createCohort, { error, isSuccess }] = useCreateCohortMutation()
   const { data, isFetching } = useGetAllCohortsQuery({ jwt: cookies.jwt })
   const [open, setOpen] = useState(false)
+  const [cohortToUpdate, setCohortToUpdate] = useState<{
+    _id: string
+    name: string
+    description: string
+    trainingStartDate: string
+    stages: Stage[]
+  } | null>(null)
   const dispatch = useDispatch()
 
-  let idCounter = 1
   const modifiedArray: TCohortWithId[] = data?.map((row: TCohort) => {
     return {
       ...row,
-      id: idCounter++,
+      id: row._id,
     }
   })
 
+  const columns: GridColDef<TCohortWithId>[] = [
+    {
+      field: "id",
+      headerName: "No.",
+    },
+    {
+      field: "name",
+      headerName: "Name",
+      flex: 1,
+    },
+    {
+      field: "stages",
+      headerName: "Stages",
+      flex: 1,
+      valueGetter: (value: Stage[]) => value.length,
+    },
+    {
+      field: "applicants",
+      headerName: "Participants",
+      type: "number",
+      align: "left",
+      headerAlign: "left",
+      flex: 1,
+    },
+    {
+      field: "coaches",
+      headerName: "Coaches",
+      flex: 1,
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      flex: 1,
+      align: "center",
+      headerAlign: "center",
+
+      renderCell: ({ row }) => {
+        return (
+          <div className="flex items-center justify-center text-xs space-x-2 w-full h-full">
+            <Button size={ButtonSize.Small} outlined>
+              View
+            </Button>
+            <Button
+              size={ButtonSize.Small}
+              outlined
+              onClick={() =>
+                setCohortToUpdate({
+                  _id: row.id,
+                  name: row.name,
+                  description: row.description,
+                  trainingStartDate: row.trainingStartDate,
+                  stages: row.stages,
+                })
+              }
+            >
+              Edit
+            </Button>
+          </div>
+        )
+      },
+    },
+  ]
+
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+  const handleResetCohortToUpdate = () => setCohortToUpdate(null)
 
   if (error) {
     const { message } = getErrorInfo(error)
@@ -94,6 +178,12 @@ export default function Cohorts() {
           </Box>
         </Modal>
       </div>
+      {cohortToUpdate && (
+        <UpdateCohortModal
+          cohort={cohortToUpdate}
+          onClose={handleResetCohortToUpdate}
+        />
+      )}
       <DataGrid
         rows={modifiedArray}
         columns={columns}
