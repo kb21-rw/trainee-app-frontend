@@ -158,7 +158,7 @@ export default function UpdateCohortModal({
           <Button type="submit" disabled={isCohortLoading}>
             <span className="flex items-center gap-1">
               {isCohortLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
-              <span>Update</span>
+              <span>Submit</span>
             </span>
           </Button>
         </div>

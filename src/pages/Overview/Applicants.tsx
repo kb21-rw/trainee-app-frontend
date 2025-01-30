@@ -2,7 +2,6 @@ import {
   useGetApplicantsQuery,
   useGetAllCohortsQuery,
   useApplicantDecisionMutation,
-  useGetCoachesQuery,
   useUpdateParticipantMutation,
 } from "../../features/user/backendApi"
 import {
@@ -44,14 +43,6 @@ const Applicants = () => {
     error: cohortOverviewError,
     isFetching: cohortOverviewIsFetching,
   } = useGetApplicantsQuery({
-    jwt: cookies.jwt,
-    cohortId: selectedCohortId,
-  })
-  const {
-    data: cohortCoaches,
-    error: coachesError,
-    isFetching: coachesIsFetching,
-  } = useGetCoachesQuery({
     jwt: cookies.jwt,
     cohortId: selectedCohortId,
   })
@@ -154,17 +145,9 @@ const Applicants = () => {
     })
   }
 
-  if (
-    cohortOverviewError ||
-    decisionError ||
-    coachesError ||
-    updateParticipantError
-  ) {
+  if (cohortOverviewError || decisionError || updateParticipantError) {
     const { message } = getErrorInfo(
-      cohortOverviewError ??
-        decisionError ??
-        coachesError ??
-        updateParticipantError,
+      cohortOverviewError ?? decisionError ?? updateParticipantError,
     )
     handleShowAlert(dispatch, {
       type: AlertType.Error,
@@ -240,13 +223,13 @@ const Applicants = () => {
         )}
       </div>
 
-      {(cohortOverviewIsFetching || coachesIsFetching) && <Loader />}
+      {cohortOverviewIsFetching && <Loader />}
       {cohortOverview && (
         <OverViewTable
           forms={cohortOverview.forms}
           participants={cohortOverview.applicants}
           participantsInfo={cohortOverview.participantsInfo}
-          coaches={cohortCoaches.coaches}
+          coaches={cohortOverview.coaches}
           updates={[]}
           stages={cohortOverview.forms?.[0]?.stages ?? []}
           actions={{ handleDecision, handleUpsertResponse, handleCoachChange }}
