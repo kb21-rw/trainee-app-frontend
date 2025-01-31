@@ -1,21 +1,21 @@
 /* eslint-disable no-unused-vars */
-import React, { Dispatch, SetStateAction } from "react";
-import Edit from "../../assets/EditIcon";
-import Delete from "../../assets/DeleteIcon";
-import Loader from "../../components/ui/Loader";
-import NotFound from "./NotFound";
-import { FaFileAlt } from "react-icons/fa";
+import React, { Dispatch, SetStateAction } from "react"
+import Edit from "../../assets/EditIcon"
+import Delete from "../../assets/DeleteIcon"
+import Loader from "../../components/ui/Loader"
+import NotFound from "./NotFound"
+import { FaFileAlt } from "react-icons/fa"
 interface PropTypes {
-  headers: string[];
-  isLoading: boolean;
-  data: string[][];
-  hasResponse?: boolean;
+  headers: string[]
+  isLoading: boolean
+  data: string[][]
+  hasResponse?: boolean
   actions?: {
-    type: string;
+    type: string
     actionCaller:
       | Dispatch<SetStateAction<string[] | null>>
-      | ((_id: string) => Promise<void>);
-  }[];
+      | ((_id: string) => Promise<void>)
+  }[]
 }
 
 const UserTable = ({
@@ -28,18 +28,18 @@ const UserTable = ({
   return (
     <table className="w-full my-8 table-auto object-fit">
       <thead className="bg-primary-light bg-opacity-20 h-20">
-       {data && (
-         <tr>
-         {headers.map((header: string, index: number) => (
-           <td
-             key={index}
-             className="first:rounded-l-xl last:rounded-r-xl pl-12 text-center"
-           >
-             {header}
-           </td>
-         ))}
-       </tr>
-       )}
+        {data && (
+          <tr>
+            {headers.map((header: string, index: number) => (
+              <td
+                key={index}
+                className="first:rounded-l-xl last:rounded-r-xl pl-12 text-center"
+              >
+                {header}
+              </td>
+            ))}
+          </tr>
+        )}
       </thead>
       {isLoading ? (
         <tbody>
@@ -49,11 +49,11 @@ const UserTable = ({
             </td>
           </tr>
         </tbody>
-      ) : (data?.length === 0 || data === undefined )? (
+      ) : data?.length === 0 || data === undefined ? (
         <tbody>
           <tr className="flex w-screen h-[50vh]">
             <td className="w-full h-full">
-              <NotFound type="User" />
+              <NotFound entity="User" />
             </td>
           </tr>
         </tbody>
@@ -75,7 +75,7 @@ const UserTable = ({
               {hasResponse && (
                 <td className="text-base font-medium pl-28 text-center">
                   <span className="cursor-pointer">
-                    <FaFileAlt className="text-2xl hover:text-primary-dark"/>
+                    <FaFileAlt className="text-2xl hover:text-primary-dark" />
                   </span>
                 </td>
               )}
@@ -111,7 +111,7 @@ const UserTable = ({
         </tbody>
       )}
     </table>
-  );
-};
+  )
+}
 
-export default UserTable;
+export default UserTable

@@ -1,240 +1,127 @@
-import Cookies from "universal-cookie";
-import jwtDecode from "jwt-decode";
 import {
-  ApplicantDetails,
   ApplicationForm,
   ApplicationFormStatus,
-  ApplicationStatus,
-} from "./types";
-import { Cohort } from "./types";
-import dayjs from "dayjs";
-import isBetween from "dayjs/plugin/isBetween";
-import advancedFormat from "dayjs/plugin/advancedFormat";
-
-/**
- * extend dayjs to use necessary plugins
- */
-
-dayjs.extend(isBetween);
-dayjs.extend(advancedFormat);
-
-/**
- * Retrieves the logged-in user's information from a JWT token stored in cookies.
- *
- * @returns {Object|undefined} The user information extracted from the JWT token, or `undefined` if no token is found.
- *  - The user information contains:
- * - The name of the user
- * - The email address of the user
- * - The role of the user
- * - The ID of the user
- *
- */
-
-export const getLoggedInUser = () => {
-  const token = getJWT();
-
-  if (!token) return;
-
-  const decoded = JSON.parse(JSON.stringify(jwtDecode(token)));
-
-  const user = decoded.user || decoded;
-
-  return user;
-};
-
-/**
- * Structures an array of data into a two-dimensional array containing information for each coach.
- *
- * @param {Array<Array<string>>} data - The input data in a two-dimensional array format.
- * @returns {Array<Array<string>>} - A two-dimensional array with coach information, each containing:
- *   - The coach's id
- *   - The coach's name
- *   - The coach's email
- *   - The coach's role
- */
-
-export const getCoaches = (data: any[], dataItems: string[]) => {
-  const currentUser = getLoggedInUser();
-  const currentUserName = currentUser.name;
-
-  const filteredCoachesData = data?.filter(
-    (coachData) => coachData.name !== currentUserName,
-  );
-
-  const coachesData = filteredCoachesData?.map(
-    (coachData: any) =>
-      dataItems?.map((dataItem: string) => coachData[dataItem]),
-  );
-
-  return coachesData;
-};
-
-/**
- * getTraineesForCoach structures an array of data into a two-dimensional array containing information for each coach.
- *
- * @param {Array<Array<string>>} data - The input data in a two-dimensional array format.
- * @returns {Array<Array<string>>} - A two-dimensional array with coach information, each containing:
- *   - The trainee's id
- *   - The trainee's name
- *   - The trainee's email
- *   - The trainee's coach
- */
-export const getTraineesForCoach = (data: any, dataItems: string[]) => {
-  const traineesData = data?.map(
-    (traineeData: any) =>
-      dataItems?.map((dataItem: string) =>
-        dataItem === "coach"
-          ? traineeData?.coach?.name
-          : dataItem === "coachId"
-          ? traineeData?.coach?._id
-          : traineeData[dataItem],
-      ),
-  );
-  return traineesData;
-};
-/**
- * getTrainees structures an array of data into a two-dimensional array containing information for each coach.
- *
- * @param {Array<Array<string>>} data - The input data in a two-dimensional array format.
- * @returns {Array<Array<string>>} - A two-dimensional array with coach information, each containing:
- *   - The trainee's id
- *   - The trainee's name
- *   - The trainee's email
- *   - The trainee's coach
- */
-
-export const getTrainees = (data: any, dataItems: string[]) => {
-  const traineesData = data?.map(
-    (traineeData: any) =>
-      dataItems?.map((dataItem: string) =>
-        dataItem === "coach"
-          ? traineeData?.coach?.name || "No coach assigned"
-          : dataItem === "coachId"
-          ? traineeData?.coach?._id || ""
-          : traineeData[dataItem],
-      ),
-  );
-  return traineesData;
-};
-
-export const getApplicants = (
-  data: ApplicantDetails[],
-  dataItems: string[],
-) => {
-  return data?.map((item: any) =>
-    dataItems.map((key) => item[key as keyof ApplicantDetails]),
-  );
-};
-
-/**
- * retrieve the JWT token.
- *
- * @returns {string} - The JWT token.
- */
-
-export const getJWT = () => {
-  const cookies = new Cookies();
-  return cookies.get("jwt");
-};
-
-/**
- * Retrieves specific data items from each cohort in the provided data array.
- *
- * @param {Cohort[]} data - An array of cohort objects. Each object represents a cohort and contains various properties.
- * @param {string[]} dataItems - An array of strings representing the keys of the properties you want to extract from each cohort object.
- *
- * @returns {Array<Array<any>>} - A two-dimensional array where each inner array contains the values corresponding to the keys specified in `dataItems` for each cohort object in `data`.
- *
- */
-
-export const getCohorts = (data: Cohort[], dataItems: string[]) => {
-  return data?.map((item: any) =>
-    dataItems.map((key) => item[key as keyof Cohort]),
-  );
-};
-
-/**
- * Generates a formatted string indicating the type of form and the time it was created.
- *
- * @param {string} type - A string representing the type of form ("Applicant" or "Trainee").
- *
- * @returns {string} - A string in the format: `"<Type> Form created at - <Formatted Time>"`.
- */
-
-export const getNextFormTitle = (type: "Applicant" | "Trainee") => {
-  const currentDate = new Date();
-  const formatter = new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  });
-  const formattedTime = formatter.format(currentDate);
-
-  return `${type} Form created at - ${formattedTime}`;
-};
+  QuestionType,
+  UserResponseQuestion,
+  UserRole,
+} from "./types"
+import dayjs from "dayjs"
 
 /**
  * Determines the current status of an application based on the provided dates.
  *
- * This function checks whether an application is open, if its deadline has passed, or if there is no active application.
+ * This function checks whether an application is open, if it's deadline has passed, or if there is no active application.
  * Additionally, it adds a 10-day grace period after the application deadline, during which it indicates that the application
  * deadline has passed but still recognizes the application as recently closed.
  *
- * @param {ApplicationForm | undefined} application - An object representing the application form, which includes:
- *   - `startDate`: A string or Date representing the start date of the application window in the format "YYYY-MM-DD".
- *   - `endDate`: A string or Date representing the end date of the application window in the format "YYYY-MM-DD".
+ * @param {ApplicationForm | undefined} application
  *
- * @returns {ApplicationStatus} - An object containing:
- *   - `isOpen`: A boolean indicating whether the application is currently open.
- *   - `status`: A value from the `FormStatus` enum representing the current application status:
- *     - `ApplicationFormStatus.OPEN`: The application is open (current date falls between startDate and endDate).
- *     - `ApplicationFormStatus.DEADLINE_PASSED`: The application deadline has passed, but it is within the 10-day grace period.
- *     - `ApplicationFormStatus.NO_APPLICATION`: Either no application exists, or more than 10 days have passed since the application deadline.
+ * @returns {ApplicationFormStatus} application status
  */
 
-export const applicationStatusHandler = (
-  application: ApplicationForm | undefined,
-): ApplicationStatus => {
-  const currentDate = dayjs();
+export const getApplicationFormStatus = (
+  application?: Omit<ApplicationForm, "questions"> & {
+    questions: UserResponseQuestion[]
+  },
+): ApplicationFormStatus => {
+  if (!application) return ApplicationFormStatus.NoApplication
 
-  if (!application) {
-    return {
-      isOpen: false,
-      status: ApplicationFormStatus.NO_APPLICATION,
-    };
+  const today = dayjs()
+  const endDate = dayjs(application.endDate)
+  const startDate = dayjs(application.startDate)
+  const tenDaysAfterDeadline = endDate.add(10, "days")
+
+  if (today.isBefore(startDate)) return ApplicationFormStatus.NoApplication
+
+  if (today.isAfter(endDate)) {
+    if (today.isAfter(tenDaysAfterDeadline))
+      return ApplicationFormStatus.NoApplication
+
+    return ApplicationFormStatus.DeadlinePassed
   }
 
-  const startDate = dayjs(application.startDate);
-  const endDate = dayjs(application.endDate);
-  const tenDaysAfterDeadline = endDate.clone().add(10, "days");
+  const someQuestionsAreAnswered = application.questions.some(
+    (question) => question.response !== null,
+  )
 
-  if (currentDate.isBetween(startDate, endDate, undefined, "[]")) {
-    return {
-      isOpen: true,
-      status: ApplicationFormStatus.OPEN,
-    };
+  if (someQuestionsAreAnswered) return ApplicationFormStatus.Saved
+
+  return ApplicationFormStatus.Open
+}
+
+/**
+ * getErrorInfo extracts error details
+ *
+ * @param {any} error
+ * @returns {{type: string, message: string}}
+ *   - type
+ *   - message
+ */
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const getErrorInfo = (error: any): { type: string; message: string } => {
+  // eslint-disable-next-line no-console
+  console.log(error)
+  if (!error?.data) {
+    throw { type: error.status, message: error.error.split(":")[1] }
   }
 
-  if (
-    currentDate.isAfter(endDate) &&
-    currentDate.isBefore(tenDaysAfterDeadline)
-  ) {
-    return {
-      isOpen: false,
-      status: ApplicationFormStatus.DEADLINE_PASSED,
-    };
-  }
-
-  if (currentDate.isAfter(tenDaysAfterDeadline)) {
-    return {
-      isOpen: false,
-      status: ApplicationFormStatus.NO_APPLICATION,
-    };
+  if (error?.data?.type === "ServerError") {
+    throw { type: "ServerError", message: error.data.errorMessage }
   }
 
   return {
-    isOpen: false,
-    status: ApplicationFormStatus.NO_APPLICATION,
-  };
-};
+    type: error.data?.type || "Unknown",
+    message: error.data?.errorMessage || "Unknown error occurred!",
+  }
+}
+
+/**
+ * getRoleBasedHomepageURL returns a homepage url based on role provided
+ *
+ * @param {UserRole} role
+ * a role of a user
+ */
+
+export const getRoleBasedHomepageURL = (role: UserRole) => {
+  switch (role) {
+    case UserRole.Admin:
+      return "/users"
+    case UserRole.Coach:
+      return "/overview"
+    default:
+      return "/home"
+  }
+}
+
+/**
+ * getFormattedDate returns a DD MMMM YYYY formatted date
+ *
+ * @param {string} date
+ * a string date
+ */
+
+export const getFormattedDate = (date: string) => {
+  return dayjs(date).format("DD MMMM YYYY")
+}
+
+/**
+ * convertFormQuestionsToObject returns an object where questionIds are keys and responses are values
+ *
+ * @param {{ _id: string; response: string; type: QuestionType }[]} questions
+ * an array of questions
+ */
+
+export const convertFormQuestionsToObject = (
+  questions: { _id: string; response: string; type: QuestionType }[],
+) => {
+  return questions.reduce(
+    (formQuestions: { [key: string]: string | string[] }, question) => ({
+      ...formQuestions,
+      [question._id]:
+        question.response ??
+        (question.type === QuestionType.MultiSelect ? [] : ""),
+    }),
+    {},
+  )
+}

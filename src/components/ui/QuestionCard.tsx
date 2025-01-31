@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import Loader from "./Loader";
-import Delete from "../../assets/DeleteIcon";
+import React, { useState } from "react"
+import Loader from "./Loader"
+import Delete from "../../assets/DeleteIcon"
 import {
   useDeleteQuestionMutation,
   useEditQuestionMutation,
-} from "../../features/user/apiSlice";
-import SuccessCheckMark from "../../assets/SuccessCheckMarkIcon";
-import { useForm } from "react-hook-form";
-import AddIcon from "../../assets/AddIcon";
-import RemoveIcon from "../../assets/RemoveIcon";
-import Reset from "../../assets/ResetIcon";
-import DeleteModal from "../modals/DeleteModal";
-import { getJWT } from "../../utils/helper";
-import { QuestionType } from "../../utils/types";
+} from "../../features/user/backendApi"
+import SuccessCheckMark from "../../assets/SuccessCheckMarkIcon"
+import { useForm } from "react-hook-form"
+import AddIcon from "../../assets/AddIcon"
+import RemoveIcon from "../../assets/RemoveIcon"
+import Reset from "../../assets/ResetIcon"
+import DeleteModal from "../modals/DeleteModal"
+import { Cookie, QuestionType } from "../../utils/types"
+import { useCookies } from "react-cookie"
 
-const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
-  const { title, type, options, _id } = question;
+const QuestionCard = ({ question }: any) => {
+  const { prompt, type, options, _id } = question
   const {
     register,
     handleSubmit,
@@ -25,43 +25,37 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
     formState: { isDirty },
   } = useForm({
     defaultValues: {
-      title,
+      prompt,
       type,
       options,
     },
-  });
-  const jwt:string = getJWT()
-  const [deleteQuestion] = useDeleteQuestionMutation();
-  const [editQuestion] = useEditQuestionMutation();
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  })
+  const [cookies] = useCookies([Cookie.jwt])
+  const [deleteQuestion] = useDeleteQuestionMutation()
+  const [editQuestion] = useEditQuestionMutation()
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   const handleDeleteQuestion = async (_id: string) => {
-    await deleteQuestion({ jwt, id: _id });
-    setShowDeleteModal(false);
-  };
+    await deleteQuestion({ jwt: cookies.jwt, id: _id })
+    setShowDeleteModal(false)
+  }
 
   const changeOptionsHandler = (value: string, index: number) => {
-    currentOptions[index] = value;
-    setValue("options", currentOptions, { shouldDirty: true });
-  };
+    const updatedOptions = [...currentOptions]
+    updatedOptions[index] = value
+    setValue("options", updatedOptions, { shouldDirty: true })
+  }
 
   const onSubmit = async (data: any) => {
-    await editQuestion({ jwt, body: data, id: _id });
-  };
+    await editQuestion({ jwt: cookies.jwt, body: data, id: _id })
+  }
 
-  const { type: selectedType } = watch();
-  const { options: currentOptions } = watch();
+  const { type: selectedType } = watch()
+  const { options: currentOptions } = watch()
 
   return (
-    <div
-      className="flex justify-start gap-2"
-      onFocus={() => setActiveQuestion(_id)}
-    >
-      <div
-        className={`p-8 custom-shadow ${
-          activeQuestion === _id && "border-l-8 border-[#4285F4]"
-        } flex flex-1 items-center justify-between rounded-xl`}
-      >
+    <div className="flex justify-start gap-2 group">
+      <div className="p-8 custom-shadow group-focus-within:border-l-8 group-focus-within:border-primary-light flex flex-1 items-center justify-between rounded-xl">
         {false && (
           <div className="absolute inset-0 h-full w-full">
             <Loader />
@@ -70,29 +64,28 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
         <div className="w-full justify-between gap-4- cursor-pointer">
           <div className="flex items-center gap-4">
             <input
-              defaultValue={title}
-              {...register("title")}
-              className={`text-3xl flex-1 h-16  ${
-                activeQuestion === _id && "bg-white"
-              } focus:border-b-2 border-blue-400 outline-none py-1 px-0.5`}
+              {...register("prompt")}
+              className={`text-2xl flex-1 h-16 focus:border-b-2 border-primary-light outline-none py-1 px-0.5`}
             />
             <select className="p-2" {...register("type")} value={selectedType}>
               {[
                 { label: "Text", value: QuestionType.Text },
-                { label: "Single Select", value: QuestionType.SingleSelect },
+                { label: "Single choice", value: QuestionType.SingleSelect },
+                { label: "Multiple choice", value: QuestionType.MultiSelect },
               ].map(
                 (
                   currentType: { label: string; value: string },
-                  index: number
+                  index: number,
                 ) => (
                   <option key={index} value={currentType.value}>
                     {currentType.label}
                   </option>
-                )
+                ),
               )}
             </select>
           </div>
-          {selectedType === QuestionType.SingleSelect && (
+          {(selectedType === QuestionType.SingleSelect ||
+            selectedType === QuestionType.MultiSelect) && (
             <div>
               <ol className="w-full my-4">
                 {currentOptions.map((option: string, index: number) => (
@@ -113,7 +106,7 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
                   setValue(
                     "options",
                     [...currentOptions, `option ${currentOptions.length + 1}`],
-                    { shouldDirty: true }
+                    { shouldDirty: true },
                   )
                 }
               >
@@ -122,8 +115,9 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
               {currentOptions.length > 0 && (
                 <button
                   onClick={() => {
-                    currentOptions.pop();
-                    setValue("options", currentOptions, { shouldDirty: true });
+                    const updatedOptions = [...currentOptions]
+                    updatedOptions.pop()
+                    setValue("options", updatedOptions, { shouldDirty: true })
                   }}
                 >
                   <RemoveIcon />
@@ -145,24 +139,22 @@ const QuestionCard = ({ question, activeQuestion, setActiveQuestion }: any) => {
           </div>
         ) : null}
         <button
-          onClick={()=>setShowDeleteModal(true)}
+          onClick={() => setShowDeleteModal(true)}
           className="flex items-center gap-2"
         >
           <Delete />
-          <span>Delete</span>
         </button>
       </div>
-      {
-      showDeleteModal &&
+      {showDeleteModal && (
         <DeleteModal
           title="a question"
-          name={title}
+          name={prompt}
           closePopup={() => setShowDeleteModal(false)}
           onDelete={() => handleDeleteQuestion(_id)}
         />
-      }
+      )}
     </div>
-  );
-};
+  )
+}
 
-export default QuestionCard;
+export default QuestionCard

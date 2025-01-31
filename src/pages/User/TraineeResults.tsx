@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 import {
   Table,
   TableBody,
@@ -6,19 +6,26 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../../@/components/ui/table";
-import { Question, Response, Form, QuestionType } from "../../utils/types";
+} from "../../../@/components/ui/table"
+import {
+  Response,
+  Form,
+  QuestionType,
+  Cookie,
+  TemplateQuestion,
+} from "../../utils/types"
 
-import { useGetOverviewForCoachQuery } from "../../features/user/apiSlice";
-import Loader from "../../components/ui/Loader";
-import { getJWT } from "../../utils/helper";
-import ResponseModal from "../../components/modals/ResponseModal";
+import { useGetOverviewForCoachQuery } from "../../features/user/backendApi"
+import Loader from "../../components/ui/Loader"
+import ResponseModal from "../../components/modals/ResponseModal"
+import { useCookies } from "react-cookie"
 const TraineeResults = () => {
-  const jwt:string = getJWT()
-  const { data, isLoading, isError } = useGetOverviewForCoachQuery({ jwt });
-  
+  const [cookies] = useCookies([Cookie.jwt])
+  const { data, isLoading, isError } = useGetOverviewForCoachQuery({
+    jwt: cookies.jwt,
+  })
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalData, setModalData] = useState({
     formTitle: "",
     question: "",
@@ -29,10 +36,10 @@ const TraineeResults = () => {
     questionType: "",
     options: [] as string[],
     checkedOption: "",
-  });
+  })
 
   if (isError) {
-    return <Loader />;
+    return <Loader />
   }
 
   if (isLoading) {
@@ -40,7 +47,7 @@ const TraineeResults = () => {
       <div className="h-screen flex items-center justify-center">
         <Loader />
       </div>
-    );
+    )
   }
 
   if (!Array.isArray(data) || data.length === 0) {
@@ -48,15 +55,17 @@ const TraineeResults = () => {
       <div className="h-screen flex items-center justify-center">
         No data available.
       </div>
-    );
+    )
   }
 
-  const traineeMap = new Map();
+  const traineeMap = new Map()
 
   data.forEach((form: Form) => {
-    form.questions.forEach((question: Question) => {
-      const questionType = question.options.length > 0 ? QuestionType.SingleSelect
-       : QuestionType.Text;
+    form.questions.forEach((question: TemplateQuestion) => {
+      const questionType =
+        question.options.length > 0
+          ? QuestionType.SingleSelect
+          : QuestionType.Text
       question.responses.forEach((response: Response) => {
         if (response.user) {
           if (!traineeMap.has(response.user._id)) {
@@ -66,16 +75,16 @@ const TraineeResults = () => {
               id: response.user._id,
               responses: {},
               type: questionType,
-            });
+            })
           }
 
-          const traineeInfo = traineeMap.get(response.user._id);
+          const traineeInfo = traineeMap.get(response.user._id)
           traineeInfo.responses[`${form._id}-${question._id}`] =
-            response.text ?? "No response";
+            response.text ?? "No response"
         }
-      });
-    });
-  });
+      })
+    })
+  })
 
   return (
     <div className="py-20 overflow-x-auto">
@@ -104,15 +113,15 @@ const TraineeResults = () => {
           </TableRow>
           <TableRow>
             {data.flatMap((form) =>
-              form.questions.map((question: Question) => (
+              form.questions.map((question: TemplateQuestion) => (
                 <TableHead
                   key={question._id}
                   scope="col"
                   className="border border-black px-6 py-3 text-left text-sm font-extrabold uppercase tracking-wider max-w-md overflow-auto whitespace-nowrap"
                 >
-                  {question.title}
+                  {question.prompt}
                 </TableHead>
-              ))
+              )),
             )}
           </TableRow>
         </TableHeader>
@@ -123,31 +132,37 @@ const TraineeResults = () => {
                 {trainee.name ?? "No name"}
               </TableCell>
               {data.flatMap((form) =>
-                form.questions.map((question: Question) => (
+                form.questions.map((question: TemplateQuestion) => (
                   <TableCell
                     key={`${form._id}-${question._id}`}
                     className="border border-black p-2 w-16 max-w-md overflow-hidden whitespace-nowrap text-ellipsis"
                     onClick={() => {
-                      setIsModalOpen(true);
+                      setIsModalOpen(true)
                       setModalData({
                         formTitle: form.title,
-                        question: question.title,
+                        question: question.prompt,
                         questionId: question._id ?? "",
                         response:
                           trainee.responses[`${form._id}-${question._id}`],
                         userId: trainee.id,
                         type: trainee.type,
                         questionType:
-                          question.options.length > 0 ? QuestionType.SingleSelect : QuestionType.Text,
+                          question.options.length > 0
+                            ? QuestionType.SingleSelect
+                            : QuestionType.Text,
                         options: question.options,
-                        checkedOption: trainee.responses[`${form._id}-${question._id}`] ? trainee.responses[`${form._id}-${question._id}`]: "",
-                      });
+                        checkedOption: trainee.responses[
+                          `${form._id}-${question._id}`
+                        ]
+                          ? trainee.responses[`${form._id}-${question._id}`]
+                          : "",
+                      })
                     }}
                   >
                     {trainee.responses[`${form._id}-${question._id}`] ??
                       "No response"}
                   </TableCell>
-                ))
+                )),
               )}
             </TableRow>
           ))}
@@ -165,11 +180,13 @@ const TraineeResults = () => {
           questionType={modalData.questionType}
           options={modalData.options}
           checkedOption={modalData.checkedOption}
-          handleCheckChange={(value: string) => setModalData({ ...modalData, checkedOption: value })}
+          handleCheckChange={(value: string) =>
+            setModalData({ ...modalData, checkedOption: value })
+          }
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default TraineeResults;
+export default TraineeResults

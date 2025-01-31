@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 const SuccessCheckMarkIcon = () => {
   return (
@@ -14,7 +14,7 @@ const SuccessCheckMarkIcon = () => {
         fill="#5CB85C"
       />
     </svg>
-  );
-};
+  )
+}
 
-export default SuccessCheckMarkIcon;
+export default SuccessCheckMarkIcon

@@ -1,33 +1,33 @@
-import React, { useState } from "react";
-import { H2, H6, H7 } from "./Typography";
-import { IFormType } from "../../utils/types";
-import Delete from "../../assets/DeleteIcon";
-import Edit from "../../assets/EditIcon";
-import { useDeleteFormMutation } from "../../features/user/apiSlice";
-import { useNavigate } from "react-router-dom";
-import View from "../../assets/ViewIcon";
-import Loader from "./Loader";
-import DeleteModal from "../modals/DeleteModal";
-import { getJWT } from "../../utils/helper";
+import { useState } from "react"
+import { H2, H6, H7 } from "./Typography"
+import { Cookie, IFormType } from "../../utils/types"
+import Delete from "../../assets/DeleteIcon"
+import Edit from "../../assets/EditIcon"
+import { useDeleteFormMutation } from "../../features/user/backendApi"
+import { useNavigate } from "react-router-dom"
+import View from "../../assets/ViewIcon"
+import Loader from "./Loader"
+import DeleteModal from "../modals/DeleteModal"
+import { useCookies } from "react-cookie"
 
 const FormCard = ({ form }: { form: IFormType }) => {
-  const navigate = useNavigate();
-  const questions = form.questions;
-  const jwt:string = getJWT()
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [cookies] = useCookies([Cookie.jwt])
+  const navigate = useNavigate()
+  const questions = form.questions
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   const [deleteForm, { isLoading: isDeleteFormLoading }] =
-    useDeleteFormMutation();
+    useDeleteFormMutation()
 
   const handleDeleteForm = async (id: string) => {
-    await deleteForm({ jwt, id });
-    setShowDeleteModal(false);
-  };
+    await deleteForm({ jwt: cookies.jwt, id })
+    setShowDeleteModal(false)
+  }
 
   return (
     <div className="p-8 custom-shadow flex items-center justify-between rounded-xl">
       {isDeleteFormLoading && (
-        <div className="absolute inset-0 h-full w-full">
+        <div className="absolute inset-0 h-full w-full flex items-center justify-center">
           <Loader />
         </div>
       )}
@@ -79,7 +79,7 @@ const FormCard = ({ form }: { form: IFormType }) => {
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default FormCard;
+export default FormCard

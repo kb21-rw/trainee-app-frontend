@@ -1,4 +1,4 @@
-import * as yup from "yup";
+import * as yup from "yup"
 
 export const applicationFormSchema = yup.object().shape({
   title: yup.string().required("Name is required"),
@@ -23,4 +23,4 @@ export const applicationFormSchema = yup.object().shape({
       }),
     )
     .required(),
-});
+})

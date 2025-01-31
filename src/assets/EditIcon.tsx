@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 const EditIcon = () => {
   return (
@@ -33,7 +33,7 @@ const EditIcon = () => {
         strokeLinejoin="round"
       />
     </svg>
-  );
-};
+  )
+}
 
-export default EditIcon;
+export default EditIcon

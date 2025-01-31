@@ -1,34 +1,34 @@
-import React, { ReactNode, useState, useEffect } from "react";
+import { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "../../store"
+import { hideAlert } from "../../features/user/alertSlice"
+import { AlertType } from "../../utils/types"
+import classNames from "classnames"
 
-const Alert = ({
-  children,
-  type,
-  displayDuration = 3000,
-}: {
-  children: ReactNode;
-  type: "error" | "success";
-  displayDuration?: number;
-}) => {
-  const [isAlertVisible, setIsAlertVisible] = useState(true);
+const Alert = () => {
+  const alert = useSelector((stage: RootState) => stage.alert)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsAlertVisible(false);
-    }, displayDuration);
-    return () => clearTimeout(timer);
-  }, [displayDuration]);
+      dispatch(hideAlert())
+    }, alert.displayDuration)
+    return () => clearTimeout(timer)
+  }, [alert.displayDuration, dispatch])
 
   return (
-    isAlertVisible && (
+    alert.isVisible && (
       <div
-        className={`w-alert-width py-2 flex justify-center items-center rounded-lg absolute top-14 border-green-600 ${
-          type === "error" && "bg-error-light text-error-dark"
-        } ${type === "success" && "bg-green-300 text-white"}`}
+        className={classNames(
+          `w-alert-width py-2 flex justify-center items-center rounded-lg absolute top-14 left-1/2 -translate-x-1/2 z-[9999] border-green-600`,
+          { "bg-error-light text-error-dark": alert.type === AlertType.Error },
+          { "bg-green-300 text-white": alert.type === AlertType.Success },
+        )}
       >
-        {children}
+        {alert.message}
       </div>
     )
-  );
-};
+  )
+}
 
-export default Alert;
+export default Alert
