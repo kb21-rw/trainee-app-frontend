@@ -27,14 +27,18 @@ const Login = ({ handlePageChange }: { handlePageChange: () => void }) => {
   } = useForm<LoginForm>()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const redirectUrl = searchParams.get("redirectTo") || "/"
+  const redirectUrl = searchParams.get("redirectTo")
 
   const onSubmit: SubmitHandler<LoginForm> = async (data) => {
     const result = await handleLogin(data)
     const token = result?.data?.accessToken
     if (token) {
       setCookie(Cookie.jwt, token)
-      navigate(redirectUrl)
+
+      navigate(
+        redirectUrl ?? "/applicants", // if there's no redirectUrl, navigating to any protected route will redirect to the homepage
+        redirectUrl ? {} : { state: { redirect: "home" } },
+      )
     }
   }
 

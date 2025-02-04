@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router-dom"
+import { Navigate, NavLink, Outlet } from "react-router-dom"
 import { adminMenu, applicantMenu, coachMenu } from "../../utils/data"
 
 import { UserRole } from "../../utils/types"
@@ -7,9 +7,13 @@ import { useSelector } from "react-redux"
 import { RootState } from "../../store"
 import useLogout from "../../utils/hooks/useLogout"
 
-const ProtectedLayout = () => {
+export default function ProtectedLayout() {
   const loggedInUser = useSelector((state: RootState) => state.user)
   const handleLogout = useLogout()
+
+  if (!loggedInUser._id) {
+    return <Navigate to={`/auth?redirectTo=${location.pathname}`} />
+  }
 
   const menu =
     (loggedInUser.role === UserRole.Admin && adminMenu) ||
@@ -65,5 +69,3 @@ const ProtectedLayout = () => {
     </>
   )
 }
-
-export default ProtectedLayout

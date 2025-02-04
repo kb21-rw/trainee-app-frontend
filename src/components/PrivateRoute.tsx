@@ -9,9 +9,9 @@ export default function PrivateRoute({
 }: {
   allowedRoles: UserRole[]
 }) {
-  const userRole = useSelector((state: RootState) => state.user.role)!
+  const userRole = useSelector((state: RootState) => state.user.role)
 
-  if (allowedRoles.includes(userRole)) {
+  if (userRole && allowedRoles.includes(userRole)) {
     return <Outlet />
   }
 
