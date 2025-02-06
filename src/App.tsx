@@ -33,6 +33,8 @@ import { CookiesProvider } from "react-cookie"
 import Users from "./pages/User/Users"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import { GoogleOAuthProvider } from "@react-oauth/google"
+import { googleClientId } from "./utils/constants"
 
 export default function App() {
   const router = createBrowserRouter(
@@ -98,12 +100,14 @@ export default function App() {
   )
 
   return (
-    <CookiesProvider defaultSetOptions={{ path: "/" }}>
-      <Provider store={store}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <RouterProvider router={router} />
-        </LocalizationProvider>
-      </Provider>
-    </CookiesProvider>
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <CookiesProvider defaultSetOptions={{ path: "/" }}>
+        <Provider store={store}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <RouterProvider router={router} />
+          </LocalizationProvider>
+        </Provider>
+      </CookiesProvider>
+    </GoogleOAuthProvider>
   )
 }
