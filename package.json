@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@date-io/moment": "^3.0.0",
-    "@emailjs/browser": "^4.3.3",
+    "@emailjs/browser": "^4.4.1",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@headlessui/react": "^2.1.8",
