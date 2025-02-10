@@ -6,6 +6,7 @@ import {
 } from "react-router-dom"
 import Error from "./components/Error"
 import ProtectedLayout from "./components/layouts/ProtectedLayout"
+import NonProtectedLayout from "./components/layouts/NonProtectedLayout"
 import NotFound from "./pages/NotFound"
 import Profile from "./pages/User/Profile"
 import CoachesInfo from "./pages/User/Coaches"
@@ -54,7 +55,6 @@ export default function App() {
               <Route path="/my-trainees" element={<h1>My trainees</h1>} />
               <Route path="/trainees-results" element={<TraineeResults />} />
             </Route>
-
             <Route
               element={
                 <PrivateRoute
@@ -84,10 +84,12 @@ export default function App() {
             </Route>
           </Route>
 
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/signup/thank-you" element={<ThankYouNote />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/verify" element={<ApplicantVerification />} />
+          <Route element={<NonProtectedLayout />}>
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/signup/thank-you" element={<ThankYouNote />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/verify" element={<ApplicantVerification />} />
+          </Route>
 
           <Route path="*" element={<NotFound />} />
         </Route>
