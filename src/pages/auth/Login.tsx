@@ -1,5 +1,8 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom"
-import { useLoginMutation } from "../../features/user/backendApi"
+import {
+  useGoogleAuthMutation,
+  useLoginMutation,
+} from "../../features/user/backendApi"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { H1 } from "../../components/ui/Typography"
 import Button from "../../components/ui/Button"
@@ -10,6 +13,7 @@ import { useDispatch } from "react-redux"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useCookies } from "react-cookie"
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google"
 
 interface LoginForm {
   email: string
@@ -19,7 +23,10 @@ interface LoginForm {
 const Login = ({ handlePageChange }: { handlePageChange: () => void }) => {
   const [, setCookie] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
-  const [handleLogin, { isLoading, error: loginError }] = useLoginMutation()
+  const [handleLogin, { loginIsLoading, error: loginError }] =
+    useLoginMutation()
+  const [handleAuthWithGoogle, { googleAuthIsLoading }] =
+    useGoogleAuthMutation()
   const {
     register,
     handleSubmit,
@@ -29,17 +36,51 @@ const Login = ({ handlePageChange }: { handlePageChange: () => void }) => {
   const [searchParams] = useSearchParams()
   const redirectUrl = searchParams.get("redirectTo")
 
-  const onSubmit: SubmitHandler<LoginForm> = async (data) => {
-    const result = await handleLogin(data)
-    const token = result?.data?.accessToken
-    if (token) {
-      setCookie(Cookie.jwt, token)
+  const saveTokenAndRedirect = (token: string) => {
+    setCookie(Cookie.jwt, token)
 
-      navigate(
-        redirectUrl ?? "/applicants", // if there's no redirectUrl, navigating to any protected route will redirect to the homepage
-        redirectUrl ? {} : { state: { redirect: "home" } },
-      )
+    navigate(
+      redirectUrl ?? "/applicants", // if there's no redirectUrl, navigating to any protected route will redirect to the homepage
+      redirectUrl ? {} : { state: { redirect: "home" } },
+    )
+  }
+
+  const onSubmit: SubmitHandler<LoginForm> = async (data) => {
+    try {
+      const result = await handleLogin(data)
+
+      if (result.error) {
+        throw result.error
+      }
+
+      saveTokenAndRedirect(result?.data?.accessToken)
+    } catch (error) {
+      const { message } = getErrorInfo(error)
+      handleShowAlert(dispatch, { type: AlertType.Error, message })
     }
+  }
+
+  const handleGoogleAuth = async (credentialResponse: CredentialResponse) => {
+    try {
+      const result = await handleAuthWithGoogle({
+        token: credentialResponse.credential,
+      })
+      if (result.error) {
+        throw result.error
+      }
+
+      saveTokenAndRedirect(result?.data?.accessToken)
+    } catch (error) {
+      const { message } = getErrorInfo(error)
+      handleShowAlert(dispatch, { type: AlertType.Error, message })
+    }
+  }
+
+  const handleGoogleAuthFailure = () => {
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message: "Login with Google Failed",
+    })
   }
 
   if (loginError) {
@@ -56,7 +97,7 @@ const Login = ({ handlePageChange }: { handlePageChange: () => void }) => {
         <H1>Login</H1>
       </div>
       <div className="space-y-3 md:space-y-6 lg:space-y-10 w-full">
-        {isLoading && (
+        {(loginIsLoading || googleAuthIsLoading) && (
           <div className="flex items-center justify-center">
             <Loader />
           </div>
@@ -85,11 +126,17 @@ const Login = ({ handlePageChange }: { handlePageChange: () => void }) => {
           errors={errors}
         />
       </div>
-      <div className="w-full">
+      <div className="flex flex-col items-center gap-3 w-full">
         <Button size={ButtonSize.Large} type="submit">
           Login
         </Button>
+        <GoogleLogin
+          text="continue_with"
+          onSuccess={handleGoogleAuth}
+          onError={handleGoogleAuthFailure}
+        />
       </div>
+
       <div className="w-full">
         <span>
           Forgot password?{" "}

@@ -9,10 +9,12 @@ import { getErrorInfo, getRoleBasedHomepageURL } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import Loader from "../ui/Loader"
 import { AlertType, Cookie } from "../../utils/types"
+import { useEffect, useState } from "react"
 
 export default function GlobalLayout() {
   const alert = useSelector((state: RootState) => state.alert)
   const location = useLocation()
+  const [isInitialized, setIsInitialized] = useState(false)
 
   const [cookies] = useCookies([Cookie.jwt])
   const {
@@ -23,15 +25,25 @@ export default function GlobalLayout() {
 
   const dispatch = useDispatch()
 
-  if (userError) {
-    const { message } = getErrorInfo(userError)
-    handleShowAlert(dispatch, {
-      type: AlertType.Error,
-      message,
-    })
-  }
+  useEffect(() => {
+    if (user) {
+      dispatch(login(user))
+    }
 
-  if (isLoading) {
+    if (userError) {
+      const { message } = getErrorInfo(userError)
+      handleShowAlert(dispatch, {
+        type: AlertType.Error,
+        message,
+      })
+    }
+
+    if (!isLoading) {
+      setIsInitialized(true)
+    }
+  }, [user, userError, dispatch, isLoading])
+
+  if (isLoading || !isInitialized) {
     return (
       <div className="h-screen flex items-center justify-center">
         <Loader />
@@ -40,8 +52,6 @@ export default function GlobalLayout() {
   }
 
   if (cookies.jwt && user) {
-    dispatch(login(user))
-
     if (location.state?.redirect === "home") {
       return <Navigate to={getRoleBasedHomepageURL(user.role)} />
     }
