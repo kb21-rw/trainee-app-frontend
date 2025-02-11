@@ -4,22 +4,16 @@ import { Navigate, Outlet } from "react-router-dom"
 import { RootState } from "../store"
 import { UserRole } from "../utils/types"
 
-interface PrivateRouteProps {
+export default function PrivateRoute({
+  allowedRoles,
+}: {
   allowedRoles: UserRole[]
-}
-
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ allowedRoles }) => {
+}) {
   const userRole = useSelector((state: RootState) => state.user.role)
 
-  if (!userRole) {
-    return <Navigate to="/auth" />
+  if (userRole && allowedRoles.includes(userRole)) {
+    return <Outlet />
   }
 
-  return allowedRoles.includes(userRole) ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/not-found" />
-  )
+  return <Navigate to="/not-found" />
 }
-
-export default PrivateRoute
