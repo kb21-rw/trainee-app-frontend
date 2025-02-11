@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 const DeleteIcon = () => {
   return (
@@ -45,7 +45,7 @@ const DeleteIcon = () => {
         strokeLinejoin="round"
       />
     </svg>
-  );
-};
+  )
+}
 
-export default DeleteIcon;
+export default DeleteIcon

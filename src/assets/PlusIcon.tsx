@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 const PlusIcon = () => {
   return (
@@ -24,7 +24,7 @@ const PlusIcon = () => {
         strokeLinejoin="round"
       />
     </svg>
-  );
-};
+  )
+}
 
-export default PlusIcon;
+export default PlusIcon

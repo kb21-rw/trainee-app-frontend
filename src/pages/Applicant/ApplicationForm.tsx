@@ -1,181 +1,216 @@
-import React, { useState } from "react";
-import { useGetMyApplicationQuery} from "../../features/user/apiSlice";
-import Loader from "../../components/ui/Loader";
+import { useLocation, useNavigate } from "react-router-dom"
 import {
-  ApplicationFormResponse,
-  ButtonVariant,
-  Question,
-  QuestionType,
-} from "../../utils/types";
-import FormInput from "../../components/ui/FormInput";
-import Button from "../../components/ui/Button";
-import { useAddApplicantResponseMutation } from "../../features/user/apiSlice";
-import { useForm } from "react-hook-form";
-import ReviewFormModal from "../../components/modals/ReviewFormModal";
-import ApplicantSuccessModal from "../../components/modals/ApplicationSuccess";
-import { getJWT } from "../../utils/helper";
+  useAddApplicantResponseMutation,
+  useGetMyApplicationQuery,
+} from "../../features/user/backendApi"
+import Loader from "../../components/ui/Loader"
+import { AlertType, Cookie, QuestionType } from "../../utils/types"
+import { useCookies } from "react-cookie"
+import { Box, Typography } from "@mui/material"
+import { useForm } from "react-hook-form"
+import Button from "../../components/ui/Button"
+import {
+  convertFormQuestionsToObject,
+  getErrorInfo,
+  getFormattedDate,
+} from "../../utils/helper"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { useDispatch } from "react-redux"
+import { useEffect } from "react"
+import ApplicationFormQuestion from "../../components/ui/ApplicatonFormQuestion"
 
 const ApplicationForm = () => {
-  const { handleSubmit, register } = useForm();
+  const location = useLocation()
+  const [cookies] = useCookies([Cookie.jwt])
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const { data, isFetching } = useGetMyApplicationQuery(cookies.jwt)
+  const [saveApplicantResponse, { error }] = useAddApplicantResponseMutation()
+  const {
+    handleSubmit,
+    getValues,
+    control,
+    reset,
+    formState: { isDirty, errors, dirtyFields },
+  } = useForm({
+    values: location?.state,
+  })
 
-  const [reviewData, setReviewData] = useState<ApplicationFormResponse[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSubmissionSuccessful, setIsSubmissionSuccessful] = useState(false);
+  const formTitle = data?.name
+  const formDeadline = data?.endDate
+  const formQuestions = data?.questions ?? []
 
-  const jwt: string = getJWT();
-
-  const { data, isFetching } = useGetMyApplicationQuery(jwt);
-  const [addApplicantResponse, { isSuccess }] =
-    useAddApplicantResponseMutation();
-
-  const formTitle = data?.title;
-  const formQuestions = data?.questions ?? [];
-
-  const handleFormSubmit = (formData: any) => {
-    const responses = formData.responses.map(
-      (response: ApplicationFormResponse) => ({
-        questionId: response.questionId,
-        answer: response.answer,
+  const handleFormSubmit = (formData: { [key: string]: string | string[] }) => {
+    const responses = Object.entries(formData).map(
+      (response: [string, string | string[]]) => ({
+        questionId: response[0],
+        answer: response[1],
       }),
-    );
-    setReviewData(responses);
-    setIsModalOpen(true);
-  };
+    )
 
-  const handleConfirm = async () => {
-    try {
-      await addApplicantResponse({
-        jwt,
-        body: reviewData,
-      });
-      if (isSuccess) setIsSubmissionSuccessful(true);
-    } catch (error: any) {
-      throw new Error("Error submitting form", error);
+    const QuestionsPreview = formQuestions.map((question: any) => ({
+      ...question,
+      response: formData[question._id],
+    }))
+    navigate("/preview", {
+      state: {
+        formPreview: { ...data, questions: QuestionsPreview },
+        responses,
+        formData,
+      },
+    })
+  }
+
+  const handleSave = async () => {
+    const userResponses = Object.entries(
+      getValues() as { [key: string]: string | string[] },
+    )
+
+    const modifiedResponses = userResponses.filter(
+      (response: [string, string | string[]]) => dirtyFields[response[0]],
+    )
+    const responses = modifiedResponses.map(
+      (response: [string, string | string[]]) => ({
+        questionId: response[0],
+        answer: response[1],
+      }),
+    )
+
+    const result = await saveApplicantResponse({
+      jwt: cookies.jwt,
+      body: responses,
+      action: "save",
+    })
+
+    const formQuestions = convertFormQuestionsToObject(result.data.questions)
+    reset(formQuestions, { keepDirty: false })
+
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: "Successfully saved your progress",
+    })
+  }
+
+  useEffect(() => {
+    if (location?.state) return
+    if (data) {
+      const formQuestions = convertFormQuestionsToObject(data.questions)
+      reset(formQuestions, { keepDirty: false })
     }
-  };
+  }, [reset, data, location?.state])
 
-  const handleEdit = () => {
-    setReviewData([]);
-    setIsModalOpen(false);
-  };
+  if (error) {
+    const { message } = getErrorInfo(error)
+    handleShowAlert(dispatch, { type: AlertType.Error, message })
+  }
 
   if (isFetching)
     return (
       <div className="h-[50vh] flex items-center justify-center">
         <Loader />
       </div>
-    );
-
-  if (formQuestions.length === 0) {
-    return (
-      <div className="flex justify-center items-center h-96">
-        <div
-          className="flex flex-col items-center bg-green-100 border border-green-400 px-4 py-3 rounded space-y-2"
-          role="alert"
-        >
-          <h1 className="text-3xl text-green-700">Oops! 🫢</h1>
-          <strong className="font-bold text-center text-green-700">
-            No application found!
-          </strong>
-          <span className="block sm:inline text-center text-gray-500">
-            Unfortunately, there is no open application
-          </span>
-        </div>
-      </div>
-    );
-  }
+    )
 
   return (
-    <div className="mt-5 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl w-full bg-white rounded-lg shadow-lg">
-        <div className="border-t-[#673AB7] border-t-8 rounded-xl w-full p-4"></div>
-        <div className="px-8 py-6">
-          <div className="border-b border-gray-200">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4 text-center">
+    <div className="py-12">
+      <>
+        <div className="border-t-primary-dark border-t-8 rounded-xl p-2 sm:p-4 w-full"></div>
+        <Box
+          component="form"
+          onSubmit={handleSubmit(handleFormSubmit)}
+          sx={{
+            maxWidth: "3xl",
+            mx: "auto",
+          }}
+        >
+          <Box
+            sx={{
+              pb: { xs: 2, md: 4 },
+              mb: { xs: 2, md: 4 },
+              textAlign: "center",
+            }}
+          >
+            <Typography
+              sx={{
+                variant: "h1",
+                component: "h1",
+                fontWeight: "bold",
+                fontSize: "2rem",
+                lineHeight: "3rem",
+              }}
+            >
               {formTitle}
-            </h2>
-          </div>
-          <form className="mt-8" onSubmit={handleSubmit(handleFormSubmit)}>
-            {formQuestions.map((question: Question, index: number) => (
-              <div key={index} className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                  {index + 1}. {question.title}
-                </h3>
-                {question.type === QuestionType.Text && (
-                  <FormInput
-                    {...register(`responses[${index}].questionId`, {
-                      value: question._id,
-                    })}
-                    {...register(`responses[${index}].answer`, {
-                      required: true,
-                    })}
-                    className="border-b border-gray-300 rounded-md text-lg py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-primary-dark focus:border-transparent"
-                  />
-                )}
-                {question.type === QuestionType.SingleSelect && (
-                  <div className="space-y-4">
-                    {question.options?.map(
-                      (option: string, optionIndex: number) => (
-                        <div key={optionIndex} className="flex items-center">
-                          <input
-                            type="radio"
-                            id={`option_${optionIndex}`}
-                            {...register(`responses[${index}].questionId`, {
-                              value: question._id,
-                              required: true,
-                            })}
-                            {...register(`responses[${index}].answer`, {
-                              value: option,
-                            })}
-                            value={option}
-                            className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-                          />
-                          <label
-                            htmlFor={`option_${optionIndex}`}
-                            className="ml-3 block text-sm font-medium text-gray-700"
-                          >
-                            {option}
-                          </label>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                )}
-              </div>
-            ))}
-            <div className="flex justify-center items-center space-x-3">
-              <Button
-                outlined={true}
-                variant={ButtonVariant.Primary}
-                type="submit"
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                gap: 0.5,
+              }}
+            >
+              <Typography component="p">Application Deadline:</Typography>
+              <Typography
+                sx={{
+                  component: "span",
+                  fontWeight: "bold",
+                }}
               >
-                Save
-              </Button>
-              <Button variant={ButtonVariant.Primary} type="submit">
-                Submit
-              </Button>
-            </div>
-          </form>
-        </div>
-      </div>
-      {isModalOpen && (
-        <ReviewFormModal
-          title="Confirm Submission"
-          closePopup={() => setIsModalOpen(false)}
-          formQuestions={formQuestions}
-          responses={reviewData}
-          setReviewData={setReviewData}
-          handleConfirm={handleConfirm}
-          handleEdit={handleEdit}
-        />
-      )}
-      {isSubmissionSuccessful && (
-        <ApplicantSuccessModal
-          closePopup={() => setIsSubmissionSuccessful(false)}
-        />
-      )}
-    </div>
-  );
-};
+                {getFormattedDate(formDeadline)}
+              </Typography>
+            </Box>
+          </Box>
 
-export default ApplicationForm;
+          {formQuestions.map(
+            (question: {
+              _id: string
+              prompt: string
+              required: boolean
+              response: null | string
+              type: QuestionType
+              options: string[]
+            }) => (
+              <Box
+                key={question._id}
+                sx={{
+                  p: 4,
+                  mb: 4,
+                  boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;",
+                  borderRadius: 3,
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  component="label"
+                  htmlFor={question._id}
+                  sx={{
+                    display: "block",
+                    color: errors[question._id] ? "#f87171" : "inherit",
+                  }}
+                >
+                  {question.prompt}
+                  {question.required && <span className="text-red-400">*</span>}
+                </Typography>
+
+                <ApplicationFormQuestion
+                  question={question}
+                  control={control}
+                />
+              </Box>
+            ),
+          )}
+
+          <Box
+            sx={{ display: "flex", justifyContent: "center", mt: 4, gap: 2 }}
+          >
+            <Button outlined onClick={handleSave} disabled={!isDirty}>
+              Save Draft
+            </Button>
+            <Button type="submit">Review and Submit</Button>
+          </Box>
+        </Box>
+      </>
+    </div>
+  )
+}
+
+export default ApplicationForm

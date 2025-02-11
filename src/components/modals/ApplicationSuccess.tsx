@@ -1,6 +1,6 @@
-import React from "react";
-import SuccessCheckMarkIcon from "../../assets/SuccessCheckMarkIcon";
-import ModalLayout from "./ModalLayout";
+import React from "react"
+import SuccessCheckMarkIcon from "../../assets/SuccessCheckMarkIcon"
+import ModalLayout from "./ModalLayout"
 
 const ApplicantSuccessModal = ({ closePopup }: { closePopup: () => void }) => {
   return (
@@ -15,8 +15,8 @@ const ApplicantSuccessModal = ({ closePopup }: { closePopup: () => void }) => {
           Your application has been submitted successfully!
         </h1>
         <p className="flex flex-col items-center justify-center text-gray-600 text-center mb-6">
-          <span>Thank you for applying.</span> <span>We will review your application and get back
-          to you soon.</span>
+          <span>Thank you for applying.</span>{" "}
+          <span>We will review your application and get back to you soon.</span>
         </p>
         <div className="flex justify-center">
           <a
@@ -28,7 +28,7 @@ const ApplicantSuccessModal = ({ closePopup }: { closePopup: () => void }) => {
         </div>
       </div>
     </ModalLayout>
-  );
-};
+  )
+}
 
-export default ApplicantSuccessModal;
+export default ApplicantSuccessModal

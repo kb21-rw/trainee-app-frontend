@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 const ResetIcon = () => {
   return (
@@ -14,7 +14,7 @@ const ResetIcon = () => {
         fill="black"
       />
     </svg>
-  );
-};
+  )
+}
 
-export default ResetIcon;
+export default ResetIcon
