@@ -19,7 +19,7 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.14.0",
     "@headlessui/react": "^2.1.8",
-    "@hookform/resolvers": "^3.3.4",
+    "@hookform/resolvers": "^4.0.0",
     "@mui/icons-material": "^6.1.1",
     "@mui/material": "^6.4.3",
     "@mui/x-data-grid": "^7.20.0",
