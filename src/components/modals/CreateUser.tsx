@@ -59,10 +59,10 @@ export default function CreateUser({
       resetForm()
       onClose()
     } catch (error) {
-      getErrorInfo(error)
+      const { message } = getErrorInfo(error)
       handleShowAlert(dispatch, {
         type: AlertType.Error,
-        message: "User already exists",
+        message,
       })
     } finally {
       resetCreateUser()
@@ -75,13 +75,13 @@ export default function CreateUser({
       onClose={onClose}
       aria-describedby="Add user"
       component="div"
-      className="flex items-center max-w-md mx-auto "
+      className="max-w-md mx-auto flex items-center "
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col w-full gap-6 p-5 bg-white rounded-xl"
+        className="flex flex-col gap-6 w-full bg-white p-5 rounded-xl"
       >
-        <h1 className="text-3xl font-semibold text-center">Create user</h1>
+        <h1 className="text-center text-3xl font-semibold">Create user</h1>
         <Input
           register={{ ...register("name") }}
           label="Name"
