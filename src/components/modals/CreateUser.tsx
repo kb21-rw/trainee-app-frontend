@@ -36,7 +36,7 @@ export default function CreateUser({
   const dispatch = useDispatch()
   const [
     createUser,
-    { error: userError, isLoading: isUserLoading, reset: resetCreateUser },
+    { isLoading: isUserLoading, reset: resetCreateUser },
   ] = useCreateUserMutation()
 
   const {
@@ -51,7 +51,7 @@ export default function CreateUser({
 
   const onSubmit = async (formData: CreateUserDto) => {
     try {
-      await createUser({ jwt: cookies.jwt, body: formData })
+      await createUser({ jwt: cookies.jwt, body: formData }).unwrap()
       handleShowAlert(dispatch, {
         type: AlertType.Success,
         message: "User was created successfully",
@@ -59,10 +59,10 @@ export default function CreateUser({
       resetForm()
       onClose()
     } catch (error) {
-      const { message } = getErrorInfo(userError)
+      getErrorInfo(error)
       handleShowAlert(dispatch, {
         type: AlertType.Error,
-        message,
+        message: "User already exists",
       })
     } finally {
       resetCreateUser()
@@ -75,13 +75,13 @@ export default function CreateUser({
       onClose={onClose}
       aria-describedby="Add user"
       component="div"
-      className="max-w-md mx-auto flex items-center "
+      className="flex items-center max-w-md mx-auto "
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-6 w-full bg-white p-5 rounded-xl"
+        className="flex flex-col w-full gap-6 p-5 bg-white rounded-xl"
       >
-        <h1 className="text-center text-3xl font-semibold">Create user</h1>
+        <h1 className="text-3xl font-semibold text-center">Create user</h1>
         <Input
           register={{ ...register("name") }}
           label="Name"
