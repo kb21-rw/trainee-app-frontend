@@ -231,6 +231,7 @@ export const backendApi: any = createApi({
 
     getProfile: builder.query({
       query: (jwt) => ({
+        log: console.log('jwt token', jwt),
         url: "/users/my-profile",
         method: "GET",
         headers: {
