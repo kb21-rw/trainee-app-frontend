@@ -23,7 +23,6 @@ export default function ApplicationFormActions({
   applicationForm,
   role,
 }: ApplicationFormActionsProps) {
-  console.log(applicationForm)
   const status =
     role === UserRole.Applicant
       ? ApplicationFormStatus.Submitted
