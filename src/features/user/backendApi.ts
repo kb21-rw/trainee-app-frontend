@@ -1,10 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-
-const api_url = import.meta.env.VITE_API_URL
+import { apiUrl } from "../../utils/constants"
 
 export const backendApi: any = createApi({
   reducerPath: "backendApi",
-  baseQuery: fetchBaseQuery({ baseUrl: api_url }),
+  baseQuery: fetchBaseQuery({ baseUrl: apiUrl }),
   tagTypes: [
     "coaches",
     "trainees",
@@ -185,7 +184,18 @@ export const backendApi: any = createApi({
         return {
           url: "/auth/login",
           method: "POST",
-          body: { ...body },
+          body,
+        }
+      },
+      invalidatesTags: ["token"],
+    }),
+
+    googleAuth: builder.mutation({
+      query: (body) => {
+        return {
+          url: "/auth/google",
+          method: "POST",
+          body,
         }
       },
       invalidatesTags: ["token"],
@@ -575,4 +585,5 @@ export const {
   useAddApplicantsMutation,
   useGetAllCohortsQuery,
   useGetApplicationFormQuery,
+  useGoogleAuthMutation,
 } = backendApi
