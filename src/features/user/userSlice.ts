@@ -23,9 +23,7 @@ export const userSlice = createSlice({
       state.email = email
       state.role = role
     },
-    logout: () => {
-      return initialState
-    },
+    logout: () => initialState,
   },
 })
 
