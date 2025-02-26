@@ -63,10 +63,10 @@ export type FormDtoSchema = z.infer<typeof FormDto>;
 
 interface UpdateFormProps {
   form: ApplicationForm | Form;
-  readOnly?: boolean;
+  readonly?: boolean;
 }
 
-export default function EditableFormCard({ form, readOnly = false }: UpdateFormProps) {
+export default function EditableFormCard({ form, readonly = false }: UpdateFormProps) {
   const defaultValues = {
     name: form.name,
     description: form.description ?? "",
@@ -100,7 +100,7 @@ export default function EditableFormCard({ form, readOnly = false }: UpdateFormP
   };
 
   const onSubmit = async (data: FormDtoSchema) => {
-    if (readOnly) return;
+    if (readonly) return;
 
     const requestBody: Partial<FormDtoSchema> = {};
     for (const key in dirtyFields) {
@@ -136,7 +136,7 @@ export default function EditableFormCard({ form, readOnly = false }: UpdateFormP
   };
 
   const handleAddQuestion = async () => {
-    if (readOnly) return;
+    if (readonly) return;
     await createQuestion({
       jwt: cookies.jwt,
       formId: form._id,
@@ -144,7 +144,6 @@ export default function EditableFormCard({ form, readOnly = false }: UpdateFormP
     });
   };
 
-  console.log('readonly', readOnly)
   return (
     <form className="flex gap-2 group" onSubmit={handleSubmit(onSubmit)}>
       {isDeleteFormLoading && (
@@ -156,21 +155,18 @@ export default function EditableFormCard({ form, readOnly = false }: UpdateFormP
         <input
           placeholder="Enter title"
           className={`outline-none text-[42px] font-bold border-b border-black/10 ${
-            readOnly ? "bg-gray-100 cursor-not-allowed" : ""
+            readonly ? "bg-gray-100 cursor-not-allowed" : ""
           }`}
           {...register("name")}
-          readOnly={readOnly}
-          disabled={readOnly}
+          disabled={readonly}
         />
         <input
           placeholder="Enter description"
           className={`outline-none border-b border-black/10 ${
-            readOnly ? "bg-gray-100 cursor-not-allowed" : ""
+            readonly ? "bg-gray-100 cursor-not-allowed" : ""
           }`}
           {...register("description")}
-          style={readOnly ? { pointerEvents: "none" } : {}}
-          readOnly={readOnly}
-          disabled={readOnly}
+          disabled={readonly}
         />
         {form.type === FormType.Application && (
           <>
@@ -181,10 +177,10 @@ export default function EditableFormCard({ form, readOnly = false }: UpdateFormP
                 render={({ field, ...props }) => (
                   <DatePicker
                     value={field.value ?? null}
-                    onChange={readOnly ? undefined : field.onChange}
+                    onChange={readonly ? undefined : field.onChange}
                     label="Application open date"
                     {...props}
-                    disabled={readOnly}
+                    disabled={readonly}
                   />
                 )}
               />
@@ -194,10 +190,10 @@ export default function EditableFormCard({ form, readOnly = false }: UpdateFormP
                 render={({ field, ...props }) => (
                   <DatePicker
                     value={field.value ?? null}
-                    onChange={readOnly ? undefined : field.onChange}
+                    onChange={readonly ? undefined : field.onChange}
                     label="Application close date"
                     {...props}
-                    disabled={readOnly}
+                    disabled={readonly}
                   />
                 )}
               />
@@ -206,12 +202,12 @@ export default function EditableFormCard({ form, readOnly = false }: UpdateFormP
               control={control}
               register={register}
               error={errors}
-              readOnly={readOnly}
+              readOnly={readonly}
             />
           </>
         )}
       </div>
-      {!readOnly && (
+      {!readonly && (
         <div className="flex flex-col justify-between gap-6 p-4 max-h-48 custom-shadow rounded-xl">
           {isDirty ? (
             <button type="submit">
