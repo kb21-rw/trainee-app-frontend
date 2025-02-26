@@ -10,6 +10,7 @@ import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
 
 export default function Form() {
+  const isEditMode = new URLSearchParams(location.search).get("edit") === "true";
   const [cookies] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
   const { id } = useParams<{ id: string }>()
@@ -41,9 +42,9 @@ export default function Form() {
   }
 
   return (
-    <div className="py-12 max-w-5xl mx-auto">
+    <div className="max-w-5xl py-12 mx-auto">
       <div className="flex flex-col gap-4">
-        <EditableFormCard form={formProps} />
+      <EditableFormCard form={formProps} readOnly={!isEditMode} />
         <div className="flex flex-col gap-4">
           {questions.map((question: TemplateQuestion) => (
             <QuestionCard key={question._id} question={question} />
