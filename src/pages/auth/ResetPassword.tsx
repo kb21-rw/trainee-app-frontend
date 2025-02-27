@@ -31,7 +31,7 @@ const ResetPassword = () => {
   if (isSuccess) {
     handleShowAlert(dispatch, {
       type: AlertType.Success,
-      message: "Password was reset successfully!",
+      message: "your password has been successfully reset. Please check you email for the new auto-generated password to log in",
     })
   }
 
