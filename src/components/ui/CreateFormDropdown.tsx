@@ -90,7 +90,9 @@ export default function CreateFormDropdown({
                 "group flex w-full items-center py-3 px-5 data-[focus]:bg-primary-dark data-[focus]:text-white border-b",
                 { "border-none": index === potentialForms.length - 1 },
               )}
-              onClick={() => handleCreateForm(item.type)}
+              onClick={() => {
+                handleCreateForm(item.type)
+              }}
             >
               {item.label}
             </button>
