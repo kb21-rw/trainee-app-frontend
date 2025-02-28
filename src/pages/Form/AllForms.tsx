@@ -29,6 +29,7 @@ const AllForms = () => {
     questions: applicationForm?.questions.length,
     startDate: applicationForm?.startDate,
   }
+
   const forms = data?.forms
 
   return (
@@ -63,7 +64,9 @@ const AllForms = () => {
             </div>
           )}
           {forms?.map((form: IFormType, index: number) => (
-            <FormCard form={form} key={index} />
+            <>
+              <FormCard form={form} key={index} />
+            </>
           ))}
         </div>
       )}

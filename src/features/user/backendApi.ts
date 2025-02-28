@@ -436,6 +436,7 @@ export const backendApi: any = createApi({
           },
         }
       },
+      keepUnusedDataFor: 0,
       providesTags: ["applicantForm"],
     }),
 
