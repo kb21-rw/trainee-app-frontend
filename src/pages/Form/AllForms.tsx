@@ -9,6 +9,7 @@ import FormCard from "../../components/ui/FormCard"
 import { Cookie, IFormType, AlertType, Cohort } from "../../utils/types"
 import NotFound from "../../components/ui/NotFound"
 import CreateFormDropdown from "../../components/ui/CreateFormDropdown"
+import Loader from "../../components/ui/Loader"
 import { Link } from "react-router-dom"
 import FormsSkeleton from "./FormsSkeleton"
 import { useCookies } from "react-cookie"
@@ -29,8 +30,7 @@ const AllForms = () => {
 
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
   const handleCohortChange = (event: SelectChangeEvent) => {
-    const cohortId = event.target.value
-    setSelectedCohortId(cohortId)
+    setSelectedCohortId(event.target.value)
   }
 
   const {
@@ -61,15 +61,22 @@ const AllForms = () => {
 
   return (
     <div className="py-12">
-      <div>
-        {cohortsAreFetching && <div>Fetching cohorts...</div>}
+      <div className="my-10 space-y-10">
+        {cohortsAreFetching ? <Loader /> : null}
         <div className="flex justify-between items-center">
           <div className="w-52">
             <FormControl fullWidth>
               <Select
                 labelId="cohort-label"
                 id="single-select"
-                value={selectedCohortId || ""}
+                defaultValue="Default"
+                value={
+                  selectedCohortId ??
+                  (cohorts
+                    ? cohorts.find((cohort: Cohort) => cohort.isActive)?._id
+                    : "") ??
+                  ""
+                }
                 onChange={handleCohortChange}
               >
                 {cohorts?.map((cohort: Cohort) => (
