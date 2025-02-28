@@ -1,15 +1,22 @@
-import { useSignupMutation } from "../../features/user/backendApi"
+import { useGoogleAuthMutation, useSignupMutation } from "../../features/user/backendApi"
 import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import InputField from "../../components/ui/InputField"
 import Button from "../../components/ui/Button"
 import { H1 } from "../../components/ui/Typography"
 import Loader from "../../components/ui/Loader"
-import { ButtonSize, Cookie } from "../../utils/types"
+import { AlertType, ButtonSize, Cookie } from "../../utils/types"
 import { useCookies } from "react-cookie"
+import {  CredentialResponse, GoogleLogin } from "@react-oauth/google"
+import { getErrorInfo } from "../../utils/helper"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { useDispatch } from "react-redux"
 
 const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
   const [signup, { isLoading, error }] = useSignupMutation()
+   const dispatch = useDispatch()  
+  const [handleAuthWithGoogle, ] =
+      useGoogleAuthMutation()
   const {
     register,
     handleSubmit,
@@ -18,8 +25,19 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
   } = useForm()
   const [, setCookie] = useCookies([Cookie.jwt])
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const redirectUrl = searchParams.get("redirectTo")
 
   const password = watch("password")
+
+  const saveTokenAndRedirect = (token: string) => {
+    setCookie(Cookie.jwt, token)
+
+    navigate(
+      redirectUrl ?? "/applicants", // if there's no redirectUrl, navigating to any protected route will redirect to the homepage
+      redirectUrl ? {} : { state: { redirect: "home" } },
+    )
+  }
 
   const onSubmit = async (userData: any) => {
     const result = await signup({
@@ -41,6 +59,29 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
     errors["confirm-password"]?.message ||
     error?.data?.errorMessage
 
+    const handleGoogleAuth = async (credentialResponse: CredentialResponse) => {
+      try {
+        const result = await handleAuthWithGoogle({
+          token: credentialResponse.credential,
+        })
+        if (result.error) {
+          throw result.error
+        }
+  
+        saveTokenAndRedirect(result?.data?.accessToken)
+      } catch (error) {
+        const { message } = getErrorInfo(error)
+        handleShowAlert(dispatch, { type: AlertType.Error, message })
+      }
+    }
+
+    const handleGoogleAuthFailure = () => {
+      handleShowAlert(dispatch, {
+        type: AlertType.Error,
+        message: "Login with Google Failed",
+      })
+    }
+  
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -123,10 +164,15 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
           />
         </div>
       </div>
-      <div className="w-full">
+      <div className="flex flex-col items-center gap-3 w-full">
         <Button size={ButtonSize.Large} type="submit">
           Sign Up
         </Button>
+      <GoogleLogin
+          text="continue_with"
+          onSuccess={handleGoogleAuth}
+          onError={handleGoogleAuthFailure}
+        />
       </div>
       <div className="w-full">
         <Button size={ButtonSize.Large} onClick={handlePageChange} outlined>
