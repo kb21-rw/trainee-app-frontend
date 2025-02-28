@@ -15,9 +15,10 @@ export default function GlobalLayout() {
   const alert = useSelector((state: RootState) => state.alert)
   const location = useLocation()
   const [isInitialized, setIsInitialized] = useState(false)
-  
-  const isSigningUp = location.pathname.includes("/signup")
 
+  const isSigningUp =
+    location.pathname.includes("/signup") ||
+    location.pathname.includes("/verify")
 
   const [cookies] = useCookies([Cookie.jwt])
   const {

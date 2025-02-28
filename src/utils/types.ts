@@ -189,8 +189,7 @@ export type AlertData = Pick<IAlert, "type" | "displayDuration" | "children">
 
 export enum Cookie {
   jwt = "jwt",
-  token = "token"
-  
+  token = "token",
 }
 
 export enum AuthPage {

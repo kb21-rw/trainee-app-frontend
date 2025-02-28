@@ -241,8 +241,8 @@ export default function OverViewTable({
     const participantPhase = userStage.droppedStage.isConfirmed
       ? ParticipantPhase.Rejected
       : userPassed
-      ? ParticipantPhase.Completed
-      : ParticipantPhase.Active
+        ? ParticipantPhase.Completed
+        : ParticipantPhase.Active
 
     return {
       id: user.user._id,
