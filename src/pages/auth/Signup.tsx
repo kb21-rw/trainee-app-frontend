@@ -78,7 +78,7 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
     const handleGoogleAuthFailure = () => {
       handleShowAlert(dispatch, {
         type: AlertType.Error,
-        message: "Login with Google Failed",
+        message: "Sign up with Google Failed",
       })
     }
   
