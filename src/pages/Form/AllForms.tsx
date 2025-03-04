@@ -64,9 +64,7 @@ const AllForms = () => {
             </div>
           )}
           {forms?.map((form: IFormType, index: number) => (
-            <>
-              <FormCard form={form} key={index} />
-            </>
+            <FormCard form={form} key={index} />
           ))}
         </div>
       )}
