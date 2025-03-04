@@ -62,7 +62,7 @@ const AllForms = () => {
   return (
     <div className="py-12">
       <div className="my-10 space-y-10">
-        {cohortsAreFetching ? <Loader /> : null}
+        {cohortsAreFetching && <Loader />}
         <div className="flex justify-between items-center">
           <div className="w-52">
             <FormControl fullWidth>
@@ -74,8 +74,7 @@ const AllForms = () => {
                   selectedCohortId ??
                   (cohorts
                     ? cohorts.find((cohort: Cohort) => cohort.isActive)?._id
-                    : "") ??
-                  ""
+                    : "")
                 }
                 onChange={handleCohortChange}
               >
