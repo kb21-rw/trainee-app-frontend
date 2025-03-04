@@ -230,9 +230,10 @@ export default function OverViewTable({
     const userStage = participants.find(
       (userProgress) => userProgress.id === user.user._id,
     )!
-    const stage = stages.find(
+
+    const stage = stages.length > 0 && stages.find(
       (stage) => stage.id === userStage.droppedStage.id,
-    )!
+    ) || {name: "Unknown"}
 
     const userPassed = userStage.passedStages.includes(
       stages[stages.length - 1].id,
