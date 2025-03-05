@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState, useEffect } from "react"
 import SearchInput from "../../components/ui/SearchInput"
 import {
   useGetAllCohortsQuery,
@@ -22,6 +22,8 @@ const AllForms = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const dispatch = useDispatch()
   const [cookies] = useCookies([Cookie.jwt])
+  const [hasFetched, setHasFetched] = useState(false)
+
   const { data, isFetching } = useGetAllFormsQuery({
     jwt: cookies.jwt,
     searchString: searchQuery,
@@ -29,7 +31,7 @@ const AllForms = () => {
   const { data: applicationForm } = useGetApplicationFormQuery(cookies.jwt)
 
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
-  const handleCohortChange = (event: SelectChangeEvent) => {
+  const handleCohortChange = (event: SelectChangeEvent<string>) => {
     setSelectedCohortId(event.target.value)
   }
 
@@ -37,9 +39,25 @@ const AllForms = () => {
     data: cohorts,
     error: cohortsError,
     isFetching: cohortsAreFetching,
-  } = useGetAllCohortsQuery({
-    jwt: cookies.jwt,
-  })
+  } = useGetAllCohortsQuery(
+    {
+      jwt: cookies.jwt,
+    },
+    { skip: !hasFetched },
+  )
+
+  useEffect(() => {
+    setHasFetched(true)
+  }, [])
+
+  useEffect(() => {
+    if (cohorts && cohorts.length > 0 && !selectedCohortId) {
+      const activeCohort = cohorts.find((cohort: Cohort) => cohort.isActive)
+      if (activeCohort) {
+        setSelectedCohortId(activeCohort._id)
+      }
+    }
+  }, [cohorts, selectedCohortId])
 
   if (cohortsError) {
     const { message } = getErrorInfo(cohortsError)
@@ -69,20 +87,31 @@ const AllForms = () => {
               <Select
                 labelId="cohort-label"
                 id="single-select"
-                defaultValue="Default"
-                value={
-                  selectedCohortId ??
-                  (cohorts
-                    ? cohorts.find((cohort: Cohort) => cohort.isActive)?._id
-                    : "")
-                }
+                value={selectedCohortId ?? ""}
                 onChange={handleCohortChange}
+                displayEmpty
+                renderValue={(selected) => {
+                  if (!cohorts || cohorts.length === 0) {
+                    return <em>No Cohorts Available</em>
+                  }
+
+                  const selectedCohort = cohorts.find(
+                    (cohort: Cohort) => cohort._id === selected,
+                  )
+                  return selectedCohort ? selectedCohort.name : ""
+                }}
               >
-                {cohorts?.map((cohort: Cohort) => (
-                  <MenuItem key={cohort._id} value={cohort._id}>
-                    {cohort.name}
+                {cohorts && cohorts.length > 0 ? (
+                  cohorts.map((cohort: Cohort) => (
+                    <MenuItem key={cohort._id} value={cohort._id}>
+                      {cohort.name}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem disabled>
+                    <em>No Cohorts Available</em>
                   </MenuItem>
-                ))}
+                )}
               </Select>
             </FormControl>
           </div>
