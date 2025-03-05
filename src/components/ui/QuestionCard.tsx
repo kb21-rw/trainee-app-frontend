@@ -6,15 +6,15 @@ import {
   useEditQuestionMutation,
 } from "../../features/user/backendApi";
 import SuccessCheckMark from "../../assets/SuccessCheckMarkIcon";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import AddIcon from "../../assets/AddIcon";
 import RemoveIcon from "../../assets/RemoveIcon";
 import Reset from "../../assets/ResetIcon";
 import DeleteModal from "../modals/DeleteModal";
-import { Cookie, QuestionType } from "../../utils/types";
+import {  Cookie, QuestionType, TemplateQuestion } from "../../utils/types";
 import { useCookies } from "react-cookie";
 
-const QuestionCard = ({ question, readonly }: { question: any; readonly: boolean }) => {
+const QuestionCard = ({ question, readonly }: { question: TemplateQuestion; readonly: boolean }) => {
   const { prompt, type, options, _id } = question;
   const {
     register,
@@ -46,7 +46,8 @@ const QuestionCard = ({ question, readonly }: { question: any; readonly: boolean
     setValue("options", updatedOptions, { shouldDirty: true });
   };
 
-  const onSubmit = async (data: any) => {
+
+  const onSubmit:  SubmitHandler<Omit<TemplateQuestion, '_id' | 'responses' | 'required'>> = async (data) => {
     await editQuestion({ jwt: cookies.jwt, body: data, id: _id });
   };
 
