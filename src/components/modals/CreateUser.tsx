@@ -36,7 +36,7 @@ export default function CreateUser({
   const dispatch = useDispatch()
   const [
     createUser,
-    { error: userError, isLoading: isUserLoading, reset: resetCreateUser },
+    { isLoading: isUserLoading, reset: resetCreateUser },
   ] = useCreateUserMutation()
 
   const {
@@ -51,7 +51,7 @@ export default function CreateUser({
 
   const onSubmit = async (formData: CreateUserDto) => {
     try {
-      await createUser({ jwt: cookies.jwt, body: formData })
+      await createUser({ jwt: cookies.jwt, body: formData }).unwrap()
       handleShowAlert(dispatch, {
         type: AlertType.Success,
         message: "User was created successfully",
@@ -59,7 +59,7 @@ export default function CreateUser({
       resetForm()
       onClose()
     } catch (error) {
-      const { message } = getErrorInfo(userError)
+      const { message } = getErrorInfo(error)
       handleShowAlert(dispatch, {
         type: AlertType.Error,
         message,
