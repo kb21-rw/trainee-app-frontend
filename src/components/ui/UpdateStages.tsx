@@ -27,9 +27,10 @@ type UpdateStageProps = {
   control: Control<{ stages: Stage[]; [key: string]: any }>
   register?: UseFormRegister<any>
   error: any
+  readOnly?: boolean
 }
 
-export default function UpdateStages({ control, error }: UpdateStageProps) {
+export default function UpdateStages({ control, error, readOnly }: UpdateStageProps) {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "stages",
@@ -48,7 +49,7 @@ export default function UpdateStages({ control, error }: UpdateStageProps) {
 
   return (
     <Disclosure as="div" className="p-4 border rounded-md">
-      <DisclosureButton className="w-full flex items-center justify-between">
+      <DisclosureButton className="flex items-center justify-between w-full">
         <h1 className="text-2xl">Stages</h1>
         <DropDownIcon className="w-8 h-8" />
       </DisclosureButton>
@@ -75,6 +76,7 @@ export default function UpdateStages({ control, error }: UpdateStageProps) {
                     size="small"
                     fullWidth
                     placeholder={`Stage ${index + 1} Name`}
+                    disabled={readOnly}
                   />
                 </>
               )}
@@ -94,6 +96,7 @@ export default function UpdateStages({ control, error }: UpdateStageProps) {
                     size="small"
                     fullWidth
                     placeholder={`Stage ${index + 1} Description`}
+                    disabled={readOnly}
                   />
                 </>
               )}
@@ -112,12 +115,12 @@ export default function UpdateStages({ control, error }: UpdateStageProps) {
                 size={ButtonSize.Small}
                 variant={ButtonVariant.Danger}
                 onClick={handleRemoveStage}
-                disabled={fields.length === 1}
+                disabled={readOnly || fields.length === 1}
               >
                 Remove Stage
               </Button>
             )}
-          <Button size={ButtonSize.Small} onClick={handleAddStage}>
+          <Button size={ButtonSize.Small} onClick={handleAddStage} disabled={readOnly}>
             Add Stage
           </Button>
         </Stack>
