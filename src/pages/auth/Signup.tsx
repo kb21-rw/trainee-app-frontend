@@ -34,7 +34,7 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
     setCookie(Cookie.jwt, token)
 
     navigate(
-      redirectUrl ?? "/applicants", // if there's no redirectUrl, navigating to any protected route will redirect to the homepage
+      redirectUrl ?? "/applicants",
       redirectUrl ? {} : { state: { redirect: "home" } },
     )
   }
