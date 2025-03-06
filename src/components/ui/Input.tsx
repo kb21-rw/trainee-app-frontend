@@ -24,7 +24,7 @@ export default function Input({
   const [show, setShow] = useState<boolean>(false)
 
   const inputType =
-    type === "password" ? (show ? "text" : "password") : type ?? "text"
+    type === "password" ? (show ? "text" : "password") : (type ?? "text")
 
   const handleShowHidePassword = () => {
     setShow((prevShow) => !prevShow)

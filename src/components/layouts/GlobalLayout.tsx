@@ -16,12 +16,16 @@ export default function GlobalLayout() {
   const location = useLocation()
   const [isInitialized, setIsInitialized] = useState(false)
 
+  const isSigningUp =
+    location.pathname.includes("/signup") ||
+    location.pathname.includes("/verify")
+
   const [cookies] = useCookies([Cookie.jwt])
   const {
     data: user,
     error: userError,
     isLoading,
-  } = useGetProfileQuery(cookies.jwt, { skip: !cookies.jwt })
+  } = useGetProfileQuery(cookies.jwt, { skip: !cookies.jwt || isSigningUp })
 
   const dispatch = useDispatch()
 
