@@ -61,13 +61,15 @@ const FormCard = ({ form }: { form: IFormType }) => {
             <Edit />
             <span>Edit</span>
           </button>
-          <button
-            onClick={() => setShowDeleteModal(true)}
-            className="flex items-center gap-2"
-          >
-            <Delete />
-            <span>Delete</span>
-          </button>
+          {form.type !== "Application" && (
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="flex items-center gap-2"
+            >
+              <Delete />
+              <span>Delete</span>
+            </button>
+          )}
         </div>
       </div>
       {showDeleteModal && (
