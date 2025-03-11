@@ -1,26 +1,28 @@
-import React, { useRef } from "react"
+import { useForm } from "react-hook-form"
 import SearchIcon from "../../assets/SearchIcon"
 
-const SearchInput = ({ setSearchQuery }: { setSearchQuery: any }) => {
-  const searchRef = useRef<HTMLInputElement>(null)
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value)
-  }
+const SearchInput = ({
+  setSearchQuery,
+}: {
+  // eslint-disable-next-line no-unused-vars
+  setSearchQuery: (data: string) => void
+}) => {
+  const { register, handleSubmit } = useForm()
 
   return (
-    <div className="flex w-full items-center max-w-xl h-14 border border-gray-250 rounded-xl">
-      <div className="bg-primary-dark h-full rounded-tl-xl rounded-bl-xl flex items-center justify-center p-2 text-white space-x-1">
-        <SearchIcon />
-      </div>
+    <form
+      onSubmit={handleSubmit((data) => setSearchQuery(data.search))}
+      className="border border-gray-250 flex h-12 rounded-lg"
+    >
       <input
-        className="px-2 flex-1 outline-none border-none h-full w-5/6  rounded-xl"
+        className="px-2 outline-none border-none h-full w-full rounded-xl"
         placeholder="Enter name"
-        name="search"
-        onChange={handleInputChange}
-        ref={searchRef}
+        {...register("search")}
       />
-    </div>
+      <button className="bg-primary-dark flex items-center justify-center w-16 rounded-tr-lg rounded-br-lg">
+        <SearchIcon />
+      </button>
+    </form>
   )
 }
 

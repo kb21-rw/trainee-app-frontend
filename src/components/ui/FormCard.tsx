@@ -25,17 +25,17 @@ const FormCard = ({ form }: { form: IFormType }) => {
   }
 
   return (
-    <div className="p-8 custom-shadow flex items-center justify-between rounded-xl">
+    <div className="flex items-center justify-between p-8 custom-shadow rounded-xl">
       {isDeleteFormLoading && (
-        <div className="absolute inset-0 h-full w-full flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center w-full h-full">
           <Loader />
         </div>
       )}
-      <div className="flex flex-col gap-4 w-full">
+      <div className="flex flex-col w-full gap-4">
         <div className="flex justify-between">
           <div className="flex gap-2">
             <H2>{form.name}</H2>
-            <div className="flex items-center gap-1 font-bold text-primary-dark border-primary-dark border rounded-lg px-6 ">
+            <div className="flex items-center gap-1 px-6 font-bold border rounded-lg text-primary-dark border-primary-dark ">
               <H7>{form.type}</H7>
             </div>
           </div>
@@ -48,7 +48,7 @@ const FormCard = ({ form }: { form: IFormType }) => {
         <H6>{form.description}</H6>
         <div className="flex justify-between">
           <button
-            onClick={() => navigate(`/forms/${form._id}`)}
+            onClick={() => navigate(`/forms/${form._id}?edit=false`)}
             className="flex items-center gap-2"
           >
             <View />
@@ -61,13 +61,15 @@ const FormCard = ({ form }: { form: IFormType }) => {
             <Edit />
             <span>Edit</span>
           </button>
-          <button
-            onClick={() => setShowDeleteModal(true)}
-            className="flex items-center gap-2"
-          >
-            <Delete />
-            <span>Delete</span>
-          </button>
+          {form.type !== "Application" && (
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="flex items-center gap-2"
+            >
+              <Delete />
+              <span>Delete</span>
+            </button>
+          )}
         </div>
       </div>
       {showDeleteModal && (
