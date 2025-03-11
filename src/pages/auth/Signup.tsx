@@ -86,17 +86,17 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col h-screen justify-center gap-5 md:gap-8 px-5 sm:px-10 md:p-0 mx-auto md:max-w-sm"
+      className="flex flex-col justify-center h-screen gap-5 px-5 mx-auto md:gap-8 sm:px-10 md:p-0 md:max-w-sm"
     >
       <div className="text-center">
         <H1>Signup</H1>
       </div>
-      <div className="w-full flex text-center justify-center">
+      <div className="flex justify-center w-full text-center">
         {isLoading && <Loader />}
       </div>
       <div className="space-y-3 md:space-y-6 lg:space-y-7">
         {errorMessage && (
-          <div className="py-2 bg-error-light text-error-dark flex justify-center items-center rounded-lg">
+          <div className="flex items-center justify-center py-2 rounded-lg bg-error-light text-error-dark">
             {errorMessage}
           </div>
         )}
@@ -165,7 +165,7 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
           />
         </div>
       </div>
-      <div className="flex flex-col items-center gap-3 w-full">
+      <div className="flex flex-col items-center w-full gap-3">
         <Button size={ButtonSize.Large} type="submit">
           Sign Up
         </Button>
@@ -175,7 +175,7 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
           onError={handleGoogleAuthFailure}
         />
       </div>
-      <div className="w-full">
+      <div className="w-full md:hidden">
         <Button size={ButtonSize.Large} onClick={handlePageChange} outlined>
           I already have an account
         </Button>
