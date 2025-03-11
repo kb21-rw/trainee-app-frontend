@@ -45,7 +45,7 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
       email: userData.email,
       password: userData.password,
     })
-    console.log(result)
+
     if (result.data.userId) {
       setCookie(Cookie.jwt, result.data.userId, { maxAge: 1800 })
       return navigate("/signup/thank-you")
