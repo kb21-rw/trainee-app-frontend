@@ -1,4 +1,4 @@
-import React from "react"
+import { useState } from "react"
 import { H1 } from "../../components/ui/Typography"
 import Button from "../../components/ui/Button"
 import InputField from "../../components/ui/InputField"
@@ -14,41 +14,58 @@ import { AlertType, Cookie } from "../../utils/types"
 import { useDispatch } from "react-redux"
 import { useCookies } from "react-cookie"
 
+
 const Profile = () => {
   const [cookies] = useCookies([Cookie.jwt])
   const [updateProfile, { isLoading, isSuccess, error }] =
     useUpdateProfileMutation()
+  const [otherAlertMessage, setOtherAlertMessage] = useState(false)
   const dispatch = useDispatch()
   const { data } = useGetProfileQuery(cookies.jwt)
-  const { register, handleSubmit } = useForm()
+  const { register, handleSubmit, formState:{errors, dirtyFields} } = useForm({mode:"onSubmit"})
 
-  const onSubmit = async (data: {
+  const onSubmit = async (submittedData: {
     email?: string
     name?: string
     password?: string
   }) => {
-    const profileData: { email?: string; name?: string; password?: string } = {}
-    if (data.email) profileData.email = data.email
-    if (data.name) profileData.name = data.name
-    if (data.password) profileData.password = data.password
-    await updateProfile({ jwt: cookies.jwt, profileData })
-  }
+    if(!submittedData.password && submittedData.name === data.name) {
+      handleShowAlert(dispatch, {
+        type: AlertType.Success,
+        message: "No changes were made!",
+      })
+      setOtherAlertMessage(true)
+      return
+    }
 
-  if (error) {
+    //allow success or error message to be alerted if changes were made
+    setOtherAlertMessage(false)
+
+    const profileData: { email?: string; name?: string; password?: string } = {}
+
+    if (submittedData.name) profileData.name = submittedData.name
+    if (submittedData.password) profileData.password = submittedData.password
+
+    await updateProfile({ jwt: cookies.jwt, profileData })
+    
+  }
+  
+  if (error && !otherAlertMessage) {
     const { message } = getErrorInfo(error)
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
     })
+    
   }
 
-  if (isSuccess) {
+  if (isSuccess && !otherAlertMessage) {
     handleShowAlert(dispatch, {
       type: AlertType.Success,
       message: "Profile was updated successfully!",
     })
   }
-
+  
   return (
     <div className="h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-md space-y-8 bg-white p-10 rounded-xl custom-shadow">
@@ -57,6 +74,11 @@ const Profile = () => {
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
           {isLoading && <Loader />}
+          {errors.password && (
+          <div className="flex items-center justify-center py-2 rounded-lg bg-error-light text-error-dark">
+            {String(errors.password?.message)}
+          </div>
+        )}
           <div className="rounded-md shadow-sm space-y-3">
             <InputField
               name="name"
@@ -65,7 +87,6 @@ const Profile = () => {
               placeholder="Your Name"
               defaultValue={data?.name}
               register={register}
-              styles="rounded-t-md"
             />
             <InputField
               name="email"
@@ -75,7 +96,6 @@ const Profile = () => {
               disabled
               defaultValue={data?.email}
               register={register}
-              styles="rounded-none border-t-0"
             />
             <InputField
               name="password"
@@ -83,12 +103,22 @@ const Profile = () => {
               label="Password"
               placeholder="New Password"
               register={register}
-              styles="rounded-b-md border-t-0"
+              options={{
+                pattern: {
+                  required: false,
+                  value:
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                  message:
+                    "Password must be 8+ characters with uppercase, lowercase, number, and special character.",
+                }, // checks if password is valid
+              }}
+              errors={errors}
             />
           </div>
           <div>
             <Button
               type="submit"
+              disabled={Object.keys(dirtyFields).length === 0}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Save Changes
