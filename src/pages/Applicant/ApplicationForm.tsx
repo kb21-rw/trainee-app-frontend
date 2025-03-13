@@ -24,7 +24,7 @@ const ApplicationForm = () => {
   const [cookies] = useCookies([Cookie.jwt])
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { data, isFetching } = useGetMyApplicationQuery(cookies.jwt)
+  const { data, isFetching, refetch } = useGetMyApplicationQuery(cookies.jwt)
   const [saveApplicantResponse, { error }] = useAddApplicantResponseMutation()
   const {
     handleSubmit,
@@ -89,6 +89,7 @@ const ApplicationForm = () => {
       type: AlertType.Success,
       message: "Successfully saved your progress",
     })
+    refetch()
   }
 
   useEffect(() => {
@@ -114,7 +115,7 @@ const ApplicationForm = () => {
   return (
     <div className="py-12">
       <>
-        <div className="border-t-primary-dark border-t-8 rounded-xl p-2 sm:p-4 w-full"></div>
+        <div className="w-full p-2 border-t-8 border-t-primary-dark rounded-xl sm:p-4"></div>
         <Box
           component="form"
           onSubmit={handleSubmit(handleFormSubmit)}
