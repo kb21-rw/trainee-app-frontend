@@ -1,11 +1,92 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { CreateFormInput } from "../components/modals/CreateForm"
+import { handleShowAlert } from "./handleShowAlert"
 import {
+  AlertType,
   ApplicationForm,
   ApplicationFormStatus,
+  Cookie,
+  FormType,
   QuestionType,
   UserResponseQuestion,
   UserRole,
 } from "./types"
 import dayjs from "dayjs"
+
+
+interface OnCreateFormSubmitParams {
+  data: CreateFormInput
+  formType: FormType
+  cookies: { [Cookie.jwt]?: any }
+  createForm: (_arg: { jwt: string; body: any }) => {
+    unwrap: () => Promise<any>
+  }
+  reset: () => void
+  navigate: (_path: string) => void
+  dispatch: any
+  onClose: () => void
+}
+
+/**
+ * Handles the submission of the create form
+ * 
+ * @param {OnCreateFormSubmitParams} params - All required parameters for form creation
+ * @returns {Promise<void>}
+ */
+export const onCreateFormSubmit = async ({
+  data,
+  formType,
+  cookies,
+  createForm,
+  reset,
+  navigate,
+  dispatch,
+  onClose
+}: OnCreateFormSubmitParams): Promise<void> => {
+  const requestBody: {
+    name: string;
+    type: FormType;
+    description?: string;
+    startDate?: string;
+    endDate?: string;
+    stages?: { name: string }[];
+  } = {
+    name: data.title,
+    type: formType,
+  }
+
+  if (data.description) {
+    requestBody.description = data.description
+  }
+
+  if (formType === FormType.Application) {
+    const now = new Date()
+    requestBody.startDate = new Date(
+      now.getTime() + 24 * 60 * 60 * 1000,
+    ).toISOString()
+    requestBody.endDate = new Date(
+      now.getTime() + 48 * 60 * 60 * 1000,
+    ).toISOString()
+    requestBody.stages = [{ name: "Application" }]
+  }
+
+  try {
+    const result = await createForm({
+      jwt: cookies.jwt,
+      body: requestBody,
+    }).unwrap()
+    reset()
+    navigate(`/forms/${result._id}?edit=true`)
+  } catch (error) {
+    const { message } = getErrorInfo(error)
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message,
+    })
+  } finally {
+    onClose()
+  }
+}
 
 /**
  * Determines the current status of an application based on the provided dates.

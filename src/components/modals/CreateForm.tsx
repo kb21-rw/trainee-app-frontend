@@ -6,9 +6,8 @@ import Button from "../../components/ui/Button"
 import Input from "../../components/ui/Input"
 import { useCreateFormMutation } from "../../features/user/backendApi"
 import { useCookies } from "react-cookie"
-import { Cookie, FormType, AlertType } from "../../utils/types"
-import { getErrorInfo } from "../../utils/helper"
-import { handleShowAlert } from "../../utils/handleShowAlert"
+import { Cookie, FormType } from "../../utils/types"
+import { onCreateFormSubmit } from "../../utils/helper"
 import Loader from "../../components/ui/Loader"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
@@ -24,7 +23,7 @@ const CreateFormSchema = z.object({
   description: z.string().optional(),
 })
 
-type CreateFormInput = z.infer<typeof CreateFormSchema>
+export type CreateFormInput = z.infer<typeof CreateFormSchema>
 
 export default function CreateForm({
   isOpen,
@@ -46,49 +45,16 @@ export default function CreateForm({
   const [createForm, { isLoading }] = useCreateFormMutation()
 
   const onSubmit = async (data: CreateFormInput) => {
-    const requestBody: {
-      name: string;
-      type: FormType;
-      description?: string;
-      startDate?: string;
-      endDate?: string;
-      stages?: { name: string }[];
-    } = {
-      name: data.title,
-      type: formType,
-    }
-
-    if (data.description) {
-      requestBody.description = data.description
-    }
-
-    if (formType === FormType.Application) {
-      const now = new Date()
-      requestBody.startDate = new Date(
-        now.getTime() + 24 * 60 * 60 * 1000,
-      ).toISOString()
-      requestBody.endDate = new Date(
-        now.getTime() + 48 * 60 * 60 * 1000,
-      ).toISOString()
-      requestBody.stages = [{ name: "Application" }]
-    }
-
-    try {
-      const result = await createForm({
-        jwt: cookies.jwt,
-        body: requestBody,
-      }).unwrap()
-      navigate(`/forms/${result._id}?edit=true`)
-    } catch (error) {
-      const { message } = getErrorInfo(error)
-      handleShowAlert(dispatch, {
-        type: AlertType.Error,
-        message,
-      })
-    } finally {
-      reset()
-      onClose()
-    }
+    await onCreateFormSubmit({
+      data,
+      formType,
+      cookies,
+      createForm,
+      reset,
+      navigate,
+      dispatch,
+      onClose
+    })
   }
 
   return (
