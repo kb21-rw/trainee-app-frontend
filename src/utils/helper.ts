@@ -1,35 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CreateFormInput } from "../components/modals/CreateForm"
 import { handleShowAlert } from "./handleShowAlert"
 import {
   AlertType,
   ApplicationForm,
   ApplicationFormStatus,
-  Cookie,
   FormType,
+  OnCreateFormSubmitParams,
   QuestionType,
   UserResponseQuestion,
   UserRole,
 } from "./types"
 import dayjs from "dayjs"
 
-
-interface OnCreateFormSubmitParams {
-  data: CreateFormInput
-  formType: FormType
-  cookies: { [Cookie.jwt]?: any }
-  createForm: (_arg: { jwt: string; body: any }) => {
-    unwrap: () => Promise<any>
-  }
-  reset: () => void
-  navigate: (_path: string) => void
-  dispatch: any
-  onClose: () => void
-}
-
 /**
  * Handles the submission of the create form
- * 
+ *
  * @param {OnCreateFormSubmitParams} params - All required parameters for form creation
  * @returns {Promise<void>}
  */
@@ -41,15 +26,15 @@ export const onCreateFormSubmit = async ({
   reset,
   navigate,
   dispatch,
-  onClose
+  onClose,
 }: OnCreateFormSubmitParams): Promise<void> => {
   const requestBody: {
-    name: string;
-    type: FormType;
-    description?: string;
-    startDate?: string;
-    endDate?: string;
-    stages?: { name: string }[];
+    name: string
+    type: FormType
+    description?: string
+    startDate?: string
+    endDate?: string
+    stages?: { name: string }[]
   } = {
     name: data.title,
     type: formType,
