@@ -144,4 +144,10 @@ export const customizeDataGridStyles = {
   "& .MuiDataGrid-cell:focus": {
     outline: "none",
   },
+  '.MuiDataGrid-iconButtonContainer': {
+        visibility: 'visible',
+  },
+  '.MuiDataGrid-sortIcon': {
+        opacity: 'inherit !important',
+  },
 }
