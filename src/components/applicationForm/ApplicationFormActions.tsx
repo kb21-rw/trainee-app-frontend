@@ -45,7 +45,7 @@ export default function ApplicationFormActions({
                 .programBenefits
             }
           />
-          <div className="my-10 flex items-center justify-center">
+          <div className="flex items-center justify-center my-10">
             <div>
               <Button size={ButtonSize.Large}>
                 <Link to="/apply">Apply now</Link>
@@ -56,28 +56,30 @@ export default function ApplicationFormActions({
       )}
       {status !== ApplicationFormStatus.Open && (
         <>
-          <div className="text-center flex items-center flex-col">
-            <h1 className="text-2xl font-medium text-gray-600 text-center">
+          <div className="flex flex-col items-center text-center">
+            <h1 className="text-2xl font-medium text-center text-gray-600">
               {statusBasedData.heading}
             </h1>
           </div>
-          <div className="max-w-2xl mx-auto flex flex-col items-center justify-center border border-gray-300 rounded-lg p-6 shadow-lg space-y-4">
+          <div className="flex flex-col items-center justify-center max-w-2xl p-6 mx-auto space-y-4 border border-gray-300 rounded-lg shadow-lg">
             <p className="text-center text-gray-500">
               {statusBasedData.description}
             </p>
 
             <Link
-              className="bg-primary-dark text-white px-6 py-3 rounded-md"
+              className="px-6 py-3 text-white rounded-md bg-primary-dark"
               to={statusBasedData.buttonLink}
             >
               {statusBasedData.buttonText}
             </Link>
 
-            <div className="text-gray-600 text-sm text-center">
+            <div className="text-sm text-center text-gray-600">
               Learn more about The Gym software developer trainee program{" "}
               <Link
                 to="https://www.the-gym.rw/"
                 className="text-blue-600 underline"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 here
               </Link>
