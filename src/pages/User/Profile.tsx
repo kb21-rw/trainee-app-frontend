@@ -110,7 +110,7 @@ const Profile = () => {
                     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
                   message:
                     "Password must be 8+ characters with uppercase, lowercase, number, and special character.",
-                }, // checks if password is valid
+                },
               }}
               errors={errors}
             />
