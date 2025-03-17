@@ -6,11 +6,12 @@ import Button from "../../components/ui/Button"
 import Input from "../../components/ui/Input"
 import { useCreateFormMutation } from "../../features/user/backendApi"
 import { useCookies } from "react-cookie"
-import { Cookie, FormType } from "../../utils/types"
+import { AlertType, Cookie, FormType } from "../../utils/types"
 import { onCreateFormSubmit } from "../../utils/helper"
 import Loader from "../../components/ui/Loader"
 import { useDispatch } from "react-redux"
-import { useNavigate } from "react-router-dom"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+
 
 interface CreateFormModalProps {
   isOpen: boolean
@@ -40,7 +41,6 @@ export default function CreateForm({
   })
 
   const dispatch = useDispatch()
-  const navigate = useNavigate()
   const [cookies] = useCookies([Cookie.jwt])
   const [createForm, { isLoading }] = useCreateFormMutation()
 
@@ -51,9 +51,12 @@ export default function CreateForm({
       cookies,
       createForm,
       reset,
-      navigate,
       dispatch,
       onClose
+    })
+    handleShowAlert(dispatch, {
+      type: AlertType.Success,
+      message: "Form created successfully!"
     })
   }
 
@@ -65,13 +68,13 @@ export default function CreateForm({
         onClose()
       }}
       aria-labelledby="create-form-modal"
-      className="max-w-md mx-auto flex items-center"
+      className="flex items-center max-w-md mx-auto"
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-6 w-full bg-white p-5 rounded-xl"
+        className="flex flex-col w-full gap-6 p-5 bg-white rounded-xl"
       >
-        <h1 className="text-center text-3xl font-semibold">
+        <h1 className="text-3xl font-semibold text-center">
           Create {formType} Form
         </h1>
         <Input

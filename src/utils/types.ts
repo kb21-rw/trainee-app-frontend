@@ -257,7 +257,6 @@ export interface OnCreateFormSubmitParams {
     unwrap: () => Promise<any>
   }
   reset: () => void
-  navigate: (_path: string) => void
   dispatch: any
   onClose: () => void
 }

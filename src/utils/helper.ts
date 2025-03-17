@@ -24,7 +24,6 @@ export const onCreateFormSubmit = async ({
   cookies,
   createForm,
   reset,
-  navigate,
   dispatch,
   onClose,
 }: OnCreateFormSubmitParams): Promise<void> => {
@@ -56,12 +55,11 @@ export const onCreateFormSubmit = async ({
   }
 
   try {
-    const result = await createForm({
+    await createForm({
       jwt: cookies.jwt,
       body: requestBody,
     }).unwrap()
     reset()
-    navigate(`/forms/${result._id}?edit=true`)
   } catch (error) {
     const { message } = getErrorInfo(error)
     handleShowAlert(dispatch, {
