@@ -43,7 +43,7 @@ export default function ApplicationFormActions({
   const { socket } = useContext(WaitListSocketContext)
 
   useEffect(() => {
-    socket?.on("join", (message) => {
+    socket?.on("joinedTheWaitList", (message) => {
       if (data.email === message.email)
         setJoinedWaitList(ApplicationFormStatus.JoinedWaitList)
     })
@@ -51,7 +51,7 @@ export default function ApplicationFormActions({
     socket?.emit("join-room", data.email)
 
     return () => {
-      socket?.off("join")
+      socket?.off("joinTheWaitList")
     }
   }, [socket, data.email])
 
