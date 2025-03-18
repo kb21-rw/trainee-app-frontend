@@ -6,12 +6,19 @@ import { RootState } from "../../store"
 import { useCookies } from "react-cookie"
 import ApplicationFormActions from "../../components/applicationForm/ApplicationFormActions"
 
+import { io } from "socket.io-client"
+import { useEffect } from "react"
+
 export default function HomePage() {
   const role = useSelector((state: RootState) => state.user.role)!
   const [cookies] = useCookies([Cookie.jwt])
   const { data: applicationForm, isLoading } = useGetMyApplicationQuery(
     cookies.jwt,
   )
+
+  useEffect(() => {
+    io("http://localhost:3001/")
+  }, [])
 
   return (
     <div className="flex flex-col items-center justify-center mt-10 md:mt-20 space-y-10">

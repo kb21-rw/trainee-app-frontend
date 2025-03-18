@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux"
 import { RootState } from "../../store"
 import { Navigate, Outlet } from "react-router-dom"
-import { getRoleBasedHomepageURL } from "../../utils/helper"
+import { getRoleBasedHomepageURL } from "../../helper"
 import { useCookies } from "react-cookie"
 import { Cookie } from "../../utils/types"
 

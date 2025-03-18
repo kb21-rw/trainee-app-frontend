@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom"
 import { useAddApplicantResponseMutation } from "../../features/user/backendApi"
-import { getErrorInfo, getFormattedDate } from "../../utils/helper"
+import { getErrorInfo, getFormattedDate } from "../../helper"
 import { AlertType, Cookie, UserResponseQuestion } from "../../utils/types"
 import Button from "../../components/ui/Button"
 import { useEffect } from "react"

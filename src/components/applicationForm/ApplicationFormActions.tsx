@@ -6,7 +6,7 @@ import {
   UserResponseQuestion,
   UserRole,
 } from "../../utils/types"
-import { getApplicationFormStatus, getFormattedDate } from "../../utils/helper"
+import { getApplicationFormStatus, getFormattedDate } from "../../helper"
 import { applicationFormStatusData } from "../../utils/data"
 import CohortInfo from "../ui/CohortInfo"
 import Button from "../ui/Button"

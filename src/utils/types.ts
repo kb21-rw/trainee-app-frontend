@@ -170,6 +170,7 @@ export enum ApplicationFormStatus {
   Submitted = "Submitted",
   NoApplication = "NoApplication",
   DeadlinePassed = "DeadlinePassed",
+  JoinedWaitList = "JoinedWaitList",
 }
 
 export interface IAlert {

@@ -6,7 +6,7 @@ import Input from "../ui/Input"
 import Select from "../ui/Select"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { getErrorInfo } from "../../utils/helper"
+import { getErrorInfo } from "../../helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
 import { useCookies } from "react-cookie"
@@ -34,10 +34,8 @@ export default function CreateUser({
 }) {
   const [cookies] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
-  const [
-    createUser,
-    { isLoading: isUserLoading, reset: resetCreateUser },
-  ] = useCreateUserMutation()
+  const [createUser, { isLoading: isUserLoading, reset: resetCreateUser }] =
+    useCreateUserMutation()
 
   const {
     register,

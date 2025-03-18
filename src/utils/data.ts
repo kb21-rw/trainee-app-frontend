@@ -127,6 +127,13 @@ export const applicationFormStatusData = {
     buttonText: "Continue your application",
     buttonLink: "/apply",
   },
+  [ApplicationFormStatus.JoinedWaitList]: {
+    heading: "You have successfully joined the waitlist 🎉",
+    description:
+      "Thank you for joining the waitlist. We will notify you when the application is open.",
+    buttonText: "Join waiting list",
+    buttonLink: joinWaitListFormLink,
+  },
 }
 
 export const customizeDataGridStyles = {

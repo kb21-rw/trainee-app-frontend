@@ -10,7 +10,7 @@ import {
 import { useCookies } from "react-cookie"
 import { useDispatch } from "react-redux"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { getErrorInfo } from "../../utils/helper"
+import { getErrorInfo } from "../../helper"
 import { DataGrid, GridColDef } from "@mui/x-data-grid"
 import EditIcon from "../../assets/EditIcon"
 import { useState } from "react"

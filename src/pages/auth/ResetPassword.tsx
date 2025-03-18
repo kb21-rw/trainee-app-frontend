@@ -7,7 +7,7 @@ import Button from "../../components/ui/Button"
 import { useForm } from "react-hook-form"
 import { useResetPasswordMutation } from "../../features/user/backendApi"
 import { AlertType, ButtonSize } from "../../utils/types"
-import { getErrorInfo } from "../../utils/helper"
+import { getErrorInfo } from "../../helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
 
@@ -31,7 +31,8 @@ const ResetPassword = () => {
   if (isSuccess) {
     handleShowAlert(dispatch, {
       type: AlertType.Success,
-      message: "Password reset successful. Check your email for the new password",
+      message:
+        "Password reset successful. Check your email for the new password",
     })
   }
 

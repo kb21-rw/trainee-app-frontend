@@ -16,7 +16,7 @@ import {
 } from "../../features/user/backendApi"
 import { useCookies } from "react-cookie"
 import { AlertType, Cookie, User } from "../../utils/types"
-import { getErrorInfo } from "../../utils/helper"
+import { getErrorInfo } from "../../helper"
 import { useDispatch } from "react-redux"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import Loader from "../ui/Loader"

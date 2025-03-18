@@ -5,13 +5,13 @@ import EditableFormCard from "../../components/ui/EditableFormCard"
 import QuestionCard from "../../components/ui/QuestionCard"
 import { AlertType, Cookie, TemplateQuestion } from "../../utils/types"
 import { useCookies } from "react-cookie"
-import { getErrorInfo } from "../../utils/helper"
+import { getErrorInfo } from "../../helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
 
 export default function Form() {
-  const [searchParams] = useSearchParams();
-  const isEditMode = searchParams.get("edit") === "true";
+  const [searchParams] = useSearchParams()
+  const isEditMode = searchParams.get("edit") === "true"
   const [cookies] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
   const { id } = useParams<{ id: string }>()
@@ -45,10 +45,14 @@ export default function Form() {
   return (
     <div className="max-w-5xl py-12 mx-auto">
       <div className="flex flex-col gap-4">
-      <EditableFormCard form={formProps} readonly={!isEditMode} />
+        <EditableFormCard form={formProps} readonly={!isEditMode} />
         <div className="flex flex-col gap-4">
           {questions.map((question: TemplateQuestion) => (
-            <QuestionCard key={question._id} question={question} readonly={!isEditMode}/>
+            <QuestionCard
+              key={question._id}
+              question={question}
+              readonly={!isEditMode}
+            />
           ))}
         </div>
       </div>

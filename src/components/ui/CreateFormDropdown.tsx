@@ -6,7 +6,7 @@ import { AlertType, Cookie, FormType } from "../../utils/types"
 import classNames from "classnames"
 import { useCookies } from "react-cookie"
 import dayjs from "dayjs"
-import { getErrorInfo } from "../../utils/helper"
+import { getErrorInfo } from "../../helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
 

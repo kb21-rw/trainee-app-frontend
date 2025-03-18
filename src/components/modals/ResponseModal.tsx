@@ -5,7 +5,7 @@ import ApplicationFormQuestion from "../ui/ApplicatonFormQuestion"
 import { AlertType, Cookie, ResponseModalQuestion } from "../../utils/types"
 import { useAddResponseMutation } from "../../features/user/backendApi"
 import { useDispatch } from "react-redux"
-import { getErrorInfo } from "../../utils/helper"
+import { getErrorInfo } from "../../helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useCookies } from "react-cookie"
 
