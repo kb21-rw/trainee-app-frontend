@@ -5,6 +5,7 @@ import {
   useCreateQuestionMutation,
   useDeleteFormMutation,
   useEditFormMutation,
+  useGetAllFormsQuery,
 } from "../../features/user/backendApi";
 import SuccessCheckMark from "../../assets/SuccessCheckMarkIcon";
 import Delete from "../../assets/DeleteIcon";
@@ -16,6 +17,7 @@ import {
   Cookie,
   Form,
   FormType,
+  IFormType,
   QuestionType,
 } from "../../utils/types";
 import { useCookies } from "react-cookie";
@@ -91,6 +93,9 @@ export default function EditableFormCard({ form, readonly = false }: UpdateFormP
   const [editForm] = useEditFormMutation();
   const [createQuestion] = useCreateQuestionMutation();
   const navigate = useNavigate();
+  const {data: allForms} = useGetAllFormsQuery({ jwt: cookies.jwt })
+  const allFormsData = allForms?.forms
+  
 
   const [deleteForm, { isLoading: isDeleteFormLoading }] =
     useDeleteFormMutation();
@@ -101,6 +106,18 @@ export default function EditableFormCard({ form, readonly = false }: UpdateFormP
 
   const onSubmit = async (data: FormDtoSchema) => {
     if (readonly) return;
+
+    if (allFormsData) {
+      const duplicateTitle = allFormsData.find((form: IFormType) => form.name === data.name);
+      if (duplicateTitle) {
+        handleShowAlert(dispatch, {
+          type: AlertType.Error,
+          message: "A form with the same title already exists",
+        });
+        return;
+      }
+     
+    }
 
     const requestBody: Partial<FormDtoSchema> = {};
     for (const key in dirtyFields) {

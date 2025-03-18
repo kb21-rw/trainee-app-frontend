@@ -6,11 +6,10 @@ import Button from "../../components/ui/Button"
 import Input from "../../components/ui/Input"
 import { useCreateFormMutation } from "../../features/user/backendApi"
 import { useCookies } from "react-cookie"
-import { AlertType, Cookie, FormType } from "../../utils/types"
+import { Cookie, FormType } from "../../utils/types"
 import { onCreateFormSubmit } from "../../utils/helper"
 import Loader from "../../components/ui/Loader"
 import { useDispatch } from "react-redux"
-import { handleShowAlert } from "../../utils/handleShowAlert"
 
 
 interface CreateFormModalProps {
@@ -43,9 +42,11 @@ export default function CreateForm({
   const dispatch = useDispatch()
   const [cookies] = useCookies([Cookie.jwt])
   const [createForm, { isLoading }] = useCreateFormMutation()
-
+  
   const onSubmit = async (data: CreateFormInput) => {
-    await onCreateFormSubmit({
+
+    
+     await onCreateFormSubmit({
       data,
       formType,
       cookies,
@@ -53,10 +54,6 @@ export default function CreateForm({
       reset,
       dispatch,
       onClose
-    })
-    handleShowAlert(dispatch, {
-      type: AlertType.Success,
-      message: "Form created successfully!"
     })
   }
 
