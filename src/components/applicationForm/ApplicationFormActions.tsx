@@ -1,5 +1,7 @@
 import { useContext, useEffect, useState } from "react"
+import { useCookies } from "react-cookie"
 import { Link } from "react-router-dom"
+import { useGetProfileQuery } from "../../features/user/backendApi"
 import { getApplicationFormStatus, getFormattedDate } from "../../helper"
 import { WaitListSocketContext } from "../../utils/contexts/WaitListSocketContext"
 import { applicationFormStatusData } from "../../utils/data"
@@ -13,8 +15,6 @@ import {
 } from "../../utils/types"
 import Button from "../ui/Button"
 import CohortInfo from "../ui/CohortInfo"
-import { useGetProfileQuery } from "../../features/user/backendApi"
-import { useCookies } from "react-cookie"
 
 interface ApplicationFormActionsProps {
   applicationForm: Omit<ApplicationForm, "questions"> & {
@@ -28,24 +28,24 @@ export default function ApplicationFormActions({
   applicationForm,
   role,
 }: ApplicationFormActionsProps) {
-  const [joinedWaitList, setJoinedWaitList] =
-    useState<ApplicationFormStatus | null>(null)
-
-  const [cookies] = useCookies([Cookie.jwt])
-  const { data } = useGetProfileQuery(cookies.jwt)
   const status =
     role === UserRole.Applicant
       ? ApplicationFormStatus.Submitted
       : getApplicationFormStatus(applicationForm)
 
-  const statusBasedData = applicationFormStatusData[status]
+  const [cookies] = useCookies([Cookie.jwt])
+  const { data } = useGetProfileQuery(cookies.jwt)
+
+  const [displayStatus, setdisplayStatus] = useState<ApplicationFormStatus>(
+    data.isOnWaitList ? ApplicationFormStatus.JoinedWaitList : status,
+  )
 
   const { socket } = useContext(WaitListSocketContext)
 
   useEffect(() => {
     socket?.on("joinedTheWaitList", (message) => {
       if (data.email === message.email)
-        setJoinedWaitList(ApplicationFormStatus.JoinedWaitList)
+        setdisplayStatus(ApplicationFormStatus.JoinedWaitList)
     })
 
     socket?.emit("join-room", data.email)
@@ -83,26 +83,29 @@ export default function ApplicationFormActions({
         <>
           <div className="text-center flex items-center flex-col">
             <h1 className="text-2xl font-medium text-gray-600 text-center">
-              {joinedWaitList
-                ? applicationFormStatusData[joinedWaitList].heading
-                : statusBasedData.heading}
+              {applicationFormStatusData[displayStatus].heading}
             </h1>
           </div>
           <div className="max-w-2xl mx-auto flex flex-col items-center justify-center border border-gray-300 rounded-lg p-6 shadow-lg space-y-4">
             <p className="text-center text-gray-500">
-              {joinedWaitList
-                ? applicationFormStatusData[joinedWaitList].description
-                : statusBasedData.description}
+              {applicationFormStatusData[displayStatus].description}
             </p>
 
-            <Button
-              className="bg-primary-dark text-white px-6 py-3 rounded-md"
-              onClick={() => window.open(statusBasedData.buttonLink, "_blank")}
-            >
-              {joinedWaitList
-                ? applicationFormStatusData[joinedWaitList].buttonText
-                : statusBasedData.buttonText}
-            </Button>
+            {!data.isOnWaitList && (
+              <Button
+                className="bg-primary-dark text-white px-6 py-3 rounded-md"
+                onClick={() =>
+                  window.open(
+                    applicationFormStatusData[
+                      ApplicationFormStatus.NoApplication
+                    ].buttonLink,
+                    "_blank",
+                  )
+                }
+              >
+                {applicationFormStatusData[displayStatus].buttonText}
+              </Button>
+            )}
 
             <div className="text-gray-600 text-sm text-center">
               Learn more about The Gym software developer trainee program{" "}
