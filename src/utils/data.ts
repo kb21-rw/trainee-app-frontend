@@ -144,4 +144,18 @@ export const customizeDataGridStyles = {
   "& .MuiDataGrid-cell:focus": {
     outline: "none",
   },
+  "& .MuiDataGrid-columnHeaderDraggableContainer": {
+    visibility: "visible !important",
+  },
+  "& .MuiDataGrid-columnHeaderTitleContainer": {
+    visibility: "visible !important",
+  },
+  "& .MuiDataGrid-menuIcon": {
+    visibility: "visible !important",
+    width: "auto",
+  },
+  "& .MuiDataGrid-sortIcon": {
+    visibility: "visible !important",
+    opacity: 1,
+  },
 }
