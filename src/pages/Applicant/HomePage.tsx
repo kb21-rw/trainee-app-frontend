@@ -1,13 +1,10 @@
-import { Cookie } from "../../utils/types"
-import { useGetMyApplicationQuery } from "../../features/user/backendApi"
-import Loader from "../../components/ui/Loader"
-import { useSelector } from "react-redux"
-import { RootState } from "../../store"
 import { useCookies } from "react-cookie"
+import { useSelector } from "react-redux"
 import ApplicationFormActions from "../../components/applicationForm/ApplicationFormActions"
-
-import { io } from "socket.io-client"
-import { useEffect } from "react"
+import Loader from "../../components/ui/Loader"
+import { useGetMyApplicationQuery } from "../../features/user/backendApi"
+import { RootState } from "../../store"
+import { Cookie } from "../../utils/types"
 
 export default function HomePage() {
   const role = useSelector((state: RootState) => state.user.role)!
@@ -15,10 +12,6 @@ export default function HomePage() {
   const { data: applicationForm, isLoading } = useGetMyApplicationQuery(
     cookies.jwt,
   )
-
-  useEffect(() => {
-    io("http://localhost:3001/")
-  }, [])
 
   return (
     <div className="flex flex-col items-center justify-center mt-10 md:mt-20 space-y-10">
