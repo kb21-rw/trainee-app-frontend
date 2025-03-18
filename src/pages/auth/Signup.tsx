@@ -11,7 +11,7 @@ import Loader from "../../components/ui/Loader"
 import { AlertType, ButtonSize, Cookie } from "../../utils/types"
 import { useCookies } from "react-cookie"
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google"
-import { getErrorInfo } from "../../helper"
+import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
 

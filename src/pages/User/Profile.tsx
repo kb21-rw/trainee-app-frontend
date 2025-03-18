@@ -8,7 +8,7 @@ import {
   useUpdateProfileMutation,
 } from "../../features/user/backendApi"
 import { useForm } from "react-hook-form"
-import { getErrorInfo } from "../../helper"
+import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { AlertType, Cookie } from "../../utils/types"
 import { useDispatch } from "react-redux"

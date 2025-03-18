@@ -24,7 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import UpdateStages from "./UpdateStages"
 import { DatePicker } from "@mui/x-date-pickers"
-import { getErrorInfo } from "../../helper"
+import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
 

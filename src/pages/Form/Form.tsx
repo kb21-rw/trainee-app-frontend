@@ -5,7 +5,7 @@ import EditableFormCard from "../../components/ui/EditableFormCard"
 import QuestionCard from "../../components/ui/QuestionCard"
 import { AlertType, Cookie, TemplateQuestion } from "../../utils/types"
 import { useCookies } from "react-cookie"
-import { getErrorInfo } from "../../helper"
+import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
 

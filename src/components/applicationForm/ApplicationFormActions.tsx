@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import { useCookies } from "react-cookie"
 import { Link } from "react-router-dom"
 import { useGetProfileQuery } from "../../features/user/backendApi"
-import { getApplicationFormStatus, getFormattedDate } from "../../helper"
+import { getApplicationFormStatus, getFormattedDate } from "../../utils/helper"
 import { WaitListSocketContext } from "../../utils/contexts/WaitListSocketContext"
 import { applicationFormStatusData } from "../../utils/data"
 import {

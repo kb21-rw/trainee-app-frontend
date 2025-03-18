@@ -4,7 +4,7 @@ import {
   QuestionType,
   UserResponseQuestion,
   UserRole,
-} from "./utils/types"
+} from "./types"
 import dayjs from "dayjs"
 
 /**
