@@ -380,6 +380,16 @@ export default function OverViewTable({
           "& .MuiDataGrid-row.completed:hover": {
             bgcolor: "#86EFAC",
           },
+          '& .MuiDataGrid-iconButtonContainer': {
+             visibility: 'visible',
+          },
+          '& .MuiDataGrid-sortIcon': {
+             opacity: 'inherit !important',
+          },
+          "& .MuiDataGrid-menuIcon": {
+             visibility: "visible !important",
+             width: "auto",
+          },
         }}
       />
     </>
