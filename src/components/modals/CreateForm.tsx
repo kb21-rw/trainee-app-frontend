@@ -10,6 +10,7 @@ import { Cookie, FormType } from "../../utils/types"
 import { onCreateFormSubmit } from "../../utils/helper"
 import Loader from "../../components/ui/Loader"
 import { useDispatch } from "react-redux"
+import { useNavigate } from "react-router-dom"
 
 
 interface CreateFormModalProps {
@@ -40,6 +41,7 @@ export default function CreateForm({
   })
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [cookies] = useCookies([Cookie.jwt])
   const [createForm, { isLoading }] = useCreateFormMutation()
   
@@ -51,6 +53,7 @@ export default function CreateForm({
       formType,
       cookies,
       createForm,
+      navigate,
       reset,
       dispatch,
       onClose

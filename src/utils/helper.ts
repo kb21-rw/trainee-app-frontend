@@ -23,6 +23,7 @@ export const onCreateFormSubmit = async ({
   formType,
   cookies,
   createForm,
+  navigate,
   reset,
   dispatch,
   onClose,
@@ -55,11 +56,12 @@ export const onCreateFormSubmit = async ({
   }
 
   try {
-    await createForm({
+    const result = await createForm({
       jwt: cookies.jwt,
       body: requestBody,
     }).unwrap()
     reset()
+    navigate(`/forms/${result._id}?edit=true`)
   } catch (error) {
     const { message } = getErrorInfo(error)
     handleShowAlert(dispatch, {
