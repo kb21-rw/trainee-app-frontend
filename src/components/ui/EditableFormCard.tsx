@@ -95,6 +95,7 @@ export default function EditableFormCard({ form, readonly = false }: UpdateFormP
   const navigate = useNavigate();
   const {data: allForms} = useGetAllFormsQuery({ jwt: cookies.jwt })
   const allFormsData = allForms?.forms
+  console.log('all data from forms', allFormsData)
   
 
   const [deleteForm, { isLoading: isDeleteFormLoading }] =
@@ -107,7 +108,7 @@ export default function EditableFormCard({ form, readonly = false }: UpdateFormP
   const onSubmit = async (data: FormDtoSchema) => {
     if (readonly) return;
 
-    if (allFormsData) {
+    if (dirtyFields.name && allFormsData) {
       const duplicateTitle = allFormsData.find((form: IFormType) => form.name === data.name);
       if (duplicateTitle) {
         handleShowAlert(dispatch, {
