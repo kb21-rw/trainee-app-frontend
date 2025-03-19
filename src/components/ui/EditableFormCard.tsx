@@ -95,8 +95,6 @@ export default function EditableFormCard({ form, readonly = false }: UpdateFormP
   const navigate = useNavigate();
   const {data: allForms} = useGetAllFormsQuery({ jwt: cookies.jwt })
   const allFormsData = allForms?.forms
-  console.log('all data from forms', allFormsData)
-  
 
   const [deleteForm, { isLoading: isDeleteFormLoading }] =
     useDeleteFormMutation();
