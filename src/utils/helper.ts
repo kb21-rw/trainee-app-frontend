@@ -23,8 +23,8 @@ export const onCreateFormSubmit = async ({
   formType,
   cookies,
   createForm,
-  reset,
   navigate,
+  reset,
   dispatch,
   onClose,
 }: OnCreateFormSubmitParams): Promise<void> => {
