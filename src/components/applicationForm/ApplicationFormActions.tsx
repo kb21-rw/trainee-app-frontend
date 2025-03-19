@@ -2,9 +2,9 @@ import { useContext, useEffect, useState } from "react"
 import { useCookies } from "react-cookie"
 import { Link } from "react-router-dom"
 import { useGetProfileQuery } from "../../features/user/backendApi"
-import { getApplicationFormStatus, getFormattedDate } from "../../utils/helper"
 import { WaitListSocketContext } from "../../utils/contexts/WaitListSocketContext"
 import { applicationFormStatusData } from "../../utils/data"
+import { getApplicationFormStatus, getFormattedDate } from "../../utils/helper"
 import {
   ApplicationForm,
   ApplicationFormStatus,
@@ -34,7 +34,7 @@ export default function ApplicationFormActions({
       : getApplicationFormStatus(applicationForm)
 
   const [cookies] = useCookies([Cookie.jwt])
-  const { data } = useGetProfileQuery(cookies.jwt)
+  const { data, refetch } = useGetProfileQuery(cookies.jwt)
 
   const [displayStatus, setdisplayStatus] = useState<ApplicationFormStatus>(
     data.isOnWaitList ? ApplicationFormStatus.JoinedWaitList : status,
@@ -44,8 +44,10 @@ export default function ApplicationFormActions({
 
   useEffect(() => {
     socket?.on("joinedTheWaitList", (message) => {
-      if (data.email === message.email)
+      if (data.email === message.email) {
         setdisplayStatus(ApplicationFormStatus.JoinedWaitList)
+        refetch()
+      }
     })
 
     socket?.emit("join-room", data.email)
@@ -53,7 +55,7 @@ export default function ApplicationFormActions({
     return () => {
       socket?.off("joinTheWaitList")
     }
-  }, [socket, data.email])
+  }, [socket, data.email, refetch])
 
   return (
     <>
