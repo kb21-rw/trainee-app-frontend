@@ -1,11 +1,14 @@
 import { useContext, useEffect, useState } from "react"
 import { useCookies } from "react-cookie"
+import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
+import { showAlert } from "../../features/user/alertSlice"
 import { useGetProfileQuery } from "../../features/user/backendApi"
 import { WaitListSocketContext } from "../../utils/contexts/WaitListSocketContext"
 import { applicationFormStatusData } from "../../utils/data"
 import { getApplicationFormStatus, getFormattedDate } from "../../utils/helper"
 import {
+  AlertType,
   ApplicationForm,
   ApplicationFormStatus,
   ButtonSize,
@@ -35,6 +38,7 @@ export default function ApplicationFormActions({
 
   const [cookies] = useCookies([Cookie.jwt])
   const { data, refetch } = useGetProfileQuery(cookies.jwt)
+  const dispatch = useDispatch()
 
   const [displayStatus, setdisplayStatus] = useState<ApplicationFormStatus>(
     data.isOnWaitList ? ApplicationFormStatus.JoinedWaitList : status,
@@ -43,19 +47,33 @@ export default function ApplicationFormActions({
   const { socket } = useContext(WaitListSocketContext)
 
   useEffect(() => {
-    socket?.on("joinedTheWaitList", (message) => {
-      if (data.email === message.email) {
-        setdisplayStatus(ApplicationFormStatus.JoinedWaitList)
-        refetch()
-      }
-    })
+    if (socket) {
+      socket.emit("join-room", data.email)
 
-    socket?.emit("join-room", data.email)
+      socket.on("joinedTheWaitList", (message) => {
+        if (data.email === message.email) {
+          setdisplayStatus(ApplicationFormStatus.JoinedWaitList)
+          refetch()
+          return
+        }
+      })
+
+      socket.on("waitListError", (errorMessage) => {
+        dispatch(
+          showAlert({
+            message: errorMessage.errorMessage,
+            type: AlertType.Error,
+            displayDuration: 10000,
+          }),
+        )
+      })
+    }
 
     return () => {
       socket?.off("joinTheWaitList")
+      socket?.off("waitListError")
     }
-  }, [socket, data.email, refetch])
+  }, [socket, data.email, refetch, dispatch])
 
   return (
     <>
