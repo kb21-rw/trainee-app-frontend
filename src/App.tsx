@@ -34,8 +34,8 @@ import ResetPassword from "./pages/auth/ResetPassword"
 import ApplicantVerification from "./pages/auth/Verification"
 import { store } from "./store"
 import { googleClientId } from "./utils/constants"
-import { WaitListSocketContextProvider } from "./utils/contexts/WaitListSocketContext"
 import { UserRole } from "./utils/types"
+import { SocketContextProvider } from "./utils/contexts/SocketContext"
 
 export default function App() {
   const router = createBrowserRouter(
@@ -105,9 +105,9 @@ export default function App() {
       <CookiesProvider defaultSetOptions={{ path: "/" }}>
         <Provider store={store}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <WaitListSocketContextProvider>
+            <SocketContextProvider>
               <RouterProvider router={router} />
-            </WaitListSocketContextProvider>
+            </SocketContextProvider>
           </LocalizationProvider>
         </Provider>
       </CookiesProvider>

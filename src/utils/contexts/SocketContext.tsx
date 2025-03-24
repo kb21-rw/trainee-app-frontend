@@ -7,11 +7,11 @@ interface WaitListSocket {
   socket: Socket | null
 }
 
-export const WaitListSocketContext = createContext<WaitListSocket>({
+export const SocketContext = createContext<WaitListSocket>({
   socket: null,
 })
 
-export function WaitListSocketContextProvider({
+export function SocketContextProvider({
   children,
 }: {
   children: React.ReactNode
@@ -60,8 +60,8 @@ export function WaitListSocketContextProvider({
   }, [socketURL])
 
   return (
-    <WaitListSocketContext.Provider value={{ socket }}>
+    <SocketContext.Provider value={{ socket }}>
       {children}
-    </WaitListSocketContext.Provider>
+    </SocketContext.Provider>
   )
 }

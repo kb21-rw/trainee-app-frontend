@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
 import { showAlert } from "../../features/user/alertSlice"
 import { useGetProfileQuery } from "../../features/user/backendApi"
-import { WaitListSocketContext } from "../../utils/contexts/WaitListSocketContext"
 import { applicationFormStatusData } from "../../utils/data"
 import { getApplicationFormStatus, getFormattedDate } from "../../utils/helper"
 import {
@@ -18,6 +17,7 @@ import {
 } from "../../utils/types"
 import Button from "../ui/Button"
 import CohortInfo from "../ui/CohortInfo"
+import { SocketContext } from "../../utils/contexts/SocketContext"
 
 interface ApplicationFormActionsProps {
   applicationForm: Omit<ApplicationForm, "questions"> & {
@@ -44,7 +44,7 @@ export default function ApplicationFormActions({
     data.isOnWaitList ? ApplicationFormStatus.JoinedWaitList : status,
   )
 
-  const { socket } = useContext(WaitListSocketContext)
+  const { socket } = useContext(SocketContext)
 
   useEffect(() => {
     if (socket) {
@@ -54,7 +54,6 @@ export default function ApplicationFormActions({
         if (data.email === message.email) {
           setdisplayStatus(ApplicationFormStatus.JoinedWaitList)
           refetch()
-          return
         }
       })
 
@@ -70,7 +69,7 @@ export default function ApplicationFormActions({
     }
 
     return () => {
-      socket?.off("joinTheWaitList")
+      socket?.off("joinedTheWaitList")
       socket?.off("waitListError")
     }
   }, [socket, data.email, refetch, dispatch])
