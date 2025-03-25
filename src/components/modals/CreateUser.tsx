@@ -26,8 +26,7 @@ const AddUserFormSchema = z.object({
 })
 
 export default function CreateUser({
-  isOpen,
-  onClose,
+  isOpen, onClose,
 }: {
   isOpen: boolean
   onClose: () => void
@@ -92,7 +91,9 @@ export default function CreateUser({
         />
         <Select
           options={selectOptions}
-          label="Role" register={register("role")} error={errors.role?.message}
+          label="Role"
+          register={register("role")}
+          error={errors.role?.message}
         />
 
         <div className="flex justify-around gap-2">

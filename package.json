@@ -72,10 +72,16 @@
     "vite": "^4.5.9",
     "vite-plugin-eslint": "^1.8.1"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "npm run lint-fix",
-      "prettier --write"
+    "**/*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
     ]
   }
 }
