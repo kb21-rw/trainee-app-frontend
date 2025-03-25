@@ -121,7 +121,10 @@ const AllForms = () => {
       </div>
       {!isFetching && (
         <div className="flex justify-between items-center my-5">
-          <SearchInput setSearchQuery={setSearchQuery} />
+          <SearchInput
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
           <CreateFormDropdown
             applicationFormExists={Boolean(applicationForm)}
           />
