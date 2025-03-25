@@ -55,6 +55,7 @@ export function SocketContextProvider({
     return () => {
       if (socketInstance) {
         socketInstance.disconnect()
+        console.log("---- Socket disconnected ---")
       }
     }
   }, [socketURL])
