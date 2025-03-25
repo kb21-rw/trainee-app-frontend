@@ -231,9 +231,10 @@ export default function OverViewTable({
       (userProgress) => userProgress.id === user.user._id,
     )!
 
-    const stage = stages.length > 0 && stages.find(
-      (stage) => stage.id === userStage.droppedStage.id,
-    ) || {name: "Unknown"}
+    const stage = (stages.length > 0 &&
+      stages.find((stage) => stage.id === userStage.droppedStage.id)) || {
+      name: "Unknown",
+    }
 
     const userPassed = userStage.passedStages.includes(
       stages[stages.length - 1].id,
@@ -380,15 +381,15 @@ export default function OverViewTable({
           "& .MuiDataGrid-row.completed:hover": {
             bgcolor: "#86EFAC",
           },
-          '& .MuiDataGrid-iconButtonContainer': {
-             visibility: 'visible',
+          "& .MuiDataGrid-iconButtonContainer": {
+            visibility: "visible",
           },
-          '& .MuiDataGrid-sortIcon': {
-             opacity: 'inherit !important',
+          "& .MuiDataGrid-sortIcon": {
+            opacity: "inherit !important",
           },
           "& .MuiDataGrid-menuIcon": {
-             visibility: "visible !important",
-             width: "auto",
+            visibility: "visible !important",
+            width: "auto",
           },
         }}
       />
