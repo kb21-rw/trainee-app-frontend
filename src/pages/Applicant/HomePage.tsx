@@ -1,10 +1,10 @@
-import { Cookie } from "../../utils/types"
-import { useGetMyApplicationQuery } from "../../features/user/backendApi"
-import Loader from "../../components/ui/Loader"
-import { useSelector } from "react-redux"
-import { RootState } from "../../store"
 import { useCookies } from "react-cookie"
+import { useSelector } from "react-redux"
 import ApplicationFormActions from "../../components/applicationForm/ApplicationFormActions"
+import Loader from "../../components/ui/Loader"
+import { useGetMyApplicationQuery } from "../../features/user/backendApi"
+import { RootState } from "../../store"
+import { Cookie } from "../../utils/types"
 
 export default function HomePage() {
   const role = useSelector((state: RootState) => state.user.role)!

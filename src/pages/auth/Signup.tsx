@@ -1,4 +1,7 @@
-import { useGoogleAuthMutation, useSignupMutation } from "../../features/user/backendApi"
+import {
+  useGoogleAuthMutation,
+  useSignupMutation,
+} from "../../features/user/backendApi"
 import { useForm } from "react-hook-form"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import InputField from "../../components/ui/InputField"
@@ -7,16 +10,15 @@ import { H1 } from "../../components/ui/Typography"
 import Loader from "../../components/ui/Loader"
 import { AlertType, ButtonSize, Cookie } from "../../utils/types"
 import { useCookies } from "react-cookie"
-import {  CredentialResponse, GoogleLogin } from "@react-oauth/google"
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
 
 const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
   const [signup, { isLoading, error }] = useSignupMutation()
-   const dispatch = useDispatch()  
-  const [handleAuthWithGoogle, ] =
-      useGoogleAuthMutation()
+  const dispatch = useDispatch()
+  const [handleAuthWithGoogle] = useGoogleAuthMutation()
   const {
     register,
     handleSubmit,
@@ -60,29 +62,29 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
     errors["confirm-password"]?.message ||
     error?.data?.errorMessage
 
-    const handleGoogleAuth = async (credentialResponse: CredentialResponse) => {
-      try {
-        const result = await handleAuthWithGoogle({
-          token: credentialResponse.credential,
-        })
-        if (result.error) {
-          throw result.error
-        }
-  
-        saveTokenAndRedirect(result?.data?.accessToken)
-      } catch (error) {
-        const { message } = getErrorInfo(error)
-        handleShowAlert(dispatch, { type: AlertType.Error, message })
-      }
-    }
-
-    const handleGoogleAuthFailure = () => {
-      handleShowAlert(dispatch, {
-        type: AlertType.Error,
-        message: "Sign up with Google Failed",
+  const handleGoogleAuth = async (credentialResponse: CredentialResponse) => {
+    try {
+      const result = await handleAuthWithGoogle({
+        token: credentialResponse.credential,
       })
+      if (result.error) {
+        throw result.error
+      }
+
+      saveTokenAndRedirect(result?.data?.accessToken)
+    } catch (error) {
+      const { message } = getErrorInfo(error)
+      handleShowAlert(dispatch, { type: AlertType.Error, message })
     }
-  
+  }
+
+  const handleGoogleAuthFailure = () => {
+    handleShowAlert(dispatch, {
+      type: AlertType.Error,
+      message: "Sign up with Google Failed",
+    })
+  }
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -169,7 +171,7 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
         <Button size={ButtonSize.Large} type="submit">
           Sign Up
         </Button>
-      <GoogleLogin
+        <GoogleLogin
           text="continue_with"
           onSuccess={handleGoogleAuth}
           onError={handleGoogleAuthFailure}

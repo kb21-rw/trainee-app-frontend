@@ -31,7 +31,8 @@ const ResetPassword = () => {
   if (isSuccess) {
     handleShowAlert(dispatch, {
       type: AlertType.Success,
-      message: "Password reset successful. Check your email for the new password",
+      message:
+        "Password reset successful. Check your email for the new password",
     })
   }
 

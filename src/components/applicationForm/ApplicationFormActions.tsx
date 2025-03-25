@@ -1,15 +1,23 @@
+import { useContext, useEffect, useState } from "react"
+import { useCookies } from "react-cookie"
+import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
+import { showAlert } from "../../features/user/alertSlice"
+import { useGetProfileQuery } from "../../features/user/backendApi"
+import { applicationFormStatusData } from "../../utils/data"
+import { getApplicationFormStatus, getFormattedDate } from "../../utils/helper"
 import {
+  AlertType,
   ApplicationForm,
   ApplicationFormStatus,
   ButtonSize,
+  Cookie,
   UserResponseQuestion,
   UserRole,
 } from "../../utils/types"
-import { getApplicationFormStatus, getFormattedDate } from "../../utils/helper"
-import { applicationFormStatusData } from "../../utils/data"
-import CohortInfo from "../ui/CohortInfo"
 import Button from "../ui/Button"
+import CohortInfo from "../ui/CohortInfo"
+import { SocketContext } from "../../utils/contexts/SocketContext"
 
 interface ApplicationFormActionsProps {
   applicationForm: Omit<ApplicationForm, "questions"> & {
@@ -28,7 +36,43 @@ export default function ApplicationFormActions({
       ? ApplicationFormStatus.Submitted
       : getApplicationFormStatus(applicationForm)
 
-  const statusBasedData = applicationFormStatusData[status]
+  const [cookies] = useCookies([Cookie.jwt])
+  const { data, refetch } = useGetProfileQuery(cookies.jwt)
+  const dispatch = useDispatch()
+
+  const [displayStatus, setdisplayStatus] = useState<ApplicationFormStatus>(
+    data.isOnWaitList ? ApplicationFormStatus.JoinedWaitList : status,
+  )
+
+  const { socket } = useContext(SocketContext)
+
+  useEffect(() => {
+    if (socket) {
+      socket.emit("join-room", data.email)
+
+      socket.on("joinedTheWaitList", (message) => {
+        if (data.email === message.email) {
+          setdisplayStatus(ApplicationFormStatus.JoinedWaitList)
+          refetch()
+        }
+      })
+
+      socket.on("waitListError", (errorMessage) => {
+        dispatch(
+          showAlert({
+            message: errorMessage.errorMessage,
+            type: AlertType.Error,
+            displayDuration: 10000,
+          }),
+        )
+      })
+    }
+
+    return () => {
+      socket?.off("joinedTheWaitList")
+      socket?.off("waitListError")
+    }
+  }, [socket, data.email, refetch, dispatch])
 
   return (
     <>
@@ -56,22 +100,31 @@ export default function ApplicationFormActions({
       )}
       {status !== ApplicationFormStatus.Open && (
         <>
-          <div className="flex flex-col items-center text-center">
-            <h1 className="text-2xl font-medium text-center text-gray-600">
-              {statusBasedData.heading}
+          <div className="text-center flex items-center flex-col">
+            <h1 className="text-2xl font-medium text-gray-600 text-center">
+              {applicationFormStatusData[displayStatus].heading}
             </h1>
           </div>
           <div className="flex flex-col items-center justify-center max-w-2xl p-6 mx-auto space-y-4 border border-gray-300 rounded-lg shadow-lg">
             <p className="text-center text-gray-500">
-              {statusBasedData.description}
+              {applicationFormStatusData[displayStatus].description}
             </p>
 
-            <Link
-              className="px-6 py-3 text-white rounded-md bg-primary-dark"
-              to={statusBasedData.buttonLink}
-            >
-              {statusBasedData.buttonText}
-            </Link>
+            {!data.isOnWaitList && (
+              <Button
+                className="bg-primary-dark text-white px-6 py-3 rounded-md"
+                onClick={() =>
+                  window.open(
+                    applicationFormStatusData[
+                      ApplicationFormStatus.NoApplication
+                    ].buttonLink,
+                    "_blank",
+                  )
+                }
+              >
+                {applicationFormStatusData[displayStatus].buttonText}
+              </Button>
+            )}
 
             <div className="text-sm text-center text-gray-600">
               Learn more about The Gym software developer trainee program{" "}

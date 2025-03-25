@@ -1,3 +1,8 @@
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import { GoogleOAuthProvider } from "@react-oauth/google"
+import { CookiesProvider } from "react-cookie"
+import { Provider } from "react-redux"
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -5,36 +10,32 @@ import {
   RouterProvider,
 } from "react-router-dom"
 import Error from "./components/Error"
-import ProtectedLayout from "./components/layouts/ProtectedLayout"
+import PrivateRoute from "./components/PrivateRoute"
+import GlobalLayout from "./components/layouts/GlobalLayout"
 import NonProtectedLayout from "./components/layouts/NonProtectedLayout"
-import NotFound from "./pages/NotFound"
-import Profile from "./pages/User/Profile"
-import CoachesInfo from "./pages/User/Coaches"
-import ResetPassword from "./pages/auth/ResetPassword"
-import AllForm from "./pages/Form/AllForms"
-import SingleForm from "./pages/Form/Form"
-import OverView from "./pages/User/OverView"
-import TraineeResults from "./pages/User/TraineeResults"
-import ApplicantVerification from "./pages/auth/Verification"
+import ProtectedLayout from "./components/layouts/ProtectedLayout"
 import ApplicationForm from "./pages/Applicant/ApplicationForm"
+import HomePage from "./pages/Applicant/HomePage"
+import PreviewApplicationPage from "./pages/Applicant/PreviewApplicationPage"
+import SavedApplication from "./pages/Applicant/SavedApplication"
 import ThankYouNote from "./pages/Applicant/ThankYouNote"
 import Cohorts from "./pages/Cohort/Cohorts"
-import HomePage from "./pages/Applicant/HomePage"
-import SavedApplication from "./pages/Applicant/SavedApplication"
+import AllForm from "./pages/Form/AllForms"
+import SingleForm from "./pages/Form/Form"
+import NotFound from "./pages/NotFound"
 import Applicants from "./pages/Overview/Applicants"
-import PrivateRoute from "./components/PrivateRoute"
-import PreviewApplicationPage from "./pages/Applicant/PreviewApplicationPage"
-import Auth from "./pages/auth/Auth"
-import { Provider } from "react-redux"
-import { store } from "./store"
-import GlobalLayout from "./components/layouts/GlobalLayout"
-import { UserRole } from "./utils/types"
-import { CookiesProvider } from "react-cookie"
+import CoachesInfo from "./pages/User/Coaches"
+import OverView from "./pages/User/OverView"
+import Profile from "./pages/User/Profile"
+import TraineeResults from "./pages/User/TraineeResults"
 import Users from "./pages/User/Users"
-import { LocalizationProvider } from "@mui/x-date-pickers"
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import { GoogleOAuthProvider } from "@react-oauth/google"
+import Auth from "./pages/auth/Auth"
+import ResetPassword from "./pages/auth/ResetPassword"
+import ApplicantVerification from "./pages/auth/Verification"
+import { store } from "./store"
 import { googleClientId } from "./utils/constants"
+import { UserRole } from "./utils/types"
+import { SocketContextProvider } from "./utils/contexts/SocketContext"
 
 export default function App() {
   const router = createBrowserRouter(
@@ -104,7 +105,9 @@ export default function App() {
       <CookiesProvider defaultSetOptions={{ path: "/" }}>
         <Provider store={store}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <RouterProvider router={router} />
+            <SocketContextProvider>
+              <RouterProvider router={router} />
+            </SocketContextProvider>
           </LocalizationProvider>
         </Provider>
       </CookiesProvider>
