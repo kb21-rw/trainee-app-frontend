@@ -92,9 +92,7 @@ export default function CreateUser({
         />
         <Select
           options={selectOptions}
-          label="Role"
-          register={register("role")}
-          error={errors.role?.message}
+          label="Role" register={register("role")} error={errors.role?.message}
         />
 
         <div className="flex justify-around gap-2">
@@ -105,7 +103,7 @@ export default function CreateUser({
           <Button type="submit" disabled={isUserLoading}>
             <span className="flex items-center gap-1">
               {isUserLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
-              <span>Create </span>
+              <span>Create User</span>
             </span>
           </Button>
         </div>
