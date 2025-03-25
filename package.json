@@ -9,7 +9,7 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "format": "prettier --write .",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint-staged": "lint-staged",
     "lint-fix": "npx eslint --fix"
   },
