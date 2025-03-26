@@ -96,17 +96,17 @@ export default function OverViewTable({
           <div className="flex items-center gap-2">
             {row.actions === ParticipantPhase.Active && (
               <button
-                className="duration-200 hover:scale-125"
+                className="hover:scale-125 duration-200"
                 onClick={() => setParticipantInfo(row)}
               >
-                <WriteIcon className="w-4 h-4 fill-primary-dark hover:fill-primary-light" />
+                <WriteIcon className="h-4 w-4 fill-primary-dark hover:fill-primary-light" />
               </button>
             )}
             <button
-              className="duration-200 hover:scale-125"
+              className="hover:scale-125 duration-200"
               onClick={() => setSettingsInfo(row)}
             >
-              <SettingsIcon className="w-6 h-6" />
+              <SettingsIcon className="h-6 w-6" />
             </button>
           </div>
         </div>
@@ -140,7 +140,7 @@ export default function OverViewTable({
         if (actions !== ParticipantPhase.Active) return actions
 
         return (
-          <div className="flex content-center justify-around h-full py-2 align-middle">
+          <div className="flex justify-around content-center align-middle py-2 h-full">
             <Button
               variant={ButtonVariant.Danger}
               size={ButtonSize.Small}
@@ -154,7 +154,7 @@ export default function OverViewTable({
                 })
               }
             >
-              <span className="flex items-center justify-center h-full">
+              <span className="h-full flex justify-center items-center">
                 Reject
               </span>
             </Button>
@@ -170,7 +170,7 @@ export default function OverViewTable({
                 })
               }
             >
-              <span className="flex items-center justify-center h-full">
+              <span className="h-full  flex justify-center items-center">
                 Accept
               </span>
             </Button>
@@ -231,10 +231,9 @@ export default function OverViewTable({
       (userProgress) => userProgress.id === user.user._id,
     )!
 
-    const stage = (stages.length > 0 &&
-      stages.find((stage) => stage.id === userStage.droppedStage.id)) || {
-      name: "Unknown",
-    }
+    const stage = stages.length > 0 && stages.find(
+      (stage) => stage.id === userStage.droppedStage.id,
+    ) || {name: "Unknown"}
 
     const userPassed = userStage.passedStages.includes(
       stages[stages.length - 1].id,
@@ -314,7 +313,7 @@ export default function OverViewTable({
         disableRowSelectionOnClick
         slots={{
           noRowsOverlay: () => (
-            <div className="flex items-center justify-center h-full">
+            <div className="h-full flex justify-center items-center">
               <p className="text-center">No participants yet</p>
             </div>
           ),
@@ -381,15 +380,15 @@ export default function OverViewTable({
           "& .MuiDataGrid-row.completed:hover": {
             bgcolor: "#86EFAC",
           },
-          "& .MuiDataGrid-iconButtonContainer": {
-            visibility: "visible",
+          '& .MuiDataGrid-iconButtonContainer': {
+             visibility: 'visible',
           },
-          "& .MuiDataGrid-sortIcon": {
-            opacity: "inherit !important",
+          '& .MuiDataGrid-sortIcon': {
+             opacity: 'inherit !important',
           },
           "& .MuiDataGrid-menuIcon": {
-            visibility: "visible !important",
-            width: "auto",
+             visibility: "visible !important",
+             width: "auto",
           },
         }}
       />

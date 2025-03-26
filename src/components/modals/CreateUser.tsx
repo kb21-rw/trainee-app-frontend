@@ -26,8 +26,7 @@ const AddUserFormSchema = z.object({
 })
 
 export default function CreateUser({
-  isOpen,
-  onClose,
+  isOpen, onClose,
 }: {
   isOpen: boolean
   onClose: () => void
@@ -105,7 +104,7 @@ export default function CreateUser({
           <Button type="submit" disabled={isUserLoading}>
             <span className="flex items-center gap-1">
               {isUserLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
-              <span>Create </span>
+              <span>Create User</span>
             </span>
           </Button>
         </div>
