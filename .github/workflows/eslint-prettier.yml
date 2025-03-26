@@ -3,7 +3,7 @@ name: Build and Test Trainee App
 on:
   push:
     branches:
-      - dev
+      - ft/dev
 
 jobs:
   build:
