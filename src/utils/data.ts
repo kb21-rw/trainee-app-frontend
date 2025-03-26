@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { ApplicationFormStatus } from "./types"
 
 export const adminMenu = [

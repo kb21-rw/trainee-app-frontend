@@ -26,7 +26,8 @@ const AddUserFormSchema = z.object({
 })
 
 export default function CreateUser({
-  isOpen, onClose,
+  isOpen,
+  onClose,
 }: {
   isOpen: boolean
   onClose: () => void

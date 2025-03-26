@@ -128,6 +128,11 @@ export default function UpdateStages({
             size={ButtonSize.Small}
             onClick={handleAddStage}
             disabled={readOnly}
+          />
+          <Button
+            size={ButtonSize.Small}
+            onClick={handleAddStage}
+            disabled={readOnly}
           >
             Add Stage
           </Button>
