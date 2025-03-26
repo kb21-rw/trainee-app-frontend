@@ -34,7 +34,7 @@ jobs:
       - name: Run ESLint
         run: npx eslint "src/**/*.{ts,tsx,js,jsx}" --max-warnings=0
 
-       - name: Build frontend
+      - name: Build frontend
         working-directory: .
         run: npm run build 
         env:
