@@ -17,15 +17,17 @@ export default function GlobalLayout() {
   const [isInitialized, setIsInitialized] = useState(false)
 
   const isSigningUp =
-    location.pathname.includes("/signup") ||
-    location.pathname.includes("/verify")
+    location.pathname.includes("/signup/thank-you") ||
+    location.pathname.includes("/verify") ||
+    location.pathname.includes("/auth")
 
   const [cookies] = useCookies([Cookie.jwt])
+  console.log("cookies are:", cookies.jwt, "isSigningUp", isSigningUp)
   const {
     data: user,
     error: userError,
     isLoading,
-  } = useGetProfileQuery(cookies.jwt, { skip: !cookies.jwt || isSigningUp })
+  } = useGetProfileQuery(cookies.jwt, { skip: !cookies.jwt || isSigningUp  })
 
   const dispatch = useDispatch()
 
@@ -49,7 +51,7 @@ export default function GlobalLayout() {
 
   if (isLoading || !isInitialized) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center h-screen">
         <Loader />
       </div>
     )
