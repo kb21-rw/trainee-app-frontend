@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+
       - name: Cache Dependencies
         uses: actions/cache@v3
         with:
@@ -36,9 +37,9 @@ jobs:
 
       - name: Build frontend
         working-directory: .
-        run: npm run build 
+        run: npm run build
         env:
-          VITE_API_URL: ${{ env.VITE_API_URL }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
       - name: Run tests
         run: npm test
