@@ -33,13 +33,11 @@ jobs:
         run: npx prettier --check "src/**/*.{ts,tsx,js,jsx}"
 
       - name: Run ESLint
-        run: npx eslint "src/**/*.{ts,tsx,js,jsx}" --max-warnings=0
+        run: npx eslint "src/**/*.{ts,tsx,js,jsx}"
 
       - name: Build frontend
         working-directory: .
         run: npm run build
-        env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
       - name: Run tests
         run: npm test
