@@ -3,7 +3,7 @@ name: Build and Test Trainee App
 on:
   push:
     branches:
-      - ft/dev
+      - ft/precommit-issue
 
 jobs:
   build:
