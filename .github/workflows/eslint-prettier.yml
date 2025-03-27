@@ -1,4 +1,4 @@
-name: Build and Test Trainee App
+name: Build and Test Es Lint and Prettier
 
 on:
   push:
@@ -38,6 +38,3 @@ jobs:
       - name: Build frontend
         working-directory: .
         run: npm run build
-
-      - name: Run tests
-        run: npm test
