@@ -56,7 +56,7 @@ export default function EditUserModal({
       await updateUser({ jwt: cookies.jwt, body: formData, id: defaultValues._id }).unwrap()
       handleShowAlert(dispatch, {
         type: AlertType.Success,
-        message: `The ${defaultValues.role} was updated successfully.`,
+        message: `User ${defaultValues.userId} was updated successfully.`,
       })
       resetForm()
       onClose()
