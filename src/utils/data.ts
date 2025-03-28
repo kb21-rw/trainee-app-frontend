@@ -72,6 +72,8 @@ export const traineeTableHeaders = ["No", "Name", "Email", "Coach", "Action"]
 export const editTraineeTableHeaders = ["No", "Name", "Email", ""]
 export const editTraineeTableItems = ["_id", "name", "email"]
 export const traineeTableDataItems = ["_id", "name", "email", "coach"]
+export const joinWaitListFormLink =
+  "https://docs.google.com/forms/d/e/1FAIpQLSfij8Q_TMeTFjMl9vrW5V8XHXYg9ZumCqjw32tb_wi9m_UXxA/viewform?usp=dialog"
 
 export const applicationFormStatusData = {
   [ApplicationFormStatus.Open]: {
@@ -102,14 +104,14 @@ export const applicationFormStatusData = {
     description:
       "Dear applicant, there is no open application at the moment, click on the button below to join our waiting list to be notified when the next application opens.",
     buttonText: "Join waiting list",
-    buttonLink: "/",
+    buttonLink: joinWaitListFormLink,
   },
   [ApplicationFormStatus.DeadlinePassed]: {
     heading: "Application deadline passed",
     description:
       "Dear applicant, the application deadline has passed, click on the button below to join our waiting list to be notified when the next application opens.",
     buttonText: "Join waiting list",
-    buttonLink: "/",
+    buttonLink: joinWaitListFormLink,
   },
   [ApplicationFormStatus.Submitted]: {
     heading: "Application Submitted 🎉",
@@ -124,6 +126,13 @@ export const applicationFormStatusData = {
       "You have a saved application that you can still edit and submit before the deadline. Don't forget to review and submit it on time!",
     buttonText: "Continue your application",
     buttonLink: "/apply",
+  },
+  [ApplicationFormStatus.JoinedWaitList]: {
+    heading: "You have successfully been added to the waitlist 🎉",
+    description:
+      "Thank you for joining the waitlist. We will notify you when the application is open.",
+    buttonText: "Join waiting list",
+    buttonLink: joinWaitListFormLink,
   },
 }
 
@@ -143,5 +152,21 @@ export const customizeDataGridStyles = {
   },
   "& .MuiDataGrid-cell:focus": {
     outline: "none",
+  },
+  "& .MuiDataGrid-columnHeaderDraggableContainer": {
+    visibility: "visible !important",
+  },
+  "& .MuiDataGrid-columnHeaderTitleContainer": {
+    visibility: "visible !important",
+  },
+  "& .MuiDataGrid-iconButtonContainer": {
+    visibility: "visible",
+  },
+  "& .MuiDataGrid-sortIcon": {
+    opacity: "inherit !important",
+  },
+  "& .MuiDataGrid-menuIcon": {
+    visibility: "visible !important",
+    width: "auto",
   },
 }

@@ -30,7 +30,11 @@ type UpdateStageProps = {
   readOnly?: boolean
 }
 
-export default function UpdateStages({ control, error, readOnly }: UpdateStageProps) {
+export default function UpdateStages({
+  control,
+  error,
+  readOnly,
+}: UpdateStageProps) {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "stages",
@@ -120,7 +124,16 @@ export default function UpdateStages({ control, error, readOnly }: UpdateStagePr
                 Remove Stage
               </Button>
             )}
-          <Button size={ButtonSize.Small} onClick={handleAddStage} disabled={readOnly}>
+          <Button
+            size={ButtonSize.Small}
+            onClick={handleAddStage}
+            disabled={readOnly}
+          />
+          <Button
+            size={ButtonSize.Small}
+            onClick={handleAddStage}
+            disabled={readOnly}
+          >
             Add Stage
           </Button>
         </Stack>

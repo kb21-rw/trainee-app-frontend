@@ -23,14 +23,15 @@ const AllForms = () => {
   const dispatch = useDispatch()
   const [cookies] = useCookies([Cookie.jwt])
   const [hasFetched, setHasFetched] = useState(false)
+  const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
 
   const { data, isFetching } = useGetAllFormsQuery({
     jwt: cookies.jwt,
     searchString: searchQuery,
+    cohort: selectedCohortId,
   })
   const { data: applicationForm } = useGetApplicationFormQuery(cookies.jwt)
 
-  const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
   const handleCohortChange = (event: SelectChangeEvent<string>) => {
     setSelectedCohortId(event.target.value)
   }
@@ -120,7 +121,10 @@ const AllForms = () => {
       </div>
       {!isFetching && (
         <div className="flex justify-between items-center my-5">
-          <SearchInput setSearchQuery={setSearchQuery} />
+          <SearchInput
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
           <CreateFormDropdown
             applicationFormExists={Boolean(applicationForm)}
           />

@@ -34,10 +34,8 @@ export default function CreateUser({
 }) {
   const [cookies] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
-  const [
-    createUser,
-    { isLoading: isUserLoading, reset: resetCreateUser },
-  ] = useCreateUserMutation()
+  const [createUser, { isLoading: isUserLoading, reset: resetCreateUser }] =
+    useCreateUserMutation()
 
   const {
     register,
@@ -107,7 +105,7 @@ export default function CreateUser({
           <Button type="submit" disabled={isUserLoading}>
             <span className="flex items-center gap-1">
               {isUserLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
-              <span>Create </span>
+              <span>Create User</span>
             </span>
           </Button>
         </div>

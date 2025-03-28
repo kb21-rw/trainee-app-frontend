@@ -1,4 +1,5 @@
 import { ReactNode } from "react"
+import { CreateFormInput } from "../components/modals/CreateForm"
 
 /* eslint-disable no-unused-vars */
 export interface IFormType {
@@ -170,6 +171,7 @@ export enum ApplicationFormStatus {
   Submitted = "Submitted",
   NoApplication = "NoApplication",
   DeadlinePassed = "DeadlinePassed",
+  JoinedWaitList = "JoinedWaitList",
 }
 
 export interface IAlert {
@@ -246,4 +248,17 @@ export interface UserRow {
 export interface ResponseModalInfo {
   userId: string
   question: ResponseModalQuestion
+}
+
+export interface OnCreateFormSubmitParams {
+  data: CreateFormInput
+  formType: FormType
+  cookies: { [Cookie.jwt]?: any }
+  createForm: (_arg: { jwt: string; body: any }) => {
+    unwrap: () => Promise<any>
+  }
+  reset: () => void
+  navigate: (_path: string) => void
+  dispatch: any
+  onClose: () => void
 }
