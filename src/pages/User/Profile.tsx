@@ -14,7 +14,6 @@ import { AlertType, Cookie } from "../../utils/types"
 import { useDispatch } from "react-redux"
 import { useCookies } from "react-cookie"
 
-
 const Profile = () => {
   const [cookies] = useCookies([Cookie.jwt])
   const [updateProfile, { isLoading, isSuccess, error }] =
@@ -22,14 +21,18 @@ const Profile = () => {
   const [otherAlertMessage, setOtherAlertMessage] = useState(false)
   const dispatch = useDispatch()
   const { data } = useGetProfileQuery(cookies.jwt)
-  const { register, handleSubmit, formState:{errors, dirtyFields} } = useForm({mode:"onSubmit"})
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, dirtyFields },
+  } = useForm({ mode: "onSubmit" })
 
   const onSubmit = async (submittedData: {
     email?: string
     name?: string
     password?: string
   }) => {
-    if(!submittedData.password && submittedData.name === data.name) {
+    if (!submittedData.password && submittedData.name === data.name) {
       handleShowAlert(dispatch, {
         type: AlertType.Success,
         message: "No changes were made!",
@@ -47,16 +50,14 @@ const Profile = () => {
     if (submittedData.password) profileData.password = submittedData.password
 
     await updateProfile({ jwt: cookies.jwt, profileData })
-    
   }
-  
+
   if (error && !otherAlertMessage) {
     const { message } = getErrorInfo(error)
     handleShowAlert(dispatch, {
       type: AlertType.Error,
       message,
     })
-    
   }
 
   if (isSuccess && !otherAlertMessage) {
@@ -65,21 +66,21 @@ const Profile = () => {
       message: "Profile was updated successfully!",
     })
   }
-  
+
   return (
-    <div className="h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md space-y-8 bg-white p-10 rounded-xl custom-shadow">
+    <div className="flex items-center justify-center h-full px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md p-10 space-y-8 bg-white rounded-xl custom-shadow">
         <div>
           <H1>Profile Settings</H1>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
           {isLoading && <Loader />}
           {errors.password && (
-          <div className="flex items-center justify-center py-2 rounded-lg bg-error-light text-error-dark">
-            {String(errors.password?.message)}
-          </div>
-        )}
-          <div className="rounded-md shadow-sm space-y-3">
+            <div className="flex items-center justify-center py-2 rounded-lg bg-error-light text-error-dark">
+              {String(errors.password?.message)}
+            </div>
+          )}
+          <div className="space-y-3 rounded-md shadow-sm">
             <InputField
               name="name"
               type="text"
@@ -119,7 +120,7 @@ const Profile = () => {
             <Button
               type="submit"
               disabled={Object.keys(dirtyFields).length === 0}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="relative flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md group hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Save Changes
             </Button>
