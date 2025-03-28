@@ -17,10 +17,12 @@ import { useState } from "react"
 import CreateUser from "../../components/modals/CreateUser"
 import { customizeDataGridStyles } from "../../utils/data"
 import TableSkeleton from "../../components/skeletons/TableSkeleton"
+import EditUserModal from "../../components/modals/EditUserModal"
 
 export default function Users() {
   const dispatch = useDispatch()
   const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false)
+  const [userInformation, setUserInformation] = useState<User | null>(null)
   const [cookies] = useCookies([Cookie.jwt])
   const {
     data: users,
@@ -63,10 +65,10 @@ export default function Users() {
       field: "actions",
       headerName: "Actions",
       flex: 1,
-      renderCell: () => {
+      renderCell: ({ row }) => {
         return (
           <div className="flex justify-center justify-items-center h-full gap-4">
-            <button>
+            <button onClick={() => setUserInformation(row)}>
               <EditIcon />
             </button>
           </div>
@@ -78,6 +80,7 @@ export default function Users() {
   const rows =
     users?.map((user: User) => ({
       id: user._id,
+      _id: user._id,
       userId: user.userId,
       name: user.name,
       email: user.email,
@@ -112,6 +115,15 @@ export default function Users() {
             Create user
           </Button>
         </div>
+        {userInformation && (
+          <>
+          <EditUserModal
+            isOpen={Boolean(userInformation)}
+            defaultValues={userInformation}
+            onClose={() => setTimeout(() => setUserInformation(null), 0)}
+            />
+          </>
+        )}
         <DataGrid columns={columns} rows={rows} sx={customizeDataGridStyles} />
       </div>
     </>
