@@ -1,5 +1,16 @@
-import { useGetUsersQuery } from "../../features/user/backendApi"
+import { DataGrid, GridColDef } from "@mui/x-data-grid"
+import { useState } from "react"
+import { useCookies } from "react-cookie"
+import { useDispatch } from "react-redux"
+import EditIcon from "../../assets/EditIcon"
+import CreateUser from "../../components/modals/CreateUser"
+import EditUserModal from "../../components/modals/EditUserModal"
+import TableSkeleton from "../../components/skeletons/TableSkeleton"
 import Button from "../../components/ui/Button"
+import { useGetUsersQuery } from "../../features/user/backendApi"
+import { customizeDataGridStyles } from "../../utils/data"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { getErrorInfo } from "../../utils/helper"
 import {
   AlertType,
   ButtonSize,
@@ -7,16 +18,6 @@ import {
   User,
   UserRole,
 } from "../../utils/types"
-import { useCookies } from "react-cookie"
-import { useDispatch } from "react-redux"
-import { handleShowAlert } from "../../utils/handleShowAlert"
-import { getErrorInfo } from "../../utils/helper"
-import { DataGrid, GridColDef } from "@mui/x-data-grid"
-import EditIcon from "../../assets/EditIcon"
-import { useState } from "react"
-import CreateUser from "../../components/modals/CreateUser"
-import { customizeDataGridStyles } from "../../utils/data"
-import TableSkeleton from "../../components/skeletons/TableSkeleton"
 
 export default function Users() {
   const dispatch = useDispatch()
@@ -66,7 +67,7 @@ export default function Users() {
       renderCell: () => {
         return (
           <div className="flex justify-center justify-items-center h-full gap-4">
-            <button>
+            <button onClick={() => console.log("hello")}>
               <EditIcon />
             </button>
           </div>
@@ -103,6 +104,7 @@ export default function Users() {
         isOpen={isCreateUserModalOpen}
         onClose={handleCloseCreateUserModal}
       />
+      <EditUserModal isOpen onClose={() => console.log("hello")} />
       <div className="my-10 space-y-10">
         <div className="flex justify-end items-center">
           <Button
