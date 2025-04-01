@@ -117,10 +117,10 @@ export default function Users() {
         </div>
         {userInformation && (
           <>
-          <EditUserModal
-            isOpen={Boolean(userInformation)}
-            defaultValues={userInformation}
-            onClose={() => setTimeout(() => setUserInformation(null), 0)}
+            <EditUserModal
+              isOpen={Boolean(userInformation)}
+              defaultValues={userInformation}
+              onClose={() => setTimeout(() => setUserInformation(null), 0)}
             />
           </>
         )}

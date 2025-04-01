@@ -24,7 +24,13 @@ const selectOptions = [
 const EditUserFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email"),
-  role: z.enum([UserRole.Prospect, UserRole.Coach, UserRole.Admin, UserRole.Applicant, UserRole.Trainee]),
+  role: z.enum([
+    UserRole.Prospect,
+    UserRole.Coach,
+    UserRole.Admin,
+    UserRole.Applicant,
+    UserRole.Trainee,
+  ]),
 })
 
 export default function EditUserModal({
@@ -48,12 +54,20 @@ export default function EditUserModal({
     formState: { errors, isDirty },
   } = useForm<User>({
     resolver: zodResolver(EditUserFormSchema),
-    defaultValues: { name: defaultValues.name, email: defaultValues.email, role: defaultValues.role },
+    defaultValues: {
+      name: defaultValues.name,
+      email: defaultValues.email,
+      role: defaultValues.role,
+    },
   })
 
   const onSubmit = async (formData: User) => {
     try {
-      await updateUser({ jwt: cookies.jwt, body: formData, id: defaultValues._id }).unwrap()
+      await updateUser({
+        jwt: cookies.jwt,
+        body: formData,
+        id: defaultValues._id,
+      }).unwrap()
       handleShowAlert(dispatch, {
         type: AlertType.Success,
         message: `User ${defaultValues.userId} was updated successfully.`,
@@ -70,7 +84,6 @@ export default function EditUserModal({
       resetUpdateUser()
     }
   }
-
 
   return (
     <Modal
