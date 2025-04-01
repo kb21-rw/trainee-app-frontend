@@ -30,7 +30,11 @@ type UpdateStageProps = {
   readOnly?: boolean
 }
 
-export default function UpdateStages({ control, error, readOnly }: UpdateStageProps) {
+export default function UpdateStages({
+  control,
+  error,
+  readOnly,
+}: UpdateStageProps) {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "stages",
