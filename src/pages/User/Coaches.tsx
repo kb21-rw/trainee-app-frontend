@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import {
   useGetAllCohortsQuery,
   useGetCoachesQuery,
@@ -16,9 +16,15 @@ import DeleteIcon from "../../assets/DeleteIcon"
 import AddCoach from "../../components/modals/AddCoach"
 import { customizeDataGridStyles } from "../../utils/data"
 import EditIcon from "../../assets/EditIcon"
+import EditCoach from "../../components/modals/EditCoachModal"
 
 export default function Coaches() {
   const [isAddCoachOpen, setIsAddCoachOpen] = useState(false)
+  const [isEditCoachOpen, setIsEditCoachOpen] = useState(false)
+  const [selectedCoachName, setSelectedCoachName] = useState("")
+  const [selectedEmail, setSelectedEmail] = useState("")
+  const [selectedCoachId, setSelectedCoachId] = useState("")
+
   const dispatch = useDispatch()
   const [cookies] = useCookies([Cookie.jwt])
   const {
@@ -40,6 +46,13 @@ export default function Coaches() {
   const handleCohortChange = (event: SelectChangeEvent) => {
     const cohortId = event.target.value
     setSelectedCohortId(cohortId)
+  }
+
+  const handleEditCoach = (name: string, email: string, id: string) => {
+    setSelectedCoachName(name)
+    setSelectedEmail(email)
+    setIsEditCoachOpen(true)
+    setSelectedCoachId(id)
   }
 
   if (cohortsError || cohortCoachesError || cohortCoachesError) {
@@ -70,10 +83,12 @@ export default function Coaches() {
       field: "actions",
       headerName: "Actions",
       flex: 1,
-      renderCell: () => {
+      renderCell: ({ row }) => {
         return (
           <div className="flex items-center h-full gap-12 justify-items-center">
-            <button>
+            <button
+              onClick={() => handleEditCoach(row.name, row.email, row.id)}
+            >
               <EditIcon />
             </button>
             <button>
@@ -100,6 +115,15 @@ export default function Coaches() {
           isOpen={isAddCoachOpen}
           onClose={() => setTimeout(() => setIsAddCoachOpen(false), 0)}
           cohortCoachIds={rows.map((coach) => coach.id)}
+        />
+      )}
+      {isEditCoachOpen && (
+        <EditCoach
+          isOpen={isEditCoachOpen}
+          onClose={() => setIsEditCoachOpen(false)}
+          currentName={selectedCoachName}
+          currentEmail={selectedEmail}
+          coachId={selectedCoachId}
         />
       )}
       <div className="my-10 space-y-10">

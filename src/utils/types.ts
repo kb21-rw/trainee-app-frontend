@@ -262,3 +262,11 @@ export interface OnCreateFormSubmitParams {
   dispatch: any
   onClose: () => void
 }
+
+export interface EditCoachModalProps {
+  isOpen: boolean
+  onClose: () => void
+  currentName: string
+  currentEmail: string
+  coachId: string
+}
