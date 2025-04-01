@@ -88,7 +88,7 @@ export default function EditUserModal({ isOpen, onClose }: EditUserModalProps) {
             //   disabled={isLoading}
           >
             {/* {isLoading ? <Loader borderColor="#fff" size="xs" /> : "Create"} */}
-            Create
+            Update changes
           </Button>
         </div>
       </form>
