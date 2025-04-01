@@ -124,18 +124,11 @@ export default function UpdateStages({
                 Remove Stage
               </Button>
             )}
-          <Button
-            size={ButtonSize.Small}
-            onClick={handleAddStage}
-            disabled={readOnly}
-          />
-          <Button
-            size={ButtonSize.Small}
-            onClick={handleAddStage}
-            disabled={readOnly}
-          >
-            Add Stage
-          </Button>
+          {!readOnly && (
+            <Button size={ButtonSize.Small} onClick={handleAddStage}>
+              Add Stage
+            </Button>
+          )}
         </Stack>
       </DisclosurePanel>
     </Disclosure>
