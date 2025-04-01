@@ -159,15 +159,14 @@ export const customizeDataGridStyles = {
   "& .MuiDataGrid-columnHeaderTitleContainer": {
     visibility: "visible !important",
   },
-  '& .MuiDataGrid-iconButtonContainer': {
-   visibility: 'visible',
+  "& .MuiDataGrid-iconButtonContainer": {
+    visibility: "visible",
   },
-  '& .MuiDataGrid-sortIcon': {
-   opacity: 'inherit !important',
+  "& .MuiDataGrid-sortIcon": {
+    opacity: "inherit !important",
   },
   "& .MuiDataGrid-menuIcon": {
-   visibility: "visible !important",
-   width: "auto",
+    visibility: "visible !important",
+    width: "auto",
   },
-  
 }

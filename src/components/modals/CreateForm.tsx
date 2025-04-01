@@ -12,7 +12,6 @@ import Loader from "../../components/ui/Loader"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
-
 interface CreateFormModalProps {
   isOpen: boolean
   onClose: () => void
@@ -44,11 +43,9 @@ export default function CreateForm({
   const navigate = useNavigate()
   const [cookies] = useCookies([Cookie.jwt])
   const [createForm, { isLoading }] = useCreateFormMutation()
-  
-  const onSubmit = async (data: CreateFormInput) => {
 
-    
-     await onCreateFormSubmit({
+  const onSubmit = async (data: CreateFormInput) => {
+    await onCreateFormSubmit({
       data,
       formType,
       cookies,
@@ -56,7 +53,7 @@ export default function CreateForm({
       navigate,
       reset,
       dispatch,
-      onClose
+      onClose,
     })
   }
 
