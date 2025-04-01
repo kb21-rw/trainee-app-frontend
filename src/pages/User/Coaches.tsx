@@ -15,6 +15,7 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid"
 import DeleteIcon from "../../assets/DeleteIcon"
 import AddCoach from "../../components/modals/AddCoach"
 import { customizeDataGridStyles } from "../../utils/data"
+import EditIcon from "../../assets/EditIcon"
 
 export default function Coaches() {
   const [isAddCoachOpen, setIsAddCoachOpen] = useState(false)
@@ -71,7 +72,10 @@ export default function Coaches() {
       flex: 1,
       renderCell: () => {
         return (
-          <div className="flex justify-center justify-items-center h-full gap-4">
+          <div className="flex items-center h-full gap-12 justify-items-center">
+            <button>
+              <EditIcon />
+            </button>
             <button>
               <DeleteIcon />
             </button>
@@ -100,7 +104,7 @@ export default function Coaches() {
       )}
       <div className="my-10 space-y-10">
         {(cohortsAreFetching || cohortCoachesIsFetching) && <Loader />}
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <div className="w-52">
             <FormControl fullWidth>
               <Select
