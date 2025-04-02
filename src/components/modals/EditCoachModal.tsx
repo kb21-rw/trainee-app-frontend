@@ -55,7 +55,7 @@ export default function EditCoach({
 
       handleShowAlert(dispatch, {
         type: AlertType.Success,
-        message: "Coach name was updated successfully",
+        message: "Coach was updated successfully",
       })
       reset({ name: updatedCoach.name })
       onClose()
