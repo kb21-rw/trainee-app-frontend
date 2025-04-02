@@ -44,7 +44,7 @@ export default function EditCoach({
   const onSubmit = async (data: EditCoachFormValues) => {
     try {
       if (!coachId) {
-        throw new Error("No id found")
+        throw new Error("Coach not found. Please provide a valid ID.")
       }
 
       const updatedCoach = await editCoach({
@@ -72,7 +72,7 @@ export default function EditCoach({
     <Modal
       open={isOpen}
       onClose={onClose}
-      aria-describedby="Add user"
+      aria-describedby="Edit coach details"
       component="div"
       className="flex items-center max-w-md mx-auto "
     >
@@ -99,8 +99,8 @@ export default function EditCoach({
           </Button>
           <Button type="submit" disabled={isLoading || !isDirty}>
             <span className="flex items-center gap-1">
-              {isLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
-              <span>Save</span>
+              {isLoading && <Loader borderColor="#fff" size="xs" />}
+              Save
             </span>
           </Button>
         </div>
