@@ -49,7 +49,7 @@ export default function GlobalLayout() {
 
   if (isLoading || !isInitialized) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center h-screen">
         <Loader />
       </div>
     )
