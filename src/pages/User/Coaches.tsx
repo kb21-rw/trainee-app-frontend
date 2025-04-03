@@ -20,10 +20,15 @@ import EditCoach from "../../components/modals/EditCoachModal"
 
 export default function Coaches() {
   const [isAddCoachOpen, setIsAddCoachOpen] = useState(false)
-  const [isEditCoachOpen, setIsEditCoachOpen] = useState(false)
-  const [selectedCoachName, setSelectedCoachName] = useState("")
-  const [selectedEmail, setSelectedEmail] = useState("")
-  const [selectedCoachId, setSelectedCoachId] = useState("")
+  const [coachState, setCoachState] = useState({
+    isEditCoachOpen: false,
+    selectedCoachName: "",
+    selectedEmail: "",
+    selectedCoachId: "",
+  })
+  const updateCoachState = (newState: Partial<typeof coachState>) => {
+    setCoachState((prevState) => ({ ...prevState, ...newState }))
+  }
 
   const dispatch = useDispatch()
   const [cookies] = useCookies([Cookie.jwt])
@@ -49,10 +54,12 @@ export default function Coaches() {
   }
 
   const handleEditCoach = (name: string, email: string, id: string) => {
-    setSelectedCoachName(name)
-    setSelectedEmail(email)
-    setIsEditCoachOpen(true)
-    setSelectedCoachId(id)
+    updateCoachState({
+      isEditCoachOpen: true,
+      selectedCoachName: name,
+      selectedEmail: email,
+      selectedCoachId: id,
+    })
   }
 
   if (cohortsError || cohortCoachesError || cohortCoachesError) {
@@ -117,13 +124,13 @@ export default function Coaches() {
           cohortCoachIds={rows.map((coach) => coach.id)}
         />
       )}
-      {isEditCoachOpen && (
+      {coachState.isEditCoachOpen && (
         <EditCoach
-          isOpen={isEditCoachOpen}
-          onClose={() => setIsEditCoachOpen(false)}
-          currentName={selectedCoachName}
-          currentEmail={selectedEmail}
-          coachId={selectedCoachId}
+          isOpen={coachState.isEditCoachOpen}
+          onClose={() => updateCoachState({ isEditCoachOpen: false })}
+          currentName={coachState.selectedCoachName}
+          currentEmail={coachState.selectedEmail}
+          coachId={coachState.selectedCoachId}
         />
       )}
       <div className="my-10 space-y-10">
