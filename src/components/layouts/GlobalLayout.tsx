@@ -31,21 +31,24 @@ export default function GlobalLayout() {
     isLoading,
   } = useGetProfileQuery(cookies.jwt, { skip: !cookies.jwt || isSigningUp })
 
-  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search])
+  const searchParams = useMemo(
+    () => new URLSearchParams(location.search),
+    [location.search],
+  )
   const alertData = searchParams.get("alertData")
 
   useEffect(() => {
     if (user) {
       dispatch(login(user))
     }
-    
+
     if (userError) {
       const { message } = getErrorInfo(userError)
-      
+
       if (!userError) {
         return
       }
-      
+
       handleShowAlert(dispatch, {
         type: AlertType.Error,
         message,
@@ -66,17 +69,29 @@ export default function GlobalLayout() {
           })
 
           searchParams.delete("alertData")
-          navigate({ pathname: location.pathname, search: searchParams.toString() }, { replace: true })
+          navigate(
+            { pathname: location.pathname, search: searchParams.toString() },
+            { replace: true },
+          )
         }
       } catch (error) {
         handleShowAlert(dispatch, {
           type: AlertType.Error,
-          message: "An error occurred while processing the verification data. Please try again later.",
+          message:
+            "An error occurred while processing the verification data. Please try again later.",
         })
-        
       }
     }
-  }, [user, userError, dispatch, isLoading, alertData, navigate, location.pathname, searchParams])
+  }, [
+    user,
+    userError,
+    dispatch,
+    isLoading,
+    alertData,
+    navigate,
+    location.pathname,
+    searchParams,
+  ])
 
   if (isLoading || !isInitialized) {
     return (
