@@ -39,7 +39,9 @@ export default function Coaches() {
   } = useGetAllCohortsQuery({
     jwt: cookies.jwt,
   })
+
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
+
   const {
     data: cohortCoaches,
     error: cohortCoachesError,
