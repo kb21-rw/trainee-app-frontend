@@ -9,7 +9,7 @@ import { getErrorInfo, getRoleBasedHomepageURL } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import Loader from "../ui/Loader"
 import { AlertType, Cookie } from "../../utils/types"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 export default function GlobalLayout() {
   const alert = useSelector((state: RootState) => state.alert)
@@ -37,28 +37,7 @@ export default function GlobalLayout() {
   )
   const alertData = searchParams.get("alertData")
 
-  useEffect(() => {
-    if (user) {
-      dispatch(login(user))
-    }
-
-    if (userError) {
-      const { message } = getErrorInfo(userError)
-
-      if (!userError) {
-        return
-      }
-
-      handleShowAlert(dispatch, {
-        type: AlertType.Error,
-        message,
-      })
-    }
-
-    if (!isLoading) {
-      setIsInitialized(true)
-    }
-
+  const handleAlertData = useCallback(() => {
     if (alertData) {
       try {
         const decodedData = JSON.parse(decodeURIComponent(alertData))
@@ -82,16 +61,31 @@ export default function GlobalLayout() {
         })
       }
     }
-  }, [
-    user,
-    userError,
-    dispatch,
-    isLoading,
-    alertData,
-    navigate,
-    location.pathname,
-    searchParams,
-  ])
+  }, [alertData, dispatch, location.pathname, navigate, searchParams])
+
+  const displayErrors = useCallback(() => {
+    if (userError) {
+      const { message } = getErrorInfo(userError)
+
+      handleShowAlert(dispatch, {
+        type: AlertType.Error,
+        message,
+      })
+    }
+  }, [userError, dispatch])
+
+  useEffect(() => {
+    if (user) {
+      dispatch(login(user))
+    }
+
+    if (!isLoading) {
+      setIsInitialized(true)
+    }
+
+    displayErrors()
+    handleAlertData()
+  }, [user, displayErrors, dispatch, isLoading, handleAlertData])
 
   if (isLoading || !isInitialized) {
     return (
