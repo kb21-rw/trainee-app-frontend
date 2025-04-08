@@ -67,10 +67,6 @@ export default function GlobalLayout() {
     if (userError) {
       const { message } = getErrorInfo(userError)
 
-      if (!userError) {
-        return
-      }
-
       handleShowAlert(dispatch, {
         type: AlertType.Error,
         message,
