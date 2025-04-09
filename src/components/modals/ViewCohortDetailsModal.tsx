@@ -11,7 +11,7 @@ import CloseIcon from "../../assets/CloseIcon"
 interface ViewCohortDetailsModalProps {
   onClose: () => void
   cohort: {
-    id: string
+    _id: string
     name: string
     description: string
     trainingStartDate: string

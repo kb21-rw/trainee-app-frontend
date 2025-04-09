@@ -30,10 +30,6 @@ type TCohort = {
   trainingStartDate: string
 }
 
-// type TCohortView = {
-
-// }
-
 type TCohortWithId = TCohort & { readonly id: string }
 
 const style = {
@@ -62,7 +58,6 @@ export default function Cohorts() {
     trainingStartDate: string
     stages: Stage[]
   } | null>(null)
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   const [displayCohortDetails, setDisplayCohortDetails] =
     useState<TCohort | null>(null)
   const dispatch = useDispatch()
