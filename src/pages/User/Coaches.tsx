@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import {
   useGetAllCohortsQuery,
   useGetCoachesQuery,
@@ -15,9 +15,21 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid"
 import DeleteIcon from "../../assets/DeleteIcon"
 import AddCoach from "../../components/modals/AddCoach"
 import { customizeDataGridStyles } from "../../utils/data"
+import EditIcon from "../../assets/EditIcon"
+import EditCoach from "../../components/modals/EditCoachModal"
 
 export default function Coaches() {
   const [isAddCoachOpen, setIsAddCoachOpen] = useState(false)
+  const [coachState, setCoachState] = useState({
+    isEditCoachOpen: false,
+    selectedCoachName: "",
+    selectedEmail: "",
+    selectedCoachId: "",
+  })
+  const updateCoachState = (newState: Partial<typeof coachState>) => {
+    setCoachState((prevState) => ({ ...prevState, ...newState }))
+  }
+
   const dispatch = useDispatch()
   const [cookies] = useCookies([Cookie.jwt])
   const {
@@ -27,7 +39,9 @@ export default function Coaches() {
   } = useGetAllCohortsQuery({
     jwt: cookies.jwt,
   })
+
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
+
   const {
     data: cohortCoaches,
     error: cohortCoachesError,
@@ -39,6 +53,15 @@ export default function Coaches() {
   const handleCohortChange = (event: SelectChangeEvent) => {
     const cohortId = event.target.value
     setSelectedCohortId(cohortId)
+  }
+
+  const handleEditCoach = (name: string, email: string, id: string) => {
+    updateCoachState({
+      isEditCoachOpen: true,
+      selectedCoachName: name,
+      selectedEmail: email,
+      selectedCoachId: id,
+    })
   }
 
   if (cohortsError || cohortCoachesError || cohortCoachesError) {
@@ -69,9 +92,14 @@ export default function Coaches() {
       field: "actions",
       headerName: "Actions",
       flex: 1,
-      renderCell: () => {
+      renderCell: ({ row }) => {
         return (
-          <div className="flex justify-center justify-items-center h-full gap-4">
+          <div className="flex items-center h-full gap-12 justify-items-center">
+            <button
+              onClick={() => handleEditCoach(row.name, row.email, row.id)}
+            >
+              <EditIcon />
+            </button>
             <button>
               <DeleteIcon />
             </button>
@@ -98,9 +126,18 @@ export default function Coaches() {
           cohortCoachIds={rows.map((coach) => coach.id)}
         />
       )}
+      {coachState.isEditCoachOpen && (
+        <EditCoach
+          isOpen={coachState.isEditCoachOpen}
+          onClose={() => updateCoachState({ isEditCoachOpen: false })}
+          currentName={coachState.selectedCoachName}
+          currentEmail={coachState.selectedEmail}
+          coachId={coachState.selectedCoachId}
+        />
+      )}
       <div className="my-10 space-y-10">
         {(cohortsAreFetching || cohortCoachesIsFetching) && <Loader />}
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <div className="w-52">
             <FormControl fullWidth>
               <Select
