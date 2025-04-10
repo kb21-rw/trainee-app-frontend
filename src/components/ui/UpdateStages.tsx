@@ -107,29 +107,31 @@ export default function UpdateStages({
             />
           </Paper>
         ))}
-        <Stack
-          direction="row"
-          display="flex"
-          justifyContent="space-between"
-          paddingBlockStart={1}
-        >
-          {fields?.[fields.length - 1]?.participantsCount === 0 &&
-            fields.length > 1 && (
-              <Button
-                size={ButtonSize.Small}
-                variant={ButtonVariant.Danger}
-                onClick={handleRemoveStage}
-                disabled={readOnly || fields.length === 1}
-              >
-                Remove Stage
+        {!readOnly && (
+          <Stack
+            direction="row"
+            display="flex"
+            justifyContent="space-between"
+            paddingBlockStart={1}
+          >
+            {fields?.[fields.length - 1]?.participantsCount === 0 &&
+              fields.length > 1 && (
+                <Button
+                  size={ButtonSize.Small}
+                  variant={ButtonVariant.Danger}
+                  onClick={handleRemoveStage}
+                  disabled={readOnly || fields.length === 1}
+                >
+                  Remove Stage
+                </Button>
+              )}
+            {!readOnly && (
+              <Button size={ButtonSize.Small} onClick={handleAddStage}>
+                Add Stage
               </Button>
             )}
-          {!readOnly && (
-            <Button size={ButtonSize.Small} onClick={handleAddStage}>
-              Add Stage
-            </Button>
-          )}
-        </Stack>
+          </Stack>
+        )}
       </DisclosurePanel>
     </Disclosure>
   )

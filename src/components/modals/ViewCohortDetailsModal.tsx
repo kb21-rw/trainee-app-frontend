@@ -44,6 +44,11 @@ export default function ViewCohortDetailsModal({
       className="max-w-md max-h-[80%] mx-auto my-auto flex items-center"
     >
       <form className="flex flex-col flex-1 max-h-full gap-6 p-5 overflow-y-scroll bg-white rounded-xl">
+        <div className="flex self-end -mt-2 -mr-4">
+          <Button onClick={onClose} outlined noBackground>
+            <CloseIcon />
+          </Button>
+        </div>
         <h1 className="text-3xl font-semibold text-center">Cohort Details</h1>
 
         <Input register={register("name")} label="Name" disabled />
@@ -72,12 +77,6 @@ export default function ViewCohortDetailsModal({
           readOnly
           error={errors}
         />
-
-        <div className="flex justify-around gap-2">
-          <Button outlined onClick={onClose}>
-            <CloseIcon />
-          </Button>
-        </div>
       </form>
     </Modal>
   )
