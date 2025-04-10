@@ -24,8 +24,15 @@ const Profile = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, dirtyFields },
-  } = useForm({ mode: "onSubmit" })
+    formState: { errors, isDirty },
+  } = useForm({
+    mode: "onSubmit",
+    defaultValues: {
+      name: data?.name,
+      email: data?.email,
+      password: "",
+    },
+  })
 
   const onSubmit = async (submittedData: {
     email?: string
@@ -86,7 +93,6 @@ const Profile = () => {
               type="text"
               label="Name"
               placeholder="Your Name"
-              defaultValue={data?.name}
               register={register}
             />
             <InputField
@@ -95,7 +101,6 @@ const Profile = () => {
               label="Email"
               placeholder="your.email@example.com"
               disabled
-              defaultValue={data?.email}
               register={register}
             />
             <InputField
@@ -117,11 +122,7 @@ const Profile = () => {
             />
           </div>
           <div>
-            <Button
-              type="submit"
-              disabled={Object.keys(dirtyFields).length === 0}
-              className="relative flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md group hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
+            <Button type="submit" disabled={!isDirty}>
               Save Changes
             </Button>
           </div>
