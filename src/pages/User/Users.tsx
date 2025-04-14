@@ -91,7 +91,7 @@ export default function Users() {
   if (usersIsFetching) return <TableSkeleton />
 
   const rows =
-    [...users]
+    users
       .sort((a: User, b: User) => b.createdAt.localeCompare(a.createdAt))
       ?.map((user: User) => ({
         id: user._id,
