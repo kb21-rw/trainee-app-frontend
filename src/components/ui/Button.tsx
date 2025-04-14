@@ -27,8 +27,10 @@ const Button = ({
   const primaryClasses = {
     "text-primary-dark bg-white border-primary-dark border px-6":
       variant === ButtonVariant.Primary && outlined,
+    "bg-gray-300 text-black":
+      variant === ButtonVariant.Primary && !outlined && disabled,
     "bg-primary-dark text-white":
-      variant === ButtonVariant.Primary && !outlined,
+      variant === ButtonVariant.Primary && !outlined && !disabled,
   }
 
   const sizeClasses = {
