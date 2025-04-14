@@ -26,9 +26,9 @@ const Button = ({
 
   const primaryClasses = {
     "text-primary-dark bg-white border-primary-dark border px-6":
-      variant === ButtonVariant.Primary && outlined,
+      variant === ButtonVariant.Primary && outlined && !disabled,
     "bg-primary-dark text-white":
-      variant === ButtonVariant.Primary && !outlined,
+      variant === ButtonVariant.Primary && !outlined && !disabled,
   }
 
   const sizeClasses = {
@@ -37,11 +37,16 @@ const Button = ({
     "px-7 py-3 text-xl w-full": size === ButtonSize.Large,
   }
 
+  const disabledClasses = {
+    "border border-gray-500 text-gray-500 px-6 bg-gray-200": disabled,
+  }
+
   return (
     <button
       onClick={onClick}
       className={classNames(
         "rounded-lg",
+        disabledClasses,
         dangerClasses,
         primaryClasses,
         sizeClasses,

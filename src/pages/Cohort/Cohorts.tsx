@@ -1,21 +1,20 @@
+import { Box, Modal, Typography } from "@mui/material"
+import { DataGrid, GridColDef } from "@mui/x-data-grid"
+import { useState } from "react"
+import { useCookies } from "react-cookie"
+import { useDispatch } from "react-redux"
+import UpdateCohortModal from "../../components/modals/UpdateCohortModal"
+import TableSkeleton from "../../components/skeletons/TableSkeleton"
+import Button from "../../components/ui/Button"
 import {
   useCreateCohortMutation,
   useGetAllCohortsQuery,
 } from "../../features/user/backendApi"
-import { DataGrid } from "@mui/x-data-grid"
-import Button from "../../components/ui/Button"
+import { customizeDataGridStyles } from "../../utils/data"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { getErrorInfo } from "../../utils/helper"
 import { AlertType, ButtonSize, Cookie, Stage } from "../../utils/types"
 import CreateCohortForm from "./CreateCohortForm"
-import { Box, Modal, Typography } from "@mui/material"
-import { useState } from "react"
-import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch } from "react-redux"
-import { getErrorInfo } from "../../utils/helper"
-import { useCookies } from "react-cookie"
-import { customizeDataGridStyles } from "../../utils/data"
-import TableSkeleton from "../../components/skeletons/TableSkeleton"
-import { GridColDef } from "@mui/x-data-grid"
-import UpdateCohortModal from "../../components/modals/UpdateCohortModal"
 
 type TCohort = {
   applicants: number
@@ -27,6 +26,7 @@ type TCohort = {
   trainees: number
   _id: string
   trainingStartDate: string
+  isActive: boolean
 }
 type TCohortWithId = TCohort & { readonly id: string }
 
@@ -110,6 +110,7 @@ export default function Cohorts() {
             <Button
               size={ButtonSize.Small}
               outlined
+              disabled={!row.isActive}
               onClick={() =>
                 setCohortToUpdate({
                   _id: row.id,
