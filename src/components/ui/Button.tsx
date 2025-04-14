@@ -39,9 +39,7 @@ const Button = ({
     "px-7 py-3 text-xl w-full": size === ButtonSize.Large,
   }
 
-  const noBackgroundClasses = noBackground
-    ? "bg-none border-none shadow-none"
-    : ""
+  const noBackgroundClasses = noBackground && "bg-none border-none shadow-none"
 
   return (
     <button

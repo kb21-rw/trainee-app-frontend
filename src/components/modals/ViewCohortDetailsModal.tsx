@@ -4,7 +4,7 @@ import { Modal } from "@mui/material"
 import { Stage } from "../../utils/types"
 import Input from "../ui/Input"
 import dayjs from "dayjs"
-import UpdateStages from "../ui/UpdateStages"
+import UpdateStages, { FormData } from "../ui/UpdateStages"
 import { DatePicker } from "@mui/x-date-pickers"
 import CloseIcon from "../../assets/CloseIcon"
 
@@ -27,12 +27,12 @@ export default function ViewCohortDetailsModal({
     register,
     control,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormData>({
     defaultValues: {
-      name: cohort?.name ?? "",
-      description: cohort?.description ?? "",
-      trainingStartDate: dayjs(cohort?.trainingStartDate),
-      stages: cohort?.stages ?? [],
+      name: cohort.name,
+      description: cohort.description,
+      trainingStartDate: dayjs(cohort.trainingStartDate),
+      stages: cohort.stages,
     },
   })
 

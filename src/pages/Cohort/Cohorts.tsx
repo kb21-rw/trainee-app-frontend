@@ -113,15 +113,15 @@ export default function Cohorts() {
               outlined
               onClick={() =>
                 setDisplayCohortDetails({
-                  _id: row?.id,
-                  name: row?.name,
-                  description: row?.description,
-                  trainingStartDate: row?.trainingStartDate,
-                  stages: row?.stages,
-                  applicants: row?.applicants,
-                  coaches: row?.coaches,
-                  forms: row?.forms,
-                  trainees: row?.trainees,
+                  _id: row.id,
+                  name: row.name,
+                  description: row.description,
+                  trainingStartDate: row.trainingStartDate,
+                  stages: row.stages,
+                  applicants: row.applicants,
+                  coaches: row.coaches,
+                  forms: row.forms,
+                  trainees: row.trainees,
                 })
               }
             >
