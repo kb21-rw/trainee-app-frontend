@@ -16,6 +16,7 @@ import { customizeDataGridStyles } from "../../utils/data"
 import TableSkeleton from "../../components/skeletons/TableSkeleton"
 import { GridColDef } from "@mui/x-data-grid"
 import UpdateCohortModal from "../../components/modals/UpdateCohortModal"
+import ViewCohortDetailsModal from "../../components/modals/ViewCohortDetailsModal"
 
 type TCohort = {
   applicants: number
@@ -28,6 +29,7 @@ type TCohort = {
   _id: string
   trainingStartDate: string
 }
+
 type TCohortWithId = TCohort & { readonly id: string }
 
 const style = {
@@ -56,6 +58,8 @@ export default function Cohorts() {
     trainingStartDate: string
     stages: Stage[]
   } | null>(null)
+  const [displayCohortDetails, setDisplayCohortDetails] =
+    useState<TCohort | null>(null)
   const dispatch = useDispatch()
 
   const modifiedArray: TCohortWithId[] = data?.map((row: TCohort) => {
@@ -103,8 +107,24 @@ export default function Cohorts() {
 
       renderCell: ({ row }) => {
         return (
-          <div className="flex items-center justify-center text-xs space-x-2 w-full h-full">
-            <Button size={ButtonSize.Small} outlined>
+          <div className="flex items-center justify-center w-full h-full space-x-2 text-xs">
+            <Button
+              size={ButtonSize.Small}
+              outlined
+              onClick={() =>
+                setDisplayCohortDetails({
+                  _id: row.id,
+                  name: row.name,
+                  description: row.description,
+                  trainingStartDate: row.trainingStartDate,
+                  stages: row.stages,
+                  applicants: row.applicants,
+                  coaches: row.coaches,
+                  forms: row.forms,
+                  trainees: row.trainees,
+                })
+              }
+            >
               View
             </Button>
             <Button
@@ -182,6 +202,12 @@ export default function Cohorts() {
         <UpdateCohortModal
           cohort={cohortToUpdate}
           onClose={handleResetCohortToUpdate}
+        />
+      )}
+      {displayCohortDetails && (
+        <ViewCohortDetailsModal
+          cohort={displayCohortDetails}
+          onClose={() => setDisplayCohortDetails(null)}
         />
       )}
       <DataGrid
