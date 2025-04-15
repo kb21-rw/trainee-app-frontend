@@ -11,11 +11,11 @@ import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
 import { useCookies } from "react-cookie"
 import {
-  useUpdateUserMutation,
   useToggleUserActiveStatusMutation,
+  useUpdateUserMutation,
 } from "../../features/user/backendApi"
 import Loader from "../ui/Loader"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 const selectOptions = [
   { value: UserRole.Prospect, label: "Prospect" },
@@ -54,6 +54,17 @@ export default function EditUserModal({
     useToggleUserActiveStatusMutation()
   const [showConfirmation, setShowConfirmation] = useState(false)
 
+  // Set a default value for active if it's undefined (assuming active by default)
+  // Using defaultValues directly here may cause issues on re-renders, so store it in state
+  const [isUserActive, setIsUserActive] = useState(
+    defaultValues.active !== false,
+  )
+
+  // Update the active state when defaultValues changes
+  useEffect(() => {
+    setIsUserActive(defaultValues.active !== false)
+  }, [defaultValues])
+
   const {
     register,
     handleSubmit,
@@ -65,6 +76,7 @@ export default function EditUserModal({
       name: defaultValues.name,
       email: defaultValues.email,
       role: defaultValues.role,
+      active: defaultValues.active,
     },
   })
 
@@ -99,7 +111,7 @@ export default function EditUserModal({
         userId: defaultValues._id,
       }).unwrap()
 
-      const action = defaultValues.active ? "deactivated" : "activated"
+      const action = isUserActive ? "deactivated" : "activated"
       handleShowAlert(dispatch, {
         type: AlertType.Success,
         message: `Admin ${defaultValues.name} was ${action} successfully.`,
@@ -117,18 +129,17 @@ export default function EditUserModal({
 
   // Only show activate/deactivate button for admin users
   const showActivateButton = defaultValues.role === UserRole.Admin
-  const activationButtonText = defaultValues.active
-    ? "Deactivate Admin"
-    : "Activate Admin"
+  const activationButtonText = isUserActive ? "Deactivate" : "Activate"
 
   return (
     <>
+      {/* Edit Modal */}
       <Modal
-        open={isOpen}
+        open={isOpen && !showConfirmation}
         onClose={onClose}
         aria-describedby="Add user"
         component="div"
-        className="max-w-md mx-auto flex items-center "
+        className="max-w-md mx-auto flex items-center"
       >
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -156,9 +167,8 @@ export default function EditUserModal({
           {showActivateButton && (
             <div className="mt-2">
               <Button
-                outlined={!defaultValues.active}
                 onClick={() => setShowConfirmation(true)}
-                className="w-full"
+                className={`w-full ${isUserActive ? "bg-red-600 hover:bg-red-700" : ""}`}
               >
                 {activationButtonText}
               </Button>
@@ -173,7 +183,7 @@ export default function EditUserModal({
             <Button type="submit" disabled={isUserLoading || !isDirty}>
               <span className="flex items-center gap-1">
                 {isUserLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
-                <span>Save </span>
+                <span>Save</span>
               </span>
             </Button>
           </div>
@@ -189,21 +199,28 @@ export default function EditUserModal({
         className="max-w-md mx-auto flex items-center"
       >
         <div className="flex flex-col gap-6 w-full bg-white p-5 rounded-xl">
-          <h2 className="text-center text-xl font-semibold">
-            {defaultValues.active
-              ? "Confirm if you want to deactivate an Admin"
-              : "Confirm if you want to activate an Admin"}
-          </h2>
+          <h1 className="text-center text-2xl font-semibold">
+            {isUserActive ? "Deactivate an Admin" : "Activate an Admin"}
+          </h1>
+
+          <p className="text-center">
+            Confirm if you want to {isUserActive ? "deactivate" : "activate"} an
+            Admin
+          </p>
 
           <div className="flex justify-around gap-2">
             <Button outlined onClick={() => setShowConfirmation(false)}>
               Cancel
             </Button>
 
-            <Button onClick={handleToggleActive} disabled={isToggleLoading}>
+            <Button
+              onClick={handleToggleActive}
+              disabled={isToggleLoading}
+              className={isUserActive ? "bg-red-600 hover:bg-red-700" : ""}
+            >
               <span className="flex items-center gap-1">
                 {isToggleLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
-                <span>Confirm</span>
+                <span>{isUserActive ? "Deactivate" : "Activate"}</span>
               </span>
             </Button>
           </div>

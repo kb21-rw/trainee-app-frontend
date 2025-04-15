@@ -95,6 +95,7 @@ export default function Users() {
       name: user.name,
       email: user.email,
       role: user.role,
+      active: user.active,
     })) ?? []
 
   const handleCloseCreateUserModal = () =>
