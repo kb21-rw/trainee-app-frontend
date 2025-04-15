@@ -60,13 +60,10 @@ export default function EditUserModal({
     useToggleUserActiveStatusMutation()
   const [showConfirmation, setShowConfirmation] = useState(false)
 
-  // Set a default value for active if it's undefined (assuming active by default)
-  // Using defaultValues directly here may cause issues on re-renders, so store it in state
   const [isUserActive, setIsUserActive] = useState(
     defaultValues.active !== false,
   )
 
-  // Update the active state when defaultValues changes
   useEffect(() => {
     setIsUserActive(defaultValues.active !== false)
   }, [defaultValues])
@@ -133,7 +130,6 @@ export default function EditUserModal({
     }
   }
 
-  // Only show activate/deactivate button for admin users
   const showActivateButton = defaultValues.role === UserRole.Admin
   const activationButtonText = isUserActive ? "Deactivate" : "Activate"
 

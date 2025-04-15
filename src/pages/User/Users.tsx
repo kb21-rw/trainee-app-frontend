@@ -28,6 +28,7 @@ export default function Users() {
     data: users,
     error: usersError,
     isFetching: usersIsFetching,
+    refetch,
   } = useGetUsersQuery({
     jwt: cookies.jwt,
   })
@@ -131,7 +132,11 @@ export default function Users() {
             <EditUserModal
               isOpen={Boolean(userInformation)}
               defaultValues={userInformation}
-              onClose={() => setTimeout(() => setUserInformation(null), 0)}
+              onClose={() => {
+                setTimeout(() => setUserInformation(null), 0)
+                // Refresh data after updating a user
+                refetch()
+              }}
             />
           </>
         )}
