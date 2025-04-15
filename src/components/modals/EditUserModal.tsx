@@ -1,7 +1,13 @@
 import { useForm } from "react-hook-form"
 import Button from "../ui/Button"
 import { Modal } from "@mui/material"
-import { AlertType, Cookie, User, UserRole } from "../../utils/types"
+import {
+  AlertType,
+  ButtonVariant,
+  Cookie,
+  User,
+  UserRole,
+} from "../../utils/types"
 import Input from "../ui/Input"
 import Select from "../ui/Select"
 import { z } from "zod"
@@ -216,7 +222,9 @@ export default function EditUserModal({
             <Button
               onClick={handleToggleActive}
               disabled={isToggleLoading}
-              className={isUserActive ? "bg-red-600 hover:bg-red-700" : ""}
+              variant={
+                isUserActive ? ButtonVariant.Danger : ButtonVariant.Primary
+              }
             >
               <span className="flex items-center gap-1">
                 {isToggleLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
