@@ -10,8 +10,12 @@ import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
 import { useCookies } from "react-cookie"
-import { useUpdateUserMutation } from "../../features/user/backendApi"
+import {
+  useUpdateUserMutation,
+  useToggleUserActiveStatusMutation,
+} from "../../features/user/backendApi"
 import Loader from "../ui/Loader"
+import { useState } from "react"
 
 const selectOptions = [
   { value: UserRole.Prospect, label: "Prospect" },
@@ -46,6 +50,9 @@ export default function EditUserModal({
   const dispatch = useDispatch()
   const [updateUser, { isLoading: isUserLoading, reset: resetUpdateUser }] =
     useUpdateUserMutation()
+  const [toggleUserActive, { isLoading: isToggleLoading }] =
+    useToggleUserActiveStatusMutation()
+  const [showConfirmation, setShowConfirmation] = useState(false)
 
   const {
     register,
@@ -85,50 +92,123 @@ export default function EditUserModal({
     }
   }
 
+  const handleToggleActive = async () => {
+    try {
+      await toggleUserActive({
+        jwt: cookies.jwt,
+        userId: defaultValues._id,
+      }).unwrap()
+
+      const action = defaultValues.active ? "deactivated" : "activated"
+      handleShowAlert(dispatch, {
+        type: AlertType.Success,
+        message: `Admin ${defaultValues.name} was ${action} successfully.`,
+      })
+      setShowConfirmation(false)
+      onClose()
+    } catch (error) {
+      const { message } = getErrorInfo(error)
+      handleShowAlert(dispatch, {
+        type: AlertType.Error,
+        message,
+      })
+    }
+  }
+
+  // Only show activate/deactivate button for admin users
+  const showActivateButton = defaultValues.role === UserRole.Admin
+  const activationButtonText = defaultValues.active
+    ? "Deactivate Admin"
+    : "Activate Admin"
+
   return (
-    <Modal
-      open={isOpen}
-      onClose={onClose}
-      aria-describedby="Add user"
-      component="div"
-      className="max-w-md mx-auto flex items-center "
-    >
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-6 w-full bg-white p-5 rounded-xl"
+    <>
+      <Modal
+        open={isOpen}
+        onClose={onClose}
+        aria-describedby="Add user"
+        component="div"
+        className="max-w-md mx-auto flex items-center "
       >
-        <h1 className="text-center text-3xl font-semibold">Edit user</h1>
-        <Input
-          register={{ ...register("name") }}
-          label="Name"
-          error={errors.name?.message}
-        />
-        <Input
-          register={{ ...register("email") }}
-          label="Email"
-          disabled
-          error={errors.email?.message}
-        />
-        <Select
-          options={selectOptions}
-          label="Role"
-          register={register("role")}
-          error={errors.role?.message}
-        />
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-6 w-full bg-white p-5 rounded-xl"
+        >
+          <h1 className="text-center text-3xl font-semibold">Edit user</h1>
+          <Input
+            register={{ ...register("name") }}
+            label="Name"
+            error={errors.name?.message}
+          />
+          <Input
+            register={{ ...register("email") }}
+            label="Email"
+            disabled
+            error={errors.email?.message}
+          />
+          <Select
+            options={selectOptions}
+            label="Role"
+            register={register("role")}
+            error={errors.role?.message}
+          />
 
-        <div className="flex justify-around gap-2">
-          <Button outlined onClick={onClose}>
-            Cancel
-          </Button>
+          {showActivateButton && (
+            <div className="mt-2">
+              <Button
+                outlined={!defaultValues.active}
+                onClick={() => setShowConfirmation(true)}
+                className="w-full"
+              >
+                {activationButtonText}
+              </Button>
+            </div>
+          )}
 
-          <Button type="submit" disabled={isUserLoading || !isDirty}>
-            <span className="flex items-center gap-1">
-              {isUserLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
-              <span>Save </span>
-            </span>
-          </Button>
+          <div className="flex justify-around gap-2">
+            <Button outlined onClick={onClose}>
+              Cancel
+            </Button>
+
+            <Button type="submit" disabled={isUserLoading || !isDirty}>
+              <span className="flex items-center gap-1">
+                {isUserLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
+                <span>Save </span>
+              </span>
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Confirmation Modal */}
+      <Modal
+        open={showConfirmation}
+        onClose={() => setShowConfirmation(false)}
+        aria-describedby="Confirm deactivation"
+        component="div"
+        className="max-w-md mx-auto flex items-center"
+      >
+        <div className="flex flex-col gap-6 w-full bg-white p-5 rounded-xl">
+          <h2 className="text-center text-xl font-semibold">
+            {defaultValues.active
+              ? "Confirm if you want to deactivate an Admin"
+              : "Confirm if you want to activate an Admin"}
+          </h2>
+
+          <div className="flex justify-around gap-2">
+            <Button outlined onClick={() => setShowConfirmation(false)}>
+              Cancel
+            </Button>
+
+            <Button onClick={handleToggleActive} disabled={isToggleLoading}>
+              <span className="flex items-center gap-1">
+                {isToggleLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
+                <span>Confirm</span>
+              </span>
+            </Button>
+          </div>
         </div>
-      </form>
-    </Modal>
+      </Modal>
+    </>
   )
 }
