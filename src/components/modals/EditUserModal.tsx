@@ -1,13 +1,7 @@
 import { useForm } from "react-hook-form"
 import Button from "../ui/Button"
 import { Modal } from "@mui/material"
-import {
-  AlertType,
-  ButtonVariant,
-  Cookie,
-  User,
-  UserRole,
-} from "../../utils/types"
+import { AlertType, Cookie, User, UserRole } from "../../utils/types"
 import Input from "../ui/Input"
 import Select from "../ui/Select"
 import { z } from "zod"
@@ -22,6 +16,7 @@ import {
 } from "../../features/user/backendApi"
 import Loader from "../ui/Loader"
 import { useState, useEffect } from "react"
+import AdminStatusConfirmationModal from "./AdminStatusConfirmationModal"
 
 const selectOptions = [
   { value: UserRole.Prospect, label: "Prospect" },
@@ -168,10 +163,7 @@ export default function EditUserModal({
 
           {showActivateButton && (
             <div className="mt-2">
-              <Button
-                onClick={() => setShowConfirmation(true)}
-                className={`w-full ${isUserActive ? "bg-red-600 hover:bg-red-700" : ""}`}
-              >
+              <Button onClick={() => setShowConfirmation(true)}>
                 {activationButtonText}
               </Button>
             </div>
@@ -192,44 +184,15 @@ export default function EditUserModal({
         </form>
       </Modal>
 
-      {/* Confirmation Modal */}
-      <Modal
-        open={showConfirmation}
+      {/* Admin status confirmation modal */}
+      <AdminStatusConfirmationModal
+        isOpen={showConfirmation}
         onClose={() => setShowConfirmation(false)}
-        aria-describedby="Confirm deactivation"
-        component="div"
-        className="max-w-md mx-auto flex items-center"
-      >
-        <div className="flex flex-col gap-6 w-full bg-white p-5 rounded-xl">
-          <h1 className="text-center text-2xl font-semibold">
-            {isUserActive ? "Deactivate an Admin" : "Activate an Admin"}
-          </h1>
-
-          <p className="text-center">
-            Confirm if you want to {isUserActive ? "deactivate" : "activate"} an
-            Admin
-          </p>
-
-          <div className="flex justify-around gap-2">
-            <Button outlined onClick={() => setShowConfirmation(false)}>
-              Cancel
-            </Button>
-
-            <Button
-              onClick={handleToggleActive}
-              disabled={isToggleLoading}
-              variant={
-                isUserActive ? ButtonVariant.Danger : ButtonVariant.Primary
-              }
-            >
-              <span className="flex items-center gap-1">
-                {isToggleLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
-                <span>{isUserActive ? "Deactivate" : "Activate"}</span>
-              </span>
-            </Button>
-          </div>
-        </div>
-      </Modal>
+        isUserActive={isUserActive}
+        userName={defaultValues.name}
+        onConfirm={handleToggleActive}
+        isLoading={isToggleLoading}
+      />
     </>
   )
 }
