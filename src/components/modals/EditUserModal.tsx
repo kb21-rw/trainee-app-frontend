@@ -144,12 +144,12 @@ export default function EditUserModal({
         >
           <h1 className="text-center text-3xl font-semibold">Edit user</h1>
           <Input
-            register={{ ...register("name") }}
+            register={register("name")}
             label="Name"
             error={errors.name?.message}
           />
           <Input
-            register={{ ...register("email") }}
+            register={register("email")}
             label="Email"
             disabled
             error={errors.email?.message}
