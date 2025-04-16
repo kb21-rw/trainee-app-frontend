@@ -13,6 +13,7 @@ import { useCookies } from "react-cookie"
 import {
   useToggleUserActiveStatusMutation,
   useUpdateUserMutation,
+  useGetProfileQuery,
 } from "../../features/user/backendApi"
 import Loader from "../ui/Loader"
 import { useState, useEffect } from "react"
@@ -54,6 +55,7 @@ export default function EditUserModal({
   const [toggleUserActive, { isLoading: isToggleLoading }] =
     useToggleUserActiveStatusMutation()
   const [showConfirmation, setShowConfirmation] = useState(false)
+  const { data: loggedInUser } = useGetProfileQuery(cookies.jwt)
 
   const [isUserActive, setIsUserActive] = useState(
     defaultValues.active !== false,
@@ -125,7 +127,9 @@ export default function EditUserModal({
     }
   }
 
-  const showActivateButton = defaultValues.role === UserRole.Admin
+  const showActivateButton =
+    defaultValues.role === UserRole.Admin &&
+    defaultValues.userId !== loggedInUser.userId
   const activationButtonText = isUserActive ? "Deactivate" : "Activate"
 
   return (
