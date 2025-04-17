@@ -20,13 +20,18 @@ const Button = ({
   onClick,
   noBackground = false,
 }: ButtonProps) => {
-  const dangerClasses = {
+  const disabledClasses = {
+    "text-white bg-gray-400 border border-gray-400 cursor-not-allowed px-6":
+      disabled,
+  }
+
+  const dangerClasses = !disabled && {
     "text-red-500 bg-white border-red-500 border px-6":
       variant === ButtonVariant.Danger && outlined,
     "bg-red-500 text-white px-6": variant === ButtonVariant.Danger && !outlined,
   }
 
-  const primaryClasses = {
+  const primaryClasses = !disabled && {
     "text-primary-dark bg-white border-primary-dark border px-6":
       variant === ButtonVariant.Primary && outlined,
     "bg-gray-300 text-black":
@@ -48,6 +53,7 @@ const Button = ({
       onClick={onClick}
       className={classNames(
         "rounded-lg",
+        disabledClasses,
         dangerClasses,
         primaryClasses,
         sizeClasses,
