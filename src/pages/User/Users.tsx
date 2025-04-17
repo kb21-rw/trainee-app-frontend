@@ -84,17 +84,6 @@ export default function Users() {
     },
   ]
 
-  const rows =
-    users?.map((user: User) => ({
-      id: user._id,
-      _id: user._id,
-      userId: user.userId,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      active: user.active,
-    })) ?? []
-
   const handleCloseCreateUserModal = () =>
     setTimeout(() => setIsCreateUserModalOpen(false), 0)
 
@@ -107,6 +96,19 @@ export default function Users() {
   }
 
   if (usersIsFetching) return <TableSkeleton />
+
+  const rows =
+    users
+      .sort((a: User, b: User) => b.createdAt.localeCompare(a.createdAt))
+      ?.map((user: User) => ({
+        id: user._id,
+        _id: user._id,
+        userId: user.userId,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        active: user.active,
+      })) ?? []
 
   return (
     <>

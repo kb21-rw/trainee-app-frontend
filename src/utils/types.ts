@@ -17,6 +17,7 @@ export interface User {
   email: string
   role: UserRole
   coach: Omit<User, "coach">
+  createdAt: string
   active?: boolean
 }
 
