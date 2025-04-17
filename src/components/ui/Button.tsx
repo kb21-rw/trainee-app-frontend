@@ -7,6 +7,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant
   outlined?: boolean
   size?: ButtonSize
+  noBackground?: boolean
 }
 
 const Button = ({
@@ -17,6 +18,7 @@ const Button = ({
   type = "button",
   disabled,
   onClick,
+  noBackground = false,
 }: ButtonProps) => {
   const disabledClasses = {
     "text-white bg-gray-400 border border-gray-400 cursor-not-allowed px-6":
@@ -32,8 +34,10 @@ const Button = ({
   const primaryClasses = !disabled && {
     "text-primary-dark bg-white border-primary-dark border px-6":
       variant === ButtonVariant.Primary && outlined,
+    "bg-gray-300 text-black":
+      variant === ButtonVariant.Primary && !outlined && disabled,
     "bg-primary-dark text-white":
-      variant === ButtonVariant.Primary && !outlined,
+      variant === ButtonVariant.Primary && !outlined && !disabled,
   }
 
   const sizeClasses = {
@@ -41,6 +45,8 @@ const Button = ({
     "px-4 py-2": size === ButtonSize.Medium,
     "px-7 py-3 text-xl w-full": size === ButtonSize.Large,
   }
+
+  const noBackgroundClasses = noBackground && "bg-none border-none shadow-none"
 
   return (
     <button
@@ -51,6 +57,7 @@ const Button = ({
         dangerClasses,
         primaryClasses,
         sizeClasses,
+        noBackgroundClasses,
       )}
       type={type}
       disabled={disabled}
