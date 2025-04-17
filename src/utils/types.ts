@@ -17,6 +17,7 @@ export interface User {
   email: string
   role: UserRole
   coach: Omit<User, "coach">
+  active?: boolean
 }
 
 export interface Cohort {
