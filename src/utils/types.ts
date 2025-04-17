@@ -18,6 +18,7 @@ export interface User {
   role: UserRole
   coach: Omit<User, "coach">
   createdAt: string
+  active?: boolean
 }
 
 export interface Cohort {
