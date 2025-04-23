@@ -57,7 +57,7 @@ export default function Form() {
             />
           ))}
         </div>
-        <div className="flex pt-44 justify-self-end">
+        <div className="pt-32">
           <Button onClick={() => navigate(-1)}>Back to form list</Button>
         </div>
       </div>
