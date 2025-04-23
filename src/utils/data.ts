@@ -73,7 +73,7 @@ export const editTraineeTableHeaders = ["No", "Name", "Email", ""]
 export const editTraineeTableItems = ["_id", "name", "email"]
 export const traineeTableDataItems = ["_id", "name", "email", "coach"]
 export const joinWaitListFormLink =
-  "https://docs.google.com/forms/d/e/1FAIpQLSfij8Q_TMeTFjMl9vrW5V8XHXYg9ZumCqjw32tb_wi9m_UXxA/viewform?usp=dialog"
+  "https://docs.google.com/forms/d/e/1FAIpQLSfRzHm_F3ElLHi7gIqlXv_gmTB0nNs4wirsX9PSxnvSeTPjuQ/viewform"
 
 export const applicationFormStatusData = {
   [ApplicationFormStatus.Open]: {
