@@ -179,6 +179,7 @@ export default function EditableFormCard({
           }`}
           {...register("name")}
           disabled={readonly}
+          autoFocus
         />
         <input
           placeholder="Enter description"
