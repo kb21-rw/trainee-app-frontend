@@ -11,7 +11,7 @@ import { useCookies } from "react-cookie"
 import { useDispatch } from "react-redux"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { getErrorInfo } from "../../utils/helper"
-import { DataGrid, GridColDef } from "@mui/x-data-grid"
+import { DataGrid, GridColDef, GridRowClassNameParams } from "@mui/x-data-grid"
 import EditIcon from "../../assets/EditIcon"
 import { useState } from "react"
 import CreateUser from "../../components/modals/CreateUser"
@@ -28,9 +28,16 @@ export default function Users() {
     data: users,
     error: usersError,
     isFetching: usersIsFetching,
+    refetch,
   } = useGetUsersQuery({
     jwt: cookies.jwt,
   })
+
+  const getRowClassName = (params: GridRowClassNameParams) => {
+    const row = params.row as User
+    // If the user is an admin and is inactive, apply grey styling
+    return row.role === UserRole.Admin && !row.active ? "bg-gray-200" : ""
+  }
 
   const columns: GridColDef[] = [
     {
@@ -77,16 +84,6 @@ export default function Users() {
     },
   ]
 
-  const rows =
-    users?.map((user: User) => ({
-      id: user._id,
-      _id: user._id,
-      userId: user.userId,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    })) ?? []
-
   const handleCloseCreateUserModal = () =>
     setTimeout(() => setIsCreateUserModalOpen(false), 0)
 
@@ -99,6 +96,19 @@ export default function Users() {
   }
 
   if (usersIsFetching) return <TableSkeleton />
+
+  const rows =
+    users
+      .sort((a: User, b: User) => b.createdAt.localeCompare(a.createdAt))
+      ?.map((user: User) => ({
+        id: user._id,
+        _id: user._id,
+        userId: user.userId,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        active: user.active,
+      })) ?? []
 
   return (
     <>
@@ -120,11 +130,20 @@ export default function Users() {
             <EditUserModal
               isOpen={Boolean(userInformation)}
               defaultValues={userInformation}
-              onClose={() => setTimeout(() => setUserInformation(null), 0)}
+              onClose={() => {
+                setTimeout(() => setUserInformation(null), 0)
+                // Refresh data after updating a user
+                refetch()
+              }}
             />
           </>
         )}
-        <DataGrid columns={columns} rows={rows} sx={customizeDataGridStyles} />
+        <DataGrid
+          columns={columns}
+          rows={rows}
+          sx={customizeDataGridStyles}
+          getRowClassName={getRowClassName}
+        />
       </div>
     </>
   )

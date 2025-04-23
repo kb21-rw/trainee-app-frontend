@@ -17,14 +17,21 @@ import {
   DisclosurePanel,
 } from "@headlessui/react"
 import DropDownIcon from "../../assets/DropDownIcon"
+import dayjs from "dayjs"
 
+export type FormData = {
+  name: string
+  description: string
+  trainingStartDate: dayjs.Dayjs
+  stages: Stage[]
+}
 type Stage = Omit<BaseStage, "id" | "participantsCount"> & {
   id?: string
   participantsCount?: number
 }
 
 type UpdateStageProps = {
-  control: Control<{ stages: Stage[]; [key: string]: any }>
+  control: Control<FormData>
   register?: UseFormRegister<any>
   error: any
   readOnly?: boolean
@@ -50,6 +57,11 @@ export default function UpdateStages({
       remove(fields.length - 1)
     }
   }
+
+  const canRemoveLastStage =
+    fields?.length > 1 && fields?.[fields.length - 1]?.participantsCount === 0
+
+  const disableRemoveButton = readOnly || fields.length === 1
 
   return (
     <Disclosure as="div" className="p-4 border rounded-md">
@@ -107,29 +119,30 @@ export default function UpdateStages({
             />
           </Paper>
         ))}
-        <Stack
-          direction="row"
-          display="flex"
-          justifyContent="space-between"
-          paddingBlockStart={1}
-        >
-          {fields?.[fields.length - 1]?.participantsCount === 0 &&
-            fields.length > 1 && (
+        {!readOnly && (
+          <Stack
+            direction="row"
+            display="flex"
+            justifyContent="space-between"
+            paddingBlockStart={1}
+          >
+            {canRemoveLastStage && (
               <Button
                 size={ButtonSize.Small}
                 variant={ButtonVariant.Danger}
                 onClick={handleRemoveStage}
-                disabled={readOnly || fields.length === 1}
+                disabled={disableRemoveButton}
               >
                 Remove Stage
               </Button>
             )}
-          {!readOnly && (
-            <Button size={ButtonSize.Small} onClick={handleAddStage}>
-              Add Stage
-            </Button>
-          )}
-        </Stack>
+            {!readOnly && (
+              <Button size={ButtonSize.Small} onClick={handleAddStage}>
+                Add Stage
+              </Button>
+            )}
+          </Stack>
+        )}
       </DisclosurePanel>
     </Disclosure>
   )

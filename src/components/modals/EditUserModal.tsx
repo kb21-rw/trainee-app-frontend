@@ -10,8 +10,14 @@ import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
 import { useCookies } from "react-cookie"
-import { useUpdateUserMutation } from "../../features/user/backendApi"
+import {
+  useToggleUserActiveStatusMutation,
+  useUpdateUserMutation,
+  useGetProfileQuery,
+} from "../../features/user/backendApi"
 import Loader from "../ui/Loader"
+import { useState, useEffect } from "react"
+import AdminStatusConfirmationModal from "./AdminStatusConfirmationModal"
 
 const selectOptions = [
   { value: UserRole.Prospect, label: "Prospect" },
@@ -46,6 +52,18 @@ export default function EditUserModal({
   const dispatch = useDispatch()
   const [updateUser, { isLoading: isUserLoading, reset: resetUpdateUser }] =
     useUpdateUserMutation()
+  const [toggleUserActive, { isLoading: isToggleLoading }] =
+    useToggleUserActiveStatusMutation()
+  const [showConfirmation, setShowConfirmation] = useState(false)
+  const { data: loggedInUser } = useGetProfileQuery(cookies.jwt)
+
+  const [isUserActive, setIsUserActive] = useState(
+    defaultValues.active !== false,
+  )
+
+  useEffect(() => {
+    setIsUserActive(defaultValues.active !== false)
+  }, [defaultValues])
 
   const {
     register,
@@ -58,6 +76,7 @@ export default function EditUserModal({
       name: defaultValues.name,
       email: defaultValues.email,
       role: defaultValues.role,
+      active: defaultValues.active,
     },
   })
 
@@ -85,50 +104,99 @@ export default function EditUserModal({
     }
   }
 
+  const handleToggleActive = async () => {
+    try {
+      await toggleUserActive({
+        jwt: cookies.jwt,
+        userId: defaultValues._id,
+      }).unwrap()
+
+      const action = isUserActive ? "deactivated" : "activated"
+      handleShowAlert(dispatch, {
+        type: AlertType.Success,
+        message: `Admin ${defaultValues.name} was ${action} successfully.`,
+      })
+      setShowConfirmation(false)
+      onClose()
+    } catch (error) {
+      const { message } = getErrorInfo(error)
+      handleShowAlert(dispatch, {
+        type: AlertType.Error,
+        message,
+      })
+    }
+  }
+
+  const showActivateButton =
+    defaultValues.role === UserRole.Admin &&
+    defaultValues.userId !== loggedInUser.userId
+  const activationButtonText = isUserActive ? "Deactivate" : "Activate"
+
   return (
-    <Modal
-      open={isOpen}
-      onClose={onClose}
-      aria-describedby="Add user"
-      component="div"
-      className="max-w-md mx-auto flex items-center "
-    >
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-6 w-full bg-white p-5 rounded-xl"
+    <>
+      {/* Edit Modal */}
+      <Modal
+        open={isOpen && !showConfirmation}
+        onClose={onClose}
+        aria-describedby="Add user"
+        component="div"
+        className="max-w-md mx-auto flex items-center"
       >
-        <h1 className="text-center text-3xl font-semibold">Edit user</h1>
-        <Input
-          register={{ ...register("name") }}
-          label="Name"
-          error={errors.name?.message}
-        />
-        <Input
-          register={{ ...register("email") }}
-          label="Email"
-          disabled
-          error={errors.email?.message}
-        />
-        <Select
-          options={selectOptions}
-          label="Role"
-          register={register("role")}
-          error={errors.role?.message}
-        />
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-6 w-full bg-white p-5 rounded-xl"
+        >
+          <h1 className="text-center text-3xl font-semibold">Edit user</h1>
+          <Input
+            register={register("name")}
+            label="Name"
+            error={errors.name?.message}
+          />
+          <Input
+            register={register("email")}
+            label="Email"
+            disabled
+            error={errors.email?.message}
+          />
+          <Select
+            options={selectOptions}
+            label="Role"
+            register={register("role")}
+            error={errors.role?.message}
+          />
 
-        <div className="flex justify-around gap-2">
-          <Button outlined onClick={onClose}>
-            Cancel
-          </Button>
+          {showActivateButton && (
+            <div className="mt-2">
+              <Button onClick={() => setShowConfirmation(true)}>
+                {activationButtonText}
+              </Button>
+            </div>
+          )}
 
-          <Button type="submit" disabled={isUserLoading || !isDirty}>
-            <span className="flex items-center gap-1">
-              {isUserLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
-              <span>Save </span>
-            </span>
-          </Button>
-        </div>
-      </form>
-    </Modal>
+          <div className="flex justify-around gap-2">
+            <Button outlined onClick={onClose}>
+              Cancel
+            </Button>
+
+            <Button type="submit" disabled={isUserLoading || !isDirty}>
+              <span className="flex items-center gap-1">
+                {isUserLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
+                <span>Save</span>
+              </span>
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Admin status confirmation modal */}
+      <AdminStatusConfirmationModal
+        isOpen={showConfirmation}
+        onClose={() => setShowConfirmation(false)}
+        isUserActive={isUserActive}
+        userName={defaultValues.name}
+        onConfirm={handleToggleActive}
+        isLoading={isToggleLoading}
+      />
+    </>
   )
 }

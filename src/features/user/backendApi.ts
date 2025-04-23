@@ -121,6 +121,20 @@ export const backendApi: any = createApi({
       invalidatesTags: ["users"],
     }),
 
+    toggleUserActiveStatus: builder.mutation({
+      query: (args) => {
+        const { jwt, userId } = args
+        return {
+          url: `/users/${userId}/status`,
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      },
+      invalidatesTags: ["users"],
+    }),
+
     editCoach: builder.mutation({
       query: (args) => {
         const { jwt, body, id } = args
@@ -575,6 +589,7 @@ export const {
   useVerifyApplicantMutation,
   useGetProfileQuery,
   useUpdateProfileMutation,
+  useToggleUserActiveStatusMutation,
   useResetPasswordMutation,
   useDeleteCoachMutation,
   useDeleteTraineeMutation,
