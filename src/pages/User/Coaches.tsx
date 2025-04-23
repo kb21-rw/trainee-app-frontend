@@ -12,7 +12,6 @@ import { handleShowAlert } from "../../utils/handleShowAlert"
 import { getErrorInfo } from "../../utils/helper"
 import Loader from "../../components/ui/Loader"
 import { DataGrid, GridColDef } from "@mui/x-data-grid"
-import DeleteIcon from "../../assets/DeleteIcon"
 import AddCoach from "../../components/modals/AddCoach"
 import { customizeDataGridStyles } from "../../utils/data"
 import EditIcon from "../../assets/EditIcon"
@@ -99,9 +98,6 @@ export default function Coaches() {
               onClick={() => handleEditCoach(row.name, row.email, row.id)}
             >
               <EditIcon />
-            </button>
-            <button>
-              <DeleteIcon />
             </button>
           </div>
         )
