@@ -169,4 +169,17 @@ export const customizeDataGridStyles = {
     visibility: "visible !important",
     width: "auto",
   },
+  // styles related to the trainees table only
+  "& .actions-cell": {
+    display: "flex",
+    justifyContent: "start",
+    alignItems: "center",
+  },
+  "& .rejected": {
+    backgroundColor: "#ffe0e0",
+  },
+  // preventing color change on hover
+  "& .rejected:hover": {
+    backgroundColor: "#ffe0e0",
+  },
 }
