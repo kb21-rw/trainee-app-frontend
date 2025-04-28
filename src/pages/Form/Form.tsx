@@ -46,6 +46,9 @@ export default function Form() {
 
   return (
     <div className="max-w-5xl py-12 mx-auto">
+      <div className="pb-10">
+        <Button onClick={() => navigate(-1)}>Back to form list</Button>
+      </div>
       <div className="flex flex-col gap-4">
         <EditableFormCard form={formProps} readonly={!isEditMode} />
         <div className="flex flex-col gap-4">
@@ -56,9 +59,6 @@ export default function Form() {
               readonly={!isEditMode}
             />
           ))}
-        </div>
-        <div className="pt-32">
-          <Button onClick={() => navigate(-1)}>Back to form list</Button>
         </div>
       </div>
     </div>
