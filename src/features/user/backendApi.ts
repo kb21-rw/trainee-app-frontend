@@ -21,20 +21,9 @@ export const backendApi: any = createApi({
   ],
   endpoints: (builder) => ({
     getAllTrainees: builder.query({
-      query: ({
-        jwt,
-        searchString = "",
-        traineesPerPage = 10,
-        sortBy = "entry",
-      }) => {
-        const params = new URLSearchParams({
-          searchString,
-          traineesPerPage: String(traineesPerPage),
-          sortBy,
-        }).toString()
-
+      query: ({ jwt, cohortId }) => {
         return {
-          url: `/trainees?${params}`,
+          url: `/trainees/${cohortId}`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
