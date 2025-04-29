@@ -1,5 +1,3 @@
-import React from "react"
-
 const BackIcon = () => {
   return (
     <svg
@@ -11,7 +9,7 @@ const BackIcon = () => {
     >
       <path
         d="M72 20H15.32L29.64 5.64L24 0L0 24L24 48L29.64 42.36L15.32 28H72V20Z"
-        fill="black"
+        fill="#0077B6"
       />
     </svg>
   )
