@@ -175,6 +175,7 @@ export const customizeDataGridStyles = {
     justifyContent: "start",
     alignItems: "center",
   },
+
   "& .rejected": {
     backgroundColor: "#ffe0e0",
   },
