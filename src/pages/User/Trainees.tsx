@@ -211,7 +211,23 @@ const SelectCoach = ({ currentTrainee }: { currentTrainee: string }) => {
   return (
     <Box>
       <FormControl fullWidth>
-        <Select value={coach} onChange={handleChange} displayEmpty>
+        <Select
+          value={coach}
+          onChange={handleChange}
+          displayEmpty
+          variant="outlined"
+          sx={{
+            "& .MuiOutlinedInput-notchedOutline": {
+              border: "none",
+            },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              border: "none",
+            },
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              border: "none",
+            },
+          }}
+        >
           <MenuItem value="">
             <em>Select coach</em>
           </MenuItem>
