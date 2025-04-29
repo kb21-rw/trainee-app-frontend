@@ -135,7 +135,6 @@ export default function EditUserModal({
 
   return (
     <>
-      {/* Edit Modal */}
       <Modal
         open={isOpen && !showConfirmation}
         onClose={onClose}
@@ -189,7 +188,6 @@ export default function EditUserModal({
         </form>
       </Modal>
 
-      {/* User status confirmation modal */}
       <UserStatusConfirmationModal
         isOpen={showConfirmation}
         onClose={() => setShowConfirmation(false)}

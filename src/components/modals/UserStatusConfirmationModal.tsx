@@ -54,7 +54,7 @@ export default function UserStatusConfirmationModal({
             }
           >
             <span className="flex items-center gap-1">
-              {isLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
+              {isLoading && <Loader borderColor="#fff" size="xs" />}
               <span>{actionCapitalized}</span>
             </span>
           </Button>
