@@ -17,7 +17,7 @@ import {
 } from "../../features/user/backendApi"
 import Loader from "../ui/Loader"
 import { useState, useEffect } from "react"
-import AdminStatusConfirmationModal from "./AdminStatusConfirmationModal"
+import UserStatusConfirmationModal from "./UserStatusConfirmationModal"
 
 const selectOptions = [
   { value: UserRole.Prospect, label: "Prospect" },
@@ -114,7 +114,7 @@ export default function EditUserModal({
       const action = isUserActive ? "deactivated" : "activated"
       handleShowAlert(dispatch, {
         type: AlertType.Success,
-        message: `Admin ${defaultValues.name} was ${action} successfully.`,
+        message: `${defaultValues.role} ${defaultValues.name} was ${action} successfully.`,
       })
       setShowConfirmation(false)
       onClose()
@@ -128,13 +128,13 @@ export default function EditUserModal({
   }
 
   const showActivateButton =
-    defaultValues.role === UserRole.Admin &&
+    (defaultValues.role === UserRole.Admin ||
+      defaultValues.role === UserRole.Coach) &&
     defaultValues.userId !== loggedInUser.userId
   const activationButtonText = isUserActive ? "Deactivate" : "Activate"
 
   return (
     <>
-      {/* Edit Modal */}
       <Modal
         open={isOpen && !showConfirmation}
         onClose={onClose}
@@ -188,14 +188,14 @@ export default function EditUserModal({
         </form>
       </Modal>
 
-      {/* Admin status confirmation modal */}
-      <AdminStatusConfirmationModal
+      <UserStatusConfirmationModal
         isOpen={showConfirmation}
         onClose={() => setShowConfirmation(false)}
         isUserActive={isUserActive}
         userName={defaultValues.name}
         onConfirm={handleToggleActive}
         isLoading={isToggleLoading}
+        userRole={defaultValues.role}
       />
     </>
   )

@@ -1,24 +1,26 @@
 import { Modal } from "@mui/material"
 import Button from "../ui/Button"
-import { ButtonVariant } from "../../utils/types"
+import { ButtonVariant, UserRole } from "../../utils/types"
 import Loader from "../ui/Loader"
 
-interface AdminStatusConfirmationModalProps {
+interface UserStatusConfirmationModalProps {
   isOpen: boolean
   onClose: () => void
   isUserActive: boolean
   userName: string
   onConfirm: () => Promise<void>
   isLoading: boolean
+  userRole: UserRole
 }
 
-export default function AdminStatusConfirmationModal({
+export default function UserStatusConfirmationModal({
   isOpen,
   onClose,
   isUserActive,
   onConfirm,
   isLoading,
-}: AdminStatusConfirmationModalProps) {
+  userRole,
+}: UserStatusConfirmationModalProps) {
   const action = isUserActive ? "deactivate" : "activate"
   const actionCapitalized = isUserActive ? "Deactivate" : "Activate"
 
@@ -32,10 +34,12 @@ export default function AdminStatusConfirmationModal({
     >
       <div className="flex flex-col gap-6 w-full bg-white p-5 rounded-xl">
         <h1 className="text-center text-2xl font-semibold">
-          {actionCapitalized} an Admin
+          {actionCapitalized} {userRole}
         </h1>
 
-        <p className="text-center">Confirm if you want to {action} an Admin</p>
+        <p className="text-center">
+          Confirm if you want to {action} this {userRole.toLowerCase()}.
+        </p>
 
         <div className="flex justify-around gap-2">
           <Button outlined onClick={onClose}>
@@ -50,7 +54,7 @@ export default function AdminStatusConfirmationModal({
             }
           >
             <span className="flex items-center gap-1">
-              {isLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
+              {isLoading && <Loader borderColor="#fff" size="xs" />}
               <span>{actionCapitalized}</span>
             </span>
           </Button>
