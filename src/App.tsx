@@ -36,7 +36,8 @@ import { store } from "./store"
 import { googleClientId } from "./utils/constants"
 import { UserRole } from "./utils/types"
 import { SocketContextProvider } from "./utils/contexts/SocketContext"
-import Trainees from "./pages/User/Trainees"
+import Trainees from "./pages/Overview/Trainees"
+
 
 export default function App() {
   const router = createBrowserRouter(
