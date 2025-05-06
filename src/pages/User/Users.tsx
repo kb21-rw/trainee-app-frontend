@@ -35,8 +35,11 @@ export default function Users() {
 
   const getRowClassName = (params: GridRowClassNameParams) => {
     const row = params.row as User
-    // If the user is an admin and is inactive, apply grey styling
-    return row.role === UserRole.Admin && !row.active ? "bg-gray-200" : ""
+    // If the user is an admin or a coach and is inactive, apply grey styling
+    return (row.role === UserRole.Admin || row.role === UserRole.Coach) &&
+      !row.active
+      ? "bg-gray-200"
+      : ""
   }
 
   const columns: GridColDef[] = [
