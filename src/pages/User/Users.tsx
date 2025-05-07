@@ -15,9 +15,9 @@ import { DataGrid, GridColDef, GridRowClassNameParams } from "@mui/x-data-grid"
 import EditIcon from "../../assets/EditIcon"
 import { useState } from "react"
 import CreateUser from "../../components/modals/CreateUser"
-import { customizeDataGridStyles } from "../../utils/data"
 import TableSkeleton from "../../components/skeletons/TableSkeleton"
 import EditUserModal from "../../components/modals/EditUserModal"
+import { customizeDataGridStyles } from "../../utils/styles"
 
 export default function Users() {
   const dispatch = useDispatch()

@@ -26,7 +26,10 @@ import { useForm } from "react-hook-form"
 
 const Trainees = () => {
   const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null)
-  const [responseInfo, setResponseInfo] = useState<any | null>(null)
+  const [responseInfo, setResponseInfo] = useState<{
+    userId: string
+    question: ResponseModalQuestion
+  } | null>(null)
   const [cookies] = useCookies([Cookie.jwt])
   const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt })
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
@@ -35,9 +38,9 @@ const Trainees = () => {
     defaultValues: { cohortId: "" },
   })
   const {
-    data: cohortOverview,
-    error: cohortOverviewError,
-    isFetching: cohortOverviewIsFetching,
+    data: traineeOverview,
+    error: traineeOverviewError,
+    isFetching: traineeOverviewIsFetching,
   } = useGetTraineesQuery({
     jwt: cookies.jwt,
     cohortId: selectedCohortId,
@@ -69,8 +72,8 @@ const Trainees = () => {
     return () => subscription.unsubscribe()
   }, [watch])
 
-  const selectedCohortFromOverview = cohortOverview
-    ? { value: cohortOverview._id, label: cohortOverview.name }
+  const selectedCohortFromOverview = traineeOverview
+    ? { value: traineeOverview._id, label: traineeOverview.name }
     : null
 
   const selectedCohortFromId = selectedCohortId
@@ -137,9 +140,9 @@ const Trainees = () => {
     })
   }
 
-  if (cohortOverviewError || decisionError || updateParticipantError) {
+  if (traineeOverviewError || decisionError || updateParticipantError) {
     const { message } = getErrorInfo(
-      cohortOverviewError ?? decisionError ?? updateParticipantError,
+      traineeOverviewError ?? decisionError ?? updateParticipantError,
     )
     handleShowAlert(dispatch, {
       type: AlertType.Error,
@@ -168,8 +171,8 @@ const Trainees = () => {
     updateParticipantReset()
   }
 
-  if (cohortOverview && !selectedCohortId) {
-    setSelectedCohortId(cohortOverview._id)
+  if (traineeOverview && !selectedCohortId) {
+    setSelectedCohortId(traineeOverview._id)
   }
 
   return (
@@ -203,19 +206,19 @@ const Trainees = () => {
         </div>
       </div>
 
-      {cohortOverviewIsFetching && <Loader />}
-      {cohortOverview && (
+      {traineeOverviewIsFetching && <Loader />}
+      {traineeOverview && (
         <OverViewTable
-          forms={cohortOverview.forms}
-          participants={cohortOverview.trainees}
-          participantsInfo={cohortOverview.participantsInfo}
-          coaches={cohortOverview.coaches}
+          forms={traineeOverview.forms}
+          participants={traineeOverview.trainees}
+          participantsInfo={traineeOverview.participantsInfo}
+          coaches={traineeOverview.coaches}
           updates={[]}
-          stages={cohortOverview.stages}
+          stages={traineeOverview.stages}
           actions={{ handleDecision, handleUpsertResponse, handleCoachChange }}
         />
       )}
-      {!cohortOverviewIsFetching && !cohortOverview && (
+      {!traineeOverviewIsFetching && !traineeOverview && (
         <div className="flex-1">
           <NotFound entity="Cohort" type="NoData" />
         </div>
