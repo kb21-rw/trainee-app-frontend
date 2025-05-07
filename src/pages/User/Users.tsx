@@ -77,7 +77,7 @@ export default function Users() {
       flex: 1,
       renderCell: ({ row }) => {
         return (
-          <div className="flex justify-center justify-items-center h-full gap-4">
+          <div className="flex h-full gap-4">
             <button onClick={() => setUserInformation(row)}>
               <EditIcon />
             </button>
@@ -120,7 +120,7 @@ export default function Users() {
         onClose={handleCloseCreateUserModal}
       />
       <div className="my-10 space-y-10">
-        <div className="flex justify-end items-center">
+        <div className="flex items-center justify-end">
           <Button
             size={ButtonSize.Medium}
             onClick={() => setIsCreateUserModalOpen(true)}
