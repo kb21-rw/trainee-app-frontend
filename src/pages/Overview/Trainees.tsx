@@ -93,7 +93,6 @@ const Trainees = () => {
     selectedCohortFromActive ??
     undefined
 
-
   const handleDecision = (userData: DecisionInfo) => {
     setDecisionInfo({ ...userData })
   }
