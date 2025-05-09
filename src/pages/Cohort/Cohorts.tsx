@@ -26,7 +26,7 @@ type TCohort = {
   stages: Stage[]
   trainees: number
   _id: string
-  cohortId: string
+  cohortNumber: string
   trainingStartDate: string
   isActive: boolean
 }
@@ -66,7 +66,7 @@ export default function Cohorts() {
   const modifiedArray: TCohortWithId[] = data?.map((row: TCohort) => {
     return {
       ...row,
-      id: row.cohortId,
+      id: row.cohortNumber,
     }
   })
 
@@ -114,7 +114,7 @@ export default function Cohorts() {
               outlined
               onClick={() =>
                 setDisplayCohortDetails({
-                  cohortId: row.cohortId,
+                  cohortNumber: row.cohortNumber,
                   _id: row.id,
                   name: row.name,
                   description: row.description,
