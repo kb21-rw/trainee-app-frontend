@@ -1,6 +1,6 @@
 import { useGetFormQuery } from "../../features/user/backendApi"
 import Loader from "../../components/ui/Loader"
-import { Link, useParams, useSearchParams } from "react-router-dom"
+import { Link, useLocation, useParams, useSearchParams } from "react-router-dom"
 import EditableFormCard from "../../components/ui/EditableFormCard"
 import QuestionCard from "../../components/ui/QuestionCard"
 import { AlertType, Cookie, TemplateQuestion } from "../../utils/types"
@@ -26,6 +26,7 @@ export default function Form() {
   })
 
   const { questionIds: questions = [], ...formProps } = form ?? {}
+  const { activeCohortId } = useLocation().state || {}
 
   if (isFetching) {
     return (
@@ -46,7 +47,7 @@ export default function Form() {
   return (
     <div className="max-w-5xl py-12 mx-auto lg:grid-cols-12 lg:grid">
       <div className="lg:col-span-1">
-        <Link to=".." relative="path">
+        <Link to=".." state={{ activeCohortId }} relative="path">
           <BackIcon />
         </Link>
       </div>
