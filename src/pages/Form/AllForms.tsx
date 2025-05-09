@@ -16,13 +16,17 @@ import { handleShowAlert } from "../../utils/handleShowAlert"
 import { getErrorInfo } from "../../utils/helper"
 import { AlertType, Cohort, Cookie, IFormType } from "../../utils/types"
 import FormsSkeleton from "./FormsSkeleton"
+import { useLocation } from "react-router-dom"
 
 const AllForms = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const dispatch = useDispatch()
   const [cookies] = useCookies([Cookie.jwt])
   const [hasFetched, setHasFetched] = useState(false)
-  const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
+  const { activeCohortId } = useLocation().state || {}
+  const [selectedCohortId, setSelectedCohortId] = useState<string | undefined>(
+    () => activeCohortId,
+  )
 
   const { data, isFetching } = useGetAllFormsQuery({
     jwt: cookies.jwt,
@@ -128,7 +132,7 @@ const AllForms = () => {
         <NotFound entity="Form" />
       ) : (
         forms?.map((form: IFormType, index: number) => (
-          <FormCard form={form} key={index} />
+          <FormCard form={form} key={index} activeCohortId={selectedCohortId} />
         ))
       )}
     </div>

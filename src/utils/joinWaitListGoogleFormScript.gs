@@ -2,7 +2,6 @@ function onFormSubmit(e) {
   const formResponse = e.response
 
   const responseData = {
-    respondentEmail: formResponse.getRespondentEmail() || "anonymous",
     timestamp: formResponse.getTimestamp().toISOString(),
     responses: {},
   }
@@ -28,7 +27,11 @@ function onFormSubmit(e) {
     muteHttpExceptions: true,
   }
 
-  const response = UrlFetchApp.fetch("[deployed-link]/join-wait-list", options)
+  // use actual link for the production backend
+  const response = UrlFetchApp.fetch(
+    "https://trainee-app-backend-staging-1593.up.railway.app/join-wait-list",
+    options,
+  )
   Logger.log(response.getContentText())
 }
 

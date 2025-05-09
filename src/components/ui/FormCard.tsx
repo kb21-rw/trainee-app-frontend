@@ -10,7 +10,13 @@ import Loader from "./Loader"
 import DeleteModal from "../modals/DeleteModal"
 import { useCookies } from "react-cookie"
 
-const FormCard = ({ form }: { form: IFormType }) => {
+const FormCard = ({
+  form,
+  activeCohortId,
+}: {
+  form: IFormType
+  activeCohortId?: string
+}) => {
   const [cookies] = useCookies([Cookie.jwt])
   const navigate = useNavigate()
   const questions = form.questions
@@ -48,14 +54,22 @@ const FormCard = ({ form }: { form: IFormType }) => {
         <H6>{form.description}</H6>
         <div className="flex justify-between">
           <button
-            onClick={() => navigate(`/forms/${form._id}?edit=false`)}
+            onClick={() =>
+              navigate(`/forms/${form._id}?edit=false`, {
+                state: { activeCohortId },
+              })
+            }
             className="flex items-center gap-2"
           >
             <View />
             <span>View</span>
           </button>
           <button
-            onClick={() => navigate(`/forms/${form._id}?edit=true`)}
+            onClick={() =>
+              navigate(`/forms/${form._id}?edit=true`, {
+                state: { activeCohortId },
+              })
+            }
             className="flex items-center gap-2"
           >
             <Edit />
