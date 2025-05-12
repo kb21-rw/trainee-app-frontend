@@ -20,20 +20,6 @@ export const backendApi: any = createApi({
     "users",
   ],
   endpoints: (builder) => ({
-    getAllTrainees: builder.query({
-      query: (args) => {
-        const { jwt, query } = args
-        return {
-          url: `/trainees/all${query}`,
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        }
-      },
-      providesTags: ["trainees"],
-    }),
-
     getTraineesForCoach: builder.query({
       query: (args) => {
         const { jwt, query } = args
@@ -534,6 +520,19 @@ export const backendApi: any = createApi({
       },
       providesTags: ["overview"],
     }),
+    getTrainees: builder.query({
+      query: (args) => {
+        const { jwt, cohortId } = args
+        return {
+          url: `/cohorts/overview?type=Trainee${cohortId ? "&cohortId=" + cohortId : ""}`,
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      },
+      providesTags: ["overview"],
+    }),
     applicantDecision: builder.mutation({
       query: (args) => {
         const { jwt, body } = args
@@ -578,7 +577,6 @@ export const backendApi: any = createApi({
 })
 
 export const {
-  useGetAllTraineesQuery,
   useGetCoachesQuery,
   useGetUsersQuery,
   useAddCoachMutation,
@@ -614,6 +612,7 @@ export const {
   useCreateCohortMutation,
   useUpdateCohortMutation,
   useGetApplicantsQuery,
+  useGetTraineesQuery,
   useApplicantDecisionMutation,
   useAddApplicantsMutation,
   useGetAllCohortsQuery,
