@@ -29,7 +29,6 @@ import SettingsIcon from "../../assets/SettingsIcon"
 import SettingsModal from "../modals/Settings"
 import EditParticipantModal from "../modals/EditParticipantModal"
 
-
 interface Response extends BaseResponse {
   questionId: string
 }
@@ -317,7 +316,6 @@ export default function OverViewTable({
         onCellClick={handleCellClick}
         disableRowSelectionOnClick
         autoPageSize
-
         slots={{
           noRowsOverlay: () => (
             <div className="flex items-center justify-center h-full">
