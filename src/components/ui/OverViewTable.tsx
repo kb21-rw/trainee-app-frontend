@@ -28,6 +28,7 @@ import WriteIcon from "../../assets/WriteIcon"
 import SettingsIcon from "../../assets/SettingsIcon"
 import SettingsModal from "../modals/Settings"
 import EditParticipantModal from "../modals/EditParticipantModal"
+import EditTraineeModal from "../modals/EditTraineeModal"
 
 interface Response extends BaseResponse {
   questionId: string
@@ -74,6 +75,7 @@ export default function OverViewTable({
 }: DataGridProps) {
   const [settingsInfo, setSettingsInfo] = useState<any>(null)
   const [participantInfo, setParticipantInfo] = useState<any>(null)
+  const [traineeInfo, setTraineeInfo] = useState<any>(null)
 
   const questionColumns: GridColDef[] = forms.flatMap((form) =>
     form.questions.map(({ _id, prompt, options, required, type }) => ({
@@ -100,6 +102,14 @@ export default function OverViewTable({
               <button
                 className="duration-200 hover:scale-125"
                 onClick={() => setParticipantInfo(row)}
+              >
+                <WriteIcon className="w-4 h-4 fill-primary-dark hover:fill-primary-light" />
+              </button>
+            )}
+            {row.actions === ParticipantPhase.Active && (
+              <button
+                className="duration-200 hover:scale-125"
+                onClick={() => setTraineeInfo(row)}
               >
                 <WriteIcon className="w-4 h-4 fill-primary-dark hover:fill-primary-light" />
               </button>
@@ -305,6 +315,13 @@ export default function OverViewTable({
         <EditParticipantModal
           row={participantInfo}
           onClose={() => setTimeout(() => setParticipantInfo(null), 0)}
+          coaches={coaches}
+        />
+      )}
+      {traineeInfo && (
+        <EditTraineeModal
+          row={traineeInfo}
+          onClose={() => setTimeout(() => setTraineeInfo(null), 0)}
           coaches={coaches}
         />
       )}
