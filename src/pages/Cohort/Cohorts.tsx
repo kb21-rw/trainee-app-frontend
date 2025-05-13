@@ -11,11 +11,11 @@ import {
   useCreateCohortMutation,
   useGetAllCohortsQuery,
 } from "../../features/user/backendApi"
-import { customizeDataGridStyles } from "../../utils/data"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { getErrorInfo } from "../../utils/helper"
 import { AlertType, ButtonSize, Cookie, Stage } from "../../utils/types"
 import CreateCohortForm from "./CreateCohortForm"
+import { customizeDataGridStyles } from "../../utils/styles"
 
 type TCohort = {
   applicants: number

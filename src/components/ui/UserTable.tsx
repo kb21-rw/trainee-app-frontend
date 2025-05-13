@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
-import React, { Dispatch, SetStateAction } from "react"
-import Edit from "../../assets/EditIcon"
+import { Dispatch, SetStateAction } from "react"
+import { FaFileAlt } from "react-icons/fa"
 import Delete from "../../assets/DeleteIcon"
+import Edit from "../../assets/EditIcon"
 import Loader from "../../components/ui/Loader"
 import NotFound from "./NotFound"
-import { FaFileAlt } from "react-icons/fa"
 interface PropTypes {
   headers: string[]
   isLoading: boolean

@@ -19,6 +19,7 @@ const Button = ({
   disabled,
   onClick,
   noBackground = false,
+  className = "",
 }: ButtonProps) => {
   const disabledClasses = {
     "text-white bg-gray-400 border border-gray-400 cursor-not-allowed px-6":
@@ -58,6 +59,7 @@ const Button = ({
         primaryClasses,
         sizeClasses,
         noBackgroundClasses,
+        className,
       )}
       type={type}
       disabled={disabled}
