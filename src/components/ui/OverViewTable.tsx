@@ -28,7 +28,6 @@ import WriteIcon from "../../assets/WriteIcon"
 import SettingsIcon from "../../assets/SettingsIcon"
 import SettingsModal from "../modals/Settings"
 import EditParticipantModal from "../modals/EditParticipantModal"
-import EditTraineeModal from "../modals/EditTraineeModal"
 
 interface Response extends BaseResponse {
   questionId: string
@@ -38,6 +37,7 @@ type Question = (Omit<BaseQuestion, "responses"> & { responses: Response })[]
 type Form = Omit<BaseForm, "questions"> & { questions: Question }
 
 interface DataGridProps {
+  overviewType: "trainee" | "applicant"
   forms: Form[]
   participants: CohortParticipant[]
   stages: Stage[]
@@ -62,6 +62,7 @@ interface DataGridProps {
 }
 
 export default function OverViewTable({
+  overviewType,
   forms,
   participants,
   participantsInfo,
@@ -75,7 +76,6 @@ export default function OverViewTable({
 }: DataGridProps) {
   const [settingsInfo, setSettingsInfo] = useState<any>(null)
   const [participantInfo, setParticipantInfo] = useState<any>(null)
-  const [traineeInfo, setTraineeInfo] = useState<any>(null)
 
   const questionColumns: GridColDef[] = forms.flatMap((form) =>
     form.questions.map(({ _id, prompt, options, required, type }) => ({
@@ -106,14 +106,7 @@ export default function OverViewTable({
                 <WriteIcon className="w-4 h-4 fill-primary-dark hover:fill-primary-light" />
               </button>
             )}
-            {row.actions === ParticipantPhase.Active && (
-              <button
-                className="duration-200 hover:scale-125"
-                onClick={() => setTraineeInfo(row)}
-              >
-                <WriteIcon className="w-4 h-4 fill-primary-dark hover:fill-primary-light" />
-              </button>
-            )}
+
             <button
               className="duration-200 hover:scale-125"
               onClick={() => setSettingsInfo(row)}
@@ -302,6 +295,7 @@ export default function OverViewTable({
     })
   }
 
+  console.log('overview type is', overviewType)
   return (
     <>
       {setSettingsInfo && (
@@ -313,15 +307,9 @@ export default function OverViewTable({
       )}
       {participantInfo && (
         <EditParticipantModal
+          type={overviewType}
           row={participantInfo}
           onClose={() => setTimeout(() => setParticipantInfo(null), 0)}
-          coaches={coaches}
-        />
-      )}
-      {traineeInfo && (
-        <EditTraineeModal
-          row={traineeInfo}
-          onClose={() => setTimeout(() => setTraineeInfo(null), 0)}
           coaches={coaches}
         />
       )}
@@ -336,7 +324,7 @@ export default function OverViewTable({
         slots={{
           noRowsOverlay: () => (
             <div className="flex items-center justify-center h-full">
-              <p className="text-center">No participants yet</p>
+              <p className="text-center">No {overviewType}s yet</p>
             </div>
           ),
         }}

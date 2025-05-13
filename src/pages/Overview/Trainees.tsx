@@ -176,7 +176,7 @@ const Trainees = () => {
   }
 
   return (
-    <div className="py-12 space-y-5 flex flex-col h-full">
+    <div className="flex flex-col h-full py-12 space-y-5">
       <DecisionModal
         decisionInfo={decisionInfo}
         closeModal={() => setDecisionInfo(null)}
@@ -189,7 +189,7 @@ const Trainees = () => {
         />
       )}
 
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div className="w-52">
           <form>
             <SmartSelect
@@ -209,6 +209,7 @@ const Trainees = () => {
       {traineeOverviewIsFetching && <Loader />}
       {traineeOverview && (
         <OverViewTable
+          overviewType="trainee"
           forms={traineeOverview.forms}
           participants={traineeOverview.trainees}
           participantsInfo={traineeOverview.participantsInfo}
