@@ -178,6 +178,7 @@ const Trainees = () => {
   return (
     <div className="flex flex-col h-full py-12 space-y-5">
       <DecisionModal
+        modalType="trainee"
         decisionInfo={decisionInfo}
         closeModal={() => setDecisionInfo(null)}
         onSubmit={handleSubmitDecision}
