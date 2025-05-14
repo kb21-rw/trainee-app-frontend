@@ -24,7 +24,7 @@ export default function DecisionModal({
 
   const modalData =
     decisionInfo?.decision === Decision.Rejected
-      ? { variant: ButtonVariant.Danger, title: "Reject user" }
+      ? { variant: ButtonVariant.Danger, title: `Reject ${modalType}` }
       : { variant: ButtonVariant.Primary, title: `Accept ${modalType}` }
 
   useEffect(() => {
