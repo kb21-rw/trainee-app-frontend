@@ -295,7 +295,6 @@ export default function OverViewTable({
     })
   }
 
-  console.log('overview type is', overviewType)
   return (
     <>
       {setSettingsInfo && (

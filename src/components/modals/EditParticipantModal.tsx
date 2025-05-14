@@ -69,7 +69,6 @@ export default function EditParticipantModal({
     onClose()
   }
 
-  console.log("Type is:", type)
   return (
     <Modal
       open={Boolean(row.id)}
