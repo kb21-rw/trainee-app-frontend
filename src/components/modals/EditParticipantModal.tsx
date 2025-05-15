@@ -12,10 +12,12 @@ import SmartSelect from "../ui/SmartSelect"
 import Loader from "../ui/Loader"
 
 export default function EditParticipantModal({
+  type,
   row,
   coaches,
   onClose,
 }: {
+  type: "applicant" | "trainee"
   row: UserRow
   coaches: User[]
   onClose: () => void
@@ -74,13 +76,13 @@ export default function EditParticipantModal({
       aria-labelledby="Edit Participant"
       aria-describedby=""
       component="div"
-      className="max-w-md mx-auto flex items-center "
+      className="flex items-center max-w-md mx-auto "
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-6 w-full bg-white p-5 rounded-xl"
+        className="flex flex-col w-full gap-6 p-5 bg-white rounded-xl"
       >
-        <h1 className="text-center text-3xl font-semibold">Edit participant</h1>
+        <h1 className="text-3xl font-semibold text-center">Edit {type}</h1>
         <Input
           type="text"
           label="Name"
@@ -100,7 +102,7 @@ export default function EditParticipantModal({
           <Button type="submit" disabled={!isDirty}>
             <span className="flex items-center gap-1">
               {isLoading && <Loader borderColor="#fff" size="xs" />}
-              <span>Confirm</span>
+              <span>Save</span>
             </span>
           </Button>
         </div>
