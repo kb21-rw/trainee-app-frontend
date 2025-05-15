@@ -24,8 +24,14 @@ export default function DecisionModal({
 
   const modalData =
     decisionInfo?.decision === Decision.Rejected
-      ? { variant: ButtonVariant.Danger, title: `Reject ${modalType}` }
-      : { variant: ButtonVariant.Primary, title: `Accept ${modalType}` }
+      ? {
+          variant: ButtonVariant.Danger,
+          title: `Reject ${modalType === "trainee" ? "Trainee" : "Applicant"}`,
+        }
+      : {
+          variant: ButtonVariant.Primary,
+          title: `Accept ${modalType === "trainee" ? "Trainee" : "Applicant"}`,
+        }
 
   useEffect(() => {
     if (!decisionInfo) {

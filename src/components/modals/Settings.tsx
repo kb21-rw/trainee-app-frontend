@@ -13,11 +13,13 @@ export default function SettingsModal({
   row,
   onClose = () => undefined,
   handleDecision = () => undefined,
+  type = "applicant",
 }: {
   row: UserRow
   // eslint-disable-next-line no-unused-vars
   handleDecision?: (_row: DecisionInfo) => void
   onClose: () => void
+  type?: "applicant" | "trainee"
 }) {
   const handleReject = () => {
     onClose()
@@ -41,19 +43,19 @@ export default function SettingsModal({
     })
   }
 
+  const title = type === "trainee" ? "Trainee Settings" : "Participant Settings"
+
   return (
     <Modal
       open={Boolean(row?.id)}
       onClose={onClose}
-      aria-labelledby="Participant Settings"
+      aria-labelledby={title}
       aria-describedby=""
       component="div"
       className="max-w-md mx-auto flex items-center"
     >
       <form className="flex flex-col gap-10 w-full bg-white p-5 rounded-xl">
-        <h1 className="text-center text-3xl font-semibold">
-          Participant Settings
-        </h1>
+        <h1 className="text-center text-3xl font-semibold">{title}</h1>
         <div className="space-y-4">
           <InputField
             type="text"
