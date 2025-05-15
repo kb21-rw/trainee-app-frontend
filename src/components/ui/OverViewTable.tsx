@@ -302,6 +302,7 @@ export default function OverViewTable({
           row={settingsInfo}
           onClose={() => setTimeout(() => setSettingsInfo(null), 0)}
           handleDecision={handleDecision}
+          type={overviewType}
         />
       )}
       {participantInfo && (
