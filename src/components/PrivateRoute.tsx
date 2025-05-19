@@ -29,5 +29,5 @@ export default function PrivateRoute({
     return <Outlet />
   }
 
-  return <Navigate to="/unauthorized" state={{ from: location }} replace />
+  return <Navigate to="/not-found" state={{ from: location }} replace />
 }

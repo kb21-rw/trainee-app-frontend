@@ -37,7 +37,6 @@ import { googleClientId } from "./utils/constants"
 import { UserRole } from "./utils/types"
 import { SocketContextProvider } from "./utils/contexts/SocketContext"
 import Trainees from "./pages/Overview/Trainees"
-import Unauthorized from "./components/UnauthorizedRoute"
 
 export default function App() {
   const router = createBrowserRouter(
@@ -95,7 +94,6 @@ export default function App() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/verify" element={<ApplicantVerification />} />
           </Route>
-          <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Route>,
