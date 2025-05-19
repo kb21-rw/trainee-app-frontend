@@ -181,8 +181,9 @@ const Applicants = () => {
   }
 
   return (
-    <div className="py-12 space-y-5 flex flex-col h-full">
+    <div className="flex flex-col h-full py-12 space-y-5">
       <DecisionModal
+        modalType="applicant"
         decisionInfo={decisionInfo}
         closeModal={() => setDecisionInfo(null)}
         onSubmit={handleSubmitDecision}
@@ -200,7 +201,7 @@ const Applicants = () => {
         />
       )}
 
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div className="w-52">
           <form>
             <SmartSelect
@@ -226,6 +227,7 @@ const Applicants = () => {
       {cohortOverviewIsFetching && <Loader />}
       {cohortOverview && (
         <OverViewTable
+          overviewType="applicant"
           forms={cohortOverview.forms}
           participants={cohortOverview.applicants}
           participantsInfo={cohortOverview.participantsInfo}

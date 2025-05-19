@@ -10,11 +10,13 @@ export default function DecisionModal({
   decisionInfo,
   onSubmit,
   closeModal,
+  modalType,
 }: {
   decisionInfo: DecisionInfo | null
   // eslint-disable-next-line no-unused-vars
   onSubmit: (_data: { feedback: string }) => void
   closeModal: () => void
+  modalType: "applicant" | "trainee"
 }) {
   const { register, handleSubmit, resetField } = useForm<{
     feedback: string
@@ -22,8 +24,14 @@ export default function DecisionModal({
 
   const modalData =
     decisionInfo?.decision === Decision.Rejected
-      ? { variant: ButtonVariant.Danger, title: "Reject user" }
-      : { variant: ButtonVariant.Primary, title: "Accept user" }
+      ? {
+          variant: ButtonVariant.Danger,
+          title: `Reject ${modalType === "trainee" ? "Trainee" : "Applicant"}`,
+        }
+      : {
+          variant: ButtonVariant.Primary,
+          title: `Accept ${modalType === "trainee" ? "Trainee" : "Applicant"}`,
+        }
 
   useEffect(() => {
     if (!decisionInfo) {
@@ -38,13 +46,13 @@ export default function DecisionModal({
       aria-labelledby={modalData.title}
       aria-describedby={`${modalData.title.split(" ")[0]} decision`}
       component="div"
-      className="max-w-md mx-auto flex items-center "
+      className="flex items-center max-w-md mx-auto "
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-6 w-full bg-white p-5 rounded-xl"
+        className="flex flex-col w-full gap-6 p-5 bg-white rounded-xl"
       >
-        <h1 className="text-center text-3xl font-semibold">
+        <h1 className="text-3xl font-semibold text-center">
           {modalData.title}
         </h1>
         <InputField
