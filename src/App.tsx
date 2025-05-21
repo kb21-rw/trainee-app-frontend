@@ -36,6 +36,7 @@ import { store } from "./store"
 import { googleClientId } from "./utils/constants"
 import { UserRole } from "./utils/types"
 import { SocketContextProvider } from "./utils/contexts/SocketContext"
+import Trainees from "./pages/Overview/Trainees"
 
 export default function App() {
   const router = createBrowserRouter(
@@ -50,7 +51,7 @@ export default function App() {
               <Route path="/coaches" element={<CoachesInfo />} />
               <Route path="/cohorts" element={<Cohorts />} />
               <Route path="/applicants" element={<Applicants />} />
-              <Route path="/trainees" element={<h1>Trainees Overview...</h1>} />
+              <Route path="/trainees" element={<Trainees />} />
             </Route>
 
             <Route element={<PrivateRoute allowedRoles={[UserRole.Coach]} />}>

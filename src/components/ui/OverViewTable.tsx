@@ -37,6 +37,7 @@ type Question = (Omit<BaseQuestion, "responses"> & { responses: Response })[]
 type Form = Omit<BaseForm, "questions"> & { questions: Question }
 
 interface DataGridProps {
+  overviewType: "trainee" | "applicant"
   forms: Form[]
   participants: CohortParticipant[]
   stages: Stage[]
@@ -61,6 +62,7 @@ interface DataGridProps {
 }
 
 export default function OverViewTable({
+  overviewType,
   forms,
   participants,
   participantsInfo,
@@ -79,7 +81,8 @@ export default function OverViewTable({
     form.questions.map(({ _id, prompt, options, required, type }) => ({
       field: _id,
       headerName: prompt,
-      width: 250,
+      flex: 1,
+      minWidth: 200,
       question: { _id, prompt, options, required, type, form: form.name },
       valueFormatter: (value) => value ?? "No response",
     })),
@@ -89,7 +92,8 @@ export default function OverViewTable({
     {
       field: "name",
       headerName: "Name",
-      width: 200,
+      flex: 1,
+      minWidth: 200,
       renderCell: ({ row }) => (
         <div className="flex items-center justify-between">
           <span>{row.name}</span>
@@ -102,6 +106,7 @@ export default function OverViewTable({
                 <WriteIcon className="w-4 h-4 fill-primary-dark hover:fill-primary-light" />
               </button>
             )}
+
             <button
               className="duration-200 hover:scale-125"
               onClick={() => setSettingsInfo(row)}
@@ -114,8 +119,9 @@ export default function OverViewTable({
     },
     {
       field: "coach",
+      flex: 1,
       headerName: "Coach",
-      width: 200,
+      minWidth: 200,
       editable: true,
       type: "singleSelect",
       valueOptions: [
@@ -123,12 +129,13 @@ export default function OverViewTable({
         ...coaches.map((coach) => ({ value: coach._id, label: coach.name })),
       ],
     },
-    { field: "stage", headerName: "Stage", width: 200 },
+    { field: "stage", flex: 1, headerName: "Stage", minWidth: 200 },
     ...questionColumns,
     {
       field: "actions",
+      flex: 1,
       headerName: "Actions",
-      width: 300,
+      minWidth: 300,
       align: "center",
       type: "singleSelect",
       valueOptions: [
@@ -295,10 +302,12 @@ export default function OverViewTable({
           row={settingsInfo}
           onClose={() => setTimeout(() => setSettingsInfo(null), 0)}
           handleDecision={handleDecision}
+          type={overviewType}
         />
       )}
       {participantInfo && (
         <EditParticipantModal
+          type={overviewType}
           row={participantInfo}
           onClose={() => setTimeout(() => setParticipantInfo(null), 0)}
           coaches={coaches}
@@ -311,10 +320,11 @@ export default function OverViewTable({
         hideFooter={true}
         onCellClick={handleCellClick}
         disableRowSelectionOnClick
+        autoPageSize
         slots={{
           noRowsOverlay: () => (
             <div className="flex items-center justify-center h-full">
-              <p className="text-center">No participants yet</p>
+              <p className="text-center">No {overviewType}s yet</p>
             </div>
           ),
         }}

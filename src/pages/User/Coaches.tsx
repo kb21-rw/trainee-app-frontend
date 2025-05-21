@@ -13,9 +13,9 @@ import { getErrorInfo } from "../../utils/helper"
 import Loader from "../../components/ui/Loader"
 import { DataGrid, GridColDef } from "@mui/x-data-grid"
 import AddCoach from "../../components/modals/AddCoach"
-import { customizeDataGridStyles } from "../../utils/data"
 import EditIcon from "../../assets/EditIcon"
 import EditCoach from "../../components/modals/EditCoachModal"
+import { customizeDataGridStyles } from "../../utils/styles"
 
 export default function Coaches() {
   const [isAddCoachOpen, setIsAddCoachOpen] = useState(false)

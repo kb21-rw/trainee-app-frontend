@@ -15,9 +15,9 @@ import { DataGrid, GridColDef, GridRowClassNameParams } from "@mui/x-data-grid"
 import EditIcon from "../../assets/EditIcon"
 import { useState } from "react"
 import CreateUser from "../../components/modals/CreateUser"
-import { customizeDataGridStyles } from "../../utils/data"
 import TableSkeleton from "../../components/skeletons/TableSkeleton"
 import EditUserModal from "../../components/modals/EditUserModal"
+import { customizeDataGridStyles } from "../../utils/styles"
 
 export default function Users() {
   const dispatch = useDispatch()
@@ -77,7 +77,7 @@ export default function Users() {
       flex: 1,
       renderCell: ({ row }) => {
         return (
-          <div className="flex justify-center justify-items-center h-full gap-4">
+          <div className="flex h-full gap-4">
             <button onClick={() => setUserInformation(row)}>
               <EditIcon />
             </button>
@@ -120,7 +120,7 @@ export default function Users() {
         onClose={handleCloseCreateUserModal}
       />
       <div className="my-10 space-y-10">
-        <div className="flex justify-end items-center">
+        <div className="flex items-center justify-end">
           <Button
             size={ButtonSize.Medium}
             onClick={() => setIsCreateUserModalOpen(true)}

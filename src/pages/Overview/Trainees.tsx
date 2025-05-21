@@ -1,12 +1,11 @@
 import {
-  useGetApplicantsQuery,
+  useGetTraineesQuery,
   useGetAllCohortsQuery,
   useApplicantDecisionMutation,
   useUpdateParticipantMutation,
 } from "../../features/user/backendApi"
 import {
   AlertType,
-  ButtonSize,
   Cohort,
   Cookie,
   DecisionInfo,
@@ -14,7 +13,6 @@ import {
 } from "../../utils/types"
 import { useEffect, useState } from "react"
 import OverViewTable from "../../components/ui/OverViewTable"
-import Button from "../../components/ui/Button"
 import { useCookies } from "react-cookie"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
@@ -25,12 +23,13 @@ import DecisionModal from "../../components/modals/DecisionModal"
 import ResponseModal from "../../components/modals/ResponseModal"
 import SmartSelect from "../../components/ui/SmartSelect"
 import { useForm } from "react-hook-form"
-import AddApplicantsModal from "../../components/modals/AddApplicantsModal"
 
-const Applicants = () => {
+const Trainees = () => {
   const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null)
-  const [responseInfo, setResponseInfo] = useState<any | null>(null)
-  const [isAddingApplicants, setIsAddingApplicants] = useState<boolean>(false)
+  const [responseInfo, setResponseInfo] = useState<{
+    userId: string
+    question: ResponseModalQuestion
+  } | null>(null)
   const [cookies] = useCookies([Cookie.jwt])
   const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt })
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
@@ -39,10 +38,10 @@ const Applicants = () => {
     defaultValues: { cohortId: "" },
   })
   const {
-    data: cohortOverview,
-    error: cohortOverviewError,
-    isFetching: cohortOverviewIsFetching,
-  } = useGetApplicantsQuery({
+    data: traineeOverview,
+    error: traineeOverviewError,
+    isFetching: traineeOverviewIsFetching,
+  } = useGetTraineesQuery({
     jwt: cookies.jwt,
     cohortId: selectedCohortId,
   })
@@ -73,8 +72,8 @@ const Applicants = () => {
     return () => subscription.unsubscribe()
   }, [watch])
 
-  const selectedCohortFromOverview = cohortOverview
-    ? { value: cohortOverview._id, label: cohortOverview.name }
+  const selectedCohortFromOverview = traineeOverview
+    ? { value: traineeOverview._id, label: traineeOverview.name }
     : null
 
   const selectedCohortFromId = selectedCohortId
@@ -96,10 +95,6 @@ const Applicants = () => {
     selectedCohortFromId ??
     selectedCohortFromActive ??
     undefined
-
-  const handleAddApplicants = () => setIsAddingApplicants(true)
-  const handleCloseAddApplicantsModal = () =>
-    setTimeout(() => setIsAddingApplicants(false), 0)
 
   const handleDecision = (userData: DecisionInfo) => {
     setDecisionInfo({ ...userData })
@@ -145,9 +140,9 @@ const Applicants = () => {
     })
   }
 
-  if (cohortOverviewError || decisionError || updateParticipantError) {
+  if (traineeOverviewError || decisionError || updateParticipantError) {
     const { message } = getErrorInfo(
-      cohortOverviewError ?? decisionError ?? updateParticipantError,
+      traineeOverviewError ?? decisionError ?? updateParticipantError,
     )
     handleShowAlert(dispatch, {
       type: AlertType.Error,
@@ -176,14 +171,14 @@ const Applicants = () => {
     updateParticipantReset()
   }
 
-  if (cohortOverview && !selectedCohortId) {
-    setSelectedCohortId(cohortOverview._id)
+  if (traineeOverview && !selectedCohortId) {
+    setSelectedCohortId(traineeOverview._id)
   }
 
   return (
     <div className="flex flex-col h-full py-12 space-y-5">
       <DecisionModal
-        modalType="applicant"
+        modalType="trainee"
         decisionInfo={decisionInfo}
         closeModal={() => setDecisionInfo(null)}
         onSubmit={handleSubmitDecision}
@@ -192,12 +187,6 @@ const Applicants = () => {
         <ResponseModal
           responseInfo={responseInfo}
           closeModal={handleCloseModal}
-        />
-      )}
-      {isAddingApplicants && (
-        <AddApplicantsModal
-          isOpen={isAddingApplicants}
-          onClose={handleCloseAddApplicantsModal}
         />
       )}
 
@@ -216,28 +205,22 @@ const Applicants = () => {
             />
           </form>
         </div>
-        {/* Display a button only if it's an active cohort which has an application form */}
-        {cohortOverview?.isActive && cohortOverview.applicationForm && (
-          <Button size={ButtonSize.Medium} onClick={handleAddApplicants}>
-            Add Applicant
-          </Button>
-        )}
       </div>
 
-      {cohortOverviewIsFetching && <Loader />}
-      {cohortOverview && (
+      {traineeOverviewIsFetching && <Loader />}
+      {traineeOverview && (
         <OverViewTable
-          overviewType="applicant"
-          forms={cohortOverview.forms}
-          participants={cohortOverview.applicants}
-          participantsInfo={cohortOverview.participantsInfo}
-          coaches={cohortOverview.coaches}
+          overviewType="trainee"
+          forms={traineeOverview.forms}
+          participants={traineeOverview.trainees}
+          participantsInfo={traineeOverview.participantsInfo}
+          coaches={traineeOverview.coaches}
           updates={[]}
-          stages={cohortOverview.forms?.[0]?.stages ?? []}
+          stages={traineeOverview.stages}
           actions={{ handleDecision, handleUpsertResponse, handleCoachChange }}
         />
       )}
-      {!cohortOverviewIsFetching && !cohortOverview && (
+      {!traineeOverviewIsFetching && !traineeOverview && (
         <div className="flex-1">
           <NotFound entity="Cohort" type="NoData" />
         </div>
@@ -246,4 +229,4 @@ const Applicants = () => {
   )
 }
 
-export default Applicants
+export default Trainees
