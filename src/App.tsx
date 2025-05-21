@@ -25,9 +25,7 @@ import SingleForm from "./pages/Form/Form"
 import NotFound from "./pages/NotFound"
 import Applicants from "./pages/Overview/Applicants"
 import CoachesInfo from "./pages/User/Coaches"
-import OverView from "./pages/User/OverView"
 import Profile from "./pages/User/Profile"
-import TraineeResults from "./pages/User/TraineeResults"
 import Users from "./pages/User/Users"
 import Auth from "./pages/auth/Auth"
 import ResetPassword from "./pages/auth/ResetPassword"
@@ -37,6 +35,8 @@ import { googleClientId } from "./utils/constants"
 import { UserRole } from "./utils/types"
 import { SocketContextProvider } from "./utils/contexts/SocketContext"
 import Trainees from "./pages/Overview/Trainees"
+import CoachGeneralOverview from "./pages/Overview/CoachGeneralOverview"
+import TraineeResults from "./pages/User/TraineeResults"
 
 export default function App() {
   const router = createBrowserRouter(
@@ -55,8 +55,9 @@ export default function App() {
             </Route>
 
             <Route element={<PrivateRoute allowedRoles={[UserRole.Coach]} />}>
-              <Route path="/overview" element={<OverView />} />
+              <Route path="/overview" element={<CoachGeneralOverview />} />
               <Route path="/my-trainees" element={<h1>My trainees</h1>} />
+              <Route path="/my-applicants" element={<h1>My applicants</h1>} />
               <Route path="/trainees-results" element={<TraineeResults />} />
             </Route>
             <Route

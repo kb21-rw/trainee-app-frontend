@@ -11,6 +11,7 @@ import {
   Cookie,
   DecisionInfo,
   ResponseModalQuestion,
+  UserRole,
 } from "../../utils/types"
 import { useEffect, useState } from "react"
 import OverViewTable from "../../components/ui/OverViewTable"
@@ -227,6 +228,7 @@ const Applicants = () => {
       {cohortOverviewIsFetching && <Loader />}
       {cohortOverview && (
         <OverViewTable
+          role={UserRole.Admin}
           overviewType="applicant"
           forms={cohortOverview.forms}
           participants={cohortOverview.applicants}
