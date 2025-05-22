@@ -5,25 +5,11 @@ import { UserRole } from "../utils/types"
 
 interface PrivateRouteProps {
   allowedRoles: UserRole[]
-  authOnly?: boolean
 }
 
-export default function PrivateRoute({
-  allowedRoles,
-  authOnly = false,
-}: PrivateRouteProps) {
+export default function PrivateRoute({ allowedRoles }: PrivateRouteProps) {
   const user = useSelector((state: RootState) => state.user)
   const location = useLocation()
-
-  const isAuthenticated = Boolean(user && user.role)
-
-  if (!isAuthenticated) {
-    return <Navigate to="/auth" state={{ from: location }} replace />
-  }
-
-  if (authOnly) {
-    return <Outlet />
-  }
 
   if (user.role && allowedRoles.includes(user.role)) {
     return <Outlet />
