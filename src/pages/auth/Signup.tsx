@@ -36,7 +36,7 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
     setCookie(Cookie.jwt, token)
 
     navigate(
-      redirectUrl ?? "/applicants",
+      redirectUrl ?? "/",
       redirectUrl ? {} : { state: { redirect: "home" } },
     )
   }

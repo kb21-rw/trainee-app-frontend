@@ -40,8 +40,11 @@ const Login = ({ handlePageChange }: { handlePageChange: () => void }) => {
     setCookie(Cookie.jwt, token)
 
     navigate(
-      redirectUrl ?? "/applicants", // if there's no redirectUrl, navigating to any protected route will redirect to the homepage
-      redirectUrl ? {} : { state: { redirect: "home" } },
+      redirectUrl ?? "/", // if there's no redirectUrl, navigating to any protected route will redirect to the homepage
+      {
+        replace: true,
+        ...(redirectUrl ? {} : { state: { redirect: "home" } }),
+      },
     )
   }
 
@@ -91,12 +94,12 @@ const Login = ({ handlePageChange }: { handlePageChange: () => void }) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col h-screen items-center justify-center gap-5 md:gap-16  px-5 sm:px-10 md:p-0 mx-auto md:max-w-sm"
+      className="flex flex-col items-center justify-center h-screen gap-5 px-5 mx-auto md:gap-16 sm:px-10 md:p-0 md:max-w-sm"
     >
       <div className="text-center">
         <H1>Login</H1>
       </div>
-      <div className="space-y-3 md:space-y-6 lg:space-y-10 w-full">
+      <div className="w-full space-y-3 md:space-y-6 lg:space-y-10">
         {(loginIsLoading || googleAuthIsLoading) && (
           <div className="flex items-center justify-center">
             <Loader />
@@ -126,7 +129,7 @@ const Login = ({ handlePageChange }: { handlePageChange: () => void }) => {
           errors={errors}
         />
       </div>
-      <div className="flex flex-col items-center gap-3 w-full">
+      <div className="flex flex-col items-center w-full gap-3">
         <Button size={ButtonSize.Large} type="submit">
           Login
         </Button>
@@ -145,7 +148,7 @@ const Login = ({ handlePageChange }: { handlePageChange: () => void }) => {
           </Link>
         </span>
       </div>
-      <div className="w-full md:hidden  mb-6">
+      <div className="w-full mb-6 md:hidden">
         <Button size={ButtonSize.Large} outlined onClick={handlePageChange}>
           I Don&apos;t have an account
         </Button>

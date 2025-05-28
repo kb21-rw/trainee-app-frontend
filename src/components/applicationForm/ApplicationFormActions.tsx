@@ -100,8 +100,8 @@ export default function ApplicationFormActions({
       )}
       {status !== ApplicationFormStatus.Open && (
         <>
-          <div className="text-center flex items-center flex-col">
-            <h1 className="text-2xl font-medium text-gray-600 text-center">
+          <div className="flex flex-col items-center text-center">
+            <h1 className="text-2xl font-medium text-center text-gray-600">
               {applicationFormStatusData[displayStatus].heading}
             </h1>
           </div>
@@ -112,7 +112,7 @@ export default function ApplicationFormActions({
 
             {!data.isOnWaitList && (
               <Button
-                className="bg-primary-dark text-white px-6 py-3 rounded-md"
+                className="px-6 py-3 text-white rounded-md bg-primary-dark"
                 onClick={() =>
                   window.open(
                     applicationFormStatusData[
