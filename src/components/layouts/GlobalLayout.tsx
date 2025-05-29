@@ -20,8 +20,7 @@ export default function GlobalLayout() {
 
   const isSigningUp =
     location.pathname.includes("/signup/thank-you") ||
-    location.pathname.includes("/verify") ||
-    location.pathname.includes("/auth")
+    location.pathname.includes("/verify")
 
   const [cookies] = useCookies([Cookie.jwt])
 

@@ -1,16 +1,28 @@
-import { useSelector } from "react-redux"
-import { RootState } from "../../store"
 import { Navigate, Outlet } from "react-router-dom"
 import { getRoleBasedHomepageURL } from "../../utils/helper"
 import { useCookies } from "react-cookie"
+import { useGetProfileQuery } from "../../features/user/backendApi"
 import { Cookie } from "../../utils/types"
+import Loader from "../ui/Loader"
 
 export default function NonProtectLayout() {
   const [cookies] = useCookies([Cookie.jwt])
-  const loggedInUser = useSelector((state: RootState) => state.user)
+  const hasToken = !!cookies.jwt
 
-  if (cookies.jwt && loggedInUser.role) {
-    return <Navigate to={getRoleBasedHomepageURL(loggedInUser.role)} />
+  const { data: user, isLoading } = useGetProfileQuery(cookies.jwt, {
+    skip: !hasToken,
+  })
+
+  if (hasToken && user) {
+    return <Navigate to={getRoleBasedHomepageURL(user.role)} />
+  }
+
+  if (hasToken && isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader />
+      </div>
+    )
   }
 
   return <Outlet />
