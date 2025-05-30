@@ -6,13 +6,12 @@ import {
 } from "../../features/user/backendApi"
 import {
   AlertType,
-  Cohort,
   Cookie,
   DecisionInfo,
   ResponseModalQuestion,
   UserRole,
 } from "../../utils/types"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import OverViewTable from "../../components/ui/OverViewTable"
 import { useCookies } from "react-cookie"
 import { getErrorInfo } from "../../utils/helper"
@@ -23,7 +22,7 @@ import NotFound from "../../components/ui/NotFound"
 import DecisionModal from "../../components/modals/DecisionModal"
 import ResponseModal from "../../components/modals/ResponseModal"
 import SmartSelect from "../../components/ui/SmartSelect"
-import { useForm } from "react-hook-form"
+import { useCohortSelection } from "../../utils/hooks/useCohortSelection"
 
 const CoachGeneralOverview = () => {
   const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null)
@@ -32,21 +31,29 @@ const CoachGeneralOverview = () => {
     question: ResponseModalQuestion
   } | null>(null)
   const [cookies] = useCookies([Cookie.jwt])
-  const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt })
-
-  const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
   const dispatch = useDispatch()
-  const { register, watch } = useForm<{ cohortId: string }>({
-    defaultValues: { cohortId: "" },
-  })
+  const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt })
+  const {
+    selectedCohortId,
+    selectedCohort,
+    cohortOptions,
+    register,
+    isInitialized,
+  } = useCohortSelection(allCohorts, null)
+
   const {
     data: coachOverview,
     error: coachOverviewError,
     isFetching: coachOverviewIsFetching,
-  } = useGetTraineesQuery({
-    jwt: cookies.jwt,
-    cohortId: selectedCohortId,
-  })
+  } = useGetTraineesQuery(
+    {
+      jwt: cookies.jwt,
+      cohortId: selectedCohortId,
+    },
+    {
+      skip: !selectedCohortId || !isInitialized,
+    },
+  )
 
   const [
     decide,
@@ -65,38 +72,6 @@ const CoachGeneralOverview = () => {
       reset: updateParticipantReset,
     },
   ] = useUpdateParticipantMutation()
-
-  useEffect(() => {
-    const subscription = watch(({ cohortId }) => {
-      setSelectedCohortId(cohortId ?? null)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [watch])
-
-  const selectedCohortFromOverview = coachOverview
-    ? { value: coachOverview._id, label: coachOverview.name }
-    : null
-
-  const selectedCohortFromId = selectedCohortId
-    ? {
-        value: selectedCohortId,
-        label:
-          allCohorts?.find((cohort: Cohort) => cohort._id === selectedCohortId)
-            ?.name ?? "",
-      }
-    : null
-
-  const activeCohort = allCohorts?.find((cohort: Cohort) => cohort.isActive)
-  const selectedCohortFromActive = activeCohort
-    ? { value: activeCohort._id, label: activeCohort.name }
-    : null
-
-  const selectedCohort =
-    selectedCohortFromOverview ??
-    selectedCohortFromId ??
-    selectedCohortFromActive ??
-    undefined
 
   const handleDecision = (userData: DecisionInfo) => {
     setDecisionInfo({ ...userData })
@@ -173,10 +148,6 @@ const CoachGeneralOverview = () => {
     updateParticipantReset()
   }
 
-  if (coachOverview && !selectedCohortId) {
-    setSelectedCohortId(coachOverview._id)
-  }
-
   return (
     <div className="flex flex-col h-full py-12 space-y-5">
       <DecisionModal
@@ -196,16 +167,9 @@ const CoachGeneralOverview = () => {
         <div className="w-52">
           <form>
             <SmartSelect
-              options={
-                allCohorts?.map((cohort: Cohort) => {
-                  return {
-                    value: cohort._id,
-                    label: cohort.name,
-                  }
-                }) ?? []
-              }
+              options={cohortOptions}
               defaultValue={selectedCohort}
-              register={{ ...register("cohortId") }}
+              register={{ ...register }}
             />
           </form>
         </div>
