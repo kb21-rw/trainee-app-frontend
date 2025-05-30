@@ -10,8 +10,8 @@ export const adminMenu = [
 ]
 export const coachMenu = [
   { link: "/overview", title: "Overview" },
-  { link: "/trainees-results", title: "Trainee Results" },
   { link: "/my-trainees", title: "My trainees" },
+  { link: "/my-applicants", title: "My applicants" },
 ]
 
 export const applicantMenu = [{ link: "/home", title: "Home" }]

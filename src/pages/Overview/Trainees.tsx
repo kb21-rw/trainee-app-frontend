@@ -10,6 +10,7 @@ import {
   Cookie,
   DecisionInfo,
   ResponseModalQuestion,
+  UserRole,
 } from "../../utils/types"
 import { useEffect, useState } from "react"
 import OverViewTable from "../../components/ui/OverViewTable"
@@ -210,6 +211,7 @@ const Trainees = () => {
       {traineeOverviewIsFetching && <Loader />}
       {traineeOverview && (
         <OverViewTable
+          role={UserRole.Admin}
           overviewType="trainee"
           forms={traineeOverview.forms}
           participants={traineeOverview.trainees}
