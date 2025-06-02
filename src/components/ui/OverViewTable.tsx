@@ -12,10 +12,7 @@ import {
   CohortParticipant,
   Stage,
   User,
-  ButtonSize,
-  ButtonVariant,
   DecisionInfo,
-  Decision,
   ResponseModalQuestion,
   ResponseCell,
   ParticipantPhase,
@@ -23,13 +20,16 @@ import {
   ResponseModalInfo,
   UserRole,
 } from "../../utils/types"
-import Button from "./Button"
 import { GridStateColDef } from "@mui/x-data-grid/internals"
 import WriteIcon from "../../assets/WriteIcon"
 import SettingsIcon from "../../assets/SettingsIcon"
 import SettingsModal from "../modals/Settings"
 import EditParticipantModal from "../modals/EditParticipantModal"
 import { overViewDataGridStyles } from "../../utils/styles"
+import {
+  getAdminActionColumns,
+  getAdminCoachColumn,
+} from "../../utils/getOverviewAdminColumns"
 
 interface Response extends BaseResponse {
   questionId: string
@@ -80,6 +80,7 @@ export default function OverViewTable({
 }: DataGridProps) {
   const [settingsInfo, setSettingsInfo] = useState<any>(null)
   const [participantInfo, setParticipantInfo] = useState<any>(null)
+  const isAdmin = role === UserRole.Admin
 
   const questionColumns: GridColDef[] = forms.flatMap((form) =>
     form.questions.map(({ _id, prompt, options, required, type }) => ({
@@ -92,85 +93,11 @@ export default function OverViewTable({
     })),
   )
 
-  const actionsColumns: GridColDef[] =
-    role === UserRole.Admin
-      ? [
-          {
-            field: "actions",
-            flex: 1,
-            headerName: "Actions",
-            minWidth: 300,
-            align: "center",
-            type: "singleSelect",
-            valueOptions: [
-              ParticipantPhase.Active,
-              ParticipantPhase.Completed,
-              ParticipantPhase.Rejected,
-            ],
-            renderCell: ({ row: { id, email, name, stage, actions } }) => {
-              if (actions !== ParticipantPhase.Active) return actions
+  const actionsColumns: GridColDef[] = isAdmin
+    ? getAdminActionColumns(handleDecision)
+    : []
 
-              return (
-                <div className="flex content-center justify-around h-full py-2 align-middle">
-                  <Button
-                    variant={ButtonVariant.Danger}
-                    size={ButtonSize.Small}
-                    onClick={() =>
-                      handleDecision({
-                        userId: id as string,
-                        decision: Decision.Rejected,
-                        email,
-                        name,
-                        stage,
-                      })
-                    }
-                  >
-                    <span className="flex items-center justify-center h-full">
-                      Reject
-                    </span>
-                  </Button>
-                  <Button
-                    size={ButtonSize.Small}
-                    onClick={() =>
-                      handleDecision({
-                        userId: id,
-                        decision: Decision.Accepted,
-                        email,
-                        name,
-                        stage,
-                      })
-                    }
-                  >
-                    <span className="flex items-center justify-center h-full">
-                      Accept
-                    </span>
-                  </Button>
-                </div>
-              )
-            },
-          },
-        ]
-      : []
-  const coachColumn: GridColDef[] =
-    role === UserRole.Admin
-      ? [
-          {
-            field: "coach",
-            flex: 1,
-            headerName: "Coach",
-            minWidth: 200,
-            editable: true,
-            type: "singleSelect",
-            valueOptions: [
-              { value: "", label: "No coach" },
-              ...coaches.map((coach) => ({
-                value: coach._id,
-                label: coach.name,
-              })),
-            ],
-          },
-        ]
-      : []
+  const coachColumn: GridColDef[] = isAdmin ? getAdminCoachColumn(coaches) : []
   const formattedColumns: GridColDef[] = [
     {
       field: "name",
