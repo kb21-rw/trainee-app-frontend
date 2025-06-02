@@ -29,6 +29,7 @@ import WriteIcon from "../../assets/WriteIcon"
 import SettingsIcon from "../../assets/SettingsIcon"
 import SettingsModal from "../modals/Settings"
 import EditParticipantModal from "../modals/EditParticipantModal"
+import { overViewDataGridStyles } from "../../utils/styles"
 
 interface Response extends BaseResponse {
   questionId: string
@@ -110,45 +111,41 @@ export default function OverViewTable({
               if (actions !== ParticipantPhase.Active) return actions
 
               return (
-                <>
-                  {role === UserRole.Admin && (
-                    <div className="flex content-center justify-around h-full py-2 align-middle">
-                      <Button
-                        variant={ButtonVariant.Danger}
-                        size={ButtonSize.Small}
-                        onClick={() =>
-                          handleDecision({
-                            userId: id as string,
-                            decision: Decision.Rejected,
-                            email,
-                            name,
-                            stage,
-                          })
-                        }
-                      >
-                        <span className="flex items-center justify-center h-full">
-                          Reject
-                        </span>
-                      </Button>
-                      <Button
-                        size={ButtonSize.Small}
-                        onClick={() =>
-                          handleDecision({
-                            userId: id,
-                            decision: Decision.Accepted,
-                            email,
-                            name,
-                            stage,
-                          })
-                        }
-                      >
-                        <span className="flex items-center justify-center h-full">
-                          Accept
-                        </span>
-                      </Button>
-                    </div>
-                  )}
-                </>
+                <div className="flex content-center justify-around h-full py-2 align-middle">
+                  <Button
+                    variant={ButtonVariant.Danger}
+                    size={ButtonSize.Small}
+                    onClick={() =>
+                      handleDecision({
+                        userId: id as string,
+                        decision: Decision.Rejected,
+                        email,
+                        name,
+                        stage,
+                      })
+                    }
+                  >
+                    <span className="flex items-center justify-center h-full">
+                      Reject
+                    </span>
+                  </Button>
+                  <Button
+                    size={ButtonSize.Small}
+                    onClick={() =>
+                      handleDecision({
+                        userId: id,
+                        decision: Decision.Accepted,
+                        email,
+                        name,
+                        stage,
+                      })
+                    }
+                  >
+                    <span className="flex items-center justify-center h-full">
+                      Accept
+                    </span>
+                  </Button>
+                </div>
               )
             },
           },
@@ -380,52 +377,7 @@ export default function OverViewTable({
             actions === ParticipantPhase.Completed ? "completed" : ""
           } ${actions === ParticipantPhase.Active ? "active" : ""}`
         }
-        sx={{
-          border: "none",
-          "& .MuiDataGrid-cell": {
-            border: "1px solid #000",
-          },
-          "& .MuiDataGrid-row.active": {
-            cursor: "pointer",
-          },
-          "& .MuiDataGrid-columnHeader": {
-            textAlign: "center",
-            border: "1px solid #000",
-          },
-          "& .MuiDataGrid-columnHeaderTitle": {
-            fontWeight: "bold",
-            fontSize: "15px",
-            separator: "none",
-          },
-          "& .MuiDataGrid-columnHeaderTitleContainer": {
-            justifyContent: "center",
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-row.rejected": {
-            bgcolor: "#FEE2E2",
-          },
-          "& .MuiDataGrid-row.rejected:hover": {
-            bgcolor: "#FEE2E2",
-          },
-          "& .MuiDataGrid-row.completed": {
-            bgcolor: "#86EFAC",
-          },
-          "& .MuiDataGrid-row.completed:hover": {
-            bgcolor: "#86EFAC",
-          },
-          "& .MuiDataGrid-iconButtonContainer": {
-            visibility: "visible",
-          },
-          "& .MuiDataGrid-sortIcon": {
-            opacity: "inherit !important",
-          },
-          "& .MuiDataGrid-menuIcon": {
-            visibility: "visible !important",
-            width: "auto",
-          },
-        }}
+        sx={overViewDataGridStyles}
       />
     </>
   )
