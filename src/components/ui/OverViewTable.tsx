@@ -12,22 +12,24 @@ import {
   CohortParticipant,
   Stage,
   User,
-  ButtonSize,
-  ButtonVariant,
   DecisionInfo,
-  Decision,
   ResponseModalQuestion,
   ResponseCell,
   ParticipantPhase,
   UserRow,
   ResponseModalInfo,
+  UserRole,
 } from "../../utils/types"
-import Button from "./Button"
 import { GridStateColDef } from "@mui/x-data-grid/internals"
 import WriteIcon from "../../assets/WriteIcon"
 import SettingsIcon from "../../assets/SettingsIcon"
 import SettingsModal from "../modals/Settings"
 import EditParticipantModal from "../modals/EditParticipantModal"
+import { overViewDataGridStyles } from "../../utils/styles"
+import {
+  getAdminActionColumns,
+  getAdminCoachColumn,
+} from "../../utils/getOverviewAdminColumns"
 
 interface Response extends BaseResponse {
   questionId: string
@@ -38,6 +40,7 @@ type Form = Omit<BaseForm, "questions"> & { questions: Question }
 
 interface DataGridProps {
   overviewType: "trainee" | "applicant"
+  role: UserRole.Admin | UserRole.Coach
   forms: Form[]
   participants: CohortParticipant[]
   stages: Stage[]
@@ -62,6 +65,7 @@ interface DataGridProps {
 }
 
 export default function OverViewTable({
+  role,
   overviewType,
   forms,
   participants,
@@ -76,6 +80,7 @@ export default function OverViewTable({
 }: DataGridProps) {
   const [settingsInfo, setSettingsInfo] = useState<any>(null)
   const [participantInfo, setParticipantInfo] = useState<any>(null)
+  const isAdmin = role === UserRole.Admin
 
   const questionColumns: GridColDef[] = forms.flatMap((form) =>
     form.questions.map(({ _id, prompt, options, required, type }) => ({
@@ -88,6 +93,11 @@ export default function OverViewTable({
     })),
   )
 
+  const actionsColumns: GridColDef[] = isAdmin
+    ? getAdminActionColumns(handleDecision)
+    : []
+
+  const coachColumn: GridColDef[] = isAdmin ? getAdminCoachColumn(coaches) : []
   const formattedColumns: GridColDef[] = [
     {
       field: "name",
@@ -97,94 +107,32 @@ export default function OverViewTable({
       renderCell: ({ row }) => (
         <div className="flex items-center justify-between">
           <span>{row.name}</span>
-          <div className="flex items-center gap-2">
-            {row.actions === ParticipantPhase.Active && (
+          {role === UserRole.Admin && (
+            <div className="flex items-center gap-2">
+              {row.actions === ParticipantPhase.Active && (
+                <button
+                  className="duration-200 hover:scale-125"
+                  onClick={() => setParticipantInfo(row)}
+                >
+                  <WriteIcon className="w-4 h-4 fill-primary-dark hover:fill-primary-light" />
+                </button>
+              )}
+
               <button
                 className="duration-200 hover:scale-125"
-                onClick={() => setParticipantInfo(row)}
+                onClick={() => setSettingsInfo(row)}
               >
-                <WriteIcon className="w-4 h-4 fill-primary-dark hover:fill-primary-light" />
+                <SettingsIcon className="w-6 h-6" />
               </button>
-            )}
-
-            <button
-              className="duration-200 hover:scale-125"
-              onClick={() => setSettingsInfo(row)}
-            >
-              <SettingsIcon className="w-6 h-6" />
-            </button>
-          </div>
+            </div>
+          )}
         </div>
       ),
     },
-    {
-      field: "coach",
-      flex: 1,
-      headerName: "Coach",
-      minWidth: 200,
-      editable: true,
-      type: "singleSelect",
-      valueOptions: [
-        { value: "", label: "No coach" },
-        ...coaches.map((coach) => ({ value: coach._id, label: coach.name })),
-      ],
-    },
+    ...coachColumn,
     { field: "stage", flex: 1, headerName: "Stage", minWidth: 200 },
     ...questionColumns,
-    {
-      field: "actions",
-      flex: 1,
-      headerName: "Actions",
-      minWidth: 300,
-      align: "center",
-      type: "singleSelect",
-      valueOptions: [
-        ParticipantPhase.Active,
-        ParticipantPhase.Completed,
-        ParticipantPhase.Rejected,
-      ],
-      renderCell: ({ row: { id, email, name, stage, actions } }) => {
-        if (actions !== ParticipantPhase.Active) return actions
-
-        return (
-          <div className="flex content-center justify-around h-full py-2 align-middle">
-            <Button
-              variant={ButtonVariant.Danger}
-              size={ButtonSize.Small}
-              onClick={() =>
-                handleDecision({
-                  userId: id as string,
-                  decision: Decision.Rejected,
-                  email,
-                  name,
-                  stage,
-                })
-              }
-            >
-              <span className="flex items-center justify-center h-full">
-                Reject
-              </span>
-            </Button>
-            <Button
-              size={ButtonSize.Small}
-              onClick={() =>
-                handleDecision({
-                  userId: id,
-                  decision: Decision.Accepted,
-                  email,
-                  name,
-                  stage,
-                })
-              }
-            >
-              <span className="flex items-center justify-center h-full">
-                Accept
-              </span>
-            </Button>
-          </div>
-        )
-      },
-    },
+    ...actionsColumns,
   ]
 
   const allResponses = forms.flatMap((form) =>
@@ -356,51 +304,7 @@ export default function OverViewTable({
             actions === ParticipantPhase.Completed ? "completed" : ""
           } ${actions === ParticipantPhase.Active ? "active" : ""}`
         }
-        sx={{
-          "& .MuiDataGrid-cell": {
-            border: "1px solid #000",
-          },
-          "& .MuiDataGrid-row.active": {
-            cursor: "pointer",
-          },
-          "& .MuiDataGrid-columnHeader": {
-            textAlign: "center",
-            border: "1px solid #000",
-          },
-          "& .MuiDataGrid-columnHeaderTitle": {
-            fontWeight: "bold",
-            fontSize: "15px",
-            separator: "none",
-          },
-          "& .MuiDataGrid-columnHeaderTitleContainer": {
-            justifyContent: "center",
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-row.rejected": {
-            bgcolor: "#FEE2E2",
-          },
-          "& .MuiDataGrid-row.rejected:hover": {
-            bgcolor: "#FEE2E2",
-          },
-          "& .MuiDataGrid-row.completed": {
-            bgcolor: "#86EFAC",
-          },
-          "& .MuiDataGrid-row.completed:hover": {
-            bgcolor: "#86EFAC",
-          },
-          "& .MuiDataGrid-iconButtonContainer": {
-            visibility: "visible",
-          },
-          "& .MuiDataGrid-sortIcon": {
-            opacity: "inherit !important",
-          },
-          "& .MuiDataGrid-menuIcon": {
-            visibility: "visible !important",
-            width: "auto",
-          },
-        }}
+        sx={overViewDataGridStyles}
       />
     </>
   )
