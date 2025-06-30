@@ -91,6 +91,20 @@ export const backendApi: any = createApi({
       },
       invalidatesTags: ["users"],
     }),
+    createCoach: builder.mutation({
+      query: (args) => {
+        const { jwt, body } = args
+        return {
+          url: `/coaches/new`,
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+          body,
+        }
+      },
+      invalidatesTags: ["coaches"],
+    }),
 
     updateUser: builder.mutation({
       query: (args) => {
@@ -581,6 +595,7 @@ export const {
   useGetUsersQuery,
   useAddCoachMutation,
   useCreateUserMutation,
+  useCreateCoachMutation,
   useUpdateUserMutation,
   useLoginMutation,
   useSignupMutation,
