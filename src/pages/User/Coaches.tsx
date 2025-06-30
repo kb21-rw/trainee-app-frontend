@@ -88,7 +88,7 @@ export default function Coaches() {
   const columns: GridColDef[] = [
     {
       field: "userId",
-      headerName: "UserId",
+      headerName: "No.",
       flex: 1,
     },
     {
