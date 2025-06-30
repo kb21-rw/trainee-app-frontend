@@ -45,7 +45,7 @@ export default function Users() {
   const columns: GridColDef[] = [
     {
       field: "userId",
-      headerName: "UserId",
+      headerName: "No.",
       flex: 1,
     },
     {
