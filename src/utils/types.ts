@@ -83,6 +83,7 @@ export interface Stage {
   id: string
   name: string
   description: string
+  isPreselection: boolean
   participantsCount: number
 }
 

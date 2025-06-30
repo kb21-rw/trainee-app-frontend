@@ -29,6 +29,7 @@ const updateCohortForm = z.object({
     z.object({
       name: z.string().min(2, "Name is required"),
       description: z.string(),
+      isPreselection: z.boolean(),
     }),
   ),
 })
