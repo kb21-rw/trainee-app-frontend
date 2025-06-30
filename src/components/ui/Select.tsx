@@ -4,7 +4,7 @@ import { UseFormRegisterReturn } from "react-hook-form"
 import classNames from "classnames"
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
-  options: { value: string; label: string }[]
+  options: { value: string | boolean; label: string }[]
   register?: UseFormRegisterReturn<any>
   label?: string
   error?: string
@@ -34,7 +34,7 @@ export default function Select({
           defaultValue={defaultValue}
         >
           {options.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option key={option.label} value={option.value.toString()}>
               {option.label}
             </option>
           ))}
