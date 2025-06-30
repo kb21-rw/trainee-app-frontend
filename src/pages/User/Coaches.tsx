@@ -122,7 +122,7 @@ export default function Coaches() {
   const rows: { id: string; userId: string; name: string; email: string }[] =
     cohortCoaches?.coaches?.map((coach: User, index: number) => ({
       id: coach._id,
-      userId: (index + 1).toString(),
+      userId: index + 1,
       name: coach.name,
       email: coach.email,
     })) ?? []
