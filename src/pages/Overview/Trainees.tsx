@@ -120,7 +120,7 @@ const Trainees = () => {
     await decide({
       jwt: cookies.jwt,
       body: {
-        userId: decisionInfo.userId,
+        traineeId: decisionInfo.userId,
         decision: decisionInfo.decision,
         feedback,
       },
@@ -128,15 +128,15 @@ const Trainees = () => {
   }
 
   const handleCoachChange = ({
-    coach,
+    coachId,
     participantId,
   }: {
-    coach: string
+    coachId: string
     participantId: null | string
   }) => {
     updateParticipant({
       participantId,
-      body: { coach },
+      body: { coachId },
       jwt: cookies.jwt,
     })
   }
