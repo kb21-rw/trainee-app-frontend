@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   useGetAllCohortsQuery,
   useGetCoachesQuery,
@@ -41,14 +41,28 @@ export default function Coaches() {
 
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
 
+  // Here we are trying to set the default selected cohort. It's important for a good UX.
+  useEffect(() => {
+    if (cohorts && cohorts.length > 0 && !selectedCohortId) {
+      setSelectedCohortId(cohorts[0]._id)
+    }
+  }, [cohorts, selectedCohortId])
+
   const {
     data: cohortCoaches,
     error: cohortCoachesError,
     isFetching: cohortCoachesIsFetching,
-  } = useGetCoachesQuery({
-    jwt: cookies.jwt,
-    cohortId: selectedCohortId,
-  })
+  } = useGetCoachesQuery(
+    {
+      jwt: cookies.jwt,
+      cohortId: selectedCohortId,
+    },
+    {
+      // Skipping the query if selectedCohortId is null
+      skip: !selectedCohortId,
+    },
+  )
+
   const handleCohortChange = (event: SelectChangeEvent) => {
     const cohortId = event.target.value
     setSelectedCohortId(cohortId)
@@ -63,7 +77,7 @@ export default function Coaches() {
     })
   }
 
-  if (cohortsError || cohortCoachesError || cohortCoachesError) {
+  if (cohortsError || cohortCoachesError) {
     const { message } = getErrorInfo(cohortsError ?? cohortCoachesError)
     handleShowAlert(dispatch, {
       type: AlertType.Error,
@@ -74,7 +88,7 @@ export default function Coaches() {
   const columns: GridColDef[] = [
     {
       field: "userId",
-      headerName: "UserId",
+      headerName: "No.",
       flex: 1,
     },
     {
@@ -106,9 +120,9 @@ export default function Coaches() {
   ]
 
   const rows: { id: string; userId: string; name: string; email: string }[] =
-    cohortCoaches?.coaches?.map((coach: User) => ({
+    cohortCoaches?.coaches?.map((coach: User, index: number) => ({
       id: coach._id,
-      userId: coach.userId,
+      userId: index + 1,
       name: coach.name,
       email: coach.email,
     })) ?? []
@@ -139,8 +153,9 @@ export default function Coaches() {
               <Select
                 labelId="cohort-label"
                 id="single-select"
-                value={selectedCohortId ?? cohortCoaches?._id ?? ""}
+                value={selectedCohortId || ""}
                 onChange={handleCohortChange}
+                displayEmpty
               >
                 {cohorts?.map((cohort: Cohort) => (
                   <MenuItem key={cohort._id} value={cohort._id}>
