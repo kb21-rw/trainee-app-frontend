@@ -19,6 +19,7 @@ import {
   UserRow,
   ResponseModalInfo,
   UserRole,
+  FormType,
 } from "../../utils/types"
 import { GridStateColDef } from "@mui/x-data-grid/internals"
 import WriteIcon from "../../assets/WriteIcon"
@@ -135,9 +136,13 @@ export default function OverViewTable({
     ...actionsColumns,
   ]
 
-  const allResponses = forms.flatMap((form) =>
-    form.questions.flatMap((question) => question.responses),
-  )
+  const allResponses = forms
+    .filter((form) =>
+      overviewType === "trainee"
+        ? form.type === FormType.Trainee
+        : form.type === FormType.Applicant,
+    )
+    .flatMap((form) => form.questions.flatMap((question) => question.responses))
 
   //Combine each user with their responses
   let users = allResponses.reduce(
@@ -169,8 +174,22 @@ export default function OverViewTable({
     {},
   )
 
+  //Filter users according to whether they are in preselection or not
+  const lastPreselectionStageIndex = stages.findLastIndex(
+    (stage) => stage.isPreselection,
+  )
+
+  const filteredParticipants = participants.filter((participant) => {
+    const stageIndex = stages.findIndex(
+      (stage) => stage._id === participant.stage,
+    )
+    return overviewType === "trainee"
+      ? stageIndex > lastPreselectionStageIndex
+      : stageIndex < lastPreselectionStageIndex
+  })
+
   // assign empty responses for users that don't have responses
-  const missingUsers = participants
+  const missingUsers = filteredParticipants
     .filter((participant) => !users[participant.userId])
     .map((participant) => ({
       [participant.userId]: {
@@ -194,7 +213,6 @@ export default function OverViewTable({
     const coach = coaches.find(
       (coach) => coach._id === userAsParticipant?.coachId,
     )
-
 
     const participantPhase =
       status === "REJECTED" || status === "DROPPED_OUT"

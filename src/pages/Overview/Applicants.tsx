@@ -133,15 +133,15 @@ const Applicants = () => {
   }
 
   const handleCoachChange = ({
-    coach,
+    coachId,
     participantId,
   }: {
-    coach: string
+    coachId: string
     participantId: null | string
   }) => {
     updateParticipant({
       participantId,
-      body: { coach },
+      body: { coachId },
       jwt: cookies.jwt,
     })
   }
@@ -231,11 +231,11 @@ const Applicants = () => {
           role={UserRole.Admin}
           overviewType="applicant"
           forms={cohortOverview.forms}
-          participants={cohortOverview.applicants}
+          participants={cohortOverview.trainees}
           participantsInfo={cohortOverview.participantsInfo}
           coaches={cohortOverview.coaches}
           updates={[]}
-          stages={cohortOverview.forms?.[0]?.stages ?? []}
+          stages={cohortOverview.stages}
           actions={{ handleDecision, handleUpsertResponse, handleCoachChange }}
         />
       )}
