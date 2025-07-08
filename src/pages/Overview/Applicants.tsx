@@ -125,7 +125,7 @@ const Applicants = () => {
     await decide({
       jwt: cookies.jwt,
       body: {
-        userId: decisionInfo.userId,
+        traineeId: decisionInfo.traineeId,
         decision: decisionInfo.decision,
         feedback,
       },

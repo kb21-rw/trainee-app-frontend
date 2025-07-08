@@ -120,7 +120,7 @@ const Trainees = () => {
     await decide({
       jwt: cookies.jwt,
       body: {
-        traineeId: decisionInfo.userId,
+        traineeId: decisionInfo.traineeId,
         decision: decisionInfo.decision,
         feedback,
       },

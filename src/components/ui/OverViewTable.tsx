@@ -185,7 +185,7 @@ export default function OverViewTable({
     )
     return overviewType === "trainee"
       ? stageIndex > lastPreselectionStageIndex
-      : stageIndex < lastPreselectionStageIndex
+      : stageIndex <= lastPreselectionStageIndex
   })
 
   // assign empty responses for users that don't have responses

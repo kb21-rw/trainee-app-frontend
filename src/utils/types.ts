@@ -218,7 +218,7 @@ export enum Decision {
 }
 
 export interface DecisionInfo {
-  userId: string
+  traineeId: string
   name: string
   email: string
   stage: string
