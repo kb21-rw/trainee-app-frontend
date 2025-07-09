@@ -76,7 +76,6 @@ export default function UpdateCohortModal({
 
   const onSubmit = async (formData: UpdateCohortFormSchema) => {
     const requestBody: Partial<UpdateCohortFormSchema> = {}
-    console.log(requestBody)
 
     for (const key in dirtyFields) {
       const myKey = key as keyof UpdateCohortFormSchema
@@ -84,7 +83,6 @@ export default function UpdateCohortModal({
       requestBody[myKey] = formData[myKey] as any
     }
 
-    console.log('after', requestBody, 'data', formData)
     try {
       const result = await updateCohort({
         jwt: cookies.jwt,
