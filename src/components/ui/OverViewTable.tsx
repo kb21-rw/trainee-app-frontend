@@ -284,7 +284,16 @@ export default function OverViewTable({
       )}
       <DataGrid
         rows={rows}
-        columns={forms.length === 0 ? [] : formattedColumns}
+        columns={
+          forms.length === 0
+            ? [
+                { field: "name", headerName: "Name", flex: 1, minWidth: 200 },
+                { field: "stage", headerName: "Stage", flex: 1, minWidth: 200 },
+                ...coachColumn,
+                ...actionsColumns,
+              ]
+            : formattedColumns
+        }
         columnGroupingModel={columnGroupingModel}
         hideFooter={true}
         onCellClick={handleCellClick}

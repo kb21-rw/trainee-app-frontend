@@ -29,7 +29,7 @@ const updateCohortForm = z.object({
     z.object({
       name: z.string().min(2, "Name is required"),
       description: z.string(),
-      isPreselection: z.boolean(),
+      isPreselection: z.string(),
     }),
   ),
 })
@@ -76,6 +76,7 @@ export default function UpdateCohortModal({
 
   const onSubmit = async (formData: UpdateCohortFormSchema) => {
     const requestBody: Partial<UpdateCohortFormSchema> = {}
+    console.log(requestBody)
 
     for (const key in dirtyFields) {
       const myKey = key as keyof UpdateCohortFormSchema
@@ -83,6 +84,7 @@ export default function UpdateCohortModal({
       requestBody[myKey] = formData[myKey] as any
     }
 
+    console.log('after', requestBody, 'data', formData)
     try {
       const result = await updateCohort({
         jwt: cookies.jwt,
@@ -124,9 +126,9 @@ export default function UpdateCohortModal({
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex-1 flex flex-col gap-6 max-h-full overflow-y-scroll bg-white p-5 rounded-xl"
+        className="flex flex-col flex-1 max-h-full gap-6 p-5 overflow-y-scroll bg-white rounded-xl"
       >
-        <h1 className="text-center text-3xl font-semibold">Update cohort</h1>
+        <h1 className="text-3xl font-semibold text-center">Update cohort</h1>
         <Input
           register={{ ...register("name") }}
           label="Name"

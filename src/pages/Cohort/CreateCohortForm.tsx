@@ -23,7 +23,7 @@ const schema = z.object({
       z.object({
         stageName: z.string().min(2, "Stage Name is required"),
         stageDescription: z.string().min(2, "Stage Description is required"),
-        isPreselection: z.boolean(),
+        isPreselection: z.string(),
       }),
     )
     .nonempty("At least one stage is required"),
@@ -47,7 +47,7 @@ type TCohortFormValues = {
   stages: {
     stageName: string
     stageDescription: string
-    isPreselection: boolean
+    isPreselection: string
   }[]
 }
 
@@ -72,7 +72,7 @@ function CreateCohortForm({
       name: "",
       description: "",
       trainingStartDate: null,
-      stages: [{ stageName: "", stageDescription: "", isPreselection: true }],
+      stages: [{ stageName: "", stageDescription: "", isPreselection: "true" }],
     },
   })
 

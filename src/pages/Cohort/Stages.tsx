@@ -22,7 +22,7 @@ function Stages({ control, errors }: StageProps) {
   })
 
   const addStage = () => {
-    append({ stageName: "", stageDescription: "", isPreselection: false })
+    append({ stageName: "", stageDescription: "", isPreselection: "false" })
   }
 
   const removeStage = (index: number) => {
@@ -91,8 +91,8 @@ function Stages({ control, errors }: StageProps) {
 
                 <Select
                   options={[
-                    { value: true, label: "Yes" },
-                    { value: false, label: "No" },
+                    { value: "true", label: "Yes" },
+                    { value: "false", label: "No" },
                   ]}
                   {...field}
                   error={errors.stages?.[index]?.isPreselection?.message}

@@ -50,10 +50,11 @@ export default function UpdateStages({
 
   const handleAddStage = () => {
     append({
+      _id: "",
       name: "",
       description: "",
       participantsCount: 0,
-      isPreselection: false,
+      isPreselection: "false",
     })
   }
 
@@ -134,13 +135,14 @@ export default function UpdateStages({
                   </InputLabel>
 
                   <Select
-                    defaultValue={field.value.toString()}
                     options={[
-                      { value: true, label: "Yes" },
-                      { value: false, label: "No" },
+                      { value: "true", label: "Yes" },
+                      { value: "false", label: "No" },
                     ]}
-                    {...field}
+                    value={field.value}
+                    onChange={field.onChange}
                     error={error.stages?.[index]?.isPreselection?.message}
+                    disabled={readOnly}
                   />
                 </>
               )}
