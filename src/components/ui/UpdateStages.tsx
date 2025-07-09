@@ -18,6 +18,7 @@ import {
 } from "@headlessui/react"
 import DropDownIcon from "../../assets/DropDownIcon"
 import dayjs from "dayjs"
+import Select from "./Select"
 
 export type FormData = {
   name: string
@@ -48,7 +49,13 @@ export default function UpdateStages({
   })
 
   const handleAddStage = () => {
-    append({ name: "", description: "", participantsCount: 0 })
+    append({
+      _id: "",
+      name: "",
+      description: "",
+      participantsCount: 0,
+      isPreselection: "false",
+    })
   }
 
   const handleRemoveStage = () => {
@@ -106,12 +113,35 @@ export default function UpdateStages({
                     Description
                   </InputLabel>
                   <TextField
+                    sx={{ paddingBlockEnd: 2 }}
                     error={!!error.stages?.[index]?.description}
                     helperText={error.stages?.[index]?.description?.message}
                     {...field}
                     size="small"
                     fullWidth
                     placeholder={`Stage ${index + 1} Description`}
+                    disabled={readOnly}
+                  />
+                </>
+              )}
+            />
+            <Controller
+              control={control}
+              name={`stages.${index}.isPreselection`}
+              render={({ field }) => (
+                <>
+                  <InputLabel shrink htmlFor="bootstrap-input">
+                    Preselection
+                  </InputLabel>
+
+                  <Select
+                    options={[
+                      { value: "true", label: "Yes" },
+                      { value: "false", label: "No" },
+                    ]}
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={error.stages?.[index]?.isPreselection?.message}
                     disabled={readOnly}
                   />
                 </>
