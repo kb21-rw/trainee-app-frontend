@@ -87,7 +87,7 @@ export default function Cohorts() {
       valueGetter: (value: Stage[]) => value.length,
     },
     {
-      field: "applicants",
+      field: "trainees",
       headerName: "Participants",
       type: "number",
       align: "left",
@@ -107,6 +107,7 @@ export default function Cohorts() {
       headerAlign: "center",
 
       renderCell: ({ row }) => {
+        // console.log(row._id, "row._id", row.id, "row.id")
         return (
           <div className="flex items-center justify-center w-full h-full space-x-2 text-xs">
             <Button
@@ -115,12 +116,12 @@ export default function Cohorts() {
               onClick={() =>
                 setDisplayCohortDetails({
                   cohortNumber: row.cohortNumber,
-                  _id: row.id,
+                  _id: row._id,
                   name: row.name,
                   description: row.description,
                   trainingStartDate: row.trainingStartDate,
                   stages: row.stages,
-                  applicants: row.applicants,
+                  applicants: row.trainees,
                   coaches: row.coaches,
                   forms: row.forms,
                   trainees: row.trainees,
@@ -136,7 +137,7 @@ export default function Cohorts() {
               disabled={!row.isActive}
               onClick={() =>
                 setCohortToUpdate({
-                  _id: row.id,
+                  _id: row._id,
                   name: row.name,
                   description: row.description,
                   trainingStartDate: row.trainingStartDate,

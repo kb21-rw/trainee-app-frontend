@@ -80,9 +80,10 @@ export interface Response {
 }
 
 export interface Stage {
-  id: string
+  _id: string
   name: string
   description: string
+  isPreselection: string
   participantsCount: number
 }
 
@@ -211,12 +212,12 @@ export enum AuthPage {
 }
 
 export interface CohortParticipant {
-  id: string
-  passedStages: string[]
-  droppedStage: {
-    id: string
-    isConfirmed: boolean
-  }
+  _id: string
+  userId: string
+  cohorId: string
+  coachId: string
+  stage: string
+  traineeStatus: string
   feedbacks: { stageId: string; text: string }[]
 }
 
@@ -226,7 +227,7 @@ export enum Decision {
 }
 
 export interface DecisionInfo {
-  userId: string
+  traineeId: string
   name: string
   email: string
   stage: string

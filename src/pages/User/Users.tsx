@@ -45,7 +45,7 @@ export default function Users() {
   const columns: GridColDef[] = [
     {
       field: "userId",
-      headerName: "UserId",
+      headerName: "No.",
       flex: 1,
     },
     {
@@ -103,10 +103,10 @@ export default function Users() {
   const rows =
     [...users]
       .sort((a: User, b: User) => b.createdAt.localeCompare(a.createdAt))
-      ?.map((user: User) => ({
+      ?.map((user: User, index: number) => ({
         id: user._id,
         _id: user._id,
-        userId: user.userId,
+        userId: index + 1,
         name: user.name,
         email: user.email,
         role: user.role,
@@ -116,6 +116,7 @@ export default function Users() {
   return (
     <>
       <CreateUser
+        refetch={refetch}
         isOpen={isCreateUserModalOpen}
         onClose={handleCloseCreateUserModal}
       />

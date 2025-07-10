@@ -23,6 +23,7 @@ const schema = z.object({
       z.object({
         stageName: z.string().min(2, "Stage Name is required"),
         stageDescription: z.string().min(2, "Stage Description is required"),
+        isPreselection: z.string(),
       }),
     )
     .nonempty("At least one stage is required"),
@@ -32,14 +33,22 @@ const FORM_NAME = {
   name: "name",
   description: "description",
   trainingStartDate: "trainingStartDate",
-  stages: { stageName: "stageName", stageDescription: "stageDescription" },
+  stages: {
+    stageName: "stageName",
+    stageDescription: "stageDescription",
+    isPreselection: "isPreselection",
+  },
 } as const
 
 type TCohortFormValues = {
   name: string
   description: string
   trainingStartDate: Dayjs | null
-  stages: { stageName: string; stageDescription: string }[]
+  stages: {
+    stageName: string
+    stageDescription: string
+    isPreselection: string
+  }[]
 }
 
 function CreateCohortForm({
@@ -63,7 +72,7 @@ function CreateCohortForm({
       name: "",
       description: "",
       trainingStartDate: null,
-      stages: [{ stageName: "", stageDescription: "" }],
+      stages: [{ stageName: "", stageDescription: "", isPreselection: "true" }],
     },
   })
 
@@ -71,11 +80,14 @@ function CreateCohortForm({
     await createCohort({
       jwt: cookies.jwt,
       body: {
-        ...data,
+        name: data.name,
+        description: data.description,
+        startDate: data.trainingStartDate,
         stages: data.stages.map((stage) => {
           return {
             name: stage.stageName,
             description: stage.stageDescription,
+            isPreselection: stage.isPreselection,
           }
         }),
       },

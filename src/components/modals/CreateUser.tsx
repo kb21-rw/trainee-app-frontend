@@ -1,20 +1,24 @@
-import { useForm } from "react-hook-form"
-import Button from "../ui/Button"
-import { Modal } from "@mui/material"
-import { AlertType, Cookie, CreateUserDto, UserRole } from "../../utils/types"
-import Input from "../ui/Input"
-import Select from "../ui/Select"
-import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { getErrorInfo } from "../../utils/helper"
-import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch } from "react-redux"
+import { Modal } from "@mui/material"
 import { useCookies } from "react-cookie"
-import { useCreateUserMutation } from "../../features/user/backendApi"
+import { useForm } from "react-hook-form"
+import { useDispatch } from "react-redux"
+import { z } from "zod"
+import {
+  useCreateCoachMutation,
+  useCreateUserMutation,
+} from "../../features/user/backendApi"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { getErrorInfo } from "../../utils/helper"
+import { AlertType, Cookie, CreateUserDto, UserRole } from "../../utils/types"
+import Button from "../ui/Button"
+import Input from "../ui/Input"
 import Loader from "../ui/Loader"
+import Select from "../ui/Select"
 
 const selectOptions = [
-  { value: UserRole.Prospect, label: "Prospect" },
+  // Label here is prospect instead of trainee because a trainee represent many different statuses with Prospect being one of them.
+  { value: UserRole.Trainee, label: "Prospect" },
   { value: UserRole.Coach, label: "Coach" },
   { value: UserRole.Admin, label: "Admin" },
 ]
@@ -22,20 +26,25 @@ const selectOptions = [
 const AddUserFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email"),
-  role: z.enum([UserRole.Prospect, UserRole.Coach, UserRole.Admin]),
+  role: z.enum([UserRole.Trainee, UserRole.Coach, UserRole.Admin]),
 })
 
 export default function CreateUser({
   isOpen,
   onClose,
+  refetch,
 }: {
   isOpen: boolean
   onClose: () => void
+  refetch: () => void
 }) {
   const [cookies] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
   const [createUser, { isLoading: isUserLoading, reset: resetCreateUser }] =
     useCreateUserMutation()
+
+  const [createCoach, { isLoading: isCoachLoading, reset: resetCreateCoach }] =
+    useCreateCoachMutation()
 
   const {
     register,
@@ -44,18 +53,31 @@ export default function CreateUser({
     formState: { errors },
   } = useForm<CreateUserDto>({
     resolver: zodResolver(AddUserFormSchema),
-    defaultValues: { name: "", email: "", role: UserRole.Prospect },
+    defaultValues: { name: "", email: "", role: UserRole.Trainee },
   })
 
   const onSubmit = async (formData: CreateUserDto) => {
     try {
-      await createUser({ jwt: cookies.jwt, body: formData }).unwrap()
-      handleShowAlert(dispatch, {
-        type: AlertType.Success,
-        message: "User was created successfully",
-      })
-      resetForm()
-      onClose()
+      if (formData.role === UserRole.Coach) {
+        await createCoach({ jwt: cookies.jwt, body: formData }).unwrap()
+        handleShowAlert(dispatch, {
+          type: AlertType.Success,
+          message: "Coach was created successfully",
+        })
+        // Here we are refetching only after a user is created not in other cases like when the admin just cancels the modal.
+        refetch()
+      }
+
+      if (
+        [UserRole.Trainee, UserRole.Admin].includes(formData.role as UserRole)
+      ) {
+        await createUser({ jwt: cookies.jwt, body: formData }).unwrap()
+        handleShowAlert(dispatch, {
+          type: AlertType.Success,
+          message: "User was created successfully",
+        })
+        refetch()
+      }
     } catch (error) {
       const { message } = getErrorInfo(error)
       handleShowAlert(dispatch, {
@@ -63,7 +85,10 @@ export default function CreateUser({
         message,
       })
     } finally {
+      resetForm()
+      onClose()
       resetCreateUser()
+      resetCreateCoach()
     }
   }
 
@@ -102,9 +127,13 @@ export default function CreateUser({
             Cancel
           </Button>
 
-          <Button type="submit" disabled={isUserLoading}>
+          <Button type="submit" disabled={isUserLoading || isCoachLoading}>
             <span className="flex items-center gap-1">
-              {isUserLoading ? <Loader borderColor="#fff" size="xs" /> : ""}
+              {isUserLoading || isCoachLoading ? (
+                <Loader borderColor="#fff" size="xs" />
+              ) : (
+                ""
+              )}
               <span>Create User</span>
             </span>
           </Button>

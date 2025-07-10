@@ -19,6 +19,7 @@ import {
   UserRow,
   ResponseModalInfo,
   UserRole,
+  FormType,
 } from "../../utils/types"
 import { GridStateColDef } from "@mui/x-data-grid/internals"
 import WriteIcon from "../../assets/WriteIcon"
@@ -54,11 +55,11 @@ interface DataGridProps {
     handleUpsertResponse?: (data: ResponseModalInfo) => void
     handleCoachChange?: ({
       // eslint-disable-next-line no-unused-vars
-      coach,
+      coachId,
       // eslint-disable-next-line no-unused-vars
       participantId,
     }: {
-      coach: string
+      coachId: string
       participantId: null | string
     }) => void
   }
@@ -135,10 +136,15 @@ export default function OverViewTable({
     ...actionsColumns,
   ]
 
-  const allResponses = forms.flatMap((form) =>
-    form.questions.flatMap((question) => question.responses),
-  )
+  const allResponses = forms
+    .filter((form) =>
+      overviewType === "trainee"
+        ? form.type === FormType.Trainee
+        : form.type === FormType.Applicant,
+    )
+    .flatMap((form) => form.questions.flatMap((question) => question.responses))
 
+  //Combine each user with their responses
   let users = allResponses.reduce(
     (
       uniqueUsers: {
@@ -168,45 +174,60 @@ export default function OverViewTable({
     {},
   )
 
-  const missingUsers = participants
-    .filter((participant) => !users[participant.id])
+  //Filter users according to whether they are in preselection or not
+  const lastPreselectionStageIndex = stages.findLastIndex(
+    (stage) => stage.isPreselection,
+  )
+
+  const filteredParticipants = participants.filter((participant) => {
+    const stageIndex = stages.findIndex(
+      (stage) => stage._id === participant.stage,
+    )
+    return overviewType === "trainee"
+      ? stageIndex > lastPreselectionStageIndex
+      : stageIndex <= lastPreselectionStageIndex
+  })
+
+  // assign empty responses for users that don't have responses
+  const missingUsers = filteredParticipants
+    .filter((participant) => !users[participant.userId])
     .map((participant) => ({
-      [participant.id]: {
+      [participant.userId]: {
         user: participantsInfo.find(
-          (participantInfo) => participantInfo._id === participant.id,
+          (participantInfo) => participantInfo._id === participant.userId,
         ),
         responses: {},
       },
     }))
 
   users = { ...users, ...Object.assign({}, ...missingUsers) }
-
   const rows: UserRow[] = Object.values(users).map((user) => {
-    const userStage = participants.find(
-      (userProgress) => userProgress.id === user.user._id,
-    )!
+    const userAsParticipant = participants.find(
+      (participant) => participant.userId === user.user._id,
+    )
+    const userStage = stages.find(
+      (stage) => stage._id === userAsParticipant?.stage,
+    )?.name
 
-    const stage = (stages.length > 0 &&
-      stages.find((stage) => stage.id === userStage.droppedStage.id)) ||
-      {} || { name: "Unknown" }
-
-    const userPassed = userStage.passedStages.includes(
-      stages[stages.length - 1].id,
+    const status = userAsParticipant?.traineeStatus
+    const coach = coaches.find(
+      (coach) => coach._id === userAsParticipant?.coachId,
     )
 
-    const participantPhase = userStage.droppedStage.isConfirmed
-      ? ParticipantPhase.Rejected
-      : userPassed
-        ? ParticipantPhase.Completed
-        : ParticipantPhase.Active
+    const participantPhase =
+      status === "REJECTED" || status === "DROPPED_OUT"
+        ? ParticipantPhase.Rejected
+        : status === "GRADUATED"
+          ? ParticipantPhase.Completed
+          : ParticipantPhase.Active
 
     return {
-      id: user.user._id,
+      id: userAsParticipant!._id ?? "",
       name: user.user.name,
       email: user.user.email,
-      coach: user.user.coach?._id ?? "",
-      coachName: user.user.coach?.name ?? "No coach",
-      stage: stage.name ?? "Unknown",
+      coach: coach?._id ?? "",
+      coachName: coach?.name ?? "No coach",
+      stage: userStage ?? "Unknown",
       actions: participantPhase,
       ...user.responses,
     }
@@ -263,7 +284,16 @@ export default function OverViewTable({
       )}
       <DataGrid
         rows={rows}
-        columns={forms.length === 0 ? [] : formattedColumns}
+        columns={
+          forms.length === 0
+            ? [
+                { field: "name", headerName: "Name", flex: 1, minWidth: 200 },
+                { field: "stage", headerName: "Stage", flex: 1, minWidth: 200 },
+                ...coachColumn,
+                ...actionsColumns,
+              ]
+            : formattedColumns
+        }
         columnGroupingModel={columnGroupingModel}
         hideFooter={true}
         onCellClick={handleCellClick}
@@ -288,7 +318,7 @@ export default function OverViewTable({
         }}
         processRowUpdate={(updatedRow) => {
           handleCoachChange({
-            coach: updatedRow.coach ? updatedRow.coach : null,
+            coachId: updatedRow.coach ? updatedRow.coach : null,
             participantId: updatedRow.id,
           })
           return {

@@ -35,7 +35,7 @@ export const getAdminActionColumns = (
             size={ButtonSize.Small}
             onClick={() =>
               handleDecision({
-                userId: id as string,
+                traineeId: id as string,
                 decision: Decision.Rejected,
                 email,
                 name,
@@ -51,7 +51,7 @@ export const getAdminActionColumns = (
             size={ButtonSize.Small}
             onClick={() =>
               handleDecision({
-                userId: id,
+                traineeId: id,
                 decision: Decision.Accepted,
                 email,
                 name,
