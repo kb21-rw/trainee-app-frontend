@@ -24,7 +24,6 @@ import { useCookies } from "react-cookie"
 import dayjs from "dayjs"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import UpdateStages from "./UpdateStages"
 import { DatePicker } from "@mui/x-date-pickers"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
@@ -78,7 +77,6 @@ export default function EditableFormCard({
     startDate:
       form.type === FormType.Application ? dayjs(form.startDate) : null,
     endDate: form.type === FormType.Application ? dayjs(form.endDate) : null,
-    stages: form.type === FormType.Application ? form.stages : [],
   }
 
   const [cookies] = useCookies([Cookie.jwt])
@@ -87,7 +85,7 @@ export default function EditableFormCard({
     control,
     register,
     handleSubmit,
-    formState: { isDirty, dirtyFields, errors },
+    formState: { isDirty, dirtyFields },
   } = useForm<FormDtoSchema>({
     resolver: zodResolver(FormDto),
     defaultValues,
@@ -219,12 +217,6 @@ export default function EditableFormCard({
                 )}
               />
             </div>
-            <UpdateStages
-              control={control}
-              register={register}
-              error={errors}
-              readOnly={readonly}
-            />
           </>
         )}
       </div>
