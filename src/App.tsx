@@ -37,6 +37,7 @@ import { SocketContextProvider } from "./utils/contexts/SocketContext"
 import Trainees from "./pages/Overview/Trainees"
 import CoachGeneralOverview from "./pages/Overview/CoachGeneralOverview"
 import TraineeResults from "./pages/User/TraineeResults"
+import MyApplicants from "./pages/MyApplicants/MyApplicants"
 
 export default function App() {
   const router = createBrowserRouter(
@@ -57,7 +58,7 @@ export default function App() {
             <Route element={<PrivateRoute allowedRoles={[UserRole.Coach]} />}>
               <Route path="/overview" element={<CoachGeneralOverview />} />
               <Route path="/my-trainees" element={<h1>My trainees</h1>} />
-              <Route path="/my-applicants" element={<h1>My applicants</h1>} />
+              <Route path="/my-applicants" element={<MyApplicants />} />
               <Route path="/trainees-results" element={<TraineeResults />} />
             </Route>
             <Route
