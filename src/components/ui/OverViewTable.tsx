@@ -36,7 +36,7 @@ interface Response extends BaseResponse {
   questionId: string
 }
 
-type Question = (Omit<BaseQuestion, "responses"> & { responses: Response })[]
+type Question = (Omit<BaseQuestion, "responses"> & { responses: Response[] })[]
 type Form = Omit<BaseForm, "questions"> & { questions: Question }
 
 interface DataGridProps {
@@ -140,11 +140,20 @@ export default function OverViewTable({
     .filter((form) =>
       overviewType === "trainee"
         ? form.type === FormType.Trainee
-        : form.type === FormType.Applicant,
+        : form.type === FormType.Application ||
+          form.type === FormType.Applicant,
     )
-    .flatMap((form) => form.questions.flatMap((question) => question.responses))
+    .flatMap((form) =>
+      form.questions.flatMap((question) => {
+        const responses = question.responses
+        return responses.map((response) => ({
+          ...response,
+          questionId: question._id,
+        }))
+      }),
+    )
 
-  //Combine each user with their responses
+  // users with their responses
   let users = allResponses.reduce(
     (
       uniqueUsers: {
@@ -155,6 +164,10 @@ export default function OverViewTable({
       },
       response,
     ) => {
+      if (!response.user || !response.user._id) {
+        return uniqueUsers
+      }
+
       const userId = response.user._id
       const existingUser = uniqueUsers[userId] ?? {
         user: response.user,
@@ -201,6 +214,7 @@ export default function OverViewTable({
     }))
 
   users = { ...users, ...Object.assign({}, ...missingUsers) }
+
   const rows: UserRow[] = Object.values(users).map((user) => {
     const userAsParticipant = participants.find(
       (participant) => participant.userId === user.user._id,
@@ -221,7 +235,7 @@ export default function OverViewTable({
           ? ParticipantPhase.Completed
           : ParticipantPhase.Active
 
-    return {
+    const row = {
       id: userAsParticipant!._id ?? "",
       name: user.user.name,
       email: user.user.email,
@@ -231,6 +245,7 @@ export default function OverViewTable({
       actions: participantPhase,
       ...user.responses,
     }
+    return row
   })
 
   const columnGroupingModel = forms.map((form) => ({
