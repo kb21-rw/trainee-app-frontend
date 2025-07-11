@@ -64,9 +64,6 @@ const MyApplicants = () => {
     isFetching: coachProfileIsFetching,
   } = useGetProfileQuery(cookies.jwt)
 
-  console.log("💀")
-  console.log(coachProfile)
-
   useEffect(() => {
     const subscription = watch(({ cohortId }) => {
       return cohortId
@@ -136,12 +133,6 @@ const MyApplicants = () => {
     updateParticipantReset()
   }
 
-  console.log("🚀")
-  console.log(cohortOverview?.trainees)
-
-  console.log("🍏")
-  console.log(cohortOverview?.participantsInfo)
-
   return (
     <div className="flex flex-col h-full py-12 space-y-5">
       <DecisionModal
@@ -157,15 +148,17 @@ const MyApplicants = () => {
         />
       )}
 
-      {cohortOverviewIsFetching || coachProfileIsFetching && <Loader />}
+      {cohortOverviewIsFetching || (coachProfileIsFetching && <Loader />)}
       {cohortOverview && (
         <OverViewTable
           role={UserRole.Coach}
           overviewType="applicant"
           forms={cohortOverview.forms}
-          participants={cohortOverview?.trainees?.filter(
-            (applicant: any) => applicant.coachId === coachProfile?._id,
-          ) ?? []}
+          participants={
+            cohortOverview?.trainees?.filter(
+              (applicant: any) => applicant.coachId === coachProfile?._id,
+            ) ?? []
+          }
           participantsInfo={cohortOverview.participantsInfo}
           coaches={cohortOverview.coaches}
           updates={[]}
