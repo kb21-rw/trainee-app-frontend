@@ -10,6 +10,7 @@ import OverViewTable from "../../components/ui/OverViewTable"
 import {
   useApplicantDecisionMutation,
   useGetApplicantsQuery,
+  useGetProfileQuery,
   useUpdateParticipantMutation,
 } from "../../features/user/backendApi"
 import { handleShowAlert } from "../../utils/handleShowAlert"
@@ -57,9 +58,17 @@ const MyApplicants = () => {
     },
   ] = useUpdateParticipantMutation()
 
+  const {
+    data: coachProfile,
+    // error: coachProfileError,
+    isFetching: coachProfileIsFetching,
+  } = useGetProfileQuery(cookies.jwt)
+
+  console.log("💀")
+  console.log(coachProfile)
+
   useEffect(() => {
     const subscription = watch(({ cohortId }) => {
-      // For coach, we don't need to filter by cohort
       return cohortId
     })
 
@@ -128,10 +137,10 @@ const MyApplicants = () => {
   }
 
   console.log("🚀")
-  console.log(cohortOverview.trainees)
+  console.log(cohortOverview?.trainees)
 
   console.log("🍏")
-  console.log(cohortOverview.participantsInfo)
+  console.log(cohortOverview?.participantsInfo)
 
   return (
     <div className="flex flex-col h-full py-12 space-y-5">
@@ -148,13 +157,15 @@ const MyApplicants = () => {
         />
       )}
 
-      {cohortOverviewIsFetching && <Loader />}
+      {cohortOverviewIsFetching || coachProfileIsFetching && <Loader />}
       {cohortOverview && (
         <OverViewTable
           role={UserRole.Coach}
           overviewType="applicant"
           forms={cohortOverview.forms}
-          participants={cohortOverview.trainees}
+          participants={cohortOverview?.trainees?.filter(
+            (applicant: any) => applicant.coachId === coachProfile?._id,
+          ) ?? []}
           participantsInfo={cohortOverview.participantsInfo}
           coaches={cohortOverview.coaches}
           updates={[]}
