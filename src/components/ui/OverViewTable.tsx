@@ -176,7 +176,7 @@ export default function OverViewTable({
 
   //Filter users according to whether they are in preselection or not
   const lastPreselectionStageIndex = stages.findLastIndex(
-    (stage) => stage.isPreselection,
+    (stage) => stage.isPreselection === "true",
   )
 
   const filteredParticipants = participants.filter((participant) => {

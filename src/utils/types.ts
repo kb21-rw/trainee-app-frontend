@@ -147,6 +147,15 @@ export enum UserRole {
   Prospect = "Prospect",
 }
 
+export enum UserStatus {
+  REGISTERED = "REGISTERED",
+  ON_WAIT_LIST = "ON_WAIT_LIST",
+  APPLIED = "APPLIED",
+  ENROLLED = "ENROLLED",
+  REJECTED = "REJECTED",
+  STAFF = "STAFF",
+}
+
 export type ApplicantDetails = {
   applied: boolean
   createdAt: string
