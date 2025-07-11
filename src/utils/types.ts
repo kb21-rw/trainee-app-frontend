@@ -74,6 +74,7 @@ export interface Question {
 
 export interface Response {
   _id: string
+  userId: string
   user: User
   value: string | string[]
   questionId?: string
