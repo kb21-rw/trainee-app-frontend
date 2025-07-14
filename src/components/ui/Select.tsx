@@ -10,8 +10,7 @@ interface SelectProps
   label?: string
   error?: string
   value?: string
-  // eslint-disable-next-line no-unused-vars
-  onValueChange?: (value: string) => void
+  onValueChange?: (_value: string) => void
 }
 
 export default function Select({

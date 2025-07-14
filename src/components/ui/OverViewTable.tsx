@@ -49,16 +49,9 @@ interface DataGridProps {
   participantsInfo: User[]
   updates: ResponseCell[] | null
   actions: {
-    // eslint-disable-next-line no-unused-vars
-    handleDecision?: (data: DecisionInfo) => void
-    // eslint-disable-next-line no-unused-vars
-    handleUpsertResponse?: (data: ResponseModalInfo) => void
-    handleCoachChange?: ({
-      // eslint-disable-next-line no-unused-vars
-      coachId,
-      // eslint-disable-next-line no-unused-vars
-      participantId,
-    }: {
+    handleDecision?: (_data: DecisionInfo) => void
+    handleUpsertResponse?: (_data: ResponseModalInfo) => void
+    handleCoachChange?: (_params: {
       coachId: string
       participantId: null | string
     }) => void
