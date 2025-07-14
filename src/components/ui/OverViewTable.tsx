@@ -229,7 +229,7 @@ export default function OverViewTable({
           : ParticipantPhase.Active
 
     const row = {
-      id: userAsParticipant?._id ?? "",
+      id: userAsParticipant?._id ?? `user-${user.user._id}`,
       name: user.user.name,
       email: user.user.email,
       coach: coach?._id ?? "",

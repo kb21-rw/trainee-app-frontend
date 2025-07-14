@@ -107,7 +107,10 @@ const MyApplicants = () => {
           forms={cohortOverview.forms}
           participants={
             cohortOverview?.trainees?.filter(
-              (applicant: any) => applicant.coachId === coachProfile?._id,
+              (applicant: any) =>
+                applicant.coachId === coachProfile?._id &&
+                applicant._id &&
+                applicant._id.trim() !== "",
             ) ?? []
           }
           participantsInfo={cohortOverview.participantsInfo}
