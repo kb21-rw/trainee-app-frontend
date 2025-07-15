@@ -7,11 +7,9 @@ import NotFound from "../../components/ui/NotFound"
 import OverViewTable from "../../components/ui/OverViewTable"
 import { UserRole } from "../../utils/types"
 import { useApplicantData } from "../../utils/hooks/useApplications"
-import {
-  useApplicantActions,
-  useApplicantErrors,
-} from "../../utils/hooks/useApplicantActions"
+import { useApplicantActions } from "../../utils/hooks/useApplicantActions"
 import { useApplicantDecision } from "../../utils/hooks/useApplicantDecision"
+import { useApplicantErrors } from "../../utils/hooks/useApplicantErrors"
 
 const MyApplicants = () => {
   const { watch } = useForm<{ cohortId: string }>({
