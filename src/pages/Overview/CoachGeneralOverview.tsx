@@ -2,7 +2,12 @@ import {
   useGetAllCohortsQuery,
   useGetTraineesQuery,
 } from "../../features/user/backendApi"
-import { AlertType, Cookie, UserRole } from "../../utils/types"
+import {
+  AlertType,
+  Cookie,
+  ResponseModalQuestion,
+  UserRole,
+} from "../../utils/types"
 import OverViewTable from "../../components/ui/OverViewTable"
 import { useCookies } from "react-cookie"
 import { getErrorInfo } from "../../utils/helper"
@@ -12,8 +17,11 @@ import Loader from "../../components/ui/Loader"
 import NotFound from "../../components/ui/NotFound"
 import SmartSelect from "../../components/ui/SmartSelect"
 import { useCohortSelection } from "../../utils/hooks/useCohortSelection"
+import { useState } from "react"
+import ResponseModal from "../../components/modals/ResponseModal"
 
 const CoachGeneralOverview = () => {
+  const [responseInfo, setResponseInfo] = useState<any | null>(null)
   const [cookies] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
   const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt })
@@ -39,6 +47,17 @@ const CoachGeneralOverview = () => {
     },
   )
 
+  const handleUpsertResponse = (data: {
+    userId: string
+    question: ResponseModalQuestion
+  }) => {
+    setResponseInfo(data)
+  }
+
+  const handleCloseModal = () => {
+    setTimeout(() => setResponseInfo(null), 0)
+  }
+
   if (coachOverviewError) {
     const { message } = getErrorInfo(coachOverviewError)
     handleShowAlert(dispatch, {
@@ -50,6 +69,12 @@ const CoachGeneralOverview = () => {
   return (
     <div className="flex flex-col h-full py-12 space-y-5">
       <div className="flex items-center justify-between">
+        {responseInfo && (
+          <ResponseModal
+            responseInfo={responseInfo}
+            closeModal={handleCloseModal}
+          />
+        )}
         <div className="w-52">
           <form>
             <SmartSelect
@@ -72,7 +97,7 @@ const CoachGeneralOverview = () => {
           coaches={coachOverview.coaches}
           updates={[]}
           stages={coachOverview.stages}
-          actions={{}}
+          actions={{ handleUpsertResponse }}
         />
       )}
       {!coachOverviewIsFetching && !coachOverview && (
