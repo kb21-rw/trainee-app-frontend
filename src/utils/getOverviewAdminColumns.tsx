@@ -25,7 +25,7 @@ export const getAdminActionColumns = (
       ParticipantPhase.Rejected,
     ],
     renderCell: ({ row }: { row: UserRow }) => {
-      const { id, email, name, stage, actions } = row
+      const { traineeId, email, name, stage, actions } = row
       if (actions !== ParticipantPhase.Active) return actions
 
       return (
@@ -35,7 +35,7 @@ export const getAdminActionColumns = (
             size={ButtonSize.Small}
             onClick={() =>
               handleDecision({
-                traineeId: id as string,
+                traineeId: traineeId as string,
                 decision: Decision.Rejected,
                 email,
                 name,
@@ -51,7 +51,7 @@ export const getAdminActionColumns = (
             size={ButtonSize.Small}
             onClick={() =>
               handleDecision({
-                traineeId: id,
+                traineeId: traineeId as string,
                 decision: Decision.Accepted,
                 email,
                 name,

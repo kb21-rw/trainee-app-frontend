@@ -51,7 +51,7 @@ interface DataGridProps {
   actions: {
     handleDecision?: (_data: DecisionInfo) => void
     handleUpsertResponse?: (_data: ResponseModalInfo) => void
-    handleCoachChange?: (_params: {
+    handleCoachChange?: (_params:{
       coachId: string
       participantId: null | string
     }) => void
@@ -228,7 +228,8 @@ export default function OverViewTable({
           : ParticipantPhase.Active
 
     const row = {
-      id: userAsParticipant?._id ?? `user-${user.user._id}`,
+      id: user.user._id,
+      traineeId: userAsParticipant?._id ?? `user-${user.user._id}`,
       name: user.user.name,
       email: user.user.email,
       coach: coach?._id ?? "",
@@ -250,10 +251,11 @@ export default function OverViewTable({
   }))
 
   const handleCellClick: GridEventListener<"cellClick"> = ({
+    id,
     value: response,
     colDef,
     field,
-    row: { userId, actions },
+    row: { actions },
   }) => {
     if (actions !== ParticipantPhase.Active) return
 
@@ -262,7 +264,7 @@ export default function OverViewTable({
       question: ResponseModalQuestion
     }
     handleUpsertResponse({
-      userId: userId as string,
+      userId: id as string,
       question: {
         ...customColDef.question,
         response: response as string | string[] | null,
@@ -325,7 +327,7 @@ export default function OverViewTable({
         processRowUpdate={(updatedRow) => {
           handleCoachChange({
             coachId: updatedRow.coach ? updatedRow.coach : null,
-            participantId: updatedRow.id,
+            participantId: updatedRow.traineeId,
           })
           return {
             ...updatedRow,
