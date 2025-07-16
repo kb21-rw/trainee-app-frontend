@@ -50,6 +50,7 @@ const CoachGeneralOverview = () => {
   const handleUpsertResponse = (data: {
     userId: string
     question: ResponseModalQuestion
+    readonly?: boolean
   }) => {
     setResponseInfo(data)
   }
@@ -71,7 +72,11 @@ const CoachGeneralOverview = () => {
       <div className="flex items-center justify-between">
         {responseInfo && (
           <ResponseModal
-            responseInfo={responseInfo}
+            responseInfo={{
+              userId: responseInfo.userId,
+              question: responseInfo.question,
+              readonly: true,
+            }}
             closeModal={handleCloseModal}
           />
         )}
