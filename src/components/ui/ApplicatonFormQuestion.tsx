@@ -19,11 +19,13 @@ interface ApplicationDFormQuestionProps {
     options: string[]
   }
   control: Control<any, any>
+  disabled?: boolean
 }
 
 export default function ApplicationFormQuestion({
   question,
   control,
+  disabled = false,
 }: ApplicationDFormQuestionProps) {
   return (
     <Controller
@@ -42,6 +44,7 @@ export default function ApplicationFormQuestion({
                       key={optionIndex}
                       control={
                         <Checkbox
+                          disabled={disabled}
                           checked={field.value.includes(option)}
                           onChange={(e) => {
                             const newValues = e.target.checked
@@ -67,7 +70,7 @@ export default function ApplicationFormQuestion({
                   <FormControlLabel
                     key={index}
                     value={option}
-                    control={<Radio />}
+                    control={<Radio disabled={disabled} />}
                     label={option}
                   />
                 ))}
@@ -81,6 +84,7 @@ export default function ApplicationFormQuestion({
                 id={question._id}
                 fullWidth
                 variant="standard"
+                disabled={disabled}
               />
             )
         }
