@@ -49,6 +49,10 @@ export default function ApplicationFormActions({
 
   const { socket } = useContext(SocketContext)
 
+  const handleClick = () => {
+    window.open(applicationFormStatusData[displayStatus].buttonLink, "_blank")
+  }
+
   useEffect(() => {
     if (socket) {
       socket.emit("join-room", data.email)
@@ -116,12 +120,7 @@ export default function ApplicationFormActions({
             {!data.isOnWaitList && (
               <Button
                 className="bg-primary-dark text-white px-6 py-3 rounded-md"
-                onClick={() =>
-                  window.open(
-                    applicationFormStatusData[displayStatus].buttonLink,
-                    "_blank",
-                  )
-                }
+                onClick={handleClick}
               >
                 {applicationFormStatusData[displayStatus].buttonText}
               </Button>
