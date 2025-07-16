@@ -19,6 +19,7 @@ import {
   UserRow,
   ResponseModalInfo,
   UserRole,
+  FormType,
 } from "../../utils/types"
 import { GridStateColDef } from "@mui/x-data-grid/internals"
 import WriteIcon from "../../assets/WriteIcon"
@@ -35,7 +36,7 @@ interface Response extends BaseResponse {
   questionId: string
 }
 
-type Question = (Omit<BaseQuestion, "responses"> & { responses: Response })[]
+type Question = (Omit<BaseQuestion, "responses"> & { responses: Response[] })[]
 type Form = Omit<BaseForm, "questions"> & { questions: Question }
 
 interface DataGridProps {
@@ -48,17 +49,10 @@ interface DataGridProps {
   participantsInfo: User[]
   updates: ResponseCell[] | null
   actions: {
-    // eslint-disable-next-line no-unused-vars
-    handleDecision?: (data: DecisionInfo) => void
-    // eslint-disable-next-line no-unused-vars
-    handleUpsertResponse?: (data: ResponseModalInfo) => void
-    handleCoachChange?: ({
-      // eslint-disable-next-line no-unused-vars
-      coach,
-      // eslint-disable-next-line no-unused-vars
-      participantId,
-    }: {
-      coach: string
+    handleDecision?: (_data: DecisionInfo) => void
+    handleUpsertResponse?: (_data: ResponseModalInfo) => void
+    handleCoachChange?: (_params: {
+      coachId: string
       participantId: null | string
     }) => void
   }
@@ -135,10 +129,24 @@ export default function OverViewTable({
     ...actionsColumns,
   ]
 
-  const allResponses = forms.flatMap((form) =>
-    form.questions.flatMap((question) => question.responses),
-  )
+  const allResponses = forms
+    .filter((form) =>
+      overviewType === "trainee"
+        ? form.type === FormType.Trainee
+        : form.type === FormType.Application ||
+          form.type === FormType.Applicant,
+    )
+    .flatMap((form) =>
+      form.questions.flatMap((question) => {
+        const responses = question.responses
+        return responses.map((response) => ({
+          ...response,
+          questionId: question._id,
+        }))
+      }),
+    )
 
+  // users with their responses
   let users = allResponses.reduce(
     (
       uniqueUsers: {
@@ -149,6 +157,10 @@ export default function OverViewTable({
       },
       response,
     ) => {
+      if (!response.user || !response.user._id) {
+        return uniqueUsers
+      }
+
       const userId = response.user._id
       const existingUser = uniqueUsers[userId] ?? {
         user: response.user,
@@ -168,12 +180,27 @@ export default function OverViewTable({
     {},
   )
 
-  const missingUsers = participants
-    .filter((participant) => !users[participant.id])
+  //Filter users according to whether they are in preselection or not
+  const lastPreselectionStageIndex = stages.findLastIndex(
+    (stage) => stage.isPreselection === "true",
+  )
+
+  const filteredParticipants = participants.filter((participant) => {
+    const stageIndex = stages.findIndex(
+      (stage) => stage._id === participant.stage,
+    )
+    return overviewType === "trainee"
+      ? stageIndex > lastPreselectionStageIndex
+      : stageIndex <= lastPreselectionStageIndex
+  })
+
+  // assign empty responses for users that don't have responses
+  const missingUsers = filteredParticipants
+    .filter((participant) => !users[participant.userId])
     .map((participant) => ({
-      [participant.id]: {
+      [participant.userId]: {
         user: participantsInfo.find(
-          (participantInfo) => participantInfo._id === participant.id,
+          (participantInfo) => participantInfo._id === participant.userId,
         ),
         responses: {},
       },
@@ -182,34 +209,36 @@ export default function OverViewTable({
   users = { ...users, ...Object.assign({}, ...missingUsers) }
 
   const rows: UserRow[] = Object.values(users).map((user) => {
-    const userStage = participants.find(
-      (userProgress) => userProgress.id === user.user._id,
-    )!
+    const userAsParticipant = participants.find(
+      (participant) => participant.userId === user.user._id,
+    )
+    const userStage = stages.find(
+      (stage) => stage._id === userAsParticipant?.stage,
+    )?.name
 
-    const stage = (stages.length > 0 &&
-      stages.find((stage) => stage.id === userStage.droppedStage.id)) ||
-      {} || { name: "Unknown" }
-
-    const userPassed = userStage.passedStages.includes(
-      stages[stages.length - 1].id,
+    const status = userAsParticipant?.traineeStatus
+    const coach = coaches.find(
+      (coach) => coach._id === userAsParticipant?.coachId,
     )
 
-    const participantPhase = userStage.droppedStage.isConfirmed
-      ? ParticipantPhase.Rejected
-      : userPassed
-        ? ParticipantPhase.Completed
-        : ParticipantPhase.Active
+    const participantPhase =
+      status === "REJECTED" || status === "DROPPED_OUT"
+        ? ParticipantPhase.Rejected
+        : status === "GRADUATED"
+          ? ParticipantPhase.Completed
+          : ParticipantPhase.Active
 
-    return {
-      id: user.user._id,
+    const row = {
+      id: userAsParticipant?._id ?? `user-${user.user._id}`,
       name: user.user.name,
       email: user.user.email,
-      coach: user.user.coach?._id ?? "",
-      coachName: user.user.coach?.name ?? "No coach",
-      stage: stage.name ?? "Unknown",
+      coach: coach?._id ?? "",
+      coachName: coach?.name ?? "No coach",
+      stage: userStage ?? "Unknown",
       actions: participantPhase,
       ...user.responses,
     }
+    return row
   })
 
   const columnGroupingModel = forms.map((form) => ({
@@ -263,7 +292,16 @@ export default function OverViewTable({
       )}
       <DataGrid
         rows={rows}
-        columns={forms.length === 0 ? [] : formattedColumns}
+        columns={
+          forms.length === 0
+            ? [
+                { field: "name", headerName: "Name", flex: 1, minWidth: 200 },
+                { field: "stage", headerName: "Stage", flex: 1, minWidth: 200 },
+                ...coachColumn,
+                ...actionsColumns,
+              ]
+            : formattedColumns
+        }
         columnGroupingModel={columnGroupingModel}
         hideFooter={true}
         onCellClick={handleCellClick}
@@ -288,7 +326,7 @@ export default function OverViewTable({
         }}
         processRowUpdate={(updatedRow) => {
           handleCoachChange({
-            coach: updatedRow.coach ? updatedRow.coach : null,
+            coachId: updatedRow.coach ? updatedRow.coach : null,
             participantId: updatedRow.id,
           })
           return {

@@ -2,9 +2,14 @@ import { InputLabel, Paper, Stack, TextField, Typography } from "@mui/material"
 import Button from "../../components/ui/Button"
 import { ButtonSize, ButtonVariant } from "../../utils/types"
 import { Controller, UseFormRegister, useFieldArray } from "react-hook-form"
+import Select from "../../components/ui/Select"
 
 type StageProps = {
-  stagesNames?: { stageName: string; stageDescription: string }
+  stagesNames?: {
+    stageName: string
+    stageDescription: string
+    isPreselection: string
+  }
   control: any
   register?: UseFormRegister<any>
   errors: any
@@ -17,7 +22,7 @@ function Stages({ control, errors }: StageProps) {
   })
 
   const addStage = () => {
-    append({ stageName: "", stageDescription: "" })
+    append({ stageName: "", stageDescription: "", isPreselection: "false" })
   }
 
   const removeStage = (index: number) => {
@@ -64,12 +69,33 @@ function Stages({ control, errors }: StageProps) {
                   Description
                 </InputLabel>
                 <TextField
+                  sx={{ paddingBlockEnd: 2 }}
                   error={!!errors.stages?.[index]?.stageDescription}
                   helperText={errors.stages?.[index]?.stageDescription?.message}
                   {...field}
                   size="small"
                   fullWidth
                   placeholder={`Stage ${index + 1} Description`}
+                />
+              </>
+            )}
+          />
+          <Controller
+            control={control}
+            name={`stages.${index}.preselection`}
+            render={({ field }) => (
+              <>
+                <InputLabel shrink htmlFor="bootstrap-input">
+                  Preselection
+                </InputLabel>
+
+                <Select
+                  options={[
+                    { value: "true", label: "Yes" },
+                    { value: "false", label: "No" },
+                  ]}
+                  {...field}
+                  error={errors.stages?.[index]?.isPreselection?.message}
                 />
               </>
             )}

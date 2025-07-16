@@ -27,8 +27,8 @@ export default function EditParticipantModal({
     handleSubmit,
     register,
     formState: { errors, isDirty },
-  } = useForm<{ name: string; coach: string }>({
-    defaultValues: { name: row.name ?? "", coach: row.coach ?? "" },
+  } = useForm<{ name: string; coachId: string }>({
+    defaultValues: { name: row.name ?? "", coachId: row.coach ?? "" },
   })
   const [updateParticipant, { error, isSuccess, isLoading }] =
     useUpdateParticipantMutation()
@@ -44,7 +44,7 @@ export default function EditParticipantModal({
 
   const selectedCoach = coachOptions.find((coach) => coach.value === row?.coach)
 
-  const onSubmit = async (formData: { name: string; coach: string }) => {
+  const onSubmit = async (formData: { name: string; coachId: string }) => {
     await updateParticipant({
       jwt: cookies.jwt,
       body: formData,
@@ -92,7 +92,7 @@ export default function EditParticipantModal({
         <SmartSelect
           defaultValue={selectedCoach}
           options={coachOptions}
-          register={{ ...register("coach") }}
+          register={{ ...register("coachId") }}
         />
         <div className="flex justify-around gap-2">
           <Button outlined onClick={onClose}>

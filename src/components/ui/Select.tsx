@@ -3,11 +3,14 @@ import { Select as SelectField } from "@headlessui/react"
 import { UseFormRegisterReturn } from "react-hook-form"
 import classNames from "classnames"
 
-interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+interface SelectProps
+  extends Omit<SelectHTMLAttributes<HTMLSelectElement>, "onChange"> {
   options: { value: string; label: string }[]
   register?: UseFormRegisterReturn<any>
   label?: string
   error?: string
+  value?: string
+  onValueChange?: (_value: string) => void
 }
 
 export default function Select({
@@ -17,6 +20,9 @@ export default function Select({
   register,
   error,
   defaultValue,
+  value,
+  onValueChange,
+  ...props
 }: SelectProps) {
   return (
     <div className="relative space-y-2">
@@ -29,18 +35,27 @@ export default function Select({
         )}
       >
         <SelectField
-          className="w-full flex justify-between focus:outline-none"
-          {...register}
+          className="flex justify-between w-full focus:outline-none"
+          {...(register
+            ? register
+            : {
+                value,
+                onChange: onValueChange
+                  ? (e: React.ChangeEvent<HTMLSelectElement>) =>
+                      onValueChange(e.target.value)
+                  : undefined,
+              })}
           defaultValue={defaultValue}
+          {...props}
         >
           {options.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option key={option.label} value={option.value.toString()}>
               {option.label}
             </option>
           ))}
         </SelectField>
         {error && (
-          <div className="absolute w-full text-xs text-red-500 -bottom-4 left-1">
+          <div className="absolute w-full text-red-500 text-4 -bottom-4 left-1">
             {error}
           </div>
         )}

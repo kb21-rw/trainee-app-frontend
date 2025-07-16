@@ -14,6 +14,7 @@ import {
   Cookie,
   UserResponseQuestion,
   UserRole,
+  UserStatus,
 } from "../../utils/types"
 import Button from "../ui/Button"
 import CohortInfo from "../ui/CohortInfo"
@@ -25,14 +26,16 @@ interface ApplicationFormActionsProps {
     trainingStartDate: string
   }
   role: UserRole
+  userStatus: UserStatus
 }
 
 export default function ApplicationFormActions({
   applicationForm,
   role,
+  userStatus,
 }: ApplicationFormActionsProps) {
   const status =
-    role === UserRole.Applicant
+    role === UserRole.Prospect && userStatus === "APPLIED"
       ? ApplicationFormStatus.Submitted
       : getApplicationFormStatus(applicationForm)
 
@@ -41,10 +44,14 @@ export default function ApplicationFormActions({
   const dispatch = useDispatch()
 
   const [displayStatus, setdisplayStatus] = useState<ApplicationFormStatus>(
-    data.isOnWaitList ? ApplicationFormStatus.JoinedWaitList : status,
+    () => (data.isOnWaitList ? ApplicationFormStatus.JoinedWaitList : status),
   )
 
   const { socket } = useContext(SocketContext)
+
+  const handleClick = () => {
+    window.open(applicationFormStatusData[displayStatus].buttonLink, "_blank")
+  }
 
   useEffect(() => {
     if (socket) {
@@ -113,14 +120,7 @@ export default function ApplicationFormActions({
             {!data.isOnWaitList && (
               <Button
                 className="bg-primary-dark text-white px-6 py-3 rounded-md"
-                onClick={() =>
-                  window.open(
-                    applicationFormStatusData[
-                      ApplicationFormStatus.NoApplication
-                    ].buttonLink,
-                    "_blank",
-                  )
-                }
+                onClick={handleClick}
               >
                 {applicationFormStatusData[displayStatus].buttonText}
               </Button>

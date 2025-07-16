@@ -8,6 +8,7 @@ import { Cookie } from "../../utils/types"
 
 export default function HomePage() {
   const role = useSelector((state: RootState) => state.user.role)!
+  const userStatus = useSelector((state: RootState) => state.user.status)!
   const [cookies] = useCookies([Cookie.jwt])
   const { data: applicationForm, isLoading } = useGetMyApplicationQuery(
     cookies.jwt,
@@ -24,7 +25,11 @@ export default function HomePage() {
         </div>
       )}
 
-      <ApplicationFormActions applicationForm={applicationForm} role={role} />
+      <ApplicationFormActions
+        applicationForm={applicationForm}
+        role={role}
+        userStatus={userStatus}
+      />
     </div>
   )
 }
