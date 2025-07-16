@@ -51,7 +51,7 @@ interface DataGridProps {
   actions: {
     handleDecision?: (_data: DecisionInfo) => void
     handleUpsertResponse?: (_data: ResponseModalInfo) => void
-    handleCoachChange?: (_params:{
+    handleCoachChange?: (_params: {
       coachId: string
       participantId: null | string
     }) => void
