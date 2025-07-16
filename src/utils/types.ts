@@ -126,6 +126,7 @@ export interface ApplicationFormResponse {
 export enum ButtonVariant {
   Primary = "Primary",
   Danger = "Danger",
+  XIcon = "XIcon",
 }
 
 export enum ButtonSize {

@@ -48,6 +48,8 @@ const Button = ({
   }
 
   const noBackgroundClasses = noBackground && "bg-none border-none shadow-none"
+  const closeIconClasses =
+    variant === ButtonVariant.XIcon && "border border-gray-300 p-2 rounded-md"
 
   return (
     <button
@@ -59,6 +61,7 @@ const Button = ({
         primaryClasses,
         sizeClasses,
         noBackgroundClasses,
+        closeIconClasses,
         className,
       )}
       type={type}
