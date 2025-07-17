@@ -76,12 +76,12 @@ export default function OverViewTable({
   const [participantInfo, setParticipantInfo] = useState<any>(null)
   const isAdmin = role === UserRole.Admin
 
-  const formsToUse = forms.filter((form) =>
+  const formsByOverviewType = forms.filter((form) =>
     overviewType === "trainee"
       ? form.type === FormType.Trainee
       : form.type === FormType.Application || form.type === FormType.Applicant,
   )
-  const questionColumns: GridColDef[] = formsToUse.flatMap((form) =>
+  const questionColumns: GridColDef[] = formsByOverviewType.flatMap((form) =>
     form.questions.map(({ _id, prompt, options, required, type }) => ({
       field: _id,
       headerName: prompt,
@@ -134,7 +134,7 @@ export default function OverViewTable({
     ...actionsColumns,
   ]
 
-  const allResponses = formsToUse.flatMap((form) =>
+  const allResponses = formsByOverviewType.flatMap((form) =>
     form.questions.flatMap((question) => {
       const responses = question.responses
       return responses.map((response) => ({
@@ -241,7 +241,7 @@ export default function OverViewTable({
     return row
   })
 
-  const columnGroupingModel = formsToUse.map((form) => ({
+  const columnGroupingModel = formsByOverviewType.map((form) => ({
     groupId: form._id,
     headerName: form.name,
     children: form.questions.map((question) => ({
@@ -293,7 +293,7 @@ export default function OverViewTable({
       <DataGrid
         rows={rows}
         columns={
-          formsToUse.length === 0
+          formsByOverviewType.length === 0
             ? [
                 { field: "name", headerName: "Name", flex: 1, minWidth: 200 },
                 { field: "stage", headerName: "Stage", flex: 1, minWidth: 200 },
