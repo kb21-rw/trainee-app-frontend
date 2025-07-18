@@ -48,7 +48,7 @@ export default function EditParticipantModal({
     await updateParticipant({
       jwt: cookies.jwt,
       body: formData,
-      participantId: row.id,
+      participantId: row.traineeId,
     })
   }
 

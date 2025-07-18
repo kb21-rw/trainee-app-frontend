@@ -1,8 +1,8 @@
 import {
-  useGetTraineesQuery,
   useGetAllCohortsQuery,
   useApplicantDecisionMutation,
   useUpdateParticipantMutation,
+  useGetTraineesForCoachQuery,
 } from "../../features/user/backendApi"
 import {
   AlertType,
@@ -12,7 +12,7 @@ import {
   ResponseModalQuestion,
   UserRole,
 } from "../../utils/types"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import OverViewTable from "../../components/ui/OverViewTable"
 import { useCookies } from "react-cookie"
 import { getErrorInfo } from "../../utils/helper"
@@ -24,6 +24,7 @@ import DecisionModal from "../../components/modals/DecisionModal"
 import ResponseModal from "../../components/modals/ResponseModal"
 import SmartSelect from "../../components/ui/SmartSelect"
 import { useForm } from "react-hook-form"
+import { useCoachIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
 
 const MyTrainees = () => {
   const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null)
@@ -33,18 +34,24 @@ const MyTrainees = () => {
   } | null>(null)
   const [cookies] = useCookies([Cookie.jwt])
   const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt })
+  const currentCoachId = useCoachIdFromJwt()
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
+
   const dispatch = useDispatch()
-  const { register, watch } = useForm<{ cohortId: string }>({
+  const { register, watch } = useForm<{
+    cohortId: string
+  }>({
     defaultValues: { cohortId: "" },
   })
+
   const {
     data: traineeOverview,
     error: traineeOverviewError,
     isFetching: traineeOverviewIsFetching,
-  } = useGetTraineesQuery({
+  } = useGetTraineesForCoachQuery({
     jwt: cookies.jwt,
     cohortId: selectedCohortId,
+    coachId: currentCoachId,
   })
 
   const [
@@ -141,6 +148,15 @@ const MyTrainees = () => {
     })
   }
 
+  const filteredTrainees = useMemo(() => {
+    if (!traineeOverview?.trainees || !currentCoachId) return []
+    return traineeOverview.trainees.filter(
+      (trainee: { coachId: string }) => trainee.coachId === currentCoachId,
+    )
+  }, [traineeOverview, currentCoachId])
+
+  console.log("trainees", filteredTrainees)
+
   if (traineeOverviewError || decisionError || updateParticipantError) {
     const { message } = getErrorInfo(
       traineeOverviewError ?? decisionError ?? updateParticipantError,
@@ -214,7 +230,7 @@ const MyTrainees = () => {
           role={UserRole.Coach}
           overviewType="trainee"
           forms={traineeOverview.forms}
-          participants={traineeOverview.trainees}
+          participants={filteredTrainees}
           participantsInfo={traineeOverview.participantsInfo}
           coaches={traineeOverview.coaches}
           updates={[]}
