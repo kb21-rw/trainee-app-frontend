@@ -250,6 +250,7 @@ export enum ParticipantPhase {
 
 export interface UserRow {
   id: string
+  traineeId: string
   name: string
   email: string
   coach: string

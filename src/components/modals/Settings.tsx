@@ -24,7 +24,7 @@ export default function SettingsModal({
   const handleReject = () => {
     onClose()
     handleDecision({
-      userId: row?.id,
+      traineeId: row?.traineeId,
       decision: Decision.Rejected,
       email: row?.email,
       name: row?.name,
@@ -35,7 +35,7 @@ export default function SettingsModal({
   const handleAccept = () => {
     onClose()
     handleDecision({
-      userId: row?.id,
+      traineeId: row?.traineeId,
       decision: Decision.Accepted,
       email: row?.email,
       name: row?.name,
