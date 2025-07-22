@@ -1,9 +1,22 @@
+import { useEffect, useMemo, useState } from "react"
+import { useCookies } from "react-cookie"
+import { useForm } from "react-hook-form"
+import { useDispatch } from "react-redux"
+import DecisionModal from "../../components/modals/DecisionModal"
+import ResponseModal from "../../components/modals/ResponseModal"
+import Loader from "../../components/ui/Loader"
+import NotFound from "../../components/ui/NotFound"
+import OverViewTable from "../../components/ui/OverViewTable"
+import SmartSelect from "../../components/ui/SmartSelect"
 import {
-  useGetAllCohortsQuery,
   useApplicantDecisionMutation,
-  useUpdateParticipantMutation,
+  useGetAllCohortsQuery,
   useGetTraineesForCoachQuery,
+  useUpdateParticipantMutation,
 } from "../../features/user/backendApi"
+import { handleShowAlert } from "../../utils/handleShowAlert"
+import { getErrorInfo } from "../../utils/helper"
+import { useCoachIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
 import {
   AlertType,
   Cohort,
@@ -12,19 +25,6 @@ import {
   ResponseModalQuestion,
   UserRole,
 } from "../../utils/types"
-import { useEffect, useMemo, useState } from "react"
-import OverViewTable from "../../components/ui/OverViewTable"
-import { useCookies } from "react-cookie"
-import { getErrorInfo } from "../../utils/helper"
-import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch } from "react-redux"
-import Loader from "../../components/ui/Loader"
-import NotFound from "../../components/ui/NotFound"
-import DecisionModal from "../../components/modals/DecisionModal"
-import ResponseModal from "../../components/modals/ResponseModal"
-import SmartSelect from "../../components/ui/SmartSelect"
-import { useForm } from "react-hook-form"
-import { useCoachIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
 
 const MyTrainees = () => {
   const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null)
@@ -154,8 +154,6 @@ const MyTrainees = () => {
       (trainee: { coachId: string }) => trainee.coachId === currentCoachId,
     )
   }, [traineeOverview, currentCoachId])
-
-  console.log("trainees", filteredTrainees)
 
   if (traineeOverviewError || decisionError || updateParticipantError) {
     const { message } = getErrorInfo(

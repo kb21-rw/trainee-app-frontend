@@ -1,36 +1,36 @@
-import { useState } from "react"
 import {
   DataGrid,
   GridCellEditStopReasons,
   GridColDef,
   GridEventListener,
 } from "@mui/x-data-grid"
-import {
-  Form as BaseForm,
-  Response as BaseResponse,
-  Question as BaseQuestion,
-  CohortParticipant,
-  Stage,
-  User,
-  DecisionInfo,
-  ResponseModalQuestion,
-  ResponseCell,
-  ParticipantPhase,
-  UserRow,
-  ResponseModalInfo,
-  UserRole,
-  FormType,
-} from "../../utils/types"
 import { GridStateColDef } from "@mui/x-data-grid/internals"
-import WriteIcon from "../../assets/WriteIcon"
+import { useState } from "react"
 import SettingsIcon from "../../assets/SettingsIcon"
-import SettingsModal from "../modals/Settings"
-import EditParticipantModal from "../modals/EditParticipantModal"
-import { overViewDataGridStyles } from "../../utils/styles"
+import WriteIcon from "../../assets/WriteIcon"
 import {
   getAdminActionColumns,
   getAdminCoachColumn,
 } from "../../utils/getOverviewAdminColumns"
+import { overViewDataGridStyles } from "../../utils/styles"
+import {
+  Form as BaseForm,
+  Question as BaseQuestion,
+  Response as BaseResponse,
+  CohortParticipant,
+  DecisionInfo,
+  FormType,
+  ParticipantPhase,
+  ResponseCell,
+  ResponseModalInfo,
+  ResponseModalQuestion,
+  Stage,
+  User,
+  UserRole,
+  UserRow,
+} from "../../utils/types"
+import EditParticipantModal from "../modals/EditParticipantModal"
+import SettingsModal from "../modals/Settings"
 
 interface Response extends BaseResponse {
   questionId: string
@@ -193,18 +193,22 @@ export default function OverViewTable({
   })
 
   // assign empty responses for users that don't have responses
-  const missingUsers = filteredParticipants
-    .filter((participant) => !users[participant.userId])
-    .map((participant) => ({
+  const usersToDisplay = filteredParticipants.map((participant) => {
+    if (users[participant.userId]) {
+      return { [participant.userId]: users[participant.userId] }
+    }
+
+    return {
       [participant.userId]: {
         user: participantsInfo.find(
           (participantInfo) => participantInfo._id === participant.userId,
         ),
         responses: {},
       },
-    }))
+    }
+  })
 
-  users = { ...users, ...Object.assign({}, ...missingUsers) }
+  users = { ...Object.assign({}, ...usersToDisplay) }
 
   const rows: UserRow[] = Object.values(users).map((user) => {
     const userAsParticipant = participants.find(
