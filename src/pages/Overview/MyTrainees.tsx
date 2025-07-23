@@ -1,201 +1,132 @@
 import { useEffect, useMemo, useState } from "react"
-import { useCookies } from "react-cookie"
 import { useForm } from "react-hook-form"
-import { useDispatch } from "react-redux"
 import DecisionModal from "../../components/modals/DecisionModal"
 import ResponseModal from "../../components/modals/ResponseModal"
 import Loader from "../../components/ui/Loader"
 import NotFound from "../../components/ui/NotFound"
 import OverViewTable from "../../components/ui/OverViewTable"
 import SmartSelect from "../../components/ui/SmartSelect"
-import {
-  useApplicantDecisionMutation,
-  useGetAllCohortsQuery,
-  useGetTraineesForCoachQuery,
-  useUpdateParticipantMutation,
-} from "../../features/user/backendApi"
-import { handleShowAlert } from "../../utils/handleShowAlert"
-import { getErrorInfo } from "../../utils/helper"
+import { useTraineeActions } from "../../utils/hooks/useTraineeControls"
+import { useTraineeDecision } from "../../utils/hooks/useTraineeControls"
+import { useTraineeErrors } from "../../utils/hooks/useTraineeErrors"
 import { useCoachIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
-import {
-  AlertType,
-  Cohort,
-  Cookie,
-  DecisionInfo,
-  ResponseModalQuestion,
-  UserRole,
-} from "../../utils/types"
+import { Cohort, UserRole } from "../../utils/types"
+import { useTrainee } from "../../utils/hooks/useTrainee"
 
 const MyTrainees = () => {
-  const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null)
-  const [responseInfo, setResponseInfo] = useState<{
-    userId: string
-    question: ResponseModalQuestion
-  } | null>(null)
-  const [cookies] = useCookies([Cookie.jwt])
-  const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt })
-  const currentCoachId = useCoachIdFromJwt()
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
-
-  const dispatch = useDispatch()
-  const { register, watch } = useForm<{
-    cohortId: string
-  }>({
-    defaultValues: { cohortId: "" },
-  })
+  const currentCoachId = useCoachIdFromJwt()
+  const { register, watch } = useForm({ defaultValues: { cohortId: "" } })
 
   const {
-    data: traineeOverview,
-    error: traineeOverviewError,
-    isFetching: traineeOverviewIsFetching,
-  } = useGetTraineesForCoachQuery({
-    jwt: cookies.jwt,
-    cohortId: selectedCohortId,
-    coachId: currentCoachId,
+    cookies,
+    cohortQuery: { data: allCohorts, isFetching: allCohortsIsFetching },
+    traineeQuery: {
+      data: traineeOverview,
+      error: traineeOverviewError,
+      isFetching: traineeOverviewIsFetching,
+    },
+    decisionMutation: [
+      decide,
+      {
+        error: decisionError,
+        isSuccess: decidingIsSuccess,
+        isLoading: decidingIsLoading,
+        reset: applicantDecisionReset,
+      },
+    ],
+    updateParticipantMutation: [
+      {
+        isSuccess: updateParticipantIsSuccess,
+        error: updateParticipantError,
+        isLoading: updateParticipantIsLoading,
+        reset: updateParticipantReset,
+      },
+    ],
+  } = useTrainee(selectedCohortId, currentCoachId)
+
+  const {
+    decisionInfo,
+    responseInfo,
+    handleDecision,
+    handleCloseModal,
+    handleUpsertResponse,
+    closeDecisionModal,
+  } = useTraineeActions()
+
+  const { handleSubmitDecision } = useTraineeDecision({
+    decisionInfo,
+    cookies,
+    decide,
   })
 
-  const [
-    decide,
-    {
-      error: decisionError,
-      isSuccess: decidingIsSuccess,
-      reset: applicantDecisionReset,
-    },
-  ] = useApplicantDecisionMutation()
+  useTraineeErrors({
+    traineeOverviewError,
+    decisionError,
+    updateParticipantError,
+    decidingIsSuccess,
+    updateParticipantIsSuccess,
+    decisionInfo,
+    closeDecisionModal,
+    applicantDecisionReset,
+    updateParticipantReset,
+  })
 
-  const [
-    updateParticipant,
-    {
-      isSuccess: updateParticipantIsSuccess,
-      error: updateParticipantError,
-      reset: updateParticipantReset,
-    },
-  ] = useUpdateParticipantMutation()
+  const isLoading =
+    traineeOverviewIsFetching ||
+    allCohortsIsFetching ||
+    decidingIsLoading ||
+    updateParticipantIsLoading
 
   useEffect(() => {
-    const subscription = watch(({ cohortId }) => {
-      setSelectedCohortId(cohortId ?? null)
-    })
-
+    const subscription = watch(({ cohortId }) =>
+      setSelectedCohortId(cohortId ?? null),
+    )
     return () => subscription.unsubscribe()
   }, [watch])
 
-  const selectedCohortFromOverview = traineeOverview
-    ? { value: traineeOverview._id, label: traineeOverview.name }
-    : null
+  useEffect(() => {
+    if (traineeOverview && !selectedCohortId) {
+      setSelectedCohortId(traineeOverview._id)
+    }
+  }, [traineeOverview, selectedCohortId])
 
-  const selectedCohortFromId = selectedCohortId
-    ? {
-        value: selectedCohortId,
-        label:
-          allCohorts?.find((cohort: Cohort) => cohort._id === selectedCohortId)
-            ?.name ?? "",
-      }
-    : null
-
-  const activeCohort = allCohorts?.find((cohort: Cohort) => cohort.isActive)
-  const selectedCohortFromActive = activeCohort
-    ? { value: activeCohort._id, label: activeCohort.name }
-    : null
-
-  const selectedCohort =
-    selectedCohortFromOverview ??
-    selectedCohortFromId ??
-    selectedCohortFromActive ??
-    undefined
-
-  const handleDecision = (userData: DecisionInfo) => {
-    setDecisionInfo({ ...userData })
-  }
-
-  const handleCloseModal = () => {
-    setTimeout(() => setResponseInfo(null), 0)
-  }
-
-  const handleUpsertResponse = (data: {
-    userId: string
-    question: ResponseModalQuestion
-  }) => {
-    setResponseInfo(data)
-  }
-
-  const handleSubmitDecision = async ({ feedback }: { feedback: string }) => {
-    if (!decisionInfo) {
-      return
+  const selectedCohort = useMemo(() => {
+    if (traineeOverview)
+      return { value: traineeOverview._id, label: traineeOverview.name }
+    if (selectedCohortId) {
+      const cohort = allCohorts?.find(
+        (cohort: Cohort) => cohort._id === selectedCohortId,
+      )
+      return cohort ? { value: cohort._id, label: cohort.name } : null
     }
 
-    await decide({
-      jwt: cookies.jwt,
-      body: {
-        traineeId: decisionInfo.traineeId,
-        decision: decisionInfo.decision,
-        feedback,
-      },
-    })
-  }
+    const activeCohort = allCohorts?.find((cohort: Cohort) => cohort.isActive)
 
-  const handleCoachChange = ({
-    coachId,
-    participantId,
-  }: {
-    coachId: string
-    participantId: null | string
-  }) => {
-    updateParticipant({
-      participantId,
-      body: { coachId },
-      jwt: cookies.jwt,
-    })
-  }
+    return activeCohort
+      ? { value: activeCohort._id, label: activeCohort.name }
+      : null
+  }, [traineeOverview, selectedCohortId, allCohorts])
 
   const filteredTrainees = useMemo(() => {
     if (!traineeOverview?.trainees || !currentCoachId) return []
     return traineeOverview.trainees.filter(
-      (trainee: { coachId: string }) => trainee.coachId === currentCoachId,
+      (trainee: any) => trainee.coachId === currentCoachId,
     )
   }, [traineeOverview, currentCoachId])
 
-  if (traineeOverviewError || decisionError || updateParticipantError) {
-    const { message } = getErrorInfo(
-      traineeOverviewError ?? decisionError ?? updateParticipantError,
-    )
-    handleShowAlert(dispatch, {
-      type: AlertType.Error,
-      message,
-    })
-    if (decisionError) {
-      setDecisionInfo(null)
-      applicantDecisionReset()
-    }
-  }
-
-  if (decidingIsSuccess) {
-    handleShowAlert(dispatch, {
-      type: AlertType.Success,
-      message: `User is successfully ${decisionInfo?.decision.toLowerCase()}`,
-    })
-    setDecisionInfo(null)
-    applicantDecisionReset()
-  }
-
-  if (updateParticipantIsSuccess) {
-    handleShowAlert(dispatch, {
-      type: AlertType.Success,
-      message: "Coach is successfully changed",
-    })
-    updateParticipantReset()
-  }
-
-  if (traineeOverview && !selectedCohortId) {
-    setSelectedCohortId(traineeOverview._id)
-  }
+  const cohortOptions =
+    allCohorts?.map((cohort: Cohort) => ({
+      value: cohort._id,
+      label: cohort.name,
+    })) ?? []
 
   return (
     <div className="flex flex-col h-full py-12 space-y-5">
       <DecisionModal
         modalType="trainee"
         decisionInfo={decisionInfo}
-        closeModal={() => setDecisionInfo(null)}
+        closeModal={closeDecisionModal}
         onSubmit={handleSubmitDecision}
       />
       {responseInfo && (
@@ -209,20 +140,15 @@ const MyTrainees = () => {
         <div className="w-52">
           <form>
             <SmartSelect
-              options={
-                allCohorts?.map((cohort: Cohort) => ({
-                  value: cohort._id,
-                  label: cohort.name,
-                })) ?? []
-              }
-              defaultValue={selectedCohort}
+              options={cohortOptions}
+              defaultValue={selectedCohort ?? undefined}
               register={{ ...register("cohortId") }}
             />
           </form>
         </div>
       </div>
 
-      {traineeOverviewIsFetching && <Loader />}
+      {isLoading && <Loader />}
       {traineeOverview && (
         <OverViewTable
           role={UserRole.Coach}
@@ -233,10 +159,10 @@ const MyTrainees = () => {
           coaches={traineeOverview.coaches}
           updates={[]}
           stages={traineeOverview.stages}
-          actions={{ handleDecision, handleUpsertResponse, handleCoachChange }}
+          actions={{ handleDecision, handleUpsertResponse }}
         />
       )}
-      {!traineeOverviewIsFetching && !traineeOverview && (
+      {!isLoading && !traineeOverview && (
         <div className="flex-1">
           <NotFound entity="Cohort" type="NoData" />
         </div>

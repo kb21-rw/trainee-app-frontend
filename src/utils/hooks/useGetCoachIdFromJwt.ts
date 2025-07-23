@@ -7,6 +7,7 @@ export const useCoachIdFromJwt = (): string | null => {
   if (!jwt) return null
 
   try {
+    // Extracts coachId from JWT token
     const payload = JSON.parse(atob(jwt.split(".")[1]))
     return (
       payload.userId ||
