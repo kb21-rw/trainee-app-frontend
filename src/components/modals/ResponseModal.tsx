@@ -78,16 +78,14 @@ const ResponseModal = ({
         className="flex flex-col w-full gap-8 px-8 py-6 bg-white rounded-xl"
       >
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">JavaScript Gate</h1>
-          {!includeButton && (
-            <Button
-              onClick={closeModal}
-              variant={ButtonVariant.XIcon}
-              className="p-2 border border-gray-300 rounded-md"
-            >
-              <CloseIcon />
-            </Button>
-          )}
+          <h1 className="text-2xl font-semibold">{question.form}</h1>
+          <Button
+            onClick={closeModal}
+            variant={ButtonVariant.XIcon}
+            className="p-2 border border-gray-300 rounded-md"
+          >
+            <CloseIcon />
+          </Button>
         </div>
 
         <div>

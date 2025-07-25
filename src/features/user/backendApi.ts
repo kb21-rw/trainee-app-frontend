@@ -22,9 +22,9 @@ export const backendApi: any = createApi({
   endpoints: (builder) => ({
     getTraineesForCoach: builder.query({
       query: (args) => {
-        const { jwt, query } = args
+        const { jwt, cohortId, coachId } = args
         return {
-          url: `/trainees/my-trainees${query}`,
+          url: `/cohorts/overview?type=Trainee${cohortId ? "&cohortId=" + cohortId : ""}${coachId ? "&coachId=" + coachId : ""}`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${jwt}`,
