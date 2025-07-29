@@ -8,6 +8,7 @@ import {
   UserRow,
 } from "../../utils/types"
 import { Modal } from "@mui/material"
+import CloseIcon from "../../assets/CloseIcon"
 
 export default function SettingsModal({
   row,
@@ -16,7 +17,6 @@ export default function SettingsModal({
   type = "applicant",
 }: {
   row: UserRow
-  // eslint-disable-next-line no-unused-vars
   handleDecision?: (_row: DecisionInfo) => void
   onClose: () => void
   type?: "applicant" | "trainee"
@@ -52,10 +52,21 @@ export default function SettingsModal({
       aria-labelledby={title}
       aria-describedby=""
       component="div"
-      className="max-w-md mx-auto flex items-center"
+      className="flex items-center max-w-md mx-auto"
     >
-      <form className="flex flex-col gap-10 w-full bg-white p-5 rounded-xl">
-        <h1 className="text-center text-3xl font-semibold">{title}</h1>
+      <form className="flex flex-col w-full gap-10 p-5 bg-white rounded-xl">
+        <div className="flex items-center justify-center">
+          <h1 className="text-3xl font-semibold text-center">{title}</h1>
+          {row?.actions !== ParticipantPhase.Active && (
+            <Button
+              onClick={onClose}
+              variant={ButtonVariant.XIcon}
+              className="relative -right-9"
+            >
+              <CloseIcon />
+            </Button>
+          )}
+        </div>
         <div className="space-y-4">
           <InputField
             type="text"
@@ -88,11 +99,6 @@ export default function SettingsModal({
 
               <Button onClick={handleAccept}>Accept</Button>
             </>
-          )}
-          {row?.actions !== ParticipantPhase.Active && (
-            <Button onClick={onClose} outlined>
-              Close modal
-            </Button>
           )}
         </div>
       </form>
