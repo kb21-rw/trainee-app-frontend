@@ -1,36 +1,36 @@
-import { useState } from "react"
 import {
   DataGrid,
   GridCellEditStopReasons,
   GridColDef,
   GridEventListener,
 } from "@mui/x-data-grid"
-import {
-  Form as BaseForm,
-  Response as BaseResponse,
-  Question as BaseQuestion,
-  CohortParticipant,
-  Stage,
-  User,
-  DecisionInfo,
-  ResponseModalQuestion,
-  ResponseCell,
-  ParticipantPhase,
-  UserRow,
-  ResponseModalInfo,
-  UserRole,
-  FormType,
-} from "../../utils/types"
 import { GridStateColDef } from "@mui/x-data-grid/internals"
-import WriteIcon from "../../assets/WriteIcon"
+import { useState } from "react"
 import SettingsIcon from "../../assets/SettingsIcon"
-import SettingsModal from "../modals/Settings"
-import EditParticipantModal from "../modals/EditParticipantModal"
-import { overViewDataGridStyles } from "../../utils/styles"
+import WriteIcon from "../../assets/WriteIcon"
 import {
   getAdminActionColumns,
   getAdminCoachColumn,
 } from "../../utils/getOverviewAdminColumns"
+import { overViewDataGridStyles } from "../../utils/styles"
+import {
+  Form as BaseForm,
+  Question as BaseQuestion,
+  Response as BaseResponse,
+  CohortParticipant,
+  DecisionInfo,
+  FormType,
+  ParticipantPhase,
+  ResponseCell,
+  ResponseModalInfo,
+  ResponseModalQuestion,
+  Stage,
+  User,
+  UserRole,
+  UserRow,
+} from "../../utils/types"
+import EditParticipantModal from "../modals/EditParticipantModal"
+import SettingsModal from "../modals/Settings"
 
 interface Response extends BaseResponse {
   questionId: string
@@ -76,7 +76,12 @@ export default function OverViewTable({
   const [participantInfo, setParticipantInfo] = useState<any>(null)
   const isAdmin = role === UserRole.Admin
 
-  const questionColumns: GridColDef[] = forms.flatMap((form) =>
+  const formsByOverviewType = forms.filter((form) =>
+    overviewType === "trainee"
+      ? form.type === FormType.Trainee
+      : form.type === FormType.Application || form.type === FormType.Applicant,
+  )
+  const questionColumns: GridColDef[] = formsByOverviewType.flatMap((form) =>
     form.questions.map(({ _id, prompt, options, required, type }) => ({
       field: _id,
       headerName: prompt,
@@ -129,22 +134,15 @@ export default function OverViewTable({
     ...actionsColumns,
   ]
 
-  const allResponses = forms
-    .filter((form) =>
-      overviewType === "trainee"
-        ? form.type === FormType.Trainee
-        : form.type === FormType.Application ||
-          form.type === FormType.Applicant,
-    )
-    .flatMap((form) =>
-      form.questions.flatMap((question) => {
-        const responses = question.responses
-        return responses.map((response) => ({
-          ...response,
-          questionId: question._id,
-        }))
-      }),
-    )
+  const allResponses = formsByOverviewType.flatMap((form) =>
+    form.questions.flatMap((question) => {
+      const responses = question.responses
+      return responses.map((response) => ({
+        ...response,
+        questionId: question._id,
+      }))
+    }),
+  )
 
   // users with their responses
   let users = allResponses.reduce(
@@ -191,22 +189,26 @@ export default function OverViewTable({
     )
     return overviewType === "trainee"
       ? stageIndex > lastPreselectionStageIndex
-      : stageIndex <= lastPreselectionStageIndex
+      : true
   })
 
   // assign empty responses for users that don't have responses
-  const missingUsers = filteredParticipants
-    .filter((participant) => !users[participant.userId])
-    .map((participant) => ({
+  const usersToDisplay = filteredParticipants.map((participant) => {
+    if (users[participant.userId]) {
+      return { [participant.userId]: users[participant.userId] }
+    }
+
+    return {
       [participant.userId]: {
         user: participantsInfo.find(
           (participantInfo) => participantInfo._id === participant.userId,
         ),
         responses: {},
       },
-    }))
+    }
+  })
 
-  users = { ...users, ...Object.assign({}, ...missingUsers) }
+  users = { ...Object.assign({}, ...usersToDisplay) }
 
   const rows: UserRow[] = Object.values(users).map((user) => {
     const userAsParticipant = participants.find(
@@ -214,7 +216,7 @@ export default function OverViewTable({
     )
     const userStage = stages.find(
       (stage) => stage._id === userAsParticipant?.stage,
-    )?.name
+    )
 
     const status = userAsParticipant?.traineeStatus
     const coach = coaches.find(
@@ -224,24 +226,26 @@ export default function OverViewTable({
     const participantPhase =
       status === "REJECTED" || status === "DROPPED_OUT"
         ? ParticipantPhase.Rejected
-        : status === "GRADUATED"
+        : status === "GRADUATED" ||
+            (userStage?.isPreselection !== "true" && overviewType !== "trainee")
           ? ParticipantPhase.Completed
           : ParticipantPhase.Active
 
     const row = {
-      id: userAsParticipant?._id ?? `user-${user.user._id}`,
+      id: user.user._id,
+      traineeId: userAsParticipant?._id ?? `user-${user.user._id}`,
       name: user.user.name,
       email: user.user.email,
       coach: coach?._id ?? "",
       coachName: coach?.name ?? "No coach",
-      stage: userStage ?? "Unknown",
+      stage: userStage?.name ?? "Unknown",
       actions: participantPhase,
       ...user.responses,
     }
     return row
   })
 
-  const columnGroupingModel = forms.map((form) => ({
+  const columnGroupingModel = formsByOverviewType.map((form) => ({
     groupId: form._id,
     headerName: form.name,
     children: form.questions.map((question) => ({
@@ -293,7 +297,7 @@ export default function OverViewTable({
       <DataGrid
         rows={rows}
         columns={
-          forms.length === 0
+          formsByOverviewType.length === 0
             ? [
                 { field: "name", headerName: "Name", flex: 1, minWidth: 200 },
                 { field: "stage", headerName: "Stage", flex: 1, minWidth: 200 },
@@ -327,7 +331,7 @@ export default function OverViewTable({
         processRowUpdate={(updatedRow) => {
           handleCoachChange({
             coachId: updatedRow.coach ? updatedRow.coach : null,
-            participantId: updatedRow.id,
+            participantId: updatedRow.traineeId,
           })
           return {
             ...updatedRow,

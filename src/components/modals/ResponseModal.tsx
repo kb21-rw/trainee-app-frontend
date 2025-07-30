@@ -2,18 +2,28 @@ import Button from "../ui/Button"
 import { useForm } from "react-hook-form"
 import { Modal } from "@mui/material"
 import ApplicationFormQuestion from "../ui/ApplicatonFormQuestion"
-import { AlertType, Cookie, ResponseModalQuestion } from "../../utils/types"
+import {
+  AlertType,
+  ButtonVariant,
+  Cookie,
+  ResponseModalQuestion,
+} from "../../utils/types"
 import { useAddResponseMutation } from "../../features/user/backendApi"
 import { useDispatch } from "react-redux"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useCookies } from "react-cookie"
+import CloseIcon from "../../assets/CloseIcon"
 
 const ResponseModal = ({
-  responseInfo: { userId, question },
+  responseInfo: { userId, question, readonly = false },
   closeModal,
 }: {
-  responseInfo: { userId: string; question: ResponseModalQuestion }
+  responseInfo: {
+    userId: string
+    question: ResponseModalQuestion
+    readonly?: boolean
+  }
   closeModal: () => void
 }) => {
   const [cookies] = useCookies([Cookie.jwt])
@@ -35,7 +45,7 @@ const ResponseModal = ({
     })
   }
 
-  const includeButton = true
+  const includeButton = !readonly
 
   if (error) {
     const { message } = getErrorInfo(error)
@@ -43,7 +53,6 @@ const ResponseModal = ({
       type: AlertType.Error,
       message,
     })
-
     closeModal()
   }
 
@@ -52,7 +61,6 @@ const ResponseModal = ({
       type: AlertType.Success,
       message: "Response was added successfully",
     })
-
     closeModal()
   }
 
@@ -63,30 +71,45 @@ const ResponseModal = ({
       aria-labelledby="Title"
       aria-describedby="description"
       component="div"
-      className="max-w-xl mx-auto flex items-center "
+      className="flex items-center max-w-xl mx-auto"
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white flex flex-col gap-8 w-full px-8 py-6 rounded-xl"
+        className="flex flex-col w-full gap-8 px-8 py-6 bg-white rounded-xl"
       >
-        <h1 className="text-2xl font-semibold">JavaScript Gate</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold">{question.form}</h1>
+          <Button
+            onClick={closeModal}
+            variant={ButtonVariant.XIcon}
+            className="p-2 border border-gray-300 rounded-md"
+          >
+            <CloseIcon />
+          </Button>
+        </div>
+
         <div>
           <label
             htmlFor={question._id}
-            className="text-lg inline-block mb-3 font-"
+            className="inline-block mb-3 text-lg font-"
           >
             {question.prompt}
           </label>
-          <ApplicationFormQuestion question={question} control={control} />
+          <ApplicationFormQuestion
+            question={question}
+            control={control}
+            disabled={readonly}
+          />
         </div>
-        <div className="flex justify-around">
-          {
+
+        {includeButton && (
+          <div className="flex justify-around">
             <Button outlined onClick={closeModal}>
               Cancel
             </Button>
-          }
-          {includeButton && <Button type="submit">Save Response</Button>}
-        </div>
+            <Button type="submit">Save Response</Button>
+          </div>
+        )}
       </form>
     </Modal>
   )

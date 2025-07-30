@@ -1,20 +1,23 @@
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import DecisionModal from "../../components/modals/DecisionModal"
 import ResponseModal from "../../components/modals/ResponseModal"
 import Loader from "../../components/ui/Loader"
 import NotFound from "../../components/ui/NotFound"
 import OverViewTable from "../../components/ui/OverViewTable"
-import { UserRole } from "../../utils/types"
-import { useApplicantData } from "../../utils/hooks/useApplications"
 import { useApplicantActions } from "../../utils/hooks/useApplicantActions"
 import { useApplicantDecision } from "../../utils/hooks/useApplicantDecision"
 import { useApplicantErrors } from "../../utils/hooks/useApplicantErrors"
+import { useApplicantData } from "../../utils/hooks/useApplications"
+import { useCoachIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
+import { UserRole } from "../../utils/types"
 
 const MyApplicants = () => {
   const { watch } = useForm<{ cohortId: string }>({
     defaultValues: { cohortId: "" },
   })
+
+  const currentCoachId = useCoachIdFromJwt()
 
   const {
     cookies,
@@ -23,10 +26,7 @@ const MyApplicants = () => {
       error: cohortOverviewError,
       isFetching: cohortOverviewIsFetching,
     },
-    coachProfileQuery: {
-      data: coachProfile,
-      isFetching: coachProfileIsFetching,
-    },
+    coachProfileQuery: { isFetching: coachProfileIsFetching },
     decisionMutation: [
       decide,
       {
@@ -82,6 +82,13 @@ const MyApplicants = () => {
 
   const isLoading = cohortOverviewIsFetching || coachProfileIsFetching
 
+  const filteredApplicants = useMemo(() => {
+    if (!cohortOverview?.trainees || !currentCoachId) return []
+    return cohortOverview.trainees.filter(
+      (trainee: { coachId: string }) => trainee.coachId === currentCoachId,
+    )
+  }, [cohortOverview, currentCoachId])
+
   return (
     <div className="flex flex-col h-full py-12 space-y-5">
       <DecisionModal
@@ -103,14 +110,7 @@ const MyApplicants = () => {
           role={UserRole.Coach}
           overviewType="applicant"
           forms={cohortOverview.forms}
-          participants={
-            cohortOverview?.trainees?.filter(
-              (applicant: any) =>
-                applicant.coachId === coachProfile?._id &&
-                applicant._id &&
-                applicant._id.trim() !== "",
-            ) ?? []
-          }
+          participants={filteredApplicants}
           participantsInfo={cohortOverview.participantsInfo}
           coaches={cohortOverview.coaches}
           updates={[]}

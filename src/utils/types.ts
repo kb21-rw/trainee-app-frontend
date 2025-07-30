@@ -126,6 +126,7 @@ export interface ApplicationFormResponse {
 export enum ButtonVariant {
   Primary = "Primary",
   Danger = "Danger",
+  XIcon = "XIcon",
 }
 
 export enum ButtonSize {
@@ -249,6 +250,7 @@ export enum ParticipantPhase {
 
 export interface UserRow {
   id: string
+  traineeId: string
   name: string
   email: string
   coach: string
