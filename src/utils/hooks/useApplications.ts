@@ -7,7 +7,7 @@ import {
   useGetAllCohortsQuery,
 } from "../../features/user/backendApi"
 
-export const useApplicantData = () => {
+export const useApplicantData = (selectedCohortId: string | null) => {
   const [cookies] = useCookies(["jwt"])
 
   const cohortQuery = useGetAllCohortsQuery({
@@ -17,7 +17,7 @@ export const useApplicantData = () => {
 
   const applicantQuery = useGetApplicantsQuery({
     jwt: cookies.jwt,
-    cohortId: null, // For coach, we don't need to filter by cohort
+    cohortId: selectedCohortId,
   })
 
   const coachProfileQuery = useGetProfileQuery(cookies.jwt)

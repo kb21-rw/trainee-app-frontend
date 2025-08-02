@@ -43,7 +43,7 @@ const MyApplicants = () => {
         reset: updateParticipantReset,
       },
     ],
-  } = useApplicantData()
+  } = useApplicantData(selectedCohortId)
 
   const {
     decisionInfo,
@@ -81,12 +81,6 @@ const MyApplicants = () => {
     )
     return () => subscription.unsubscribe()
   }, [watch])
-
-  useEffect(() => {
-    if (cohortOverview && !selectedCohortId) {
-      setSelectedCohortId(cohortOverview._id)
-    }
-  }, [cohortOverview, selectedCohortId])
 
   const selectedCohort = useMemo(() => {
     if (cohortOverview)
