@@ -72,7 +72,9 @@ export default function AddCoach({
 
   const availableCoaches =
     coaches
-      ?.filter((coach: User) => !cohortCoachIds.includes(coach._id))
+      ?.filter(
+        (coach: User) => !cohortCoachIds.includes(coach._id) && coach.active,
+      )
       .map((coach: User) => ({ value: coach._id, label: coach.name })) ?? []
 
   return (

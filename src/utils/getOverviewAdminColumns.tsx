@@ -7,6 +7,7 @@ import {
   DecisionInfo,
   UserRow,
   ParticipantPhase,
+  User,
 } from "./types"
 
 export const getAdminActionColumns = (
@@ -69,43 +70,24 @@ export const getAdminActionColumns = (
   },
 ]
 
-export const getAdminCoachColumn = (
-  coaches: { _id: string; name: string }[],
-): GridColDef[] => [
-  {
-    field: "coach",
-    flex: 1,
-    headerName: "Coach",
-    minWidth: 200,
-    editable: true,
-    type: "singleSelect",
-    valueOptions: [
-      { value: "", label: "No coach" },
-      ...coaches.map((coach) => ({
-        value: coach._id,
-        label: coach.name,
-      })),
-    ],
-  },
-]
-export const getAdminColumns = (
-  coaches: { _id: string; name: string }[],
-  handleDecision: (_data: DecisionInfo) => void,
-): GridColDef[] => [
-  ...getAdminActionColumns(handleDecision),
-  ...getAdminCoachColumn(coaches),
-  {
-    field: "name",
-    flex: 1,
-    headerName: "Name",
-    minWidth: 200,
-    editable: true,
-  },
-  {
-    field: "email",
-    flex: 1,
-    headerName: "Email",
-    minWidth: 200,
-    editable: true,
-  },
-]
+export const getAdminCoachColumn = (coaches: User[]): GridColDef[] => {
+  return [
+    {
+      field: "coach",
+      flex: 1,
+      headerName: "Coach",
+      minWidth: 200,
+      editable: true,
+      type: "singleSelect",
+      valueOptions: [
+        { value: "", label: "No coach" },
+        ...coaches
+          .filter((coach) => coach.active)
+          .map((coach) => ({
+            value: coach._id,
+            label: coach.name,
+          })),
+      ],
+    },
+  ]
+}
