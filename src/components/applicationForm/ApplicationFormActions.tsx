@@ -40,11 +40,11 @@ export default function ApplicationFormActions({
       : getApplicationFormStatus(applicationForm)
 
   const [cookies] = useCookies([Cookie.jwt])
-  const { data, refetch } = useGetProfileQuery(cookies.jwt)
+  const { data, refetch, isLoading } = useGetProfileQuery(cookies.jwt)
   const dispatch = useDispatch()
 
   const [displayStatus, setdisplayStatus] = useState<ApplicationFormStatus>(
-    () => (data.isOnWaitList ? ApplicationFormStatus.JoinedWaitList : status),
+    () => (data?.isOnWaitList ? ApplicationFormStatus.JoinedWaitList : status),
   )
 
   const { socket } = useContext(SocketContext)
@@ -55,10 +55,10 @@ export default function ApplicationFormActions({
 
   useEffect(() => {
     if (socket) {
-      socket.emit("join-room", data.email)
+      socket.emit("join-room", data?.email)
 
       socket.on("joinedTheWaitList", (message) => {
-        if (data.email === message.email) {
+        if (data?.email === message.email) {
           setdisplayStatus(ApplicationFormStatus.JoinedWaitList)
           refetch()
         }
@@ -79,7 +79,11 @@ export default function ApplicationFormActions({
       socket?.off("joinedTheWaitList")
       socket?.off("waitListError")
     }
-  }, [socket, data.email, refetch, dispatch])
+  }, [socket, data?.email, refetch, dispatch])
+
+  if (isLoading || !data) {
+    return <div>Loading...</div>
+  }
 
   return (
     <>
