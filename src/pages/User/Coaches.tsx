@@ -11,7 +11,7 @@ import { FormControl, SelectChangeEvent, MenuItem, Select } from "@mui/material"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { getErrorInfo } from "../../utils/helper"
 import Loader from "../../components/ui/Loader"
-import { DataGrid, GridColDef } from "@mui/x-data-grid"
+import { DataGrid, GridColDef, GridRowClassNameParams } from "@mui/x-data-grid"
 import AddCoach from "../../components/modals/AddCoach"
 import EditIcon from "../../assets/EditIcon"
 import EditCoach from "../../components/modals/EditCoachModal"
@@ -85,6 +85,11 @@ export default function Coaches() {
     })
   }
 
+  const getRowClassName = (params: GridRowClassNameParams) => {
+    const row = params.row as User
+    return !row.active ? "bg-gray-200" : ""
+  }
+
   const columns: GridColDef[] = [
     {
       field: "userId",
@@ -119,12 +124,19 @@ export default function Coaches() {
     },
   ]
 
-  const rows: { id: string; userId: string; name: string; email: string }[] =
+  const rows: {
+    id: string
+    userId: string
+    name: string
+    email: string
+    active: boolean
+  }[] =
     cohortCoaches?.coaches?.map((coach: User, index: number) => ({
       id: coach._id,
       userId: index + 1,
       name: coach.name,
       email: coach.email,
+      active: coach.active,
     })) ?? []
 
   return (
@@ -179,6 +191,7 @@ export default function Coaches() {
           rows={rows}
           hideFooter
           sx={customizeDataGridStyles}
+          getRowClassName={getRowClassName}
         />
       </div>
     </>
