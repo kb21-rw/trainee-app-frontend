@@ -121,7 +121,7 @@ export default function ApplicationFormActions({
               {applicationFormStatusData[displayStatus].description}
             </p>
 
-            {!data.isOnWaitList && (
+            {data.status !== UserStatus.ON_WAIT_LIST && (
               <Button
                 className="bg-primary-dark text-white px-6 py-3 rounded-md"
                 onClick={handleClick}
