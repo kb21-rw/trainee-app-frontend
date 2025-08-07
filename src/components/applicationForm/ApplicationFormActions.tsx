@@ -44,7 +44,10 @@ export default function ApplicationFormActions({
   const dispatch = useDispatch()
 
   const [displayStatus, setdisplayStatus] = useState<ApplicationFormStatus>(
-    () => (data?.isOnWaitList ? ApplicationFormStatus.JoinedWaitList : status),
+    () =>
+      data?.status === UserStatus.ON_WAIT_LIST
+        ? ApplicationFormStatus.JoinedWaitList
+        : status,
   )
 
   const { socket } = useContext(SocketContext)
