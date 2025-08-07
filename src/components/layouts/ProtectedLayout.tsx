@@ -12,7 +12,15 @@ export default function ProtectedLayout() {
   const handleLogout = useLogout()
 
   if (!loggedInUser._id) {
-    return <Navigate to={`/auth?redirectTo=${location.pathname}`} />
+    return (
+      <Navigate
+        to={
+          location.pathname !== "/auth"
+            ? `/auth?redirectTo=${location.pathname}`
+            : "/auth"
+        }
+      />
+    )
   }
 
   const menu =
