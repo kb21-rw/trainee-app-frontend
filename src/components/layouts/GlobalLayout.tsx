@@ -80,7 +80,7 @@ export default function GlobalLayout() {
 
   useEffect(() => {
     if (user && !userIsLoggingout) {
-     dispatch(login(user))
+      dispatch(login(user))
     }
 
     if (!isLoading) {
