@@ -1,27 +1,27 @@
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import DecisionModal from "../../components/modals/DecisionModal"
 import ResponseModal from "../../components/modals/ResponseModal"
 import Loader from "../../components/ui/Loader"
 import NotFound from "../../components/ui/NotFound"
 import OverViewTable from "../../components/ui/OverViewTable"
+import SmartSelect from "../../components/ui/SmartSelect"
 import { useApplicantActions } from "../../utils/hooks/useApplicantActions"
 import { useApplicantDecision } from "../../utils/hooks/useApplicantDecision"
 import { useApplicantErrors } from "../../utils/hooks/useApplicantErrors"
 import { useApplicantData } from "../../utils/hooks/useApplications"
 import { useCoachIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
-import { UserRole } from "../../utils/types"
+import { Cohort, UserRole } from "../../utils/types"
 
 const MyApplicants = () => {
-  const { watch } = useForm<{ cohortId: string }>({
-    defaultValues: { cohortId: "" },
-  })
-
+  const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
   const currentCoachId = useCoachIdFromJwt()
+  const { register, watch } = useForm({ defaultValues: { cohortId: "" } })
 
   const {
     cookies,
-    cohortQuery: {
+    cohortQuery: { data: allCohorts, isFetching: allCohortsIsFetching },
+    applicantQuery: {
       data: cohortOverview,
       error: cohortOverviewError,
       isFetching: cohortOverviewIsFetching,
@@ -43,7 +43,7 @@ const MyApplicants = () => {
         reset: updateParticipantReset,
       },
     ],
-  } = useApplicantData()
+  } = useApplicantData(selectedCohortId)
 
   const {
     decisionInfo,
@@ -72,15 +72,32 @@ const MyApplicants = () => {
     updateParticipantReset,
   })
 
-  useEffect(() => {
-    const subscription = watch(({ cohortId }) => {
-      return cohortId
-    })
+  const isLoading =
+    cohortOverviewIsFetching || allCohortsIsFetching || coachProfileIsFetching
 
+  useEffect(() => {
+    const subscription = watch(({ cohortId }) =>
+      setSelectedCohortId(cohortId ?? null),
+    )
     return () => subscription.unsubscribe()
   }, [watch])
 
-  const isLoading = cohortOverviewIsFetching || coachProfileIsFetching
+  const selectedCohort = useMemo(() => {
+    if (cohortOverview)
+      return { value: cohortOverview._id, label: cohortOverview.name }
+    if (selectedCohortId) {
+      const cohort = allCohorts?.find(
+        (cohort: Cohort) => cohort._id === selectedCohortId,
+      )
+      return cohort ? { value: cohort._id, label: cohort.name } : null
+    }
+
+    const activeCohort = allCohorts?.find((cohort: Cohort) => cohort.isActive)
+
+    return activeCohort
+      ? { value: activeCohort._id, label: activeCohort.name }
+      : null
+  }, [cohortOverview, selectedCohortId, allCohorts])
 
   const filteredApplicants = useMemo(() => {
     if (!cohortOverview?.trainees || !currentCoachId) return []
@@ -88,6 +105,12 @@ const MyApplicants = () => {
       (trainee: { coachId: string }) => trainee.coachId === currentCoachId,
     )
   }, [cohortOverview, currentCoachId])
+
+  const cohortOptions =
+    allCohorts?.map((cohort: Cohort) => ({
+      value: cohort._id,
+      label: cohort.name,
+    })) ?? []
 
   return (
     <div className="flex flex-col h-full py-12 space-y-5">
@@ -103,6 +126,18 @@ const MyApplicants = () => {
           closeModal={handleCloseModal}
         />
       )}
+
+      <div className="flex items-center justify-between">
+        <div className="w-52">
+          <form>
+            <SmartSelect
+              options={cohortOptions}
+              defaultValue={selectedCohort ?? undefined}
+              register={{ ...register("cohortId") }}
+            />
+          </form>
+        </div>
+      </div>
 
       {isLoading && <Loader />}
       {cohortOverview && (
