@@ -72,6 +72,7 @@ export const traineeTableHeaders = ["No", "Name", "Email", "Coach", "Action"]
 export const editTraineeTableHeaders = ["No", "Name", "Email", ""]
 export const editTraineeTableItems = ["_id", "name", "email"]
 export const traineeTableDataItems = ["_id", "name", "email", "coach"]
+// export const joinWaitListFormLink = "https://forms.gle/gTjVorqZuwg16dJJ7"
 export const joinWaitListFormLink =
   "https://docs.google.com/forms/d/e/1FAIpQLSfRzHm_F3ElLHi7gIqlXv_gmTB0nNs4wirsX9PSxnvSeTPjuQ/viewform"
 
