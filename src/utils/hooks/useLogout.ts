@@ -5,7 +5,6 @@ import { Cookie } from "../types"
 import { useNavigate } from "react-router-dom"
 import { useCallback } from "react"
 import { backendApi } from "../../features/user/backendApi"
-import { loggingOut } from "../../features/user/authSlice"
 
 export const useLogout = () => {
   const dispatch = useDispatch()
@@ -15,7 +14,6 @@ export const useLogout = () => {
   const handleLogout = useCallback(async () => {
     removeCookie(Cookie.jwt, { path: "/" })
     dispatch(logout())
-    dispatch(loggingOut())
     dispatch(backendApi.util.resetApiState())
     navigate("/auth")
   }, [dispatch, navigate, removeCookie])

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { RootState, store } from "../../store"
+import { RootState } from "../../store"
 import Alert from "../ui/Alert"
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useCookies } from "react-cookie"
@@ -24,15 +24,13 @@ export default function GlobalLayout() {
     location.pathname.includes("/auth")
 
   const [cookies] = useCookies([Cookie.jwt])
-  const storeState = store.getState()
-  const userIsLoggingout = !storeState.auth.login
 
   const {
     data: user,
     error: userError,
     isLoading,
   } = useGetProfileQuery(cookies.jwt, {
-    skip: !cookies.jwt || isSigningUp || userIsLoggingout,
+    skip: !cookies.jwt || isSigningUp,
   })
 
   const searchParams = useMemo(
@@ -79,7 +77,7 @@ export default function GlobalLayout() {
   }, [userError, dispatch])
 
   useEffect(() => {
-    if (user && !userIsLoggingout) {
+    if (user && !isSigningUp) {
       dispatch(login(user))
     }
 
@@ -89,14 +87,7 @@ export default function GlobalLayout() {
 
     displayErrors()
     handleAlertData()
-  }, [
-    user,
-    displayErrors,
-    dispatch,
-    isLoading,
-    handleAlertData,
-    userIsLoggingout,
-  ])
+  }, [user, displayErrors, dispatch, isLoading, handleAlertData, isSigningUp])
 
   if (isLoading || !isInitialized) {
     return (

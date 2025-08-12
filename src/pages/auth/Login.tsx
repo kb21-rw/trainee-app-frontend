@@ -14,7 +14,6 @@ import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useCookies } from "react-cookie"
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google"
-import { loggingIn } from "../../features/user/authSlice"
 
 interface LoginForm {
   email: string
@@ -39,7 +38,6 @@ const Login = ({ handlePageChange }: { handlePageChange: () => void }) => {
 
   const saveTokenAndRedirect = (token: string) => {
     setCookie(Cookie.jwt, token)
-    dispatch(loggingIn({ login: true }))
     navigate(
       redirectUrl ?? "/applicants", // if there's no redirectUrl, navigating to any protected route will redirect to the homepage
       redirectUrl ? {} : { state: { redirect: "home" } },
