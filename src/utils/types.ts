@@ -216,8 +216,8 @@ export enum AuthPage {
 export interface CohortParticipant {
   _id: string
   userId: string
-  cohorId: string
-  coachId: string
+  preselectionCoachId: string
+  postselectionCoachId: string
   stage: string
   traineeStatus: string
   feedbacks: { stageId: string; text: string }[]
