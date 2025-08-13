@@ -111,7 +111,8 @@ const MyTrainees = () => {
   const filteredTrainees = useMemo(() => {
     if (!traineeOverview?.trainees || !currentCoachId) return []
     return traineeOverview.trainees.filter(
-      (trainee: CohortParticipant) => trainee.postselectionCoachId === currentCoachId,
+      (trainee: CohortParticipant) =>
+        trainee.postselectionCoachId === currentCoachId,
     )
   }, [traineeOverview, currentCoachId])
 
