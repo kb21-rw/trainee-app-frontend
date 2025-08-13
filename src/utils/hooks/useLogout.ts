@@ -11,8 +11,8 @@ export const useLogout = () => {
   const navigate = useNavigate()
   const [, , removeCookie] = useCookies([Cookie.jwt])
 
-  const handleLogout = useCallback(() => {
-    removeCookie(Cookie.jwt)
+  const handleLogout = useCallback(async () => {
+    removeCookie(Cookie.jwt, { path: "/" })
     dispatch(logout())
     dispatch(backendApi.util.resetApiState())
     navigate("/auth")

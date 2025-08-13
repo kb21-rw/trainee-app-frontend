@@ -150,12 +150,12 @@ export enum UserRole {
 }
 
 export enum UserStatus {
-  REGISTERED = "REGISTERED",
-  ON_WAIT_LIST = "ON_WAIT_LIST",
-  APPLIED = "APPLIED",
-  ENROLLED = "ENROLLED",
-  REJECTED = "REJECTED",
-  STAFF = "STAFF",
+  Registered = "REGISTERED",
+  OnWaitList = "ON_WAIT_LIST",
+  Applied = "APPLIED",
+  Enrolled = "ENROLLED",
+  Rejected = "REJECTED",
+  Staff = "STAFF",
 }
 
 export type ApplicantDetails = {

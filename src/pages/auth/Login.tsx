@@ -38,7 +38,6 @@ const Login = ({ handlePageChange }: { handlePageChange: () => void }) => {
 
   const saveTokenAndRedirect = (token: string) => {
     setCookie(Cookie.jwt, token)
-
     navigate(
       redirectUrl ?? "/applicants", // if there's no redirectUrl, navigating to any protected route will redirect to the homepage
       redirectUrl ? {} : { state: { redirect: "home" } },

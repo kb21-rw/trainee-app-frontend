@@ -29,7 +29,9 @@ export default function GlobalLayout() {
     data: user,
     error: userError,
     isLoading,
-  } = useGetProfileQuery(cookies.jwt, { skip: !cookies.jwt || isSigningUp })
+  } = useGetProfileQuery(cookies.jwt, {
+    skip: !cookies.jwt || isSigningUp,
+  })
 
   const searchParams = useMemo(
     () => new URLSearchParams(location.search),
@@ -75,7 +77,7 @@ export default function GlobalLayout() {
   }, [userError, dispatch])
 
   useEffect(() => {
-    if (user) {
+    if (user && !isSigningUp) {
       dispatch(login(user))
     }
 
@@ -85,7 +87,7 @@ export default function GlobalLayout() {
 
     displayErrors()
     handleAlertData()
-  }, [user, displayErrors, dispatch, isLoading, handleAlertData])
+  }, [user, displayErrors, dispatch, isLoading, handleAlertData, isSigningUp])
 
   if (isLoading || !isInitialized) {
     return (

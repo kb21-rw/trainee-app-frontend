@@ -4,14 +4,20 @@ import {
   useGetApplicantsQuery,
   useGetProfileQuery,
   useUpdateParticipantMutation,
+  useGetAllCohortsQuery,
 } from "../../features/user/backendApi"
 
-export const useApplicantData = () => {
+export const useApplicantData = (selectedCohortId: string | null) => {
   const [cookies] = useCookies(["jwt"])
 
-  const cohortQuery = useGetApplicantsQuery({
+  const cohortQuery = useGetAllCohortsQuery({
     jwt: cookies.jwt,
-    cohortId: null, // For coach, we don't need to filter by cohort
+    query: "",
+  })
+
+  const applicantQuery = useGetApplicantsQuery({
+    jwt: cookies.jwt,
+    cohortId: selectedCohortId,
   })
 
   const coachProfileQuery = useGetProfileQuery(cookies.jwt)
@@ -22,6 +28,7 @@ export const useApplicantData = () => {
   return {
     cookies,
     cohortQuery,
+    applicantQuery,
     coachProfileQuery,
     decisionMutation,
     updateParticipantMutation,

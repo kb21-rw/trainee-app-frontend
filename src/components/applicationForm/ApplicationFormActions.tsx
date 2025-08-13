@@ -35,16 +35,19 @@ export default function ApplicationFormActions({
   userStatus,
 }: ApplicationFormActionsProps) {
   const status =
-    role === UserRole.Prospect && userStatus === "APPLIED"
+    role === UserRole.Prospect && userStatus === UserStatus.Applied
       ? ApplicationFormStatus.Submitted
       : getApplicationFormStatus(applicationForm)
 
   const [cookies] = useCookies([Cookie.jwt])
-  const { data, refetch } = useGetProfileQuery(cookies.jwt)
+  const { data, refetch, isLoading } = useGetProfileQuery(cookies.jwt)
   const dispatch = useDispatch()
 
   const [displayStatus, setdisplayStatus] = useState<ApplicationFormStatus>(
-    () => (data.isOnWaitList ? ApplicationFormStatus.JoinedWaitList : status),
+    () =>
+      data?.status === UserStatus.OnWaitList
+        ? ApplicationFormStatus.JoinedWaitList
+        : status,
   )
 
   const { socket } = useContext(SocketContext)
@@ -55,10 +58,10 @@ export default function ApplicationFormActions({
 
   useEffect(() => {
     if (socket) {
-      socket.emit("join-room", data.email)
+      socket.emit("join-room", data?.email)
 
       socket.on("joinedTheWaitList", (message) => {
-        if (data.email === message.email) {
+        if (data?.email === message.email) {
           setdisplayStatus(ApplicationFormStatus.JoinedWaitList)
           refetch()
         }
@@ -79,7 +82,11 @@ export default function ApplicationFormActions({
       socket?.off("joinedTheWaitList")
       socket?.off("waitListError")
     }
-  }, [socket, data.email, refetch, dispatch])
+  }, [socket, data?.email, refetch, dispatch])
+
+  if (isLoading || !data) {
+    return <div>Loading...</div>
+  }
 
   return (
     <>
@@ -117,7 +124,7 @@ export default function ApplicationFormActions({
               {applicationFormStatusData[displayStatus].description}
             </p>
 
-            {!data.isOnWaitList && (
+            {data.status !== UserStatus.OnWaitList && (
               <Button
                 className="bg-primary-dark text-white px-6 py-3 rounded-md"
                 onClick={handleClick}

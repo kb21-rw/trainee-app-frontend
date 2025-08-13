@@ -9,7 +9,6 @@ import { useSelector } from "react-redux"
 export default function NonProtectLayout() {
   const [cookies] = useCookies([Cookie.jwt])
   const loggedInUser = useSelector((state: RootState) => state.user)
-
   if (cookies.jwt && loggedInUser.role) {
     return <Navigate to={getRoleBasedHomepageURL(loggedInUser.role)} />
   }

@@ -107,7 +107,6 @@ export default function Cohorts() {
       headerAlign: "center",
 
       renderCell: ({ row }) => {
-        // console.log(row._id, "row._id", row.id, "row.id")
         return (
           <div className="flex items-center justify-center w-full h-full space-x-2 text-xs">
             <Button

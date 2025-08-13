@@ -25,7 +25,9 @@ export const userSlice = createSlice({
       state.role = role
       state.status = status
     },
-    logout: () => initialState,
+    logout: () => {
+      return initialState
+    },
   },
 })
 

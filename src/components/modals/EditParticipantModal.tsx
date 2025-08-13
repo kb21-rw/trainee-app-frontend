@@ -36,10 +36,12 @@ export default function EditParticipantModal({
 
   const coachOptions = [
     { value: "", label: "No coach" },
-    ...coaches.map((coach) => ({
-      value: coach._id,
-      label: coach.name,
-    })),
+    ...coaches
+      .filter((coach) => coach.active)
+      .map((coach) => ({
+        value: coach._id,
+        label: coach.name,
+      })),
   ]
 
   const selectedCoach = coachOptions.find((coach) => coach.value === row?.coach)
