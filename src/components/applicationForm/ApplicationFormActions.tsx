@@ -35,7 +35,7 @@ export default function ApplicationFormActions({
   userStatus,
 }: ApplicationFormActionsProps) {
   const status =
-    role === UserRole.Prospect && userStatus === "APPLIED"
+    role === UserRole.Prospect && userStatus === UserStatus.Applied
       ? ApplicationFormStatus.Submitted
       : getApplicationFormStatus(applicationForm)
 
@@ -45,7 +45,7 @@ export default function ApplicationFormActions({
 
   const [displayStatus, setdisplayStatus] = useState<ApplicationFormStatus>(
     () =>
-      data?.status === UserStatus.ON_WAIT_LIST
+      data?.status === UserStatus.OnWaitList
         ? ApplicationFormStatus.JoinedWaitList
         : status,
   )
@@ -124,7 +124,7 @@ export default function ApplicationFormActions({
               {applicationFormStatusData[displayStatus].description}
             </p>
 
-            {data.status !== UserStatus.ON_WAIT_LIST && (
+            {data.status !== UserStatus.OnWaitList && (
               <Button
                 className="bg-primary-dark text-white px-6 py-3 rounded-md"
                 onClick={handleClick}
