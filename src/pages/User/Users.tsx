@@ -103,10 +103,10 @@ export default function Users() {
   const rows =
     [...users]
       .sort((a: User, b: User) => b.createdAt.localeCompare(a.createdAt))
-      ?.map((user: User, index: number) => ({
+      ?.map((user: User, index: number, usersArray: User[]) => ({
         id: user._id,
         _id: user._id,
-        userId: index + 1,
+        userId: usersArray.length - index,
         name: user.name,
         email: user.email,
         role: user.role,
