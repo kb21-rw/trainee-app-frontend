@@ -8,7 +8,6 @@ import {
   AlertType,
   ButtonSize,
   Cohort,
-  Cookie,
   DecisionInfo,
   ResponseModalQuestion,
   UserRole,
@@ -16,10 +15,9 @@ import {
 import { useEffect, useState } from "react"
 import OverViewTable from "../../components/ui/OverViewTable"
 import Button from "../../components/ui/Button"
-import { useCookies } from "react-cookie"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import Loader from "../../components/ui/Loader"
 import NotFound from "../../components/ui/NotFound"
 import DecisionModal from "../../components/modals/DecisionModal"
@@ -27,12 +25,13 @@ import ResponseModal from "../../components/modals/ResponseModal"
 import SmartSelect from "../../components/ui/SmartSelect"
 import { useForm } from "react-hook-form"
 import AddApplicantsModal from "../../components/modals/AddApplicantsModal"
+import { RootState } from "../../store"
 
 const Applicants = () => {
   const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null)
   const [responseInfo, setResponseInfo] = useState<any | null>(null)
   const [isAddingApplicants, setIsAddingApplicants] = useState<boolean>(false)
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt })
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
   const dispatch = useDispatch()

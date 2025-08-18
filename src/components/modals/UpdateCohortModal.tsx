@@ -1,19 +1,19 @@
 import { Controller, useForm } from "react-hook-form"
 import Button from "../ui/Button"
 import { Modal } from "@mui/material"
-import { AlertType, Cookie, Stage } from "../../utils/types"
+import { AlertType, Stage } from "../../utils/types"
 import Input from "../ui/Input"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch } from "react-redux"
-import { useCookies } from "react-cookie"
+import { useDispatch, useSelector } from "react-redux"
 import { useUpdateCohortMutation } from "../../features/user/backendApi"
 import Loader from "../ui/Loader"
 import dayjs from "dayjs"
 import UpdateStages from "../ui/UpdateStages"
 import { DatePicker } from "@mui/x-date-pickers"
+import { RootState } from "../../store"
 
 const updateCohortForm = z.object({
   name: z.string().min(1, "Name is required"),
@@ -51,7 +51,7 @@ export default function UpdateCohortModal({
   onClose,
   cohort,
 }: UpdateCohortModalProps) {
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const dispatch = useDispatch()
   const [
     updateCohort,

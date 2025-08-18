@@ -5,15 +5,14 @@ import ApplicationFormQuestion from "../ui/ApplicatonFormQuestion"
 import {
   AlertType,
   ButtonVariant,
-  Cookie,
   ResponseModalQuestion,
 } from "../../utils/types"
 import { useAddResponseMutation } from "../../features/user/backendApi"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useCookies } from "react-cookie"
 import CloseIcon from "../../assets/CloseIcon"
+import { RootState } from "../../store"
 
 const ResponseModal = ({
   responseInfo: { userId, question, readonly = false },
@@ -26,7 +25,7 @@ const ResponseModal = ({
   }
   closeModal: () => void
 }) => {
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const { handleSubmit, control } = useForm()
   const [addResponse, { error, isSuccess }] = useAddResponseMutation()
   const dispatch = useDispatch()

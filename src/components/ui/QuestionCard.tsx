@@ -11,8 +11,9 @@ import AddIcon from "../../assets/AddIcon"
 import RemoveIcon from "../../assets/RemoveIcon"
 import Reset from "../../assets/ResetIcon"
 import DeleteModal from "../modals/DeleteModal"
-import { Cookie, QuestionType, TemplateQuestion } from "../../utils/types"
-import { useCookies } from "react-cookie"
+import { QuestionType, TemplateQuestion } from "../../utils/types"
+import { RootState } from "../../store"
+import { useSelector } from "react-redux"
 
 const QuestionCard = ({
   question,
@@ -36,7 +37,7 @@ const QuestionCard = ({
       options,
     },
   })
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const [deleteQuestion] = useDeleteQuestionMutation()
   const [editQuestion] = useEditQuestionMutation()
   const [showDeleteModal, setShowDeleteModal] = useState(false)

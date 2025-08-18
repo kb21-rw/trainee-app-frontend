@@ -1,15 +1,15 @@
-import { useCookies } from "react-cookie"
-import { AlertType, Cookie, UserResponseQuestion } from "../../utils/types"
+import { AlertType, UserResponseQuestion } from "../../utils/types"
 import { useGetMyApplicationQuery } from "../../features/user/backendApi"
 import Loader from "../../components/ui/Loader"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import ApplicationFormQuestionPreview from "../../components/ui/ApplicationFormQuestionPreview"
 import { Link } from "react-router-dom"
+import { RootState } from "../../store"
 
 export default function SavedApplication() {
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const dispatch = useDispatch()
   const {
     data: application,

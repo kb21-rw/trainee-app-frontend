@@ -14,13 +14,13 @@ import {
   useAddApplicantsMutation,
   useGetUsersQuery,
 } from "../../features/user/backendApi"
-import { useCookies } from "react-cookie"
-import { AlertType, Cookie, User } from "../../utils/types"
+import { AlertType, User } from "../../utils/types"
 import { getErrorInfo } from "../../utils/helper"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import Loader from "../ui/Loader"
 import TickIcon from "../../assets/TickIcon"
+import { RootState } from "../../store"
 
 interface Option {
   id: string
@@ -34,7 +34,7 @@ export default function AddApplicantsModal({
   isOpen: boolean
   onClose: () => void
 }) {
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const dispatch = useDispatch()
   const [selectedProspects, setSelectedProspects] = useState<Option[]>([])
   const [query, setQuery] = useState("")

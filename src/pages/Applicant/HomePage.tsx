@@ -1,15 +1,13 @@
-import { useCookies } from "react-cookie"
 import { useSelector } from "react-redux"
 import ApplicationFormActions from "../../components/applicationForm/ApplicationFormActions"
 import Loader from "../../components/ui/Loader"
 import { useGetMyApplicationQuery } from "../../features/user/backendApi"
 import { RootState } from "../../store"
-import { Cookie } from "../../utils/types"
 
 export default function HomePage() {
   const role = useSelector((state: RootState) => state.user.role)!
   const userStatus = useSelector((state: RootState) => state.user.status)!
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const { data: applicationForm, isLoading } = useGetMyApplicationQuery(
     cookies.jwt,
   )

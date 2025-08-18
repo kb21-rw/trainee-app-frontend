@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { useCookies } from "react-cookie"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import { showAlert } from "../../features/user/alertSlice"
 import { useGetProfileQuery } from "../../features/user/backendApi"
@@ -11,11 +10,11 @@ import {
   ApplicationForm,
   ApplicationFormStatus,
   ButtonSize,
-  Cookie,
   UserResponseQuestion,
   UserRole,
   UserStatus,
 } from "../../utils/types"
+import { RootState } from "../../store"
 import Button from "../ui/Button"
 import CohortInfo from "../ui/CohortInfo"
 import { SocketContext } from "../../utils/contexts/SocketContext"
@@ -39,7 +38,7 @@ export default function ApplicationFormActions({
       ? ApplicationFormStatus.Submitted
       : getApplicationFormStatus(applicationForm)
 
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const { data, refetch, isLoading } = useGetProfileQuery(cookies.jwt)
   const dispatch = useDispatch()
 

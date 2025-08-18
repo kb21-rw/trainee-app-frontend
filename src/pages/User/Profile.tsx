@@ -10,12 +10,12 @@ import {
 import { useForm } from "react-hook-form"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { AlertType, Cookie } from "../../utils/types"
-import { useDispatch } from "react-redux"
-import { useCookies } from "react-cookie"
+import { AlertType } from "../../utils/types"
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "../../store"
 
 const Profile = () => {
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const [updateProfile, { isLoading, isSuccess, error }] =
     useUpdateProfileMutation()
   const [otherAlertMessage, setOtherAlertMessage] = useState(false)

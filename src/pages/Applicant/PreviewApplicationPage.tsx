@@ -1,16 +1,16 @@
 import { useLocation, useNavigate } from "react-router-dom"
 import { useAddApplicantResponseMutation } from "../../features/user/backendApi"
 import { getErrorInfo, getFormattedDate } from "../../utils/helper"
-import { AlertType, Cookie, UserResponseQuestion } from "../../utils/types"
+import { AlertType, UserResponseQuestion } from "../../utils/types"
 import Button from "../../components/ui/Button"
 import { useEffect } from "react"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch } from "react-redux"
-import { useCookies } from "react-cookie"
+import { useDispatch, useSelector } from "react-redux"
 import ApplicationFormQuestionPreview from "../../components/ui/ApplicationFormQuestionPreview"
+import { RootState } from "../../store"
 
 const PreviewApplicationPage = () => {
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const dispatch = useDispatch()
   const location = useLocation()
   const navigate = useNavigate()

@@ -1,7 +1,8 @@
-import { useCookies } from "react-cookie"
+import { useSelector } from "react-redux"
+import { RootState } from "../../store"
 
 export const useCoachIdFromJwt = (): string | null => {
-  const [cookies] = useCookies(["jwt"])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const jwt = cookies.jwt
 
   if (!jwt) return null

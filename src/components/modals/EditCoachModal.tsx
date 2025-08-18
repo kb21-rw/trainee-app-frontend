@@ -1,16 +1,16 @@
 import { useEditCoachMutation } from "../../features/user/backendApi"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { AlertType, Cookie, EditCoachModalProps } from "../../utils/types"
-import { useDispatch } from "react-redux"
+import { AlertType, EditCoachModalProps } from "../../utils/types"
+import { useDispatch, useSelector } from "react-redux"
 import { getErrorInfo } from "../../utils/helper"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useCookies } from "react-cookie"
 import { Modal } from "@mui/material"
 import Loader from "../ui/Loader"
 import Button from "../ui/Button"
 import Input from "../ui/Input"
+import { RootState } from "../../store"
 
 const EditCoachSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -36,7 +36,7 @@ export default function EditCoach({
     defaultValues: { name: currentName, email: currentEmail },
   })
 
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const [editCoach, { isLoading }] = useEditCoachMutation()
 
   const dispatch = useDispatch()
