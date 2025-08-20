@@ -10,7 +10,7 @@ import { useTraineeActions } from "../../utils/hooks/useTraineeControls"
 import { useTraineeDecision } from "../../utils/hooks/useTraineeControls"
 import { useTraineeErrors } from "../../utils/hooks/useTraineeErrors"
 import { useCoachIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
-import { Cohort, UserRole } from "../../utils/types"
+import { Cohort, CohortParticipant, UserRole } from "../../utils/types"
 import { useTrainee } from "../../utils/hooks/useTrainee"
 
 const MyTrainees = () => {
@@ -111,7 +111,8 @@ const MyTrainees = () => {
   const filteredTrainees = useMemo(() => {
     if (!traineeOverview?.trainees || !currentCoachId) return []
     return traineeOverview.trainees.filter(
-      (trainee: any) => trainee.coachId === currentCoachId,
+      (trainee: CohortParticipant) =>
+        trainee.postselectionCoachId === currentCoachId,
     )
   }, [traineeOverview, currentCoachId])
 
