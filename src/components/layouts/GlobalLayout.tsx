@@ -7,8 +7,9 @@ import { login } from "../../features/user/userSlice"
 import { getErrorInfo, getRoleBasedHomepageURL } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import Loader from "../ui/Loader"
-import { AlertType } from "../../utils/types"
+import { AlertType, User } from "../../utils/types"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { useUserIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
 
 export default function GlobalLayout() {
   const alert = useSelector((state: RootState) => state.alert)
@@ -16,6 +17,7 @@ export default function GlobalLayout() {
   const navigate = useNavigate()
   const [isInitialized, setIsInitialized] = useState(false)
   const dispatch = useDispatch()
+  const tokenUserId = useUserIdFromJwt()
 
   const isSigningUp =
     location.pathname.includes("/signup/thank-you") ||
@@ -29,6 +31,12 @@ export default function GlobalLayout() {
     isLoading,
   } = useGetProfileQuery(cookies.jwt, {
     skip: !cookies.jwt || isSigningUp,
+    selectFromResult: ({ data, ...rest }: { data: User; rest: unknown }) => {
+      return {
+        data: data?._id === tokenUserId ? data : null,
+        ...rest,
+      }
+    },
   })
 
   const searchParams = useMemo(
@@ -73,7 +81,7 @@ export default function GlobalLayout() {
       })
     }
   }, [userError, dispatch])
-  
+
   useEffect(() => {
     if (cookies.jwt && user) {
       dispatch(login(user))

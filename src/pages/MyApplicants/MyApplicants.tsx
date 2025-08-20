@@ -10,12 +10,12 @@ import { useApplicantActions } from "../../utils/hooks/useApplicantActions"
 import { useApplicantDecision } from "../../utils/hooks/useApplicantDecision"
 import { useApplicantErrors } from "../../utils/hooks/useApplicantErrors"
 import { useApplicantData } from "../../utils/hooks/useApplications"
-import { useCoachIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
+import { useUserIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
 import { Cohort, UserRole } from "../../utils/types"
 
 const MyApplicants = () => {
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
-  const currentCoachId = useCoachIdFromJwt()
+  const currentCoachId = useUserIdFromJwt()
   const { register, watch } = useForm({ defaultValues: { cohortId: "" } })
 
   const {
