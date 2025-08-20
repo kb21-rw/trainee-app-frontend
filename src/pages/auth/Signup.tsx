@@ -35,7 +35,7 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
     dispatch(setToken({ jwt: token }))
 
     navigate(
-      redirectUrl ?? "/applicants",
+      redirectUrl ?? "/",
       redirectUrl ? {} : { state: { redirect: "home" } },
     )
   }

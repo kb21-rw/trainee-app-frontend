@@ -104,7 +104,11 @@ export default function GlobalLayout() {
   }
 
   if (cookies.jwt && user) {
-    if (location.state?.redirect === "home") {
+    if (
+      location.state?.redirect === "home" ||
+      location.pathname === "/" ||
+      location.pathname === "/auth"
+    ) {
       return <Navigate to={getRoleBasedHomepageURL(user.role)} />
     }
   }

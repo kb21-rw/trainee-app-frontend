@@ -38,7 +38,7 @@ const Login = ({ handlePageChange }: { handlePageChange: () => void }) => {
   const saveTokenAndRedirect = (token: string) => {
     dispatch(setToken({ jwt: token }))
     navigate(
-      redirectUrl ?? "/applicants", // if there's no redirectUrl, navigating to any protected route will redirect to the homepage
+      redirectUrl ?? "/", // if there's no redirectUrl, navigating to any protected route will redirect to the homepage
       redirectUrl ? {} : { state: { redirect: "home" } },
     )
   }
