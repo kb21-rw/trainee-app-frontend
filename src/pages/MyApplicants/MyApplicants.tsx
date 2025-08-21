@@ -10,8 +10,8 @@ import { useApplicantActions } from "../../utils/hooks/useApplicantActions"
 import { useApplicantDecision } from "../../utils/hooks/useApplicantDecision"
 import { useApplicantErrors } from "../../utils/hooks/useApplicantErrors"
 import { useApplicantData } from "../../utils/hooks/useApplications"
+import { Cohort, CohortParticipant, UserRole } from "../../utils/types"
 import { useUserIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
-import { Cohort, UserRole } from "../../utils/types"
 
 const MyApplicants = () => {
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
@@ -102,7 +102,8 @@ const MyApplicants = () => {
   const filteredApplicants = useMemo(() => {
     if (!cohortOverview?.trainees || !currentCoachId) return []
     return cohortOverview.trainees.filter(
-      (trainee: { coachId: string }) => trainee.coachId === currentCoachId,
+      (trainee: CohortParticipant) =>
+        trainee.preselectionCoachId === currentCoachId,
     )
   }, [cohortOverview, currentCoachId])
 
