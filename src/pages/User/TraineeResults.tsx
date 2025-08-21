@@ -11,16 +11,16 @@ import {
   Response,
   Form,
   QuestionType,
-  Cookie,
   TemplateQuestion,
 } from "../../utils/types"
 
 import { useGetOverviewForCoachQuery } from "../../features/user/backendApi"
 import Loader from "../../components/ui/Loader"
 import ResponseModal from "../../components/modals/ResponseModal"
-import { useCookies } from "react-cookie"
+import { useSelector } from "react-redux"
+import { RootState } from "../../store"
 const TraineeResults = () => {
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const { data, isLoading, isError } = useGetOverviewForCoachQuery({
     jwt: cookies.jwt,
   })

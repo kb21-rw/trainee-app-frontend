@@ -14,20 +14,19 @@ import { useNavigate } from "react-router-dom"
 import {
   AlertType,
   ApplicationForm,
-  Cookie,
   Form,
   FormType,
   IFormType,
   QuestionType,
 } from "../../utils/types"
-import { useCookies } from "react-cookie"
 import dayjs from "dayjs"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { DatePicker } from "@mui/x-date-pickers"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "../../store"
 
 const FormDto = z.object({
   name: z.string().optional(),
@@ -79,7 +78,7 @@ export default function EditableFormCard({
     endDate: form.type === FormType.Application ? dayjs(form.endDate) : null,
   }
 
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const dispatch = useDispatch()
   const {
     control,

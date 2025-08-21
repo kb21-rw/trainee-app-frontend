@@ -1,14 +1,15 @@
 import { InputLabel, Stack } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers"
 import Button from "../../components/ui/Button"
-import { ButtonSize, Cookie } from "../../utils/types"
+import { ButtonSize } from "../../utils/types"
 import CohortTextField from "./CohortTextField"
 import Stages from "./Stages"
 import { z } from "zod"
 import { Controller, useForm, SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import dayjs, { Dayjs } from "dayjs"
-import { useCookies } from "react-cookie"
+import { useSelector } from "react-redux"
+import { RootState } from "../../store"
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -59,7 +60,7 @@ function CreateCohortForm({
   // eslint-disable-next-line no-unused-vars
   createCohort: (_data: { jwt: string; body: any }) => any
 }) {
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const {
     register,
     control,
@@ -78,7 +79,7 @@ function CreateCohortForm({
 
   const onSubmit: SubmitHandler<TCohortFormValues> = async (data) => {
     await createCohort({
-      jwt: cookies.jwt,
+      jwt: cookies.jwt!,
       body: {
         name: data.name,
         description: data.description,

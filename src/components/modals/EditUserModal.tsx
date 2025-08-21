@@ -1,15 +1,14 @@
 import { useForm } from "react-hook-form"
 import Button from "../ui/Button"
 import { Modal } from "@mui/material"
-import { AlertType, Cookie, User, UserRole } from "../../utils/types"
+import { AlertType, User, UserRole } from "../../utils/types"
 import Input from "../ui/Input"
 import Select from "../ui/Select"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch } from "react-redux"
-import { useCookies } from "react-cookie"
+import { useDispatch, useSelector } from "react-redux"
 import {
   useToggleUserActiveStatusMutation,
   useUpdateUserMutation,
@@ -18,6 +17,7 @@ import {
 import Loader from "../ui/Loader"
 import { useState, useEffect } from "react"
 import UserStatusConfirmationModal from "./UserStatusConfirmationModal"
+import { RootState } from "../../store"
 
 const selectOptions = [
   { value: UserRole.Prospect, label: "Prospect" },
@@ -48,7 +48,7 @@ export default function EditUserModal({
   defaultValues: User
   onClose: () => void
 }) {
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const dispatch = useDispatch()
   const [updateUser, { isLoading: isUserLoading, reset: resetUpdateUser }] =
     useUpdateUserMutation()

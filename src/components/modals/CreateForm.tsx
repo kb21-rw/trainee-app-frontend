@@ -5,12 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import Button from "../../components/ui/Button"
 import Input from "../../components/ui/Input"
 import { useCreateFormMutation } from "../../features/user/backendApi"
-import { useCookies } from "react-cookie"
-import { Cookie, FormType } from "../../utils/types"
+import { FormType } from "../../utils/types"
 import { onCreateFormSubmit } from "../../utils/helper"
 import Loader from "../../components/ui/Loader"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import { RootState } from "../../store"
 
 interface CreateFormModalProps {
   isOpen: boolean
@@ -41,7 +41,7 @@ export default function CreateForm({
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const [createForm, { isLoading }] = useCreateFormMutation()
 
   const onSubmit = async (data: CreateFormInput) => {

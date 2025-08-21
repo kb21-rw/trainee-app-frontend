@@ -4,9 +4,8 @@ import {
   useGetCoachesQuery,
 } from "../../features/user/backendApi"
 import Button from "../../components/ui/Button"
-import { AlertType, ButtonSize, Cohort, Cookie, User } from "../../utils/types"
-import { useCookies } from "react-cookie"
-import { useDispatch } from "react-redux"
+import { AlertType, ButtonSize, Cohort, User } from "../../utils/types"
+import { useDispatch, useSelector } from "react-redux"
 import { FormControl, SelectChangeEvent, MenuItem, Select } from "@mui/material"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { getErrorInfo } from "../../utils/helper"
@@ -16,6 +15,7 @@ import AddCoach from "../../components/modals/AddCoach"
 import EditIcon from "../../assets/EditIcon"
 import EditCoach from "../../components/modals/EditCoachModal"
 import { customizeDataGridStyles } from "../../utils/styles"
+import { RootState } from "../../store"
 
 export default function Coaches() {
   const [isAddCoachOpen, setIsAddCoachOpen] = useState(false)
@@ -30,7 +30,7 @@ export default function Coaches() {
   }
 
   const dispatch = useDispatch()
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const {
     data: cohorts,
     error: cohortsError,

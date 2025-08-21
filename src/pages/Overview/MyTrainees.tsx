@@ -9,13 +9,13 @@ import SmartSelect from "../../components/ui/SmartSelect"
 import { useTraineeActions } from "../../utils/hooks/useTraineeControls"
 import { useTraineeDecision } from "../../utils/hooks/useTraineeControls"
 import { useTraineeErrors } from "../../utils/hooks/useTraineeErrors"
-import { useCoachIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
 import { Cohort, CohortParticipant, UserRole } from "../../utils/types"
+import { useUserIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
 import { useTrainee } from "../../utils/hooks/useTrainee"
 
 const MyTrainees = () => {
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
-  const currentCoachId = useCoachIdFromJwt()
+  const currentCoachId = useUserIdFromJwt()
   const { register, watch } = useForm({ defaultValues: { cohortId: "" } })
 
   const {

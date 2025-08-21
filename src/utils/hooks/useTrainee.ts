@@ -1,17 +1,17 @@
-import { useCookies } from "react-cookie"
+import { useSelector } from "react-redux"
 import {
   useApplicantDecisionMutation,
   useGetAllCohortsQuery,
   useGetTraineesForCoachQuery,
   useUpdateParticipantMutation,
 } from "../../features/user/backendApi"
-import { Cookie } from "../types"
+import { RootState } from "../../store"
 
 export const useTrainee = (
   selectedCohortId: string | null,
   currentCoachId: string | null,
 ) => {
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
 
   const cohortQuery = useGetAllCohortsQuery({ jwt: cookies.jwt })
 

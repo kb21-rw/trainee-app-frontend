@@ -2,14 +2,14 @@ import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../../store"
 import Alert from "../ui/Alert"
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
-import { useCookies } from "react-cookie"
 import { useGetProfileQuery } from "../../features/user/backendApi"
 import { login } from "../../features/user/userSlice"
 import { getErrorInfo, getRoleBasedHomepageURL } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import Loader from "../ui/Loader"
-import { AlertType, Cookie } from "../../utils/types"
+import { AlertType, User } from "../../utils/types"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { useUserIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
 
 export default function GlobalLayout() {
   const alert = useSelector((state: RootState) => state.alert)
@@ -17,13 +17,13 @@ export default function GlobalLayout() {
   const navigate = useNavigate()
   const [isInitialized, setIsInitialized] = useState(false)
   const dispatch = useDispatch()
+  const tokenUserId = useUserIdFromJwt()
 
   const isSigningUp =
     location.pathname.includes("/signup/thank-you") ||
-    location.pathname.includes("/verify") ||
-    location.pathname.includes("/auth")
+    location.pathname.includes("/verify")
 
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
 
   const {
     data: user,
@@ -31,6 +31,12 @@ export default function GlobalLayout() {
     isLoading,
   } = useGetProfileQuery(cookies.jwt, {
     skip: !cookies.jwt || isSigningUp,
+    selectFromResult: ({ data, ...rest }: { data: User; rest: unknown }) => {
+      return {
+        data: data?._id === tokenUserId ? data : null,
+        ...rest,
+      }
+    },
   })
 
   const searchParams = useMemo(
@@ -77,7 +83,7 @@ export default function GlobalLayout() {
   }, [userError, dispatch])
 
   useEffect(() => {
-    if (user && !isSigningUp) {
+    if (cookies.jwt && user) {
       dispatch(login(user))
     }
 
@@ -87,7 +93,7 @@ export default function GlobalLayout() {
 
     displayErrors()
     handleAlertData()
-  }, [user, displayErrors, dispatch, isLoading, handleAlertData, isSigningUp])
+  }, [user, displayErrors, dispatch, isLoading, handleAlertData])
 
   if (isLoading || !isInitialized) {
     return (
@@ -98,7 +104,11 @@ export default function GlobalLayout() {
   }
 
   if (cookies.jwt && user) {
-    if (location.state?.redirect === "home") {
+    if (
+      location.state?.redirect === "home" ||
+      location.pathname === "/" ||
+      location.pathname === "/auth"
+    ) {
       return <Navigate to={getRoleBasedHomepageURL(user.role)} />
     }
   }

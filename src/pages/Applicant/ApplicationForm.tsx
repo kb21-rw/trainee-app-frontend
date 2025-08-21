@@ -4,8 +4,7 @@ import {
   useGetMyApplicationQuery,
 } from "../../features/user/backendApi"
 import Loader from "../../components/ui/Loader"
-import { AlertType, Cookie, QuestionType } from "../../utils/types"
-import { useCookies } from "react-cookie"
+import { AlertType, QuestionType } from "../../utils/types"
 import { Box, Typography } from "@mui/material"
 import { useForm } from "react-hook-form"
 import Button from "../../components/ui/Button"
@@ -15,13 +14,14 @@ import {
   getFormattedDate,
 } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useEffect } from "react"
 import ApplicationFormQuestion from "../../components/ui/ApplicatonFormQuestion"
+import { RootState } from "../../store"
 
 const ApplicationForm = () => {
   const location = useLocation()
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { data, isFetching, refetch } = useGetMyApplicationQuery(cookies.jwt)

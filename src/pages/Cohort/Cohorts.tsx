@@ -1,8 +1,7 @@
 import { Box, Modal, Typography } from "@mui/material"
 import { DataGrid, GridColDef } from "@mui/x-data-grid"
 import { useState } from "react"
-import { useCookies } from "react-cookie"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import UpdateCohortModal from "../../components/modals/UpdateCohortModal"
 import ViewCohortDetailsModal from "../../components/modals/ViewCohortDetailsModal"
 import TableSkeleton from "../../components/skeletons/TableSkeleton"
@@ -13,9 +12,10 @@ import {
 } from "../../features/user/backendApi"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { getErrorInfo } from "../../utils/helper"
-import { AlertType, ButtonSize, Cookie, Stage } from "../../utils/types"
+import { AlertType, ButtonSize, Stage } from "../../utils/types"
 import CreateCohortForm from "./CreateCohortForm"
 import { customizeDataGridStyles } from "../../utils/styles"
+import { RootState } from "../../store"
 
 type TCohort = {
   applicants: number
@@ -48,7 +48,7 @@ const style = {
 }
 
 export default function Cohorts() {
-  const [cookies] = useCookies([Cookie.jwt])
+  const cookies = useSelector((state: RootState) => state.cookies)
   const [createCohort, { error, isSuccess }] = useCreateCohortMutation()
   const { data, isFetching } = useGetAllCohortsQuery({ jwt: cookies.jwt })
   const [open, setOpen] = useState(false)
