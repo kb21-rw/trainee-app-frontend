@@ -1,10 +1,10 @@
 import { useEffect, useCallback } from "react"
 import { useDispatch } from "react-redux"
-import { handleShowAlert } from "../../utils/handleShowAlert"
-import { getErrorInfo } from "../../utils/helper"
-import { AlertType } from "../../utils/types"
+import { handleShowAlert } from "../handleShowAlert"
+import { getErrorInfo } from "../helper"
+import { AlertType } from "../types"
 
-interface UseApplicantErrorsProps {
+interface UseParticipantErrorsProps {
   cohortOverviewError: any
   decisionError: any
   updateParticipantError: any
@@ -12,11 +12,11 @@ interface UseApplicantErrorsProps {
   updateParticipantIsSuccess: boolean
   decisionInfo: any
   closeDecisionModal: () => void
-  applicantDecisionReset: () => void
+  participantDecisionReset: () => void
   updateParticipantReset: () => void
 }
 
-export const useApplicantErrors = ({
+export const useParticipantErrors = ({
   cohortOverviewError,
   decisionError,
   updateParticipantError,
@@ -24,9 +24,9 @@ export const useApplicantErrors = ({
   updateParticipantIsSuccess,
   decisionInfo,
   closeDecisionModal,
-  applicantDecisionReset,
+  participantDecisionReset,
   updateParticipantReset,
-}: UseApplicantErrorsProps) => {
+}: UseParticipantErrorsProps) => {
   const dispatch = useDispatch()
 
   // Memoized callback for handling errors
@@ -41,7 +41,7 @@ export const useApplicantErrors = ({
       })
       if (decisionError) {
         closeDecisionModal()
-        applicantDecisionReset()
+        participantDecisionReset()
       }
     }
   }, [
@@ -50,7 +50,7 @@ export const useApplicantErrors = ({
     updateParticipantError,
     dispatch,
     closeDecisionModal,
-    applicantDecisionReset,
+    participantDecisionReset,
   ])
 
   // Memoized callback for handling decision success
@@ -61,14 +61,14 @@ export const useApplicantErrors = ({
         message: `User is successfully ${decisionInfo?.decision?.toLowerCase() ?? "processed"}`,
       })
       closeDecisionModal()
-      applicantDecisionReset()
+      participantDecisionReset()
     }
   }, [
     decidingIsSuccess,
     decisionInfo,
     dispatch,
     closeDecisionModal,
-    applicantDecisionReset,
+    participantDecisionReset,
   ])
 
   // Memoized callback for handling participant update success
