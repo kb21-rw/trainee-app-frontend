@@ -1,4 +1,4 @@
-import { DecisionInfo } from "../../utils/types"
+import { DecisionInfo } from "../types"
 
 interface UseApplicantDecisionProps {
   decisionInfo: DecisionInfo | null
@@ -6,7 +6,7 @@ interface UseApplicantDecisionProps {
   decide: any
 }
 
-export const useApplicantDecision = ({
+export const useParticipantDecision = ({
   decisionInfo,
   cookies,
   decide,

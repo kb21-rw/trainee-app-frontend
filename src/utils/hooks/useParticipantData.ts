@@ -1,25 +1,27 @@
 import { useSelector } from "react-redux"
 import {
   useApplicantDecisionMutation,
-  useGetAllCohortsQuery,
-  useGetTraineesForCoachQuery,
+  useGetApplicantsQuery,
+  useGetProfileQuery,
   useUpdateParticipantMutation,
+  useGetAllCohortsQuery,
 } from "../../features/user/backendApi"
 import { RootState } from "../../store"
 
-export const useTrainee = (
-  selectedCohortId: string | null,
-  currentCoachId: string | null,
-) => {
+export const useParticipantData = (selectedCohortId: string | null) => {
   const cookies = useSelector((state: RootState) => state.cookies)
 
-  const cohortQuery = useGetAllCohortsQuery({ jwt: cookies.jwt })
+  const cohortQuery = useGetAllCohortsQuery({
+    jwt: cookies.jwt,
+    query: "",
+  })
 
-  const traineeQuery = useGetTraineesForCoachQuery({
+  const applicantQuery = useGetApplicantsQuery({
     jwt: cookies.jwt,
     cohortId: selectedCohortId,
-    coachId: currentCoachId,
   })
+
+  const coachProfileQuery = useGetProfileQuery(cookies.jwt)
 
   const decisionMutation = useApplicantDecisionMutation()
   const updateParticipantMutation = useUpdateParticipantMutation()
@@ -27,7 +29,8 @@ export const useTrainee = (
   return {
     cookies,
     cohortQuery,
-    traineeQuery,
+    participantQuery: applicantQuery,
+    coachProfileQuery,
     decisionMutation,
     updateParticipantMutation,
   }
