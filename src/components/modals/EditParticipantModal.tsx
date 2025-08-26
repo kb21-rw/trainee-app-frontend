@@ -3,13 +3,12 @@ import Button from "../ui/Button"
 import { Modal } from "@mui/material"
 import { AlertType, User, UserRow } from "../../utils/types"
 import { useUpdateParticipantMutation } from "../../features/user/backendApi"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import Input from "../ui/Input"
 import SmartSelect from "../ui/SmartSelect"
 import Loader from "../ui/Loader"
-import { RootState } from "../../store"
 
 export default function EditParticipantModal({
   type,
@@ -22,7 +21,6 @@ export default function EditParticipantModal({
   coaches: User[]
   onClose: () => void
 }) {
-  const cookies = useSelector((state: RootState) => state.cookies)
   const {
     handleSubmit,
     register,
@@ -48,7 +46,6 @@ export default function EditParticipantModal({
 
   const onSubmit = async (formData: { name: string; coachId: string }) => {
     await updateParticipant({
-      jwt: cookies.jwt,
       body: formData,
       participantId: row.traineeId,
     })

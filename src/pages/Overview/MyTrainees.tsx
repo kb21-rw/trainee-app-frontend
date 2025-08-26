@@ -19,7 +19,6 @@ const MyTrainees = () => {
   const { register, watch } = useForm({ defaultValues: { cohortId: "" } })
 
   const {
-    cookies,
     cohortQuery: { data: allCohorts, isFetching: allCohortsIsFetching },
     participantQuery: {
       data: cohortOverview,
@@ -56,7 +55,6 @@ const MyTrainees = () => {
 
   const { handleSubmitDecision } = useParticipantDecision({
     decisionInfo,
-    cookies,
     decide,
   })
 

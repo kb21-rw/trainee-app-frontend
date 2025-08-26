@@ -3,11 +3,12 @@ import { getRoleBasedHomepageURL } from "../../utils/helper"
 
 import { RootState } from "../../store"
 import { useSelector } from "react-redux"
+import { useAuth } from "../../utils/hooks/useAuth"
 
 export default function NonProtectLayout() {
-  const cookies = useSelector((state: RootState) => state.cookies)
+  const { isAuthenticated } = useAuth()
   const loggedInUser = useSelector((state: RootState) => state.user)
-  if (cookies.jwt && loggedInUser.role) {
+  if (isAuthenticated && loggedInUser.role) {
     return <Navigate to={getRoleBasedHomepageURL(loggedInUser.role)} />
   }
 

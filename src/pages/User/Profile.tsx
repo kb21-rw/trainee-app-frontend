@@ -11,16 +11,14 @@ import { useForm } from "react-hook-form"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { AlertType } from "../../utils/types"
-import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "../../store"
+import { useDispatch } from "react-redux"
 
 const Profile = () => {
-  const cookies = useSelector((state: RootState) => state.cookies)
   const [updateProfile, { isLoading, isSuccess, error }] =
     useUpdateProfileMutation()
   const [otherAlertMessage, setOtherAlertMessage] = useState(false)
   const dispatch = useDispatch()
-  const { data } = useGetProfileQuery(cookies.jwt)
+  const { data } = useGetProfileQuery()
   const {
     register,
     handleSubmit,
@@ -56,7 +54,7 @@ const Profile = () => {
     if (submittedData.name) profileData.name = submittedData.name
     if (submittedData.password) profileData.password = submittedData.password
 
-    await updateProfile({ jwt: cookies.jwt, profileData })
+    await updateProfile({ profileData })
   }
 
   if (error && !otherAlertMessage) {

@@ -8,8 +8,6 @@ import { useNavigate } from "react-router-dom"
 import View from "../../assets/ViewIcon"
 import Loader from "./Loader"
 import DeleteModal from "../modals/DeleteModal"
-import { RootState } from "../../store"
-import { useSelector } from "react-redux"
 
 const FormCard = ({
   form,
@@ -18,7 +16,6 @@ const FormCard = ({
   form: IFormType
   activeCohortId?: string
 }) => {
-  const cookies = useSelector((state: RootState) => state.cookies)
   const navigate = useNavigate()
   const questions = form.questions
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -27,7 +24,7 @@ const FormCard = ({
     useDeleteFormMutation()
 
   const handleDeleteForm = async (id: string) => {
-    await deleteForm({ jwt: cookies.jwt, id })
+    await deleteForm({ id })
     setShowDeleteModal(false)
   }
 

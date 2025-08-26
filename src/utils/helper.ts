@@ -21,7 +21,6 @@ import dayjs from "dayjs"
 export const onCreateFormSubmit = async ({
   data,
   formType,
-  cookies,
   createForm,
   navigate,
   reset,
@@ -57,7 +56,6 @@ export const onCreateFormSubmit = async ({
 
   try {
     const result = await createForm({
-      jwt: cookies.jwt,
       body: requestBody,
     }).unwrap()
     reset()

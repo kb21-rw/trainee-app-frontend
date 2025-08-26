@@ -13,7 +13,7 @@ import { CredentialResponse, GoogleLogin } from "@react-oauth/google"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
-import { setToken } from "../../features/user/authSlice"
+import { useAuth } from "../../utils/hooks/useAuth"
 
 const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
   const [signup, { isLoading, error }] = useSignupMutation()
@@ -26,14 +26,14 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
     formState: { errors },
   } = useForm()
   const navigate = useNavigate()
+  const { setToken } = useAuth()
   const [searchParams] = useSearchParams()
   const redirectUrl = searchParams.get("redirectTo")
 
   const password = watch("password")
 
   const saveTokenAndRedirect = (token: string) => {
-    dispatch(setToken({ jwt: token }))
-
+    setToken(token)
     navigate(
       redirectUrl ?? "/",
       redirectUrl ? {} : { state: { redirect: "home" } },

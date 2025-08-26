@@ -8,7 +8,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import {
   useToggleUserActiveStatusMutation,
   useUpdateUserMutation,
@@ -17,7 +17,6 @@ import {
 import Loader from "../ui/Loader"
 import { useState, useEffect } from "react"
 import UserStatusConfirmationModal from "./UserStatusConfirmationModal"
-import { RootState } from "../../store"
 
 const selectOptions = [
   { value: UserRole.Prospect, label: "Prospect" },
@@ -48,14 +47,13 @@ export default function EditUserModal({
   defaultValues: User
   onClose: () => void
 }) {
-  const cookies = useSelector((state: RootState) => state.cookies)
   const dispatch = useDispatch()
   const [updateUser, { isLoading: isUserLoading, reset: resetUpdateUser }] =
     useUpdateUserMutation()
   const [toggleUserActive, { isLoading: isToggleLoading }] =
     useToggleUserActiveStatusMutation()
   const [showConfirmation, setShowConfirmation] = useState(false)
-  const { data: loggedInUser } = useGetProfileQuery(cookies.jwt)
+  const { data: loggedInUser } = useGetProfileQuery()
 
   const [isUserActive, setIsUserActive] = useState(
     defaultValues.active !== false,
@@ -83,7 +81,6 @@ export default function EditUserModal({
   const onSubmit = async (formData: User) => {
     try {
       await updateUser({
-        jwt: cookies.jwt,
         body: formData,
         id: defaultValues._id,
       }).unwrap()
@@ -107,7 +104,6 @@ export default function EditUserModal({
   const handleToggleActive = async () => {
     try {
       await toggleUserActive({
-        jwt: cookies.jwt,
         userId: defaultValues._id,
       }).unwrap()
 
