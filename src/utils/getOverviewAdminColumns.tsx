@@ -71,6 +71,7 @@ export const getAdminActionColumns = (
 ]
 
 export const getAdminCoachColumn = (coaches: User[]): GridColDef[] => {
+  const activeCoaches = coaches.filter((coach) => coach.active)
   return [
     {
       field: "coach",
@@ -81,13 +82,15 @@ export const getAdminCoachColumn = (coaches: User[]): GridColDef[] => {
       type: "singleSelect",
       valueOptions: [
         { value: "", label: "No coach" },
-        ...coaches
-          .filter((coach) => coach.active)
-          .map((coach) => ({
-            value: coach._id,
-            label: coach.name,
-          })),
+        ...activeCoaches.map((coach) => ({
+          value: coach._id,
+          label: coach.name,
+        })),
       ],
+      valueFormatter: (value) => {
+        const coach = activeCoaches.find((coach) => coach._id === value)
+        return coach ? coach.name : "No coach"
+      },
     },
   ]
 }
