@@ -56,17 +56,24 @@ export default function ApplicationFormActions({
   }
 
   useEffect(() => {
+    console.log("Socket object:", socket) // Check if socket exists
+    console.log("Socket connected:", socket?.connected) // Check if connected
+
     if (socket) {
+      console.log("Joining room with email:", data?.email) // Add this
       socket.emit("join-room", data?.email)
 
       socket.on("joinedTheWaitList", (message) => {
+        console.log("Received joinedTheWaitList event:", message) // Add this
         if (data?.email === message.email) {
+          console.log("Email matches, updating status") // Add this
           setdisplayStatus(ApplicationFormStatus.JoinedWaitList)
           refetch()
         }
       })
 
       socket.on("waitListError", (errorMessage) => {
+        console.log("Received waitListError:", errorMessage) // Add this
         dispatch(
           showAlert({
             message: errorMessage.errorMessage,
