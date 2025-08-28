@@ -20,7 +20,7 @@ function onFormSubmit(e) {
       
       // Handle different response types
       if (typeof answer === 'string') {
-        answer = answer.trim()
+        answer = answer.trim().toLowerCase()
       } else if (Array.isArray(answer)) {
         answer = answer.map(item => typeof item === 'string' ? item.trim() : item)
       }
@@ -28,7 +28,7 @@ function onFormSubmit(e) {
       responseData.responses[question] = answer
     })
 
-    Logger.log("Form data to send:", JSON.stringify(responseData))
+    console.log("Form data to send:", JSON.stringify(responseData))
 
     const options = {
       method: "POST",
@@ -37,33 +37,33 @@ function onFormSubmit(e) {
       muteHttpExceptions: true,
     }
 
-    // Replace with your actual deployed backend URL
-    // For local testing, use ngrok: https://abc123.ngrok.io/join-wait-list
-    const backendUrl = "https://9506bd5a069f.ngrok-free.app/join-wait-list"
+    // For local testing, use ngrok: 
+    const backendUrl = "https://bf581d0b3061.ngrok-free.app/join-wait-list"
+    // const backendUrl = "https://trainee-app-backend-development-c3ad.up.railway.app/join-wait-list"
     
     const response = UrlFetchApp.fetch(backendUrl, options)
     const responseCode = response.getResponseCode()
     const responseText = response.getContentText()
     
     if (responseCode >= 200 && responseCode < 300) {
-      Logger.log("Successfully sent to backend:", responseText)
+      console.log("Successfully sent to backend:", responseText)
     } else {
-      Logger.log("Backend error - Code:", responseCode, "Response:", responseText)
+      console.log("Backend error - Code:", responseCode, "Response:", responseText)
     }
     
   } catch (error) {
-    Logger.log("Script error:", error.toString())
+    console.log("Script error:", error.toString())
   }
 }
 
 function setTrigger() {
-  Logger.log("Setting the trigger...")
+  console.log("Setting the trigger...")
   try {
     const form = FormApp.getActiveForm()
     ScriptApp.newTrigger("onFormSubmit").forForm(form).onFormSubmit().create()
-    Logger.log("Trigger set successfully")
+    console.log("Trigger set successfully")
   } catch (error) {
-    Logger.log("Error setting trigger:", error.toString())
+    console.log("Error setting trigger:", error.toString())
   }
 }
 
@@ -81,13 +81,16 @@ function testBackendConnection() {
     muteHttpExceptions: true,
   }
   
-  const backendUrl = "https://9506bd5a069f.ngrok-free.app/join-wait-list"
+  
+  const backendUrl = "https://bf581d0b3061.ngrok-free.app/join-wait-list"
+  // const backendUrl = "https://trainee-app-backend-development-c3ad.up.railway.app/join-wait-list"
   
   try {
     const response = UrlFetchApp.fetch(backendUrl, options)
-    Logger.log("Test Response Code:", response.getResponseCode())
-    Logger.log("Test Response:", response.getContentText())
+    console.log("Backend Response: ", response.getResponseCode())
+    console.log("Test Response Code:", response.getResponseCode())
+    console.log("Test Response:", response.getContentText())
   } catch (error) {
-    Logger.log("Test Error:", error.toString())
+    console.log("Test Error:", error.toString())
   }
 }
