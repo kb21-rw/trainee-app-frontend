@@ -42,7 +42,7 @@ export default function ApplicationFormActions({
   const { data, refetch, isLoading } = useGetProfileQuery(cookies.jwt)
   const dispatch = useDispatch()
 
-  const [displayStatus, setdisplayStatus] = useState<ApplicationFormStatus>(
+  const [displayStatus, setDisplayStatus] = useState<ApplicationFormStatus>(
     () =>
       data?.status === UserStatus.OnWaitList
         ? ApplicationFormStatus.JoinedWaitList
@@ -56,24 +56,17 @@ export default function ApplicationFormActions({
   }
 
   useEffect(() => {
-    console.log("Socket object:", socket) // Check if socket exists
-    console.log("Socket connected:", socket?.connected) // Check if connected
-
-    if (socket) {
-      console.log("Joining room with email:", data?.email) // Add this
-      socket.emit("join-room", data?.email)
+    if (socket && data?.email) {
+      socket.emit("join-room", data.email)
 
       socket.on("joinedTheWaitList", (message) => {
-        console.log("Received joinedTheWaitList event:", message) // Add this
-        if (data?.email === message.email) {
-          console.log("Email matches, updating status") // Add this
-          setdisplayStatus(ApplicationFormStatus.JoinedWaitList)
-          refetch()
+        if (data.email === message.email) {
+          setDisplayStatus(ApplicationFormStatus.JoinedWaitList)
+          setTimeout(() => refetch(), 500) // Trigger refetch to update Redux cache
         }
       })
 
       socket.on("waitListError", (errorMessage) => {
-        console.log("Received waitListError:", errorMessage) // Add this
         dispatch(
           showAlert({
             message: errorMessage.errorMessage,
@@ -82,13 +75,19 @@ export default function ApplicationFormActions({
           }),
         )
       })
+
+      // Update displayStatus if data.status changes after refetch
+      if (data?.status === UserStatus.OnWaitList) {
+        setDisplayStatus(ApplicationFormStatus.JoinedWaitList)
+      }
     }
 
     return () => {
       socket?.off("joinedTheWaitList")
       socket?.off("waitListError")
+      socket?.off("test-response")
     }
-  }, [socket, data?.email, refetch, dispatch])
+  }, [socket, data?.email, data?.status, refetch, dispatch])
 
   if (isLoading || !data) {
     return <div>Loading...</div>

@@ -17,7 +17,9 @@ export function SocketContextProvider({
   children: React.ReactNode
 }): React.ReactNode {
   const [socket, setSocket] = useState<Socket | null>(null)
-  const socketURL = import.meta.env.VITE_API_URL
+  const socketURL =
+    import.meta.env.VITE_BACKEND_API_URL?.replace("/api", "") ||
+    "http://localhost:3000"
 
   useEffect(() => {
     const socketInstance = io(socketURL, {
