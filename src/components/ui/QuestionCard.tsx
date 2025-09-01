@@ -12,8 +12,6 @@ import RemoveIcon from "../../assets/RemoveIcon"
 import Reset from "../../assets/ResetIcon"
 import DeleteModal from "../modals/DeleteModal"
 import { QuestionType, TemplateQuestion } from "../../utils/types"
-import { RootState } from "../../store"
-import { useSelector } from "react-redux"
 
 const QuestionCard = ({
   question,
@@ -37,13 +35,12 @@ const QuestionCard = ({
       options,
     },
   })
-  const cookies = useSelector((state: RootState) => state.cookies)
   const [deleteQuestion] = useDeleteQuestionMutation()
   const [editQuestion] = useEditQuestionMutation()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   const handleDeleteQuestion = async (_id: string) => {
-    await deleteQuestion({ jwt: cookies.jwt, id: _id })
+    await deleteQuestion({ id: _id })
     setShowDeleteModal(false)
   }
 
@@ -56,7 +53,7 @@ const QuestionCard = ({
   const onSubmit: SubmitHandler<
     Omit<TemplateQuestion, "_id" | "responses" | "required">
   > = async (data) => {
-    await editQuestion({ jwt: cookies.jwt, body: data, id: _id })
+    await editQuestion({ body: data, id: _id })
   }
 
   const { type: selectedType } = watch()

@@ -8,9 +8,8 @@ import { useCreateFormMutation } from "../../features/user/backendApi"
 import { FormType } from "../../utils/types"
 import { onCreateFormSubmit } from "../../utils/helper"
 import Loader from "../../components/ui/Loader"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import { RootState } from "../../store"
 
 interface CreateFormModalProps {
   isOpen: boolean
@@ -41,14 +40,12 @@ export default function CreateForm({
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const cookies = useSelector((state: RootState) => state.cookies)
   const [createForm, { isLoading }] = useCreateFormMutation()
 
   const onSubmit = async (data: CreateFormInput) => {
     await onCreateFormSubmit({
       data,
       formType,
-      cookies,
       createForm,
       navigate,
       reset,

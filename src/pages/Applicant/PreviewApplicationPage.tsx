@@ -5,12 +5,10 @@ import { AlertType, UserResponseQuestion } from "../../utils/types"
 import Button from "../../components/ui/Button"
 import { useEffect } from "react"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import ApplicationFormQuestionPreview from "../../components/ui/ApplicationFormQuestionPreview"
-import { RootState } from "../../store"
 
 const PreviewApplicationPage = () => {
-  const cookies = useSelector((state: RootState) => state.cookies)
   const dispatch = useDispatch()
   const location = useLocation()
   const navigate = useNavigate()
@@ -32,7 +30,6 @@ const PreviewApplicationPage = () => {
 
   const handleConfirm = async () => {
     await addApplicantResponse({
-      jwt: cookies.jwt,
       body: responses,
       action: "submit",
     })

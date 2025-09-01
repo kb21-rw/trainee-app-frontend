@@ -13,7 +13,7 @@ import { useDispatch } from "react-redux"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google"
-import { setToken } from "../../features/user/authSlice"
+import { useAuth } from "../../utils/hooks/useAuth"
 
 interface LoginForm {
   email: string
@@ -33,10 +33,11 @@ const Login = ({ handlePageChange }: { handlePageChange: () => void }) => {
   } = useForm<LoginForm>()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { setToken } = useAuth()
   const redirectUrl = searchParams.get("redirectTo")
 
   const saveTokenAndRedirect = (token: string) => {
-    dispatch(setToken({ jwt: token }))
+    setToken(token)
     navigate(
       redirectUrl ?? "/", // if there's no redirectUrl, navigating to any protected route will redirect to the homepage
       redirectUrl ? {} : { state: { redirect: "home" } },

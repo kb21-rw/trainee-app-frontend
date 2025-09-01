@@ -2,28 +2,28 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import Cookies from "js-cookie"
 import { Cookie } from "../../utils/types"
 
-export interface CookiesState {
-  jwt: string | null
+export interface AuthState {
+  token: string | null
 }
 
-const initialState: CookiesState = {
-  jwt: Cookies.get("jwt") || null,
+const initialState: AuthState = {
+  token: Cookies.get("token") || null,
 }
 
-export const cookiesSlice = createSlice({
-  name: "cookies",
+export const authSlice = createSlice({
+  name: "auth",
   initialState,
   reducers: {
-    setToken: (state: CookiesState, action: PayloadAction<CookiesState>) => {
-      state.jwt = action.payload.jwt
-      Cookies.set(Cookie.jwt, action.payload.jwt!)
+    setToken: (state: AuthState, action: PayloadAction<AuthState>) => {
+      state.token = action.payload.token
+      Cookies.set(Cookie.token, action.payload.token!)
     },
-    removeToken: (state: CookiesState) => {
-      state.jwt = null
-      Cookies.remove(Cookie.jwt)
+    removeToken: (state: AuthState) => {
+      state.token = null
+      Cookies.remove(Cookie.token)
     },
   },
 })
 
-export const { setToken, removeToken } = cookiesSlice.actions
-export default cookiesSlice.reducer
+export const { setToken, removeToken } = authSlice.actions
+export default authSlice.reducer

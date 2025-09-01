@@ -14,17 +14,15 @@ import {
   getFormattedDate,
 } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { useEffect } from "react"
 import ApplicationFormQuestion from "../../components/ui/ApplicatonFormQuestion"
-import { RootState } from "../../store"
 
 const ApplicationForm = () => {
   const location = useLocation()
-  const cookies = useSelector((state: RootState) => state.cookies)
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { data, isFetching, refetch } = useGetMyApplicationQuery(cookies.jwt)
+  const { data, isFetching, refetch } = useGetMyApplicationQuery()
   const [saveApplicantResponse, { error }] = useAddApplicantResponseMutation()
   const {
     handleSubmit,
@@ -77,7 +75,6 @@ const ApplicationForm = () => {
     )
 
     const result = await saveApplicantResponse({
-      jwt: cookies.jwt,
       body: responses,
       action: "save",
     })

@@ -16,11 +16,10 @@ import {
 } from "../../features/user/backendApi"
 import { AlertType, User } from "../../utils/types"
 import { getErrorInfo } from "../../utils/helper"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import Loader from "../ui/Loader"
 import TickIcon from "../../assets/TickIcon"
-import { RootState } from "../../store"
 
 interface Option {
   id: string
@@ -34,7 +33,6 @@ export default function AddApplicantsModal({
   isOpen: boolean
   onClose: () => void
 }) {
-  const cookies = useSelector((state: RootState) => state.cookies)
   const dispatch = useDispatch()
   const [selectedProspects, setSelectedProspects] = useState<Option[]>([])
   const [query, setQuery] = useState("")
@@ -43,7 +41,6 @@ export default function AddApplicantsModal({
     error: prospectsError,
     isFetching: prospectsIsFetching,
   } = useGetUsersQuery({
-    jwt: cookies.jwt,
     search: "role=Prospect",
   })
   const [
@@ -77,7 +74,7 @@ export default function AddApplicantsModal({
       (prospect: Option) => prospect.id,
     )
 
-    await addApplicants({ jwt: cookies.jwt, body: { prospectIds } })
+    await addApplicants({ body: { prospectIds } })
   }
 
   const removeProspect = (prospectId: string) => {
