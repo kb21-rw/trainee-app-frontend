@@ -6,20 +6,18 @@ import { AlertType, ResponseModalQuestion, UserRole } from "../../utils/types"
 import OverViewTable from "../../components/ui/OverViewTable"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import Loader from "../../components/ui/Loader"
 import NotFound from "../../components/ui/NotFound"
 import SmartSelect from "../../components/ui/SmartSelect"
 import { useCohortSelection } from "../../utils/hooks/useCohortSelection"
 import { useState } from "react"
 import ResponseModal from "../../components/modals/ResponseModal"
-import { RootState } from "../../store"
 
 const CoachGeneralOverview = () => {
   const [responseInfo, setResponseInfo] = useState<any | null>(null)
-  const cookies = useSelector((state: RootState) => state.cookies)
   const dispatch = useDispatch()
-  const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt })
+  const { data: allCohorts } = useGetAllCohortsQuery()
   const {
     selectedCohortId,
     selectedCohort,
@@ -34,7 +32,6 @@ const CoachGeneralOverview = () => {
     isFetching: coachOverviewIsFetching,
   } = useGetTraineesQuery(
     {
-      jwt: cookies.jwt,
       cohortId: selectedCohortId,
     },
     {

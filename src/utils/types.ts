@@ -204,7 +204,6 @@ export enum AlertType {
 export type AlertData = Pick<IAlert, "type" | "displayDuration" | "children">
 
 export enum Cookie {
-  jwt = "jwt",
   token = "token",
 }
 
@@ -268,8 +267,7 @@ export interface ResponseModalInfo {
 export interface OnCreateFormSubmitParams {
   data: CreateFormInput
   formType: FormType
-  cookies: { [Cookie.jwt]?: any }
-  createForm: (_arg: { jwt: string; body: any }) => {
+  createForm: (_arg: { token: string; body: any }) => {
     unwrap: () => Promise<any>
   }
   reset: () => void

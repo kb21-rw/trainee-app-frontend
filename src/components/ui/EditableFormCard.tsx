@@ -25,8 +25,7 @@ import { z } from "zod"
 import { DatePicker } from "@mui/x-date-pickers"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "../../store"
+import { useDispatch } from "react-redux"
 
 const FormDto = z.object({
   name: z.string().optional(),
@@ -78,7 +77,6 @@ export default function EditableFormCard({
     endDate: form.type === FormType.Application ? dayjs(form.endDate) : null,
   }
 
-  const cookies = useSelector((state: RootState) => state.cookies)
   const dispatch = useDispatch()
   const {
     control,
@@ -93,13 +91,13 @@ export default function EditableFormCard({
   const [editForm] = useEditFormMutation()
   const [createQuestion] = useCreateQuestionMutation()
   const navigate = useNavigate()
-  const { data: allForms } = useGetAllFormsQuery({ jwt: cookies.jwt })
+  const { data: allForms } = useGetAllFormsQuery()
   const allFormsData = allForms?.forms
 
   const [deleteForm, { isLoading: isDeleteFormLoading }] =
     useDeleteFormMutation()
   const handleDeleteForm = async () => {
-    await deleteForm({ jwt: cookies.jwt, _id: form._id })
+    await deleteForm({ _id: form._id })
     navigate(`/forms`)
   }
 
@@ -128,7 +126,6 @@ export default function EditableFormCard({
 
     try {
       const result = await editForm({
-        jwt: cookies.jwt,
         id: form._id,
         body: requestBody,
       })
@@ -155,7 +152,6 @@ export default function EditableFormCard({
   const handleAddQuestion = async () => {
     if (readonly) return
     await createQuestion({
-      jwt: cookies.jwt,
       formId: form._id,
       body: { prompt: `Question`, type: QuestionType.Text },
     })

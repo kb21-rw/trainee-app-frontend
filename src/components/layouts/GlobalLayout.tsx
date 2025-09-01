@@ -10,6 +10,7 @@ import Loader from "../ui/Loader"
 import { AlertType, User } from "../../utils/types"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useUserIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
+import { useAuth } from "../../utils/hooks/useAuth"
 
 export default function GlobalLayout() {
   const alert = useSelector((state: RootState) => state.alert)
@@ -23,14 +24,13 @@ export default function GlobalLayout() {
     location.pathname.includes("/signup/thank-you") ||
     location.pathname.includes("/verify")
 
-  const cookies = useSelector((state: RootState) => state.cookies)
-
+  const { isAuthenticated } = useAuth()
   const {
     data: user,
     error: userError,
     isLoading,
-  } = useGetProfileQuery(cookies.jwt, {
-    skip: !cookies.jwt || isSigningUp,
+  } = useGetProfileQuery(undefined, {
+    skip: !isAuthenticated || isSigningUp,
     selectFromResult: ({ data, ...rest }: { data: User; rest: unknown }) => {
       return {
         data: data?._id === tokenUserId ? data : null,
@@ -83,7 +83,7 @@ export default function GlobalLayout() {
   }, [userError, dispatch])
 
   useEffect(() => {
-    if (cookies.jwt && user) {
+    if (user && isAuthenticated) {
       dispatch(login(user))
     }
 
@@ -103,7 +103,7 @@ export default function GlobalLayout() {
     )
   }
 
-  if (cookies.jwt && user) {
+  if (user && isAuthenticated) {
     if (
       location.state?.redirect === "home" ||
       location.pathname === "/" ||

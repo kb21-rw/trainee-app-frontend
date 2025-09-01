@@ -1,7 +1,7 @@
 import { useGetUsersQuery } from "../../features/user/backendApi"
 import Button from "../../components/ui/Button"
 import { AlertType, ButtonSize, User, UserRole } from "../../utils/types"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { getErrorInfo } from "../../utils/helper"
 import { DataGrid, GridColDef, GridRowClassNameParams } from "@mui/x-data-grid"
@@ -11,21 +11,17 @@ import CreateUser from "../../components/modals/CreateUser"
 import TableSkeleton from "../../components/skeletons/TableSkeleton"
 import EditUserModal from "../../components/modals/EditUserModal"
 import { customizeDataGridStyles } from "../../utils/styles"
-import { RootState } from "../../store"
 
 export default function Users() {
   const dispatch = useDispatch()
   const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false)
   const [userInformation, setUserInformation] = useState<User | null>(null)
-  const cookies = useSelector((state: RootState) => state.cookies)
   const {
     data: users,
     error: usersError,
     isFetching: usersIsFetching,
     refetch,
-  } = useGetUsersQuery({
-    jwt: cookies.jwt,
-  })
+  } = useGetUsersQuery()
 
   const getRowClassName = (params: GridRowClassNameParams) => {
     const row = params.row as User

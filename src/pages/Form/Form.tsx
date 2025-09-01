@@ -6,14 +6,12 @@ import QuestionCard from "../../components/ui/QuestionCard"
 import { AlertType, TemplateQuestion } from "../../utils/types"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import BackIcon from "../../assets/BackIcon"
-import { RootState } from "../../store"
 
 export default function Form() {
   const [searchParams] = useSearchParams()
   const isEditMode = searchParams.get("edit") === "true"
-  const cookies = useSelector((state: RootState) => state.cookies)
   const dispatch = useDispatch()
   const { id } = useParams<{ id: string }>()
   const {
@@ -22,7 +20,6 @@ export default function Form() {
     error,
   } = useGetFormQuery({
     id: id || "",
-    jwt: cookies.jwt,
   })
 
   const { questionIds: questions = [], ...formProps } = form ?? {}

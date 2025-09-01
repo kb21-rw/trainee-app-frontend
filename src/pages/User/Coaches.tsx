@@ -5,7 +5,7 @@ import {
 } from "../../features/user/backendApi"
 import Button from "../../components/ui/Button"
 import { AlertType, ButtonSize, Cohort, User } from "../../utils/types"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { FormControl, SelectChangeEvent, MenuItem, Select } from "@mui/material"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { getErrorInfo } from "../../utils/helper"
@@ -15,7 +15,6 @@ import AddCoach from "../../components/modals/AddCoach"
 import EditIcon from "../../assets/EditIcon"
 import EditCoach from "../../components/modals/EditCoachModal"
 import { customizeDataGridStyles } from "../../utils/styles"
-import { RootState } from "../../store"
 
 export default function Coaches() {
   const [isAddCoachOpen, setIsAddCoachOpen] = useState(false)
@@ -30,14 +29,11 @@ export default function Coaches() {
   }
 
   const dispatch = useDispatch()
-  const cookies = useSelector((state: RootState) => state.cookies)
   const {
     data: cohorts,
     error: cohortsError,
     isFetching: cohortsAreFetching,
-  } = useGetAllCohortsQuery({
-    jwt: cookies.jwt,
-  })
+  } = useGetAllCohortsQuery()
 
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
 
@@ -54,7 +50,6 @@ export default function Coaches() {
     isFetching: cohortCoachesIsFetching,
   } = useGetCoachesQuery(
     {
-      jwt: cookies.jwt,
       cohortId: selectedCohortId,
     },
     {

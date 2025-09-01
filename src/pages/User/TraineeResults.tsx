@@ -17,13 +17,8 @@ import {
 import { useGetOverviewForCoachQuery } from "../../features/user/backendApi"
 import Loader from "../../components/ui/Loader"
 import ResponseModal from "../../components/modals/ResponseModal"
-import { useSelector } from "react-redux"
-import { RootState } from "../../store"
 const TraineeResults = () => {
-  const cookies = useSelector((state: RootState) => state.cookies)
-  const { data, isLoading, isError } = useGetOverviewForCoachQuery({
-    jwt: cookies.jwt,
-  })
+  const { data, isLoading, isError } = useGetOverviewForCoachQuery()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalData, setModalData] = useState({
