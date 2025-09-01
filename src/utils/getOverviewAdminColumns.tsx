@@ -87,9 +87,20 @@ export const getAdminCoachColumn = (coaches: User[]): GridColDef[] => {
           label: coach.name,
         })),
       ],
-      valueFormatter: (value) => {
+      renderCell: (params) => {
+        const { value, row } = params
         const coach = activeCoaches.find((coach) => coach._id === value)
-        return coach ? coach.name : "No coach"
+
+        const isPhaseCompleted =
+          row.actions === ParticipantPhase.Completed ||
+          row.actions === ParticipantPhase.Rejected
+
+        if (isPhaseCompleted || coach) {
+          console.log("Displaying coach name:", row.coachName)
+          return row.coachName
+        }
+
+        return "No coach"
       },
     },
   ]
