@@ -265,6 +265,17 @@ export default function OverViewTable({
     row: { actions },
   }) => {
     if (actions !== ParticipantPhase.Active) return
+    if (field === "coach") {
+      const cellMode = apiRef.current.getCellMode(id, field)
+      if (cellMode == "view") {
+        apiRef.current.startCellEditMode({
+          id,
+          field,
+        })
+      }
+
+      return
+    }
 
     if (field.length !== 24) return // not a question
     const customColDef = colDef as GridStateColDef & {
@@ -312,19 +323,7 @@ export default function OverViewTable({
         }
         columnGroupingModel={columnGroupingModel}
         hideFooter={true}
-        onCellClick={(params, event, details) => {
-          if (
-            params.field === "coach" &&
-            params.row.actions === ParticipantPhase.Active
-          ) {
-            apiRef.current.startCellEditMode({
-              id: params.id,
-              field: params.field,
-            })
-          }
-
-          handleCellClick(params, event, details)
-        }}
+        onCellClick={ handleCellClick }
         disableRowSelectionOnClick
         autoPageSize
         slots={{
