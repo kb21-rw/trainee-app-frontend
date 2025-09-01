@@ -1,7 +1,7 @@
 import { useState } from "react"
-import { DecisionInfo, ResponseModalQuestion } from "../../utils/types"
+import { DecisionInfo, ResponseModalQuestion } from "../types"
 
-export const useApplicantActions = () => {
+export const useParticipantActions = () => {
   const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null)
   const [responseInfo, setResponseInfo] = useState<any | null>(null)
 

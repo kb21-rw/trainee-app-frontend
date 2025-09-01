@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { H2, H6, H7 } from "./Typography"
-import { Cookie, IFormType } from "../../utils/types"
+import { IFormType } from "../../utils/types"
 import Delete from "../../assets/DeleteIcon"
 import Edit from "../../assets/EditIcon"
 import { useDeleteFormMutation } from "../../features/user/backendApi"
@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom"
 import View from "../../assets/ViewIcon"
 import Loader from "./Loader"
 import DeleteModal from "../modals/DeleteModal"
-import { useCookies } from "react-cookie"
 
 const FormCard = ({
   form,
@@ -17,7 +16,6 @@ const FormCard = ({
   form: IFormType
   activeCohortId?: string
 }) => {
-  const [cookies] = useCookies([Cookie.jwt])
   const navigate = useNavigate()
   const questions = form.questions
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -26,7 +24,7 @@ const FormCard = ({
     useDeleteFormMutation()
 
   const handleDeleteForm = async (id: string) => {
-    await deleteForm({ jwt: cookies.jwt, id })
+    await deleteForm({ id })
     setShowDeleteModal(false)
   }
 

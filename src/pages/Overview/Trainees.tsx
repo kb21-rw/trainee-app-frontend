@@ -7,14 +7,12 @@ import {
 import {
   AlertType,
   Cohort,
-  Cookie,
   DecisionInfo,
   ResponseModalQuestion,
   UserRole,
 } from "../../utils/types"
 import { useEffect, useState } from "react"
 import OverViewTable from "../../components/ui/OverViewTable"
-import { useCookies } from "react-cookie"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
@@ -31,8 +29,7 @@ const Trainees = () => {
     userId: string
     question: ResponseModalQuestion
   } | null>(null)
-  const [cookies] = useCookies([Cookie.jwt])
-  const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt })
+  const { data: allCohorts } = useGetAllCohortsQuery()
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
   const dispatch = useDispatch()
   const { register, watch } = useForm<{ cohortId: string }>({
@@ -43,7 +40,6 @@ const Trainees = () => {
     error: traineeOverviewError,
     isFetching: traineeOverviewIsFetching,
   } = useGetTraineesQuery({
-    jwt: cookies.jwt,
     cohortId: selectedCohortId,
   })
 
@@ -118,7 +114,6 @@ const Trainees = () => {
     }
 
     await decide({
-      jwt: cookies.jwt,
       body: {
         traineeId: decisionInfo.traineeId,
         decision: decisionInfo.decision,
@@ -137,7 +132,6 @@ const Trainees = () => {
     updateParticipant({
       participantId,
       body: { coachId },
-      jwt: cookies.jwt,
     })
   }
 

@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form"
 import Button from "../ui/Button"
 import { Modal } from "@mui/material"
-import { AlertType, Cookie, User, UserRole } from "../../utils/types"
+import { AlertType, User, UserRole } from "../../utils/types"
 import Input from "../ui/Input"
 import Select from "../ui/Select"
 import { z } from "zod"
@@ -9,7 +9,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
-import { useCookies } from "react-cookie"
 import {
   useToggleUserActiveStatusMutation,
   useUpdateUserMutation,
@@ -48,14 +47,13 @@ export default function EditUserModal({
   defaultValues: User
   onClose: () => void
 }) {
-  const [cookies] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
   const [updateUser, { isLoading: isUserLoading, reset: resetUpdateUser }] =
     useUpdateUserMutation()
   const [toggleUserActive, { isLoading: isToggleLoading }] =
     useToggleUserActiveStatusMutation()
   const [showConfirmation, setShowConfirmation] = useState(false)
-  const { data: loggedInUser } = useGetProfileQuery(cookies.jwt)
+  const { data: loggedInUser } = useGetProfileQuery()
 
   const [isUserActive, setIsUserActive] = useState(
     defaultValues.active !== false,
@@ -83,7 +81,6 @@ export default function EditUserModal({
   const onSubmit = async (formData: User) => {
     try {
       await updateUser({
-        jwt: cookies.jwt,
         body: formData,
         id: defaultValues._id,
       }).unwrap()
@@ -107,7 +104,6 @@ export default function EditUserModal({
   const handleToggleActive = async () => {
     try {
       await toggleUserActive({
-        jwt: cookies.jwt,
         userId: defaultValues._id,
       }).unwrap()
 

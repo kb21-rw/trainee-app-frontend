@@ -1,12 +1,11 @@
 import { useEditCoachMutation } from "../../features/user/backendApi"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { AlertType, Cookie, EditCoachModalProps } from "../../utils/types"
+import { AlertType, EditCoachModalProps } from "../../utils/types"
 import { useDispatch } from "react-redux"
 import { getErrorInfo } from "../../utils/helper"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useCookies } from "react-cookie"
 import { Modal } from "@mui/material"
 import Loader from "../ui/Loader"
 import Button from "../ui/Button"
@@ -36,7 +35,6 @@ export default function EditCoach({
     defaultValues: { name: currentName, email: currentEmail },
   })
 
-  const [cookies] = useCookies([Cookie.jwt])
   const [editCoach, { isLoading }] = useEditCoachMutation()
 
   const dispatch = useDispatch()
@@ -48,7 +46,6 @@ export default function EditCoach({
       }
 
       const updatedCoach = await editCoach({
-        jwt: cookies.jwt,
         id: coachId,
         body: { name: data.name, email: data.email },
       }).unwrap()

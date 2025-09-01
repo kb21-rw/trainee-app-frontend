@@ -11,19 +11,14 @@ import {
   Response,
   Form,
   QuestionType,
-  Cookie,
   TemplateQuestion,
 } from "../../utils/types"
 
 import { useGetOverviewForCoachQuery } from "../../features/user/backendApi"
 import Loader from "../../components/ui/Loader"
 import ResponseModal from "../../components/modals/ResponseModal"
-import { useCookies } from "react-cookie"
 const TraineeResults = () => {
-  const [cookies] = useCookies([Cookie.jwt])
-  const { data, isLoading, isError } = useGetOverviewForCoachQuery({
-    jwt: cookies.jwt,
-  })
+  const { data, isLoading, isError } = useGetOverviewForCoachQuery()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalData, setModalData] = useState({

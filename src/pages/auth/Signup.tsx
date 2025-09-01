@@ -8,12 +8,12 @@ import InputField from "../../components/ui/InputField"
 import Button from "../../components/ui/Button"
 import { H1 } from "../../components/ui/Typography"
 import Loader from "../../components/ui/Loader"
-import { AlertType, ButtonSize, Cookie } from "../../utils/types"
-import { useCookies } from "react-cookie"
+import { AlertType, ButtonSize } from "../../utils/types"
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
+import { useAuth } from "../../utils/hooks/useAuth"
 
 const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
   const [signup, { isLoading, error }] = useSignupMutation()
@@ -25,18 +25,17 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
     watch,
     formState: { errors },
   } = useForm()
-  const [, setCookie] = useCookies([Cookie.jwt])
   const navigate = useNavigate()
+  const { setToken } = useAuth()
   const [searchParams] = useSearchParams()
   const redirectUrl = searchParams.get("redirectTo")
 
   const password = watch("password")
 
   const saveTokenAndRedirect = (token: string) => {
-    setCookie(Cookie.jwt, token)
-
+    setToken(token)
     navigate(
-      redirectUrl ?? "/applicants",
+      redirectUrl ?? "/",
       redirectUrl ? {} : { state: { redirect: "home" } },
     )
   }
@@ -49,7 +48,6 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
     })
 
     if (result.data.userId) {
-      setCookie(Cookie.jwt, result.data.userId, { maxAge: 1800 })
       return navigate("/signup/thank-you")
     }
 

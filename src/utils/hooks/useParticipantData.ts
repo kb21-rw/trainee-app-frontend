@@ -1,4 +1,3 @@
-import { useCookies } from "react-cookie"
 import {
   useApplicantDecisionMutation,
   useGetApplicantsQuery,
@@ -7,28 +6,23 @@ import {
   useGetAllCohortsQuery,
 } from "../../features/user/backendApi"
 
-export const useApplicantData = (selectedCohortId: string | null) => {
-  const [cookies] = useCookies(["jwt"])
-
+export const useParticipantData = (selectedCohortId: string | null) => {
   const cohortQuery = useGetAllCohortsQuery({
-    jwt: cookies.jwt,
     query: "",
   })
 
   const applicantQuery = useGetApplicantsQuery({
-    jwt: cookies.jwt,
     cohortId: selectedCohortId,
   })
 
-  const coachProfileQuery = useGetProfileQuery(cookies.jwt)
+  const coachProfileQuery = useGetProfileQuery()
 
   const decisionMutation = useApplicantDecisionMutation()
   const updateParticipantMutation = useUpdateParticipantMutation()
 
   return {
-    cookies,
     cohortQuery,
-    applicantQuery,
+    participantQuery: applicantQuery,
     coachProfileQuery,
     decisionMutation,
     updateParticipantMutation,

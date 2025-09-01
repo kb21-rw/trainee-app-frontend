@@ -1,13 +1,6 @@
 import { useGetUsersQuery } from "../../features/user/backendApi"
 import Button from "../../components/ui/Button"
-import {
-  AlertType,
-  ButtonSize,
-  Cookie,
-  User,
-  UserRole,
-} from "../../utils/types"
-import { useCookies } from "react-cookie"
+import { AlertType, ButtonSize, User, UserRole } from "../../utils/types"
 import { useDispatch } from "react-redux"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { getErrorInfo } from "../../utils/helper"
@@ -23,15 +16,12 @@ export default function Users() {
   const dispatch = useDispatch()
   const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false)
   const [userInformation, setUserInformation] = useState<User | null>(null)
-  const [cookies] = useCookies([Cookie.jwt])
   const {
     data: users,
     error: usersError,
     isFetching: usersIsFetching,
     refetch,
-  } = useGetUsersQuery({
-    jwt: cookies.jwt,
-  })
+  } = useGetUsersQuery()
 
   const getRowClassName = (params: GridRowClassNameParams) => {
     const row = params.row as User
@@ -103,10 +93,10 @@ export default function Users() {
   const rows =
     [...users]
       .sort((a: User, b: User) => b.createdAt.localeCompare(a.createdAt))
-      ?.map((user: User, index: number) => ({
+      ?.map((user: User, index: number, usersArray: User[]) => ({
         id: user._id,
         _id: user._id,
-        userId: index + 1,
+        userId: usersArray.length - index,
         name: user.name,
         email: user.email,
         role: user.role,

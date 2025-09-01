@@ -4,8 +4,7 @@ import {
   useGetMyApplicationQuery,
 } from "../../features/user/backendApi"
 import Loader from "../../components/ui/Loader"
-import { AlertType, Cookie, QuestionType } from "../../utils/types"
-import { useCookies } from "react-cookie"
+import { AlertType, QuestionType } from "../../utils/types"
 import { Box, Typography } from "@mui/material"
 import { useForm } from "react-hook-form"
 import Button from "../../components/ui/Button"
@@ -21,10 +20,9 @@ import ApplicationFormQuestion from "../../components/ui/ApplicatonFormQuestion"
 
 const ApplicationForm = () => {
   const location = useLocation()
-  const [cookies] = useCookies([Cookie.jwt])
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { data, isFetching, refetch } = useGetMyApplicationQuery(cookies.jwt)
+  const { data, isFetching, refetch } = useGetMyApplicationQuery()
   const [saveApplicantResponse, { error }] = useAddApplicantResponseMutation()
   const {
     handleSubmit,
@@ -77,7 +75,6 @@ const ApplicationForm = () => {
     )
 
     const result = await saveApplicantResponse({
-      jwt: cookies.jwt,
       body: responses,
       action: "save",
     })

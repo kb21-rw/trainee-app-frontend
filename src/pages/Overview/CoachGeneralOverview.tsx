@@ -2,14 +2,8 @@ import {
   useGetAllCohortsQuery,
   useGetTraineesQuery,
 } from "../../features/user/backendApi"
-import {
-  AlertType,
-  Cookie,
-  ResponseModalQuestion,
-  UserRole,
-} from "../../utils/types"
+import { AlertType, ResponseModalQuestion, UserRole } from "../../utils/types"
 import OverViewTable from "../../components/ui/OverViewTable"
-import { useCookies } from "react-cookie"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
@@ -22,9 +16,8 @@ import ResponseModal from "../../components/modals/ResponseModal"
 
 const CoachGeneralOverview = () => {
   const [responseInfo, setResponseInfo] = useState<any | null>(null)
-  const [cookies] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
-  const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt })
+  const { data: allCohorts } = useGetAllCohortsQuery()
   const {
     selectedCohortId,
     selectedCohort,
@@ -39,7 +32,6 @@ const CoachGeneralOverview = () => {
     isFetching: coachOverviewIsFetching,
   } = useGetTraineesQuery(
     {
-      jwt: cookies.jwt,
       cohortId: selectedCohortId,
     },
     {

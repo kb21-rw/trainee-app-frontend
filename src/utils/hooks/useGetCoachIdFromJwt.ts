@@ -1,14 +1,11 @@
-import { useCookies } from "react-cookie"
+import { useAuth } from "./useAuth"
 
-export const useCoachIdFromJwt = (): string | null => {
-  const [cookies] = useCookies(["jwt"])
-  const jwt = cookies.jwt
-
-  if (!jwt) return null
-
+export const useUserIdFromJwt = (): string | null => {
+  const { token } = useAuth()
+  if (!token) return null
   try {
     // Extracts coachId from JWT token
-    const payload = JSON.parse(atob(jwt.split(".")[1]))
+    const payload = JSON.parse(atob(token.split(".")[1]))
     return (
       payload.userId ||
       payload.coachId ||

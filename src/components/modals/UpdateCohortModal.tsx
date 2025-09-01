@@ -1,14 +1,13 @@
 import { Controller, useForm } from "react-hook-form"
 import Button from "../ui/Button"
 import { Modal } from "@mui/material"
-import { AlertType, Cookie, Stage } from "../../utils/types"
+import { AlertType, Stage } from "../../utils/types"
 import Input from "../ui/Input"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
-import { useCookies } from "react-cookie"
 import { useUpdateCohortMutation } from "../../features/user/backendApi"
 import Loader from "../ui/Loader"
 import dayjs from "dayjs"
@@ -51,7 +50,6 @@ export default function UpdateCohortModal({
   onClose,
   cohort,
 }: UpdateCohortModalProps) {
-  const [cookies] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
   const [
     updateCohort,
@@ -85,7 +83,6 @@ export default function UpdateCohortModal({
 
     try {
       const result = await updateCohort({
-        jwt: cookies.jwt,
         body: requestBody,
         id: cohort._id,
       })

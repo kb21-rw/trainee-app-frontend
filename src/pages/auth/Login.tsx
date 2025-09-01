@@ -8,12 +8,12 @@ import { H1 } from "../../components/ui/Typography"
 import Button from "../../components/ui/Button"
 import InputField from "../../components/ui/InputField"
 import Loader from "../../components/ui/Loader"
-import { AlertType, ButtonSize, Cookie } from "../../utils/types"
+import { AlertType, ButtonSize } from "../../utils/types"
 import { useDispatch } from "react-redux"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useCookies } from "react-cookie"
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google"
+import { useAuth } from "../../utils/hooks/useAuth"
 
 interface LoginForm {
   email: string
@@ -21,7 +21,6 @@ interface LoginForm {
 }
 
 const Login = ({ handlePageChange }: { handlePageChange: () => void }) => {
-  const [, setCookie] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
   const [handleLogin, { loginIsLoading, error: loginError }] =
     useLoginMutation()
@@ -34,12 +33,13 @@ const Login = ({ handlePageChange }: { handlePageChange: () => void }) => {
   } = useForm<LoginForm>()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { setToken } = useAuth()
   const redirectUrl = searchParams.get("redirectTo")
 
   const saveTokenAndRedirect = (token: string) => {
-    setCookie(Cookie.jwt, token)
+    setToken(token)
     navigate(
-      redirectUrl ?? "/applicants", // if there's no redirectUrl, navigating to any protected route will redirect to the homepage
+      redirectUrl ?? "/", // if there's no redirectUrl, navigating to any protected route will redirect to the homepage
       redirectUrl ? {} : { state: { redirect: "home" } },
     )
   }

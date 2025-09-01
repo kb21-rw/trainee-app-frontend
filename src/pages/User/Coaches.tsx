@@ -4,8 +4,7 @@ import {
   useGetCoachesQuery,
 } from "../../features/user/backendApi"
 import Button from "../../components/ui/Button"
-import { AlertType, ButtonSize, Cohort, Cookie, User } from "../../utils/types"
-import { useCookies } from "react-cookie"
+import { AlertType, ButtonSize, Cohort, User } from "../../utils/types"
 import { useDispatch } from "react-redux"
 import { FormControl, SelectChangeEvent, MenuItem, Select } from "@mui/material"
 import { handleShowAlert } from "../../utils/handleShowAlert"
@@ -30,14 +29,11 @@ export default function Coaches() {
   }
 
   const dispatch = useDispatch()
-  const [cookies] = useCookies([Cookie.jwt])
   const {
     data: cohorts,
     error: cohortsError,
     isFetching: cohortsAreFetching,
-  } = useGetAllCohortsQuery({
-    jwt: cookies.jwt,
-  })
+  } = useGetAllCohortsQuery()
 
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
 
@@ -54,7 +50,6 @@ export default function Coaches() {
     isFetching: cohortCoachesIsFetching,
   } = useGetCoachesQuery(
     {
-      jwt: cookies.jwt,
       cohortId: selectedCohortId,
     },
     {

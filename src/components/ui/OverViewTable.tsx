@@ -219,10 +219,11 @@ export default function OverViewTable({
     )
 
     const status = userAsParticipant?.traineeStatus
-    const coach = coaches.find(
-      (coach) => coach._id === userAsParticipant?.coachId,
+    const coach = coaches.find((coach) =>
+      overviewType === "trainee"
+        ? coach._id === userAsParticipant?.postselectionCoachId
+        : coach._id === userAsParticipant?.preselectionCoachId,
     )
-
     const participantPhase =
       status === "REJECTED" || status === "DROPPED_OUT"
         ? ParticipantPhase.Rejected

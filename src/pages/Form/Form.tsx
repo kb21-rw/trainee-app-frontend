@@ -3,8 +3,7 @@ import Loader from "../../components/ui/Loader"
 import { Link, useLocation, useParams, useSearchParams } from "react-router-dom"
 import EditableFormCard from "../../components/ui/EditableFormCard"
 import QuestionCard from "../../components/ui/QuestionCard"
-import { AlertType, Cookie, TemplateQuestion } from "../../utils/types"
-import { useCookies } from "react-cookie"
+import { AlertType, TemplateQuestion } from "../../utils/types"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
@@ -13,7 +12,6 @@ import BackIcon from "../../assets/BackIcon"
 export default function Form() {
   const [searchParams] = useSearchParams()
   const isEditMode = searchParams.get("edit") === "true"
-  const [cookies] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
   const { id } = useParams<{ id: string }>()
   const {
@@ -22,7 +20,6 @@ export default function Form() {
     error,
   } = useGetFormQuery({
     id: id || "",
-    jwt: cookies.jwt,
   })
 
   const { questionIds: questions = [], ...formProps } = form ?? {}

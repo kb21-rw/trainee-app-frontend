@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Modal } from "@mui/material"
-import { useCookies } from "react-cookie"
 import { useForm } from "react-hook-form"
 import { useDispatch } from "react-redux"
 import { z } from "zod"
@@ -10,7 +9,7 @@ import {
 } from "../../features/user/backendApi"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { getErrorInfo } from "../../utils/helper"
-import { AlertType, Cookie, CreateUserDto, UserRole } from "../../utils/types"
+import { AlertType, CreateUserDto, UserRole } from "../../utils/types"
 import Button from "../ui/Button"
 import Input from "../ui/Input"
 import Loader from "../ui/Loader"
@@ -38,7 +37,6 @@ export default function CreateUser({
   onClose: () => void
   refetch: () => void
 }) {
-  const [cookies] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
   const [createUser, { isLoading: isUserLoading, reset: resetCreateUser }] =
     useCreateUserMutation()
@@ -59,7 +57,7 @@ export default function CreateUser({
   const onSubmit = async (formData: CreateUserDto) => {
     try {
       if (formData.role === UserRole.Coach) {
-        await createCoach({ jwt: cookies.jwt, body: formData }).unwrap()
+        await createCoach({ body: formData }).unwrap()
         handleShowAlert(dispatch, {
           type: AlertType.Success,
           message: "Coach was created successfully",
@@ -71,7 +69,7 @@ export default function CreateUser({
       if (
         [UserRole.Trainee, UserRole.Admin].includes(formData.role as UserRole)
       ) {
-        await createUser({ jwt: cookies.jwt, body: formData }).unwrap()
+        await createUser({ body: formData }).unwrap()
         handleShowAlert(dispatch, {
           type: AlertType.Success,
           message: "User was created successfully",

@@ -2,12 +2,14 @@ import { configureStore } from "@reduxjs/toolkit"
 import userReducer from "./features/user/userSlice"
 import alertReducer from "./features/user/alertSlice"
 import { backendApi } from "./features/user/backendApi"
+import { authSlice } from "./features/user/authSlice"
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
     alert: alertReducer,
     [backendApi.reducerPath]: backendApi.reducer,
+    auth: authSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(backendApi.middleware),

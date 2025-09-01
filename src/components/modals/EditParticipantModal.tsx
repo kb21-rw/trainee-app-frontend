@@ -1,8 +1,7 @@
 import { useForm } from "react-hook-form"
 import Button from "../ui/Button"
 import { Modal } from "@mui/material"
-import { useCookies } from "react-cookie"
-import { AlertType, Cookie, User, UserRow } from "../../utils/types"
+import { AlertType, User, UserRow } from "../../utils/types"
 import { useUpdateParticipantMutation } from "../../features/user/backendApi"
 import { useDispatch } from "react-redux"
 import { getErrorInfo } from "../../utils/helper"
@@ -22,7 +21,6 @@ export default function EditParticipantModal({
   coaches: User[]
   onClose: () => void
 }) {
-  const [cookies] = useCookies([Cookie.jwt])
   const {
     handleSubmit,
     register,
@@ -48,7 +46,6 @@ export default function EditParticipantModal({
 
   const onSubmit = async (formData: { name: string; coachId: string }) => {
     await updateParticipant({
-      jwt: cookies.jwt,
       body: formData,
       participantId: row.traineeId,
     })

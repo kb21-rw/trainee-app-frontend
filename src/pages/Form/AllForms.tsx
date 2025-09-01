@@ -1,6 +1,5 @@
 import { FormControl, MenuItem, Select, SelectChangeEvent } from "@mui/material"
 import { useEffect, useState } from "react"
-import { useCookies } from "react-cookie"
 import { useDispatch } from "react-redux"
 import CreateFormDropdown from "../../components/ui/CreateFormDropdown"
 import FormCard from "../../components/ui/FormCard"
@@ -14,14 +13,13 @@ import {
 } from "../../features/user/backendApi"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { getErrorInfo } from "../../utils/helper"
-import { AlertType, Cohort, Cookie, IFormType } from "../../utils/types"
+import { AlertType, Cohort, IFormType } from "../../utils/types"
 import FormsSkeleton from "./FormsSkeleton"
 import { useLocation } from "react-router-dom"
 
 const AllForms = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const dispatch = useDispatch()
-  const [cookies] = useCookies([Cookie.jwt])
   const [hasFetched, setHasFetched] = useState(false)
   const { activeCohortId } = useLocation().state || {}
   const [selectedCohortId, setSelectedCohortId] = useState<string | undefined>(
@@ -29,12 +27,11 @@ const AllForms = () => {
   )
 
   const { data, isFetching } = useGetAllFormsQuery({
-    jwt: cookies.jwt,
     searchString: searchQuery,
     cohort: selectedCohortId,
   })
 
-  const { data: applicationForm } = useGetApplicationFormQuery(cookies.jwt)
+  const { data: applicationForm } = useGetApplicationFormQuery()
 
   const handleCohortChange = (event: SelectChangeEvent<string>) => {
     setSelectedCohortId(event.target.value)
@@ -44,12 +41,7 @@ const AllForms = () => {
     data: cohorts,
     error: cohortsError,
     isFetching: cohortsAreFetching,
-  } = useGetAllCohortsQuery(
-    {
-      jwt: cookies.jwt,
-    },
-    { skip: !hasFetched },
-  )
+  } = useGetAllCohortsQuery({ skip: !hasFetched })
 
   useEffect(() => {
     setHasFetched(true)

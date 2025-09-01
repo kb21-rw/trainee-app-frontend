@@ -14,13 +14,11 @@ import { useNavigate } from "react-router-dom"
 import {
   AlertType,
   ApplicationForm,
-  Cookie,
   Form,
   FormType,
   IFormType,
   QuestionType,
 } from "../../utils/types"
-import { useCookies } from "react-cookie"
 import dayjs from "dayjs"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -79,7 +77,6 @@ export default function EditableFormCard({
     endDate: form.type === FormType.Application ? dayjs(form.endDate) : null,
   }
 
-  const [cookies] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
   const {
     control,
@@ -94,13 +91,13 @@ export default function EditableFormCard({
   const [editForm] = useEditFormMutation()
   const [createQuestion] = useCreateQuestionMutation()
   const navigate = useNavigate()
-  const { data: allForms } = useGetAllFormsQuery({ jwt: cookies.jwt })
+  const { data: allForms } = useGetAllFormsQuery()
   const allFormsData = allForms?.forms
 
   const [deleteForm, { isLoading: isDeleteFormLoading }] =
     useDeleteFormMutation()
   const handleDeleteForm = async () => {
-    await deleteForm({ jwt: cookies.jwt, _id: form._id })
+    await deleteForm({ _id: form._id })
     navigate(`/forms`)
   }
 
@@ -129,7 +126,6 @@ export default function EditableFormCard({
 
     try {
       const result = await editForm({
-        jwt: cookies.jwt,
         id: form._id,
         body: requestBody,
       })
@@ -156,7 +152,6 @@ export default function EditableFormCard({
   const handleAddQuestion = async () => {
     if (readonly) return
     await createQuestion({
-      jwt: cookies.jwt,
       formId: form._id,
       body: { prompt: `Question`, type: QuestionType.Text },
     })

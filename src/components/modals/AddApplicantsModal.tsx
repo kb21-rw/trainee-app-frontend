@@ -14,8 +14,7 @@ import {
   useAddApplicantsMutation,
   useGetUsersQuery,
 } from "../../features/user/backendApi"
-import { useCookies } from "react-cookie"
-import { AlertType, Cookie, User } from "../../utils/types"
+import { AlertType, User } from "../../utils/types"
 import { getErrorInfo } from "../../utils/helper"
 import { useDispatch } from "react-redux"
 import { handleShowAlert } from "../../utils/handleShowAlert"
@@ -34,7 +33,6 @@ export default function AddApplicantsModal({
   isOpen: boolean
   onClose: () => void
 }) {
-  const [cookies] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
   const [selectedProspects, setSelectedProspects] = useState<Option[]>([])
   const [query, setQuery] = useState("")
@@ -43,7 +41,6 @@ export default function AddApplicantsModal({
     error: prospectsError,
     isFetching: prospectsIsFetching,
   } = useGetUsersQuery({
-    jwt: cookies.jwt,
     search: "role=Prospect",
   })
   const [
@@ -77,7 +74,7 @@ export default function AddApplicantsModal({
       (prospect: Option) => prospect.id,
     )
 
-    await addApplicants({ jwt: cookies.jwt, body: { prospectIds } })
+    await addApplicants({ body: { prospectIds } })
   }
 
   const removeProspect = (prospectId: string) => {

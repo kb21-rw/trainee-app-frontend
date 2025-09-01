@@ -6,22 +6,21 @@ import Loader from "../../components/ui/Loader"
 import NotFound from "../../components/ui/NotFound"
 import OverViewTable from "../../components/ui/OverViewTable"
 import SmartSelect from "../../components/ui/SmartSelect"
-import { useApplicantActions } from "../../utils/hooks/useApplicantActions"
-import { useApplicantDecision } from "../../utils/hooks/useApplicantDecision"
-import { useApplicantErrors } from "../../utils/hooks/useApplicantErrors"
-import { useApplicantData } from "../../utils/hooks/useApplications"
-import { useCoachIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
-import { Cohort, UserRole } from "../../utils/types"
+import { useParticipantActions } from "../../utils/hooks/useParticipantActions"
+import { useParticipantDecision } from "../../utils/hooks/useParticipantDecision"
+import { useParticipantErrors } from "../../utils/hooks/useParticipantErrors"
+import { useParticipantData } from "../../utils/hooks/useParticipantData"
+import { Cohort, CohortParticipant, UserRole } from "../../utils/types"
+import { useUserIdFromJwt } from "../../utils/hooks/useGetCoachIdFromJwt"
 
 const MyApplicants = () => {
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
-  const currentCoachId = useCoachIdFromJwt()
+  const currentCoachId = useUserIdFromJwt()
   const { register, watch } = useForm({ defaultValues: { cohortId: "" } })
 
   const {
-    cookies,
     cohortQuery: { data: allCohorts, isFetching: allCohortsIsFetching },
-    applicantQuery: {
+    participantQuery: {
       data: cohortOverview,
       error: cohortOverviewError,
       isFetching: cohortOverviewIsFetching,
@@ -43,7 +42,7 @@ const MyApplicants = () => {
         reset: updateParticipantReset,
       },
     ],
-  } = useApplicantData(selectedCohortId)
+  } = useParticipantData(selectedCohortId)
 
   const {
     decisionInfo,
@@ -52,15 +51,14 @@ const MyApplicants = () => {
     handleCloseModal,
     handleUpsertResponse,
     closeDecisionModal,
-  } = useApplicantActions()
+  } = useParticipantActions()
 
-  const { handleSubmitDecision } = useApplicantDecision({
+  const { handleSubmitDecision } = useParticipantDecision({
     decisionInfo,
-    cookies,
     decide,
   })
 
-  useApplicantErrors({
+  useParticipantErrors({
     cohortOverviewError,
     decisionError,
     updateParticipantError,
@@ -68,7 +66,7 @@ const MyApplicants = () => {
     updateParticipantIsSuccess,
     decisionInfo,
     closeDecisionModal,
-    applicantDecisionReset,
+    participantDecisionReset: applicantDecisionReset,
     updateParticipantReset,
   })
 
@@ -102,7 +100,8 @@ const MyApplicants = () => {
   const filteredApplicants = useMemo(() => {
     if (!cohortOverview?.trainees || !currentCoachId) return []
     return cohortOverview.trainees.filter(
-      (trainee: { coachId: string }) => trainee.coachId === currentCoachId,
+      (trainee: CohortParticipant) =>
+        trainee.preselectionCoachId === currentCoachId,
     )
   }, [cohortOverview, currentCoachId])
 

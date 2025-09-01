@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react"
-import { useCookies } from "react-cookie"
 import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
 import { showAlert } from "../../features/user/alertSlice"
@@ -11,7 +10,6 @@ import {
   ApplicationForm,
   ApplicationFormStatus,
   ButtonSize,
-  Cookie,
   UserResponseQuestion,
   UserRole,
   UserStatus,
@@ -39,8 +37,7 @@ export default function ApplicationFormActions({
       ? ApplicationFormStatus.Submitted
       : getApplicationFormStatus(applicationForm)
 
-  const [cookies] = useCookies([Cookie.jwt])
-  const { data, refetch, isLoading } = useGetProfileQuery(cookies.jwt)
+  const { data, refetch, isLoading } = useGetProfileQuery()
   const dispatch = useDispatch()
 
   const [displayStatus, setdisplayStatus] = useState<ApplicationFormStatus>(

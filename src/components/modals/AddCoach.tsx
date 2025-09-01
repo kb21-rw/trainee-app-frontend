@@ -1,12 +1,11 @@
 import { useForm } from "react-hook-form"
 import Button from "../ui/Button"
 import { Modal } from "@mui/material"
-import { AlertType, Cookie, User, UserRole } from "../../utils/types"
+import { AlertType, User, UserRole } from "../../utils/types"
 import Select from "../ui/Select"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
-import { useCookies } from "react-cookie"
 import {
   useAddCoachMutation,
   useGetUsersQuery,
@@ -22,7 +21,6 @@ export default function AddCoach({
   onClose: () => void
   cohortCoachIds: string[]
 }) {
-  const [cookies] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
   const [
     addCoach,
@@ -35,7 +33,6 @@ export default function AddCoach({
   ] = useAddCoachMutation()
 
   const { data: coaches, error: coachesError } = useGetUsersQuery({
-    jwt: cookies.jwt,
     search: `role=${UserRole.Coach}`,
   })
 
@@ -47,7 +44,7 @@ export default function AddCoach({
   } = useForm<{ coachId: string }>()
 
   const onSubmit = async ({ coachId }: { coachId: string }) => {
-    await addCoach({ jwt: cookies.jwt, coachId })
+    await addCoach({ coachId })
   }
 
   if (coachError || coachesError) {

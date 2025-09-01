@@ -1,5 +1,4 @@
-import { useCookies } from "react-cookie"
-import { AlertType, Cookie, UserResponseQuestion } from "../../utils/types"
+import { AlertType, UserResponseQuestion } from "../../utils/types"
 import { useGetMyApplicationQuery } from "../../features/user/backendApi"
 import Loader from "../../components/ui/Loader"
 import { getErrorInfo } from "../../utils/helper"
@@ -9,13 +8,8 @@ import ApplicationFormQuestionPreview from "../../components/ui/ApplicationFormQ
 import { Link } from "react-router-dom"
 
 export default function SavedApplication() {
-  const [cookies] = useCookies([Cookie.jwt])
   const dispatch = useDispatch()
-  const {
-    data: application,
-    isFetching,
-    error,
-  } = useGetMyApplicationQuery(cookies.jwt)
+  const { data: application, isFetching, error } = useGetMyApplicationQuery()
 
   if (isFetching || !application) return <Loader />
 

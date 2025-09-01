@@ -8,7 +8,6 @@ import {
   AlertType,
   ButtonSize,
   Cohort,
-  Cookie,
   DecisionInfo,
   ResponseModalQuestion,
   UserRole,
@@ -16,7 +15,6 @@ import {
 import { useEffect, useState } from "react"
 import OverViewTable from "../../components/ui/OverViewTable"
 import Button from "../../components/ui/Button"
-import { useCookies } from "react-cookie"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
@@ -32,8 +30,7 @@ const Applicants = () => {
   const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null)
   const [responseInfo, setResponseInfo] = useState<any | null>(null)
   const [isAddingApplicants, setIsAddingApplicants] = useState<boolean>(false)
-  const [cookies] = useCookies([Cookie.jwt])
-  const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt })
+  const { data: allCohorts } = useGetAllCohortsQuery()
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
   const dispatch = useDispatch()
   const { register, watch } = useForm<{ cohortId: string }>({
@@ -44,7 +41,6 @@ const Applicants = () => {
     error: cohortOverviewError,
     isFetching: cohortOverviewIsFetching,
   } = useGetApplicantsQuery({
-    jwt: cookies.jwt,
     cohortId: selectedCohortId,
   })
 
@@ -123,7 +119,6 @@ const Applicants = () => {
     }
 
     await decide({
-      jwt: cookies.jwt,
       body: {
         traineeId: decisionInfo.traineeId,
         decision: decisionInfo.decision,
@@ -142,7 +137,6 @@ const Applicants = () => {
     updateParticipant({
       participantId,
       body: { coachId },
-      jwt: cookies.jwt,
     })
   }
 
