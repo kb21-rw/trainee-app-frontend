@@ -323,7 +323,7 @@ export default function OverViewTable({
         }
         columnGroupingModel={columnGroupingModel}
         hideFooter={true}
-        onCellClick={ handleCellClick }
+        onCellClick={handleCellClick}
         disableRowSelectionOnClick
         autoPageSize
         slots={{
