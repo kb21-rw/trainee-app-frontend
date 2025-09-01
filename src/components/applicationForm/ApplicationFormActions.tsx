@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
 import { showAlert } from "../../features/user/alertSlice"
 import { useGetProfileQuery } from "../../features/user/backendApi"
@@ -14,7 +14,6 @@ import {
   UserRole,
   UserStatus,
 } from "../../utils/types"
-import { RootState } from "../../store"
 import Button from "../ui/Button"
 import CohortInfo from "../ui/CohortInfo"
 import { SocketContext } from "../../utils/contexts/SocketContext"
@@ -38,8 +37,7 @@ export default function ApplicationFormActions({
       ? ApplicationFormStatus.Submitted
       : getApplicationFormStatus(applicationForm)
 
-  const cookies = useSelector((state: RootState) => state.cookies)
-  const { data, refetch, isLoading } = useGetProfileQuery(cookies.jwt)
+  const { data, refetch, isLoading } = useGetProfileQuery()
   const dispatch = useDispatch()
 
   const [displayStatus, setDisplayStatus] = useState<ApplicationFormStatus>(
@@ -85,7 +83,6 @@ export default function ApplicationFormActions({
     return () => {
       socket?.off("joinedTheWaitList")
       socket?.off("waitListError")
-      socket?.off("test-response")
     }
   }, [socket, data?.email, data?.status, refetch, dispatch])
 

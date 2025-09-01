@@ -7,13 +7,12 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { useUpdateCohortMutation } from "../../features/user/backendApi"
 import Loader from "../ui/Loader"
 import dayjs from "dayjs"
 import UpdateStages from "../ui/UpdateStages"
 import { DatePicker } from "@mui/x-date-pickers"
-import { RootState } from "../../store"
 
 const updateCohortForm = z.object({
   name: z.string().min(1, "Name is required"),
@@ -51,7 +50,6 @@ export default function UpdateCohortModal({
   onClose,
   cohort,
 }: UpdateCohortModalProps) {
-  const cookies = useSelector((state: RootState) => state.cookies)
   const dispatch = useDispatch()
   const [
     updateCohort,
@@ -85,7 +83,6 @@ export default function UpdateCohortModal({
 
     try {
       const result = await updateCohort({
-        jwt: cookies.jwt,
         body: requestBody,
         id: cohort._id,
       })

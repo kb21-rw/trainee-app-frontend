@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Modal } from "@mui/material"
 import { useForm } from "react-hook-form"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { z } from "zod"
 import {
   useCreateCoachMutation,
@@ -14,7 +14,6 @@ import Button from "../ui/Button"
 import Input from "../ui/Input"
 import Loader from "../ui/Loader"
 import Select from "../ui/Select"
-import { RootState } from "../../store"
 
 const selectOptions = [
   // Label here is prospect instead of trainee because a trainee represent many different statuses with Prospect being one of them.
@@ -38,7 +37,6 @@ export default function CreateUser({
   onClose: () => void
   refetch: () => void
 }) {
-  const cookies = useSelector((state: RootState) => state.cookies)
   const dispatch = useDispatch()
   const [createUser, { isLoading: isUserLoading, reset: resetCreateUser }] =
     useCreateUserMutation()
@@ -59,7 +57,7 @@ export default function CreateUser({
   const onSubmit = async (formData: CreateUserDto) => {
     try {
       if (formData.role === UserRole.Coach) {
-        await createCoach({ jwt: cookies.jwt, body: formData }).unwrap()
+        await createCoach({ body: formData }).unwrap()
         handleShowAlert(dispatch, {
           type: AlertType.Success,
           message: "Coach was created successfully",
@@ -71,7 +69,7 @@ export default function CreateUser({
       if (
         [UserRole.Trainee, UserRole.Admin].includes(formData.role as UserRole)
       ) {
-        await createUser({ jwt: cookies.jwt, body: formData }).unwrap()
+        await createUser({ body: formData }).unwrap()
         handleShowAlert(dispatch, {
           type: AlertType.Success,
           message: "User was created successfully",

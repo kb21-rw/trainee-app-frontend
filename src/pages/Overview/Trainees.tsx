@@ -15,14 +15,13 @@ import { useEffect, useState } from "react"
 import OverViewTable from "../../components/ui/OverViewTable"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import Loader from "../../components/ui/Loader"
 import NotFound from "../../components/ui/NotFound"
 import DecisionModal from "../../components/modals/DecisionModal"
 import ResponseModal from "../../components/modals/ResponseModal"
 import SmartSelect from "../../components/ui/SmartSelect"
 import { useForm } from "react-hook-form"
-import { RootState } from "../../store"
 
 const Trainees = () => {
   const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null)
@@ -30,8 +29,7 @@ const Trainees = () => {
     userId: string
     question: ResponseModalQuestion
   } | null>(null)
-  const cookies = useSelector((state: RootState) => state.cookies)
-  const { data: allCohorts } = useGetAllCohortsQuery({ jwt: cookies.jwt })
+  const { data: allCohorts } = useGetAllCohortsQuery()
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
   const dispatch = useDispatch()
   const { register, watch } = useForm<{ cohortId: string }>({
@@ -42,7 +40,6 @@ const Trainees = () => {
     error: traineeOverviewError,
     isFetching: traineeOverviewIsFetching,
   } = useGetTraineesQuery({
-    jwt: cookies.jwt,
     cohortId: selectedCohortId,
   })
 
@@ -117,7 +114,6 @@ const Trainees = () => {
     }
 
     await decide({
-      jwt: cookies.jwt,
       body: {
         traineeId: decisionInfo.traineeId,
         decision: decisionInfo.decision,
@@ -136,7 +132,6 @@ const Trainees = () => {
     updateParticipant({
       participantId,
       body: { coachId },
-      jwt: cookies.jwt,
     })
   }
 
