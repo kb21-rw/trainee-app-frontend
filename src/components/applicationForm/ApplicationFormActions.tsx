@@ -40,7 +40,7 @@ export default function ApplicationFormActions({
   const { data, refetch, isLoading } = useGetProfileQuery()
   const dispatch = useDispatch()
 
-  const [displayStatus, setdisplayStatus] = useState<ApplicationFormStatus>(
+  const [displayStatus, setDisplayStatus] = useState<ApplicationFormStatus>(
     () =>
       data?.status === UserStatus.OnWaitList
         ? ApplicationFormStatus.JoinedWaitList
@@ -54,13 +54,13 @@ export default function ApplicationFormActions({
   }
 
   useEffect(() => {
-    if (socket) {
-      socket.emit("join-room", data?.email)
+    if (socket && data?.email) {
+      socket.emit("join-room", data.email)
 
       socket.on("joinedTheWaitList", (message) => {
-        if (data?.email === message.email) {
-          setdisplayStatus(ApplicationFormStatus.JoinedWaitList)
-          refetch()
+        if (data.email === message.email) {
+          setDisplayStatus(ApplicationFormStatus.JoinedWaitList)
+          setTimeout(() => refetch(), 500) // Trigger refetch to update Redux cache
         }
       })
 
@@ -73,13 +73,18 @@ export default function ApplicationFormActions({
           }),
         )
       })
+
+      // Update displayStatus if data.status changes after refetch
+      if (data?.status === UserStatus.OnWaitList) {
+        setDisplayStatus(ApplicationFormStatus.JoinedWaitList)
+      }
     }
 
     return () => {
       socket?.off("joinedTheWaitList")
       socket?.off("waitListError")
     }
-  }, [socket, data?.email, refetch, dispatch])
+  }, [socket, data?.email, data?.status, refetch, dispatch])
 
   if (isLoading || !data) {
     return <div>Loading...</div>
