@@ -3,6 +3,7 @@ import {
   GridCellEditStopReasons,
   GridColDef,
   GridEventListener,
+  useGridApiRef,
 } from "@mui/x-data-grid"
 import { GridStateColDef } from "@mui/x-data-grid/internals"
 import { useState } from "react"
@@ -72,6 +73,7 @@ export default function OverViewTable({
     handleCoachChange = () => undefined,
   },
 }: DataGridProps) {
+  const apiRef = useGridApiRef()
   const [settingsInfo, setSettingsInfo] = useState<any>(null)
   const [participantInfo, setParticipantInfo] = useState<any>(null)
   const isAdmin = role === UserRole.Admin
@@ -263,6 +265,17 @@ export default function OverViewTable({
     row: { actions },
   }) => {
     if (actions !== ParticipantPhase.Active) return
+    if (field === "coach") {
+      const cellMode = apiRef.current.getCellMode(id, field)
+      if (cellMode == "view") {
+        apiRef.current.startCellEditMode({
+          id,
+          field,
+        })
+      }
+
+      return
+    }
 
     if (field.length !== 24) return // not a question
     const customColDef = colDef as GridStateColDef & {
@@ -296,6 +309,7 @@ export default function OverViewTable({
         />
       )}
       <DataGrid
+        apiRef={apiRef}
         rows={rows}
         columns={
           formsByOverviewType.length === 0
@@ -329,11 +343,14 @@ export default function OverViewTable({
             event.defaultMuiPrevented = true
           }
         }}
-        processRowUpdate={(updatedRow) => {
-          handleCoachChange({
-            coachId: updatedRow.coach ? updatedRow.coach : null,
-            participantId: updatedRow.traineeId,
-          })
+        processRowUpdate={(updatedRow, originalRow) => {
+          if (updatedRow.coach !== originalRow.coach) {
+            handleCoachChange({
+              coachId: updatedRow.coach ? updatedRow.coach : null,
+              participantId: updatedRow.traineeId,
+            })
+          }
+
           return {
             ...updatedRow,
             coachName:
