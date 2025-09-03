@@ -211,39 +211,51 @@ export default function OverViewTable({
   users = { ...Object.assign({}, ...usersToDisplay) }
 
   const rows: UserRow[] = Object.values(users).map((user) => {
-    const userAsParticipant = participants.find(
+    // Find participant and stage data
+    const participant = participants.find(
       (participant) => participant.userId === user.user._id,
     )
-    const userStage = stages.find(
-      (stage) => stage._id === userAsParticipant?.stage,
-    )
+    const userStage = stages.find((stage) => stage._id === participant?.stage)
 
-    const status = userAsParticipant?.traineeStatus
-    const coach = coaches.find((coach) =>
+    // Determine the appropriate stage based on context
+    const lastPreselectionStage = stages.findLast(
+      (stage) => stage.isPreselection === "true",
+    )
+    const isPostselectionForTrainees =
+      userStage?.isPreselection !== "true" && overviewType !== "trainee"
+    const participantStage = isPostselectionForTrainees
+      ? lastPreselectionStage
+      : userStage
+
+    // Find the appropriate coach
+    const coachId =
       overviewType === "trainee"
-        ? coach._id === userAsParticipant?.postselectionCoachId
-        : coach._id === userAsParticipant?.preselectionCoachId,
-    )
-    const participantPhase =
-      status === "REJECTED" || status === "DROPPED_OUT"
-        ? ParticipantPhase.Rejected
-        : status === "GRADUATED" ||
-            (userStage?.isPreselection !== "true" && overviewType !== "trainee")
-          ? ParticipantPhase.Completed
-          : ParticipantPhase.Active
+        ? participant?.postselectionCoachId
+        : participant?.preselectionCoachId
+    const coach = coaches.find((c) => c._id === coachId)
 
-    const row = {
+    // Determine participant phase
+    const status = participant?.traineeStatus
+    const isCompleted = status === "GRADUATED" || isPostselectionForTrainees
+    const isRejected = status === "REJECTED" || status === "DROPPED_OUT"
+
+    const participantPhase = isCompleted
+      ? ParticipantPhase.Completed
+      : isRejected
+        ? ParticipantPhase.Rejected
+        : ParticipantPhase.Active
+
+    return {
       id: user.user._id,
-      traineeId: userAsParticipant?._id ?? `user-${user.user._id}`,
+      traineeId: participant?._id ?? `user-${user.user._id}`,
       name: user.user.name,
       email: user.user.email,
       coach: coach?._id ?? "",
       coachName: coach?.name ?? "No coach",
-      stage: userStage?.name ?? "Unknown",
+      stage: participantStage?.name ?? "Unknown",
       actions: participantPhase,
       ...user.responses,
     }
-    return row
   })
 
   const columnGroupingModel = formsByOverviewType.map((form) => ({
