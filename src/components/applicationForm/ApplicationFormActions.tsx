@@ -10,6 +10,7 @@ import {
   ApplicationForm,
   ApplicationFormStatus,
   ButtonSize,
+  SocketEvent,
   UserResponseQuestion,
   UserRole,
   UserStatus,
@@ -55,16 +56,16 @@ export default function ApplicationFormActions({
 
   useEffect(() => {
     if (socket && data?.email) {
-      socket.emit("join-room", data.email)
+      socket.emit(SocketEvent.JoinRoom, data.email)
 
-      socket.on("joinedTheWaitList", (message) => {
+      socket.on(SocketEvent.JoinedTheWaitList, (message) => {
         if (data.email === message.email) {
           setDisplayStatus(ApplicationFormStatus.JoinedWaitList)
           setTimeout(() => refetch(), 500) // Trigger refetch to update Redux cache
         }
       })
 
-      socket.on("waitListError", (errorMessage) => {
+      socket.on(SocketEvent.WaitlistError, (errorMessage) => {
         dispatch(
           showAlert({
             message: errorMessage.errorMessage,

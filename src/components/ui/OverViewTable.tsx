@@ -29,6 +29,7 @@ import {
   User,
   UserRole,
   UserRow,
+  UserStatus,
 } from "../../utils/types"
 import EditParticipantModal from "../modals/EditParticipantModal"
 import SettingsModal from "../modals/Settings"
@@ -238,8 +239,8 @@ export default function OverViewTable({
 
     // Determine participant phase
     const status = participant?.traineeStatus
-    const isCompleted = status === "GRADUATED" || isPostselectionForTrainees
-    const isRejected = status === "REJECTED" || status === "DROPPED_OUT"
+    const isCompleted = status === UserStatus.Graduated || isPostselectionForTrainees
+    const isRejected = status === UserStatus.Rejected || status === UserStatus.DroppedOut
 
     const participantPhase = isCompleted
       ? ParticipantPhase.Completed
