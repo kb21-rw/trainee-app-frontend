@@ -239,8 +239,10 @@ export default function OverViewTable({
 
     // Determine participant phase
     const status = participant?.traineeStatus
-    const isCompleted = status === UserStatus.Graduated || isPostselectionForTrainees
-    const isRejected = status === UserStatus.Rejected || status === UserStatus.DroppedOut
+    const isCompleted =
+      status === UserStatus.Graduated || isPostselectionForTrainees
+    const isRejected =
+      status === UserStatus.Rejected || status === UserStatus.DroppedOut
 
     const participantPhase = isCompleted
       ? ParticipantPhase.Completed
