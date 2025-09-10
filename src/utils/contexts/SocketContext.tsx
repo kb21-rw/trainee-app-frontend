@@ -2,6 +2,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useEffect, useState } from "react"
 import { io, Socket } from "socket.io-client"
+import { SocketEvent } from "../types"
 
 interface WaitListSocket {
   socket: Socket | null
@@ -17,7 +18,9 @@ export function SocketContextProvider({
   children: React.ReactNode
 }): React.ReactNode {
   const [socket, setSocket] = useState<Socket | null>(null)
-  const socketURL = import.meta.env.VITE_API_URL
+  const socketURL =
+    import.meta.env.VITE_BACKEND_API_URL?.replace("/api", "") ||
+    "http://localhost:3000"
 
   useEffect(() => {
     const socketInstance = io(socketURL, {
@@ -26,27 +29,27 @@ export function SocketContextProvider({
       timeout: 10000,
     })
 
-    socketInstance.on("connect", () => {
+    socketInstance.on(SocketEvent.Connect, () => {
       console.log("--- Socket Connected ---")
     })
 
-    socketInstance.on("connect_error", (err) => {
+    socketInstance.on(SocketEvent.ConnectError, (err) => {
       console.log(`--- Socket connection error: ${err} ---`)
     })
 
-    socketInstance.on("reconnect", (attemptNumber) => {
+    socketInstance.on(SocketEvent.Reconnect, (attemptNumber) => {
       console.log(`--- Socket reconnected after ${attemptNumber} attempts ---`)
     })
 
-    socketInstance.on("reconnect_error", (error) => {
+    socketInstance.on(SocketEvent.ReconnectError, (error) => {
       console.error("--- Reconnection error:", error.message)
     })
 
-    socketInstance.on("reconnect_failed", () => {
+    socketInstance.on(SocketEvent.ReconnectFailed, () => {
       console.error("--- Failed to reconnect ---")
     })
 
-    socketInstance.io.on("error", (error) => {
+    socketInstance.io.on(SocketEvent.Error, (error) => {
       console.error("--- Socket.io error:", error)
     })
 

@@ -121,7 +121,7 @@ export const backendApi: any = createApi({
           body: { ...body },
         })
       },
-      invalidatesTags: ["coaches"],
+      invalidatesTags: ["coaches", "overview"],
     }),
 
     editTrainee: builder.mutation({
@@ -156,7 +156,7 @@ export const backendApi: any = createApi({
           method: "DELETE",
         })
       },
-      invalidatesTags: ["coaches"],
+      invalidatesTags: ["coaches", "overview"],
     }),
 
     deleteTrainee: builder.mutation({

@@ -3,6 +3,7 @@ import {
   GridCellEditStopReasons,
   GridColDef,
   GridEventListener,
+  useGridApiRef,
 } from "@mui/x-data-grid"
 import { GridStateColDef } from "@mui/x-data-grid/internals"
 import { useState } from "react"
@@ -28,6 +29,7 @@ import {
   User,
   UserRole,
   UserRow,
+  UserStatus,
 } from "../../utils/types"
 import EditParticipantModal from "../modals/EditParticipantModal"
 import SettingsModal from "../modals/Settings"
@@ -72,6 +74,7 @@ export default function OverViewTable({
     handleCoachChange = () => undefined,
   },
 }: DataGridProps) {
+  const apiRef = useGridApiRef()
   const [settingsInfo, setSettingsInfo] = useState<any>(null)
   const [participantInfo, setParticipantInfo] = useState<any>(null)
   const isAdmin = role === UserRole.Admin
@@ -211,39 +214,53 @@ export default function OverViewTable({
   users = { ...Object.assign({}, ...usersToDisplay) }
 
   const rows: UserRow[] = Object.values(users).map((user) => {
-    const userAsParticipant = participants.find(
+    // Find participant and stage data
+    const participant = participants.find(
       (participant) => participant.userId === user.user._id,
     )
-    const userStage = stages.find(
-      (stage) => stage._id === userAsParticipant?.stage,
-    )
+    const userStage = stages.find((stage) => stage._id === participant?.stage)
 
-    const status = userAsParticipant?.traineeStatus
-    const coach = coaches.find((coach) =>
+    // Determine the appropriate stage based on context
+    const lastPreselectionStage = stages.findLast(
+      (stage) => stage.isPreselection === "true",
+    )
+    const isPostselectionForTrainees =
+      userStage?.isPreselection !== "true" && overviewType !== "trainee"
+    const participantStage = isPostselectionForTrainees
+      ? lastPreselectionStage
+      : userStage
+
+    // Find the appropriate coach
+    const coachId =
       overviewType === "trainee"
-        ? coach._id === userAsParticipant?.postselectionCoachId
-        : coach._id === userAsParticipant?.preselectionCoachId,
-    )
-    const participantPhase =
-      status === "REJECTED" || status === "DROPPED_OUT"
-        ? ParticipantPhase.Rejected
-        : status === "GRADUATED" ||
-            (userStage?.isPreselection !== "true" && overviewType !== "trainee")
-          ? ParticipantPhase.Completed
-          : ParticipantPhase.Active
+        ? participant?.postselectionCoachId
+        : participant?.preselectionCoachId
+    const coach = coaches.find((c) => c._id === coachId)
 
-    const row = {
+    // Determine participant phase
+    const status = participant?.traineeStatus
+    const isCompleted =
+      status === UserStatus.Graduated || isPostselectionForTrainees
+    const isRejected =
+      status === UserStatus.Rejected || status === UserStatus.DroppedOut
+
+    const participantPhase = isCompleted
+      ? ParticipantPhase.Completed
+      : isRejected
+        ? ParticipantPhase.Rejected
+        : ParticipantPhase.Active
+
+    return {
       id: user.user._id,
-      traineeId: userAsParticipant?._id ?? `user-${user.user._id}`,
+      traineeId: participant?._id ?? `user-${user.user._id}`,
       name: user.user.name,
       email: user.user.email,
       coach: coach?._id ?? "",
       coachName: coach?.name ?? "No coach",
-      stage: userStage?.name ?? "Unknown",
+      stage: participantStage?.name ?? "Unknown",
       actions: participantPhase,
       ...user.responses,
     }
-    return row
   })
 
   const columnGroupingModel = formsByOverviewType.map((form) => ({
@@ -263,6 +280,17 @@ export default function OverViewTable({
     row: { actions },
   }) => {
     if (actions !== ParticipantPhase.Active) return
+    if (field === "coach") {
+      const cellMode = apiRef.current.getCellMode(id, field)
+      if (cellMode == "view") {
+        apiRef.current.startCellEditMode({
+          id,
+          field,
+        })
+      }
+
+      return
+    }
 
     if (field.length !== 24) return // not a question
     const customColDef = colDef as GridStateColDef & {
@@ -296,6 +324,7 @@ export default function OverViewTable({
         />
       )}
       <DataGrid
+        apiRef={apiRef}
         rows={rows}
         columns={
           formsByOverviewType.length === 0
@@ -329,11 +358,14 @@ export default function OverViewTable({
             event.defaultMuiPrevented = true
           }
         }}
-        processRowUpdate={(updatedRow) => {
-          handleCoachChange({
-            coachId: updatedRow.coach ? updatedRow.coach : null,
-            participantId: updatedRow.traineeId,
-          })
+        processRowUpdate={(updatedRow, originalRow) => {
+          if (updatedRow.coach !== originalRow.coach) {
+            handleCoachChange({
+              coachId: updatedRow.coach ? updatedRow.coach : null,
+              participantId: updatedRow.traineeId,
+            })
+          }
+
           return {
             ...updatedRow,
             coachName:

@@ -9,6 +9,8 @@ import {
   ParticipantPhase,
   User,
 } from "./types"
+import { Box } from "@mui/material"
+import { ArrowDropDown } from "@mui/icons-material"
 
 export const getAdminActionColumns = (
   handleDecision: (_data: DecisionInfo) => void,
@@ -71,6 +73,7 @@ export const getAdminActionColumns = (
 ]
 
 export const getAdminCoachColumn = (coaches: User[]): GridColDef[] => {
+  const activeCoaches = coaches.filter((coach) => coach.active)
   return [
     {
       field: "coach",
@@ -81,13 +84,50 @@ export const getAdminCoachColumn = (coaches: User[]): GridColDef[] => {
       type: "singleSelect",
       valueOptions: [
         { value: "", label: "No coach" },
-        ...coaches
-          .filter((coach) => coach.active)
-          .map((coach) => ({
-            value: coach._id,
-            label: coach.name,
-          })),
+        ...activeCoaches.map((coach) => ({
+          value: coach._id,
+          label: coach.name,
+        })),
       ],
+      renderCell: (params) => {
+        const { value, row } = params
+        const coach = activeCoaches.find((coach) => coach._id === value)
+        const isPhaseCompleted =
+          row.actions === ParticipantPhase.Completed ||
+          row.actions === ParticipantPhase.Rejected
+        const displayValue =
+          isPhaseCompleted || coach ? row.coachName : "No coach"
+        const isEditable = !isPhaseCompleted
+        return (
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            width="100%"
+            sx={{
+              cursor: isEditable ? "pointer" : "default",
+              "&:hover": isEditable
+                ? {
+                    backgroundColor: "action.hover",
+                    borderRadius: "4px",
+                  }
+                : {},
+            }}
+          >
+            <span style={{ flex: 1 }}>{displayValue}</span>
+            {isEditable && (
+              <ArrowDropDown
+                sx={{
+                  color: "action.active",
+                  fontSize: "20px",
+                  ml: 1,
+                  flexShrink: 0,
+                }}
+              />
+            )}
+          </Box>
+        )
+      },
     },
   ]
 }
