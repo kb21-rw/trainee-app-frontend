@@ -156,6 +156,8 @@ export enum UserStatus {
   Enrolled = "ENROLLED",
   Rejected = "REJECTED",
   Staff = "STAFF",
+  Graduated = "GRADUATED",
+  DroppedOut = "DROPPED_OUT",
 }
 
 export type ApplicantDetails = {
@@ -245,6 +247,18 @@ export enum ParticipantPhase {
   Rejected = "Rejected",
   Active = "Active",
   Completed = "Completed",
+}
+
+export enum SocketEvent {
+  JoinRoom = "join-room",
+  JoinedTheWaitList = "joinedTheWaitList",
+  WaitlistError = "waitListError",
+  Connect = "connect",
+  ConnectError = "connect_error",
+  Reconnect = "reconnect",
+  ReconnectError = "reconnect_error",
+  ReconnectFailed = "reconnect_failed",
+  Error = "error",
 }
 
 export interface UserRow {
