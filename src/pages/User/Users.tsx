@@ -1,4 +1,7 @@
-import { useGetUsersQuery } from "../../features/user/backendApi"
+import {
+  useGetUsersQuery,
+  useGetProfileQuery,
+} from "../../features/user/backendApi"
 import Button from "../../components/ui/Button"
 import { AlertType, ButtonSize, User, UserRole } from "../../utils/types"
 import { useDispatch } from "react-redux"
@@ -22,10 +25,10 @@ export default function Users() {
     isFetching: usersIsFetching,
     refetch,
   } = useGetUsersQuery()
+  const { data: loggedInUser } = useGetProfileQuery()
 
   const getRowClassName = (params: GridRowClassNameParams) => {
     const row = params.row as User
-    // If the user is an admin or a coach and is inactive, apply grey styling
     return (row.role === UserRole.Admin || row.role === UserRole.Coach) &&
       !row.active
       ? "bg-gray-200"
@@ -92,6 +95,7 @@ export default function Users() {
 
   const rows =
     [...users]
+      .filter((user: User) => user._id !== loggedInUser?._id)
       .sort((a: User, b: User) => b.createdAt.localeCompare(a.createdAt))
       ?.map((user: User, index: number, usersArray: User[]) => ({
         id: user._id,
