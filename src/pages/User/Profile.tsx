@@ -12,6 +12,7 @@ import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { AlertType, FormData, ProfileData } from "../../utils/types"
 import { useDispatch } from "react-redux"
+import { PasswordMessage, PasswordPattern } from "../../utils/constants"
 
 const Profile = () => {
   const [updateProfile, { isLoading, isSuccess, reset: resetProfile }] =
@@ -160,10 +161,8 @@ const Profile = () => {
               options={{
                 pattern: {
                   required: false,
-                  value:
-                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                  message:
-                    "Password must be 8+ characters with uppercase, lowercase, number, and special character.",
+                  value: PasswordPattern,
+                  message: PasswordMessage,
                 },
               }}
               errors={errors}
