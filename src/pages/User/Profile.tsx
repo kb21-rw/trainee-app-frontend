@@ -13,6 +13,21 @@ import { handleShowAlert } from "../../utils/handleShowAlert"
 import { AlertType } from "../../utils/types"
 import { useDispatch } from "react-redux"
 
+type FormData = {
+  name?: string
+  email?: string
+  oldPassword?: string
+  newPassword?: string
+  confirmPassword?: string
+}
+
+type ProfileData = {
+  email?: string
+  name?: string
+  password?: string
+  oldPassword?: string
+}
+
 const Profile = () => {
   const [updateProfile, { isLoading, isSuccess, error }] =
     useUpdateProfileMutation()
@@ -37,24 +52,18 @@ const Profile = () => {
   })
 
   useEffect(() => {
-    if (isSubmitSuccessful && !error?.status) {
+    if (isSubmitSuccessful && isSuccess) {
       reset({
         oldPassword: "",
         newPassword: "",
         confirmPassword: "",
       })
     }
-  }, [reset, isSubmitSuccessful, error])
+  }, [reset, isSubmitSuccessful, isSuccess])
 
   const password = watch("newPassword")
 
-  const onSubmit = async (submittedData: {
-    email?: string
-    name?: string
-    oldPassword?: string
-    newPassword?: string
-    confirmPassword?: string
-  }) => {
+  const onSubmit = async (submittedData: FormData) => {
     if (!submittedData.newPassword && submittedData.name === data.name) {
       handleShowAlert(dispatch, {
         type: AlertType.Success,
@@ -67,12 +76,7 @@ const Profile = () => {
     //allow success or error message to be alerted if changes were made
     setOtherAlertMessage(false)
 
-    const profileData: {
-      email?: string
-      name?: string
-      password?: string
-      oldPassword?: string
-    } = {}
+    const profileData: ProfileData = {}
 
     if (submittedData.name) profileData.name = submittedData.name
     if (submittedData.newPassword) {
