@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { H1 } from "../../components/ui/Typography"
 import Button from "../../components/ui/Button"
 import InputField from "../../components/ui/InputField"
@@ -22,22 +22,40 @@ const Profile = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isDirty },
+    watch,
+    reset,
+    formState: { errors, isDirty, isSubmitSuccessful },
   } = useForm({
     mode: "onSubmit",
     defaultValues: {
       name: data?.name,
       email: data?.email,
-      password: "",
+      oldPassword: "",
+      newPassword: "",
+      confirmPassword: "",
     },
   })
+
+  useEffect(() => {
+    if (isSubmitSuccessful && !error?.status) {
+      reset({
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      })
+    }
+  }, [reset, isSubmitSuccessful, error])
+
+  const password = watch("newPassword")
 
   const onSubmit = async (submittedData: {
     email?: string
     name?: string
-    password?: string
+    oldPassword?: string
+    newPassword?: string
+    confirmPassword?: string
   }) => {
-    if (!submittedData.password && submittedData.name === data.name) {
+    if (!submittedData.newPassword && submittedData.name === data.name) {
       handleShowAlert(dispatch, {
         type: AlertType.Success,
         message: "No changes were made!",
@@ -49,10 +67,18 @@ const Profile = () => {
     //allow success or error message to be alerted if changes were made
     setOtherAlertMessage(false)
 
-    const profileData: { email?: string; name?: string; password?: string } = {}
+    const profileData: {
+      email?: string
+      name?: string
+      password?: string
+      oldPassword?: string
+    } = {}
 
     if (submittedData.name) profileData.name = submittedData.name
-    if (submittedData.password) profileData.password = submittedData.password
+    if (submittedData.newPassword) {
+      profileData.password = submittedData.newPassword
+      profileData.oldPassword = submittedData.oldPassword
+    }
 
     await updateProfile({ profileData })
   }
@@ -72,6 +98,11 @@ const Profile = () => {
     })
   }
 
+  const errorMessage =
+    errors.newPassword?.message ||
+    errors.oldPassword?.message ||
+    errors.confirmPassword?.message
+
   return (
     <div className="flex items-center justify-center h-full px-4 sm:px-6 lg:px-8">
       <div className="max-w-md p-10 space-y-8 bg-white rounded-xl custom-shadow">
@@ -80,9 +111,9 @@ const Profile = () => {
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
           {isLoading && <Loader />}
-          {errors.password && (
-            <div className="flex items-center justify-center py-2 rounded-lg bg-error-light text-error-dark">
-              {String(errors.password?.message)}
+          {errorMessage && (
+            <div className="flex items-center justify-center p-2 rounded-lg bg-error-light text-error-dark">
+              {String(errorMessage)}
             </div>
           )}
           <div className="space-y-3 rounded-md shadow-sm">
@@ -102,9 +133,29 @@ const Profile = () => {
               register={register}
             />
             <InputField
-              name="password"
+              name="oldPassword"
               type="password"
-              label="Password"
+              label="Current Password"
+              placeholder="Current Password"
+              register={register}
+              options={{
+                validate: (value: string) => {
+                  if (password && !value) {
+                    return "Current password is required to set a new password"
+                  }
+
+                  if (value && password === value)
+                    return "New password must be different from current password"
+
+                  return true
+                },
+              }}
+              errors={errors}
+            />
+            <InputField
+              name="newPassword"
+              type="password"
+              label="New Password"
               placeholder="New Password"
               register={register}
               options={{
@@ -114,6 +165,19 @@ const Profile = () => {
                     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
                   message:
                     "Password must be 8+ characters with uppercase, lowercase, number, and special character.",
+                },
+              }}
+              errors={errors}
+            />
+            <InputField
+              name="confirmPassword"
+              type="password"
+              label="Confirm New Password"
+              placeholder="Re-enter password"
+              register={register}
+              options={{
+                validate: (value: string) => {
+                  return value === password || "New passwords do not match"
                 },
               }}
               errors={errors}
