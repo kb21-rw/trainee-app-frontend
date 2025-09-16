@@ -3,8 +3,7 @@ import {
   useGetAllCohortsQuery,
   useGetCoachesQuery,
 } from "../../features/user/backendApi"
-import Button from "../../components/ui/Button"
-import { AlertType, ButtonSize, Cohort, User } from "../../utils/types"
+import { AlertType, Cohort, User } from "../../utils/types"
 import { useDispatch } from "react-redux"
 import { FormControl, SelectChangeEvent, MenuItem, Select } from "@mui/material"
 import { handleShowAlert } from "../../utils/handleShowAlert"
@@ -172,14 +171,6 @@ export default function Coaches() {
               </Select>
             </FormControl>
           </div>
-          {cohortCoaches?.isActive && (
-            <Button
-              size={ButtonSize.Medium}
-              onClick={() => setIsAddCoachOpen(true)}
-            >
-              Add coach
-            </Button>
-          )}
         </div>
         <DataGrid
           columns={columns}
