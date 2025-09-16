@@ -10,23 +10,8 @@ import {
 import { useForm } from "react-hook-form"
 import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
-import { AlertType } from "../../utils/types"
+import { AlertType, FormData, ProfileData } from "../../utils/types"
 import { useDispatch } from "react-redux"
-
-type FormData = {
-  name?: string
-  email?: string
-  oldPassword?: string
-  newPassword?: string
-  confirmPassword?: string
-}
-
-type ProfileData = {
-  email?: string
-  name?: string
-  password?: string
-  oldPassword?: string
-}
 
 const Profile = () => {
   const [updateProfile, { isLoading, isSuccess, reset: resetProfile }] =

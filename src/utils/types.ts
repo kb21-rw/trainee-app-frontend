@@ -297,3 +297,18 @@ export interface EditCoachModalProps {
   currentEmail: string
   coachId: string
 }
+
+export type FormData = {
+  name?: string
+  email?: string
+  oldPassword?: string
+  newPassword?: string
+  confirmPassword?: string
+}
+
+export type ProfileData = {
+  email?: string
+  name?: string
+  password?: string
+  oldPassword?: string
+}
