@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { H1 } from "../../components/ui/Typography"
 import Button from "../../components/ui/Button"
 import InputField from "../../components/ui/InputField"
@@ -29,9 +29,8 @@ type ProfileData = {
 }
 
 const Profile = () => {
-  const [updateProfile, { isLoading, isSuccess, error }] =
+  const [updateProfile, { isLoading, isSuccess, reset: resetProfile }] =
     useUpdateProfileMutation()
-  const [otherAlertMessage, setOtherAlertMessage] = useState(false)
   const dispatch = useDispatch()
   const { data } = useGetProfileQuery()
   const {
@@ -69,12 +68,9 @@ const Profile = () => {
         type: AlertType.Success,
         message: "No changes were made!",
       })
-      setOtherAlertMessage(true)
+      resetProfile()
       return
     }
-
-    //allow success or error message to be alerted if changes were made
-    setOtherAlertMessage(false)
 
     const profileData: ProfileData = {}
 
@@ -84,25 +80,29 @@ const Profile = () => {
       profileData.oldPassword = submittedData.oldPassword
     }
 
-    await updateProfile({ profileData })
-  }
+    const result = await updateProfile({ profileData })
 
-  if (error && !otherAlertMessage) {
-    const { message } = getErrorInfo(error)
-    handleShowAlert(dispatch, {
-      type: AlertType.Error,
-      message,
-    })
-  }
+    if ("error" in result && result.error) {
+      const { message } = getErrorInfo(result.error)
+      handleShowAlert(dispatch, {
+        type: AlertType.Error,
+        message,
+      })
+      resetProfile()
+      return
+    }
 
-  if (isSuccess && !otherAlertMessage) {
-    handleShowAlert(dispatch, {
-      type: AlertType.Success,
-      message: "Profile was updated successfully!",
-    })
+    if ("data" in result && result.data) {
+      handleShowAlert(dispatch, {
+        type: AlertType.Success,
+        message: "Profile was updated successfully!",
+      })
+      resetProfile()
+    }
   }
 
   const errorMessage =
+    errors.name?.message ||
     errors.newPassword?.message ||
     errors.oldPassword?.message ||
     errors.confirmPassword?.message
@@ -126,6 +126,16 @@ const Profile = () => {
               type="text"
               label="Name"
               placeholder="Your Name"
+              options={{
+                required: {
+                  value: true,
+                  message: "Name can not be empty.",
+                },
+                pattern: {
+                  value: /^[a-zA-Z]+([ '-][a-zA-Z]+)*$/, // Ensures not empty & valid format
+                  message: "Please enter a valid name.",
+                },
+              }}
               register={register}
             />
             <InputField
