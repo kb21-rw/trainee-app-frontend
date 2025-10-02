@@ -8,6 +8,7 @@ import {
   AlertType,
   ButtonSize,
   Cohort,
+  CommentModalInfo,
   DecisionInfo,
   ResponseModalQuestion,
   UserRole,
@@ -25,10 +26,12 @@ import ResponseModal from "../../components/modals/ResponseModal"
 import SmartSelect from "../../components/ui/SmartSelect"
 import { useForm } from "react-hook-form"
 import AddApplicantsModal from "../../components/modals/AddApplicantsModal"
+import CommentModal from "../../components/modals/CommentModal"
 
 const Applicants = () => {
   const [decisionInfo, setDecisionInfo] = useState<DecisionInfo | null>(null)
   const [responseInfo, setResponseInfo] = useState<any | null>(null)
+  const [commentInfo, setCommentInfo] = useState<CommentModalInfo | null>(null)
   const [isAddingApplicants, setIsAddingApplicants] = useState<boolean>(false)
   const { data: allCohorts } = useGetAllCohortsQuery()
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
@@ -113,6 +116,14 @@ const Applicants = () => {
     setResponseInfo(data)
   }
 
+  const handleUpsertComment = (data: CommentModalInfo) => {
+    setCommentInfo(data)
+  }
+
+  const handleCloseCommentModal = () => {
+    setTimeout(() => setCommentInfo(null), 0)
+  }
+
   const handleSubmitDecision = async ({ feedback }: { feedback: string }) => {
     if (!decisionInfo) {
       return
@@ -189,6 +200,12 @@ const Applicants = () => {
           closeModal={handleCloseModal}
         />
       )}
+      {commentInfo && (
+        <CommentModal
+          commentInfo={{ ...commentInfo, readonly: true }}
+          closeModal={handleCloseCommentModal}
+        />
+      )}
       {isAddingApplicants && (
         <AddApplicantsModal
           isOpen={isAddingApplicants}
@@ -230,7 +247,12 @@ const Applicants = () => {
           coaches={cohortOverview.coaches}
           updates={[]}
           stages={cohortOverview.stages}
-          actions={{ handleDecision, handleUpsertResponse, handleCoachChange }}
+          actions={{
+            handleDecision,
+            handleUpsertResponse,
+            handleCoachChange,
+            handleUpsertComment,
+          }}
         />
       )}
       {!cohortOverviewIsFetching && !cohortOverview && (

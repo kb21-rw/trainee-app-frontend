@@ -19,6 +19,7 @@ import {
   Question as BaseQuestion,
   Response as BaseResponse,
   CohortParticipant,
+  CommentModalInfo,
   DecisionInfo,
   FormType,
   ParticipantPhase,
@@ -53,6 +54,7 @@ interface DataGridProps {
   actions: {
     handleDecision?: (_data: DecisionInfo) => void
     handleUpsertResponse?: (_data: ResponseModalInfo) => void
+    handleUpsertComment?: (_data: CommentModalInfo) => void
     handleCoachChange?: (_params: {
       coachId: string
       participantId: null | string
@@ -72,6 +74,7 @@ export default function OverViewTable({
     handleDecision = () => undefined,
     handleUpsertResponse = () => undefined,
     handleCoachChange = () => undefined,
+    handleUpsertComment = () => undefined,
   },
 }: DataGridProps) {
   const apiRef = useGridApiRef()
@@ -134,6 +137,13 @@ export default function OverViewTable({
     ...coachColumn,
     { field: "stage", flex: 1, headerName: "Stage", minWidth: 200 },
     ...questionColumns,
+    {
+      field: "comment",
+      headerName: "Coach Comments",
+      flex: 1,
+      minWidth: 200,
+      valueFormatter: (value) => value ?? "No comments",
+    },
     ...actionsColumns,
   ]
 
@@ -258,6 +268,7 @@ export default function OverViewTable({
       coach: coach?._id ?? "",
       coachName: coach?.name ?? "No coach",
       stage: participantStage?.name ?? "Unknown",
+      comment: participant?.comment ?? "No comments",
       actions: participantPhase,
       ...user.responses,
     }
@@ -274,15 +285,15 @@ export default function OverViewTable({
 
   const handleCellClick: GridEventListener<"cellClick"> = ({
     id,
-    value: response,
+    value,
     colDef,
     field,
-    row: { actions },
+    row: { actions, name, traineeId },
   }) => {
     if (actions !== ParticipantPhase.Active) return
     if (field === "coach") {
       const cellMode = apiRef.current.getCellMode(id, field)
-      if (cellMode == "view") {
+      if (cellMode === "view") {
         apiRef.current.startCellEditMode({
           id,
           field,
@@ -290,6 +301,14 @@ export default function OverViewTable({
       }
 
       return
+    }
+
+    if (field === "comment") {
+      handleUpsertComment({
+        userId: traineeId as string,
+        comment: value as string,
+        name,
+      })
     }
 
     if (field.length !== 24) return // not a question
@@ -300,7 +319,7 @@ export default function OverViewTable({
       userId: id as string,
       question: {
         ...customColDef.question,
-        response: response as string | string[] | null,
+        response: value as string | string[] | null,
       },
     })
   }

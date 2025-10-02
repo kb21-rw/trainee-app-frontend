@@ -220,6 +220,7 @@ export interface CohortParticipant {
   preselectionCoachId: string
   postselectionCoachId: string
   stage: string
+  comment: string
   traineeStatus: string
   feedbacks: { stageId: string; text: string }[]
 }
@@ -269,6 +270,7 @@ export interface UserRow {
   coach: string
   coachName: string
   stage: string
+  comment: string
   actions: ParticipantPhase
   [key: string]: string | string[]
 }
@@ -276,6 +278,12 @@ export interface UserRow {
 export interface ResponseModalInfo {
   userId: string
   question: ResponseModalQuestion
+}
+
+export interface CommentModalInfo {
+  userId: string
+  comment: string
+  name: string
 }
 
 export interface OnCreateFormSubmitParams {
