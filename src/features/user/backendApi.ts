@@ -109,7 +109,7 @@ export const backendApi: any = createApi({
           method: "PATCH",
         })
       },
-      invalidatesTags: ["users"],
+      invalidatesTags: ["users", "overview"],
     }),
 
     editCoach: builder.mutation({
