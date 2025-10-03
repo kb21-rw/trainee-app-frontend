@@ -12,6 +12,7 @@ import { useParticipantActions } from "../../utils/hooks/useParticipantActions"
 import { useParticipantDecision } from "../../utils/hooks/useParticipantDecision"
 import { useParticipantErrors } from "../../utils/hooks/useParticipantErrors"
 import { useParticipantData } from "../../utils/hooks/useParticipantData"
+import CommentModal from "../../components/modals/CommentModal"
 
 const MyTrainees = () => {
   const [selectedCohortId, setSelectedCohortId] = useState<string | null>(null)
@@ -47,9 +48,12 @@ const MyTrainees = () => {
   const {
     decisionInfo,
     responseInfo,
+    commentInfo,
     handleDecision,
     handleCloseModal,
     handleUpsertResponse,
+    handleUpsertComment,
+    handleCloseCommentModal,
     closeDecisionModal,
   } = useParticipantActions()
 
@@ -126,6 +130,13 @@ const MyTrainees = () => {
         />
       )}
 
+      {commentInfo && (
+        <CommentModal
+          commentInfo={commentInfo}
+          closeModal={handleCloseCommentModal}
+        />
+      )}
+
       <div className="flex items-center justify-between">
         <div className="w-52">
           <form>
@@ -149,7 +160,11 @@ const MyTrainees = () => {
           coaches={cohortOverview.coaches}
           updates={[]}
           stages={cohortOverview.stages}
-          actions={{ handleDecision, handleUpsertResponse }}
+          actions={{
+            handleDecision,
+            handleUpsertResponse,
+            handleUpsertComment,
+          }}
         />
       )}
       {!cohortOverviewIsFetching && !cohortOverview && (
