@@ -14,6 +14,7 @@ import { getErrorInfo } from "../../utils/helper"
 import { handleShowAlert } from "../../utils/handleShowAlert"
 import { useDispatch } from "react-redux"
 import { useAuth } from "../../utils/hooks/useAuth"
+import { PasswordMessage, PasswordPattern } from "../../utils/constants"
 
 const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
   const [signup, { isLoading, error }] = useSignupMutation()
@@ -139,11 +140,9 @@ const Signup = ({ handlePageChange }: { handlePageChange: () => void }) => {
                 message: "Password is a required field",
               },
               pattern: {
-                value:
-                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                message:
-                  "Password must be 8+ characters with uppercase, lowercase, number, and special character.",
-              }, // checks if password is valid
+                value: PasswordPattern,
+                message: PasswordMessage,
+              },
             }}
             errors={errors}
           />
